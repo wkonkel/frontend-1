@@ -59,7 +59,8 @@ with (Hasher('Registrar','Application')) {
 					div({ style: 'text-align: right' }, input({ 'class': 'myButton', id: 'next', type: 'submit', value: 'Link Accounts' })),
 					div({ style: 'clear: both' })
 				)
-			)	
+			),
+			{ close_callback: function() { set_route('#linked_accounts'); } }
 		)
 		return data;
   });
@@ -76,7 +77,7 @@ with (Hasher('Registrar','Application')) {
 		$('#modal-dialog a.close-button').hide();
     $('#errors').empty();
     data = $.extend(form_data, data);
-    if (form_data.linked_account_id != data.id) {
+    if (form_data.linked_account_id && form_data.linked_account_id != data.id) {
       data.id = form_data.linked_account_id;
     }
 
