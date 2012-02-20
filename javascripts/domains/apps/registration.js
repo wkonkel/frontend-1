@@ -93,7 +93,7 @@ with (Hasher('Registration','DomainApps')) {
                 dl({ 'class': 'fancy-dl', style: 'margin: 0' },
                   dt({ style: 'width: 80px' }, 'Created:'), dd(new Date(Date.parse(domain_obj.registered_at)).toDateString()), br(),
                   dt({ style: 'width: 80px' }, 'Through:'), dd((domain_obj.created_registrar ? domain_obj.created_registrar : '')), br(),
-                  // dt({ style: 'width: 80px' }, 'Status: '), dd(domain_obj.locked), br(),
+                  // dt({ style: 'width: 80px' }, 'Status: '), dd(domain_obj.locked), br(), // we no longer have a status on domain models, so removing it from registration as well --- CAB
                   dt({ style: 'width: 80px' }, 'Previously: '), dd(domain_obj.losing_registrar), br()
                   // dt('Expires:'), dd(), br(),
                   // dt('Created: '), dd(new Date(Date.parse(domain_obj.created_at)).toDateString()), br(),

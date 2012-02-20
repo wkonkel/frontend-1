@@ -11,18 +11,26 @@ with (Hasher('DomainShow','DomainApps')) {
   });
 
   define('handle_get_domain_response', function(content_div, domain, response) {
-    if (typeof(timeout) != "undefined") clearTimeout(timeout);
-    
     var domain_obj = response.data;
+    
     if (response.meta.status == 'ok') {
       if (!domain_obj.current_registrar) {
-        render({ into: content_div },
-          "This domain is not currently registered!",br(),br(),
-          a({ 'class': 'myButton small', href: curry(Register.show, domain_obj.name) }, 'Register ', domain_obj.name)
-        );
+        if (domain_obj.can_register) {
+          render({ into: content_div },
+            "This domain is not currently registered!",br(),br(),
+            a({ 'class': 'myButton small', href: curry(Register.show, domain_obj.name) }, 'Register ', domain_obj.name)
+          );
+        } else {
+          render({ into: content_div },
+            div("This domain is not currently registered! Unfortunately, we do not support this top level domain quite yet. Check back later!")
+            // TODO add some sort of way to watch the domain here. Make these messages way prettier. --- CAB
+          );
+        }
       } else if (domain_obj.current_registrar == 'Unknown') {
         // if it's "unknown", it was probably just added and we're still loading info for it... try again in 1 second
-        var timeout = setTimeout(curry(Badger.getDomain, domain_obj.name, curry(handle_get_domain_response, content_div, domain)), 1000);
+        var timeout = setTimeout(function() {
+          Badger.getDomain(domain_obj.name, curry(handle_get_domain_response, content_div, domain));
+        }, 1000);
       } else {
         render({ into: content_div }, 
           domain_status_description(domain_obj),
@@ -30,7 +38,7 @@ with (Hasher('DomainShow','DomainApps')) {
         );
       }
     } else {
-      render({ into: content_div }, 
+      render({ into: content_div },
         error_message("Oops, we're having a problem finding any information for: " + domain)
       );
     }
