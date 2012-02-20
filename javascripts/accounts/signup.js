@@ -50,8 +50,8 @@ with (Hasher('Signup','Application')) {
           input({ 'class': 'myButton', type: 'submit', value: 'Login' })
         ),
         div({ style: 'margin-top: 20px' },
-  				a({ href: curry(show_forgot_password_modal, callback) }, "Forgot your password?"), br(),
-          a({ href: curry(show_register_modal, callback) }, "Don't have an account?")
+            a({ href: curry(show_forgot_password_modal, callback) }, "Forgot your password?"), br(),
+            a({ href: curry(show_register_modal, callback) }, "Don't have an account?")
         )
       )
     );
