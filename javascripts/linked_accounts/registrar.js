@@ -76,6 +76,9 @@ with (Hasher('Registrar','Application')) {
 		$('#modal-dialog a.close-button').hide();
     $('#errors').empty();
     data = $.extend(form_data, data);
+    if (form_data.linked_account_id != data.id) {
+      data.id = form_data.linked_account_id;
+    }
 
 		var callback = function (response) {
 			if (response.data.linked_account_id) {
@@ -95,7 +98,7 @@ with (Hasher('Registrar','Application')) {
 		if (data.sync) {
 		  Badger.syncLinkedAccount(data.id, callback);
 		}
-		else if (data.linked_account_id) {
+		else if (data.id) {
 			// update existing account
 			Badger.updateLinkedAccount(data.id, data, callback);
 		}
