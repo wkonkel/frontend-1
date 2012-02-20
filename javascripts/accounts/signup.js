@@ -55,6 +55,7 @@ with (Hasher('Signup','Application')) {
         )
       )
     );
+    $('input[name="email"]').focus();
   });
 
   define('process_login', function(callback, form) {
