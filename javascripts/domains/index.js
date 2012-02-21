@@ -8,8 +8,10 @@ with (Hasher('Domains','Application')) {
       switch (filter){
         case 'transfers':
           for (i = 0; i < domains.length; i ++) {
-            if ((domains[i].status == 'pending_transfer_in') || (domains[i].status == 'transfer_rejected'))
+            if ((domains[i].permissions_for_person||[]).indexOf('initiated_transfer') >= 0) {
+              console.log(domains[i])
               results.push(domains[i]);
+            }
           }
           break;
         case 'expiringsoon':
@@ -154,25 +156,23 @@ with (Hasher('Domains','Application')) {
         tbody(
           tr({ 'class': 'table-header' },
             th('Name'),
-            th('Status'),
             th('Registrar'),
-            th('Expires'),
-            th('Applications')
+            th('Expires')
           ),
 
           (domains || []).map(function(domain) {
             return tr(
               td(a({ href: '#domains/' + domain.name }, Domains.truncate_domain_name(domain.name))),
-              td(domain.status),
               td(domain.current_registrar),
-              td(new Date(Date.parse(domain.expires_at)).toDateString()),
-              td(
-                // img({ src: 'images/apps/facebook-icon.png'}),
-                // ', ',
-                a({ href: '#domains/' + domain.name + '/registration' }, 'registration'),
-                ', ',
-                a({ href: '#domains/' + domain.name + '/dns' }, 'dns')
-              )
+              td(new Date(Date.parse(domain.expires_at)).toDateString())
+              
+              // td(
+              //   // img({ src: 'images/apps/facebook-icon.png'}),
+              //   // ', ',
+              //   a({ href: '#domains/' + domain.name + '/registration' }, 'registration'),
+              //   ', ',
+              //   a({ href: '#domains/' + domain.name + '/dns' }, 'dns')
+              // )
             );
           })
         )

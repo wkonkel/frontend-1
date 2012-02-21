@@ -6,13 +6,8 @@ with (Hasher('Registration','DomainApps')) {
       return logo_url_for_registrar(domain_obj.current_registrar);
     },
     name: function(domain_obj) {
-      return "Registration: " + domain_obj.current_registrar;
-      // var s = domain_obj.current_registrar;
-      // if (s.match(/badger/i)) return "Registration (Badger.com)";
-      // else if (s.match(/godaddy/i)) return "Registration (GoDaddy)";
-      // else if (s.match(/enom/)) return "Registration (eNom)";
-      // else if (s.match(/1and1/)) return "Registration (1&1)";
-      // else return "Registration";
+      //return "Registration: " + domain_obj.current_registrar;
+      return "Registration";
     },
     menu_item: { text: 'REGISTRATION', href: '#domains/:domain/registration' },
     requires: {}
