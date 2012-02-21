@@ -145,7 +145,7 @@ with (Hasher('Domains','Application')) {
     
     return div({ 'class': 'info-message', style: 'text-align: right; padding: 10px;' }, $.map(registrars, function(data, name) {
       return div({ style: 'height: 30px;' }, 'You have ', b(data.count), ' domain' + (data.count == 1 ? '' : 's') + ' at ' + name,
-        a({ 'class': 'myButton small', style: 'margin-left: 10px;', href: curry(Transfer.show, data.default_domains, true) }, 'Transfer To Badger')
+        a({ 'class': 'myButton small', style: 'margin-left: 10px;', href: curry(Transfer.show, 'transfer', data.default_domains) }, 'Transfer To Badger')
       );
     }));
   });

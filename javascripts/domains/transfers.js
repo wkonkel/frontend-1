@@ -15,7 +15,6 @@ with (Hasher('Domains','Application')) {
       
       for (var i = 0; i < domains.length; i ++) {
         if ((domains[i].permissions_for_person||[]).indexOf('pending_transfer') >= 0) {
-          console.log(domains[i])
           results.push(domains[i]);
         }
       }
