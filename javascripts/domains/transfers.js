@@ -49,7 +49,7 @@ with (Hasher('Domains','Application')) {
       case 'needs_unlock':
         return "Needs to be unlocked";
       case 'needs_privacy_disabled':
-        return "Needs to be disable privacy";
+        return "Needs whois privacy disabled";
       case 'needs_auth_code':
         return "Needs authcode";
       case 'needs_transfer_request':

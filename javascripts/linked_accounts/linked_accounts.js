@@ -89,7 +89,7 @@ with (Hasher('LinkedAccounts','Application')) {
   					
 					  return linked_accounts_table_row(name, 
 			  	    div({ id: (account.site + "-" + account.id) },
-			  	      div({ 'class': error ? "error-message" : "status-message", style: "position: relative; text-align: right; margin: 5px auto 5px auto; height: 95px; width: 350px; padding: 10px;" },
+			  	      div({ 'class': error ? "error-message" : "status-message", style: "position: relative; text-align: right; margin: 5px auto 5px auto; height: 95px; width: 370px; padding: 10px;" },
                   h3("Status: ", status),
                   div("Last Sync: " + (account.last_synced_at ? new Date(Date.parse(account.last_synced_at)).toString() : 'Never')),
 									div("Login: " + account.login + " (" + account.domain_count + " Linked Domain(s))"),
@@ -120,14 +120,19 @@ with (Hasher('LinkedAccounts','Application')) {
 	  Badger.getAuthorizedAccountInfo(account.id, function(response) {
 		  if (response.data.status == "linked") {
 				$("#" + account.site + "-" + account.id).html(
-					div({ 'class': "status-message", style: "margin: 5px auto 5px auto; height: 25px; width: 330px;" },
+					div({ 'class': "status-message", style: "margin: 5px auto 5px auto; height: 25px; width: 350px;" },
 						img({ style: "margin-top: -11px", src: response.data.profile_image_url }),
 						div({ style: "float: right; margin: 4px 25px auto auto;" }, response.data.name + " (@" + response.data.username + ")")
 					)
 				).css("text-align", "left");
 		  } else {
+        if (account.site == "twitter")
+          var link_action = curry(TwitterAccount.show_link_accounts_modal, response.data.id);
+        else if (account.site == "facebook")
+          var link_action = curry(Facebook.show_link_accounts_modal, response.data.id);
+		    
 				$("#" + account.site + "-" + account.id).html(
-				  div({ style: "margin: 15px 15px 15px auto; float: right" },span({ 'class': "error" }, "Account unlinked. ", a({ href: curry(TwitterAccount.show_link_accounts_modal, response.data.id) }, "Link again?")))
+				  div({ style: "margin: 15px 15px 15px auto; float: right" },span({ 'class': "error" }, "Account unlinked. ", a({ href: link_action }, "Link again?")))
 				).css("text-align", "left");
 		  }
 		});
