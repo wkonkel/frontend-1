@@ -47,3 +47,7 @@ end
 Given /^I follow the reset password link for email "([^"]*)" with code "([^"]*)"$/ do |email, code|
   visit("/index.html#reset_password/#{email}/#{code}")
 end
+
+When /^I visit domain page for domain "([^"]*)"$/ do |domain|
+  visit("/index.html#domains/#{domain}")
+end

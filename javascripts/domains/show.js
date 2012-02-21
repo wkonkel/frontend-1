@@ -45,7 +45,63 @@ with (Hasher('DomainShow','DomainApps')) {
   });
 
   define('domain_status_description', function(domain_obj) {
-    return p('This domain is ', domain_obj.status, ' and will auto-renew for 1 Credit on ', new Date(Date.parse(domain_obj.expires_at)).toDateString(), '.');
+    if ((domain_obj.permissions_for_person || []).indexOf('show_private_data') >= 0) {
+      return p('This domain is VALID and will auto-renew for 1 Credit on ', new Date(Date.parse(domain_obj.expires_at)).toDateString(), '.');
+    } else if ((domain_obj.permissions_for_person || []).indexOf('linked_account') >=0) {
+      return p('This domain is currently registered to your linked account on ' + domain_obj.current_registrar);
+    } else if ((domain_obj.permissions_for_person || []).indexOf('pending_transfer') >=0) {
+      switch (domain_obj.transfer_status)
+      {
+        case 'needs_unlock':
+          return [
+            p('This domain is currently in pending transfer. To continue, please unlock this domain.',
+              a({ href: 'https://www.badger.com/#knowledge_center/3-Unlocking-Your-Domain' }, '(?)')),
+            a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry')
+          ];
+        case 'needs_privacy_disabled':
+          return [
+            p('This domain is currently in pending transfer. To continue, please disable this domain privacy.',
+              a({ href: 'https://www.badger.com/#knowledge_center/3-Disable-Privacy_of-Your-Domain' }, '(?)')),
+            a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry')
+          ];
+        case 'needs_auth_code':
+          return [
+            p('This domain is currently in pending transfer. To continue, please input the authcode here.',
+              a({ href: 'https://www.badger.com/#knowledge_center/3-Unlocking-Your-GoDaddy-Domain' }, '(?)')),
+            form({ action: curry(retry_transfer, domain_obj.name) },
+              input({ name: 'auth_code', placeholder: 'authcode' }),
+              input({ 'class': 'myButton myButton-small', type: 'submit', value: 'Retry' })
+            )
+          ];
+        case 'needs_transfer_request':
+          return [
+            p('This domain is currently in pending transfer and need a transfer request.',
+              a({ href: 'https://www.badger.com/#knowledge_center/3-Domain-Transfer-Request' }, '(?)')),
+            a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry')
+          ];
+        case 'transfer_requested':
+          return [
+            p('This domain is currently in pending transfer. You will need to approve this transfer manually at your current registrar. Or you can wait 5 days and the transfer will automatically go through.',
+              a({ href: 'https://www.badger.com/#knowledge_center/9-Manually-Approving-a-Transfer-on-GoDaddy' }, '(?)')),
+            a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry')
+          ];
+      }
+    } else {
+      return p('This domain is currently registered to somebody else on ' + domain_obj.current_registrar);
+    }
+  });
+
+  define('retry_transfer', function(domain_name, form_data){
+    var params = { retry: true, name: domain_name };
+    if (form_data) {
+      params.auth_code = form_data.auth_code;
+    }
+    Badger.transferDomain(params, function(response) {
+      if (form_data.auth_code && (response.data.transfer_status == 'needs_auth_code')) {
+        alert('Invalid AuthCode');
+      }
+      set_route(get_route());
+    });
   });
 
   define('render_all_application_icons', function(domain_obj) {

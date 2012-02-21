@@ -21,7 +21,8 @@ with (Hasher('Domains','Application')) {
       }
       
       render({ into: target_div }, 
-        table({ 'class': 'fancy-table' },
+        results.length == 0 ? p("It looks like you don't have any domains in pending transfer.")
+          : table({ 'class': 'fancy-table' },
           tbody(
             tr({ 'class': 'table-header' },
               th('Name'),
@@ -33,7 +34,7 @@ with (Hasher('Domains','Application')) {
             results.map(function(domain) {
               return tr(
                 td(a({ href: '#domains/' + domain.name }, Domains.truncate_domain_name(domain.name))),
-                td(domain.transfer_status),
+                td(status_for_domain_transfer(domain)),
                 td(domain.current_registrar),
                 td(new Date(Date.parse(domain.expires_at)).toDateString())
               );
@@ -44,4 +45,18 @@ with (Hasher('Domains','Application')) {
     });
   });
   
+  define('status_for_domain_transfer', function(domain) {
+    switch (domain.transfer_status) {
+      case 'needs_unlock':
+        return "Needs to be unlocked";
+      case 'needs_privacy_disabled':
+        return "Needs to be disable privacy";
+      case 'needs_auth_code':
+        return "Needs authcode";
+      case 'needs_transfer_request':
+        return "Needs to retry transfer";
+      case 'transfer_requested':
+        return "Needs approval from current registrar";
+    }
+  });
 }
