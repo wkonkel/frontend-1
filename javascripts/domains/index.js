@@ -6,14 +6,14 @@ with (Hasher('Domains','Application')) {
       if (view_type == null)
         view_type = "list";
       switch (filter){
-        case 'transfers':
-          for (i = 0; i < domains.length; i ++) {
-            if ((domains[i].permissions_for_person||[]).indexOf('initiated_transfer') >= 0) {
-              console.log(domains[i])
-              results.push(domains[i]);
-            }
-          }
-          break;
+        // case 'transfers':
+        //   for (i = 0; i < domains.length; i ++) {
+        //     if ((domains[i].permissions_for_person||[]).indexOf('initiated_transfer') >= 0) {
+        //       console.log(domains[i])
+        //       results.push(domains[i]);
+        //     }
+        //   }
+        //   break;
         case 'expiringsoon':
           for (i = 0; i < domains.length; i ++) {
             var current_date = new Date();
