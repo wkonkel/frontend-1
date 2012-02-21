@@ -33,7 +33,7 @@ with (Hasher('Domains','Application')) {
             results.map(function(domain) {
               return tr(
                 td(a({ href: '#domains/' + domain.name }, Domains.truncate_domain_name(domain.name))),
-                td(status_for_domain_transfer(domain)),
+                td(domain.transfer_status),
                 td(domain.current_registrar),
                 td(new Date(Date.parse(domain.expires_at)).toDateString())
               );
@@ -44,11 +44,4 @@ with (Hasher('Domains','Application')) {
     });
   });
   
-  define('status_for_domain_transfer', function(domain) {
-    if (domain.locked) {
-      return "Needs to be unlocked";
-    } else {
-      return "Needs auth code"
-    }
-  });
 }
