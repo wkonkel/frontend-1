@@ -76,10 +76,7 @@ with (Hasher('Registrar','Application')) {
 		start_modal_spin(message);
 		$('#modal-dialog a.close-button').hide();
     $('#errors').empty();
-    data = $.extend(form_data, data);
-    if (form_data.linked_account_id && form_data.linked_account_id != data.id) {
-      data.id = form_data.linked_account_id;
-    }
+    data = $.extend(data, form_data);
 
 		var callback = function (response) {
 			if (response.data.linked_account_id) {

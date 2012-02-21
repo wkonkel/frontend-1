@@ -95,7 +95,7 @@ with (Hasher('LinkedAccounts','Application')) {
 									div("Login: " + account.login + " (" + account.domain_count + " Linked Domain(s))"),
 									a({ 'class': "myButton grey", style: 'margin: 10px 0 0;', href: curry(Registrar.remove_link, account) }, "Unlink"),
 									span(' '),
-									error ? a({ 'class': "myButton red", style: 'margin: 10px 0 0;', href: curry(Registrar.show_link, account)}, "edit")
+									error ? a({ 'class': "myButton red", style: 'margin: 10px 0 0;', href: curry(Registrar.show_link, account)}, "Fix Now")
 									  : a({ 'class': "myButton", style: 'margin: 10px 0 0;', href: curry(Registrar.sync_now, account)}, "Sync Now")
 								)
 							)
