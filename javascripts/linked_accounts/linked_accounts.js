@@ -120,7 +120,7 @@ with (Hasher('LinkedAccounts','Application')) {
 	  Badger.getAuthorizedAccountInfo(account.id, function(response) {
 		  if (response.data.status == "linked") {
 				$("#" + account.site + "-" + account.id).html(
-					div({ 'class': "info-message", style: "margin: 5px auto 5px auto; height: 25px; width: 350px;" },
+					div({ 'class': "status-message", style: "margin: 5px auto 5px auto; height: 25px; width: 330px;" },
 						img({ style: "margin-top: -11px", src: response.data.profile_image_url }),
 						div({ style: "float: right; margin: 4px 25px auto auto;" }, response.data.name + " (@" + response.data.username + ")")
 					)
