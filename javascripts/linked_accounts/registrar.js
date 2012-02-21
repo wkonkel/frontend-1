@@ -32,7 +32,7 @@ with (Hasher('Registrar','Application')) {
 		}
 		switch (data.site) {
 			case 'godaddy':
-				data.registrar_name = 'Go Daddy';
+				data.registrar_name = 'GoDaddy';
 				login_text = 'Customer # or Login';
 				break;
 				case 'networksolutions':
@@ -47,8 +47,8 @@ with (Hasher('Registrar','Application')) {
 			div(
 				h1('Link your ' + data.registrar_name + ' Account'),
 				div({ 'class': 'hidden', id: 'link-form-error' }),
-				p("Lorem ipsum dolor sit amet ", strong('consectetur adipisicing elit'), " tempor incididunt ut labore et dolore magna."),
-				form({ id: 'registrar-link-form', action: curry(Registrar.start_link, data, 'Starting Linking...'), style: "width:320px; margin: 10px auto;" },
+				p( 'When you link your ' + data.registrar_name + ' account, you\'ll be able to manage your ' + data.registrar_name + ' domains from within Badger.com.  We won\'t make any changes to your ' + data.registrar_name + ' account or domains unless you request them.'),
+				form({ id: 'registrar-link-form', action: curry(Registrar.start_link, data, 'Starting Linking...')},
 				  input({ type: 'hidden', name: 'linked_account_id', id: 'linked-account-id', value: data.id}),
 					div(input({ type: 'text', name: 'login', placeholder: login_text, value: data.login ? data.login : '' })),
           div(input({ type: 'password', name: 'password', placeholder: 'Password' })),
@@ -56,7 +56,7 @@ with (Hasher('Registrar','Application')) {
 						input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
 						label({ 'for': 'agree_to_terms' }, 'I allow Badger.com to act as my agent')
 					),
-					div({ style: 'text-align: right' }, input({ 'class': 'myButton', id: 'next', type: 'submit', value: 'Link Accounts' })),
+					div({ style: 'text-align: left; margin-top: 10px' }, input({ 'class': 'myButton', id: 'next', type: 'submit', value: 'Link ' + data.registrar_name + ' Account'  })),
 					div({ style: 'clear: both' })
 				)
 			),

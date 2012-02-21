@@ -80,7 +80,7 @@ with (Hasher('LinkedAccounts','Application')) {
   					}
   					switch (account.site) {
   					  case 'godaddy':
-  					    name = 'Go Daddy, Inc.';
+  					    name = 'GoDaddy, Inc.';
   					    break;
   					  case 'networksolutions':
     				    name = 'Network Solutions LLC';
@@ -153,7 +153,7 @@ with (Hasher('LinkedAccounts','Application')) {
 
     // always there
     var result = [
-      linked_accounts_table_row("Go Daddy", link_accounts_button(curry(Registrar.show_link, {site: 'godaddy'}))),
+      linked_accounts_table_row("GoDaddy", link_accounts_button(curry(Registrar.show_link, {site: 'godaddy'}))),
       linked_accounts_table_row("Network Solutions", link_accounts_button(curry(Registrar.show_link, {site: 'networksolutions'})))
     ];
 
