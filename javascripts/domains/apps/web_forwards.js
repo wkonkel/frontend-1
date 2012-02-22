@@ -6,13 +6,12 @@ with (Hasher('WebForwards', 'DomainApps')) {
     menu_item: { text: 'URL FORWARDING', href: '#domains/:domain/web_forwards' },
     icon: 'images/apps/web-forward.png',
     
-    // this now happens serverside --- CAB
-    // requires: {
-    //   dns: [
-    //     { type: 'a', content: "50.57.26.208" },
-    //     { type: 'a', subdomain: '*', content: "50.57.26.208" }
-    //   ]
-    // },
+    requires: {
+      dns: [
+        { type: 'a', content: "50.57.26.208" },
+        { type: 'a', subdomain: '*', content: "50.57.26.208" }
+      ]
+    },
 
     install_screen: function(app, domain_obj) {
       return div(

@@ -80,7 +80,8 @@ with (Hasher('Register','Application')) {
         update_credits(true);
 
         load_domain(response.data.name, function(domain_object) {
-          DomainApps.install_app_on_domain(Hasher.domain_apps["badger_web_forward"], domain_object);
+          // this now happens server side
+          // DomainApps.install_app_on_domain(Hasher.domain_apps["badger_web_forward"], domain_object);
           BadgerCache.flush('domains');
           BadgerCache.getDomains(function() { 
             update_my_domains_count(); 
