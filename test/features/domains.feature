@@ -125,7 +125,8 @@ Feature: Domains
     And I mock getDomain for domain "some-domain.com" with permission "" and current registrar "GoDaddy"
     When I visit domain page for domain "some-domain.com"
     Then I should see "some-domain.com" within "#content h1"
-    And I should see "This domain is currently registered to somebody else on GoDaddy"
+    And I should see "This domain is currently registered at GoDaddy and will expire on"
+    And I should see "If this is your domain, you can transfer to Badger."
 
   Scenario: Domain registered on Godaddy and have linked account
     And I mock getDomain for domain "some-domain.com" with permission "linked_account" and current registrar "GoDaddy"

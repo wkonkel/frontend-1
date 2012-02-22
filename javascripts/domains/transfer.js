@@ -19,7 +19,7 @@ with (Hasher('Transfer','Application')) {
     });
   });
 
-	define('transfer_domains_form', function() {
+	define('transfer_domains_form', function(domain) {
     show_modal(
       div(
         Transfer.current_action == 'transfer' ? h1('TRANSFER DOMAINS INTO BADGER.COM')
@@ -28,7 +28,7 @@ with (Hasher('Transfer','Application')) {
         form({ action: show_domain_status_table },
           p("Enter the domain(s) that you'd like to " + Transfer.current_action + ", one per line:"),
 
-          textarea({ name: 'domains', placeholder: 'badger.com', style: 'width: 80%; height: 75px; float: left' }),
+          textarea({ name: 'domains', placeholder: 'badger.com', style: 'width: 80%; height: 75px; float: left' }, domain),
           div({ style: 'margin-top: 60px; text-align: right' }, input({ 'class': 'myButton', id: 'next', type: 'submit', value: 'Next' })),
           div({ style: 'clear: both' })
         )

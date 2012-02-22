@@ -45,8 +45,15 @@ with (Hasher('DomainShow','DomainApps')) {
   });
 
   define('domain_status_description', function(domain_obj) {
+    var current_date = new Date();
+    var expire_date = new Date(Date.parse(domain_obj.expires_at));
+    var days = parseInt(expire_date - current_date)/(24*3600*1000);
+
     if ((domain_obj.permissions_for_person || []).indexOf('show_private_data') >= 0) {
-      return p('This domain is VALID and will auto-renew for 1 Credit on ', new Date(Date.parse(domain_obj.expires_at)).toDateString(), '.');
+      return [
+        p('This domain is VALID and will auto-renew for 1 Credit on ', new Date(Date.parse(domain_obj.expires_at)).toDateString(), '.'),
+        days <= 30 ? a({ 'class': 'myButton myButton-small', href: curry(Register.renew_domain_modal, domain_obj.name) }, 'Renew') : ''
+      ];
     } else if ((domain_obj.permissions_for_person || []).indexOf('linked_account') >=0) {
       return p('This domain is currently registered to your linked account on ' + domain_obj.current_registrar);
     } else if ((domain_obj.permissions_for_person || []).indexOf('pending_transfer') >=0) {
@@ -55,19 +62,19 @@ with (Hasher('DomainShow','DomainApps')) {
         case 'needs_unlock':
           return [
             p('This domain is currently in pending transfer. To continue, please unlock this domain.',
-              a({ href: 'https://www.badger.com/#knowledge_center/3-Unlocking-Your-Domain' }, '(?)')),
+              render_help_link('needs_unlock', domain_obj.current_registrar)),
             a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry')
           ];
         case 'needs_privacy_disabled':
           return [
             p('This domain is currently in pending transfer. To continue, please disable this domain privacy.',
-              a({ href: 'https://www.badger.com/#knowledge_center/3-Disable-Privacy_of-Your-Domain' }, '(?)')),
+              render_help_link('needs_privacy_disabled', domain_obj.current_registrar)),
             a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry')
           ];
         case 'needs_auth_code':
           return [
             p('This domain is currently in pending transfer. To continue, please input the authcode here.',
-              a({ href: 'https://www.badger.com/#knowledge_center/3-Unlocking-Your-GoDaddy-Domain' }, '(?)')),
+              render_help_link('needs_auth_code', domain_obj.current_registrar)),
             form({ action: curry(retry_transfer, domain_obj.name) },
               input({ name: 'auth_code', placeholder: 'authcode' }),
               input({ 'class': 'myButton myButton-small', type: 'submit', value: 'Retry' })
@@ -76,18 +83,21 @@ with (Hasher('DomainShow','DomainApps')) {
         case 'needs_transfer_request':
           return [
             p('This domain is currently in pending transfer and need a transfer request.',
-              a({ href: 'https://www.badger.com/#knowledge_center/3-Domain-Transfer-Request' }, '(?)')),
+              render_help_link('', domain_obj.current_registrar)),
             a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry')
           ];
         case 'transfer_requested':
           return [
             p('This domain is currently in pending transfer. You will need to approve this transfer manually at your current registrar. Or you can wait 5 days and the transfer will automatically go through.',
-              a({ href: 'https://www.badger.com/#knowledge_center/9-Manually-Approving-a-Transfer-on-GoDaddy' }, '(?)')),
+              render_help_link('transfer_requested', domain_obj.current_registrar)),
             a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry')
           ];
       }
     } else {
-      return p('This domain is currently registered to somebody else on ' + domain_obj.current_registrar);
+      return p('This domain is currently registered at ', domain_obj.current_registrar,
+               ' and will expire on ', new Date(Date.parse(domain_obj.expires_at)).toDateString(), '.',
+               ' If this is your domain, you can ',
+               a({ href: curry(Transfer.transfer_domains_form, domain_obj.name) }, 'transfer to Badger'), '.');
     }
   });
 
@@ -148,5 +158,63 @@ with (Hasher('DomainShow','DomainApps')) {
       div({ style: 'clear: both '})
     ];
   });
-  
+
+  define('render_help_link', function(topic, registrar) {
+    topic = (topic == null ? '' : topic);
+    registrar = (registrar == null ? '' : registrar);
+    switch (topic) {
+      case 'needs_unlock':
+        switch (registrar) {
+          case 'GoDaddy Inc.':
+            return a({ href: 'https://www.badger.com/#knowledge_center/3-Unlocking-Your-GoDaddy-Domain' }, '(?)');
+          case 'Network Solutions, LLC':
+            return a({ href: 'https://www.badger.com/#knowledge_center/23-Unlocking-&-Getting-an-Auth-Code-from-Network-Solutions' }, '(?)');
+          case '1 & 1 INTERNET AG':
+            return a({ href: 'https://www.badger.com/#knowledge_center/15-Unlocking-Your-1&1-Domain' }, '(?)');
+          case 'Enom, Inc.':
+            return a({ href: 'https://www.badger.com/#knowledge_center/29-Unlocking-Your-Enom-Central-Domain' }, '(?)');
+          case 'Gandi SAS':
+            return a({ href: 'https://www.badger.com/#knowledge_center/37-Unlocking-Your-Gandi-Domain' }, '(?)');
+          default:
+            return a({ href: 'https://www.badger.com/#knowledge_center' }, '(?)');
+        }
+      case 'needs_privacy_disabled':
+        switch (registrar) {
+          case 'GoDaddy Inc.':
+            return a({ href: 'https://www.badger.com/#knowledge_center/5-Disabling-Privacy-on-GoDaddy' }, '(?)');
+          case 'Network Solutions, LLC':
+            return a({ href: 'https://www.badger.com/#knowledge_center/25-Disabling-Privacy-on-Network-Solutions' }, '(?)');
+          case '1 & 1 INTERNET AG':
+            return a({ href: 'https://www.badger.com/#knowledge_center/17-Disabling-Privacy-on-1&1' }, '(?)');
+          case 'Enom, Inc.':
+            return a({ href: 'https://www.badger.com/#knowledge_center/31-Disabling-Privacy-on-Enom-Central' }, '(?)');
+          default:
+            return a({ href: 'https://www.badger.com/#knowledge_center' }, '(?)');
+        }
+      case 'needs_auth_code':
+        switch (registrar) {
+          case 'GoDaddy Inc.':
+            return a({ href: 'https://www.badger.com/#knowledge_center/7-Getting-an-Auth-Code-from-GoDaddy' }, '(?)');
+          case 'Network Solutions, LLC':
+            return a({ href: 'https://www.badger.com/#knowledge_center/23-Unlocking-&-Getting-an-Auth-Code-from-Network-Solutions' }, '(?)');
+          case '1 & 1 INTERNET AG':
+            return a({ href: 'https://www.badger.com/#knowledge_center/19-Getting-an-Auth-Code-from-1&1' }, '(?)');
+          case 'Enom, Inc.':
+            return a({ href: 'https://www.badger.com/#knowledge_center/33-Getting-an-Auth-Code-from-Enom-Central' }, '(?)');
+          case 'Gandi SAS':
+            return a({ href: 'Getting an Auth Code from Gandi' }, '(?)');
+          default:
+            return a({ href: 'https://www.badger.com/#knowledge_center' }, '(?)');
+        }
+      case 'transfer_requested':
+        switch (registrar) {
+          case 'GoDaddy Inc.':
+            return a({ href: 'https://www.badger.com/#knowledge_center/9-Manually-Approving-a-Transfer-on-GoDaddy' }, '(?)');
+          default:
+            return a({ href: 'https://www.badger.com/#knowledge_center' }, '(?)');
+        }
+      default:
+        return a({ href: 'https://www.badger.com/#knowledge_center' }, '(?)');
+    }
+  });
 }
