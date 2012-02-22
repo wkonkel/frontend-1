@@ -279,7 +279,7 @@ with (Hasher('Application')) {
         li({ id: 'nav-my-domains' },
           a({ href: "#filter_domains/all/list" }, span(span('MY DOMAINS'), span({ id: 'my-domains-count' }))),
           ul(
-            li({ 'class': "website"}, a({ href: "#domains/transfers" }, 'TRANSFERS')),
+            li({ 'class': "website"}, a({ href: "#domain-transfers" }, 'TRANSFERS')),
             li({ 'class': "website"}, a({ href: "#filter_domains/expiringsoon/list" }, 'EXPIRING SOON'))
           )
         ),

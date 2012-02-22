@@ -1,5 +1,5 @@
 with (Hasher('Domains','Application')) {
-  route('#domains/transfers', function(filter, view_type) {
+  route('#domain-transfers', function(filter, view_type) {
     var target_div = div('Loading...');
 
     render(
