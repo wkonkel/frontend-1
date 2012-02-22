@@ -107,7 +107,7 @@ with (Hasher('DomainShow','DomainApps')) {
       params.auth_code = form_data.auth_code;
     }
     Badger.transferDomain(params, function(response) {
-      if (form_data.auth_code && (response.data.transfer_status == 'needs_auth_code')) {
+      if (form_data && form_data.auth_code && (response.data.transfer_status == 'needs_auth_code')) {
         alert('Invalid AuthCode');
       }
       set_route(get_route());
