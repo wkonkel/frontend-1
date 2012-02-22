@@ -126,7 +126,7 @@ with (Hasher('LinkedAccounts','Application')) {
 										)
 									),
 									td({ width: "5%" }, ""),
-									td({ width: "100%", }, preview_message(message))
+									td({ width: "100%" }, preview_message(message))
 								)
 							)),
 						],

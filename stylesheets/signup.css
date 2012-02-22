@@ -43,25 +43,37 @@
   -moz-box-shadow:inset 0px 1px 0px 0px #fdc1cc;
   -webkit-box-shadow:inset 0px 1px 0px 0px #fdc1cc;
   box-shadow:inset 0px 1px 0px 0px #fdc1cc;
-  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #de2d2c), color-stop(1, #c81c2b) );
-  background:-moz-linear-gradient( center top, #de2d2c 5%, #c81c2b 100% );
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#de2d2c', endColorstr='#c81c2b');
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #de2d2c), color-stop(1, #a80c1b) );
+  background:-moz-linear-gradient( center top, #de2d2c 5%, #a80c1b 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#de2d2c', endColorstr='#a80c1b');
   background-color:#df2d2c;
-  border:1px solid #ff131a;
+  border-color: #ff131a;
   color:#ffffff;
   text-shadow:1px 1px 0px #a30824;
+}
+.myButton.red:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #c81c2b), color-stop(1, #c81c2b) );
+	background:-moz-linear-gradient( center top, #c81c2b 5%, #c81c2b 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#c81c2b', endColorstr='#c81c2b');
+	background-color:#c81c2b;
 }
 .myButton.grey {
   -moz-box-shadow:inset 0px 1px 0px 0px #c9c9c9;
   -webkit-box-shadow:inset 0px 1px 0px 0px #c9c9c9;
   box-shadow:inset 0px 1px 0px 0px #c9c9c9;
   background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #8c8c8c), color-stop(1, #666666) );
-  background:-moz-linear-gradient( center top, #7a7a7a 5%, #c8c8c8 100% );
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dedede', endColorstr='#c6c6c6');
+  background:-moz-linear-gradient( center top, #8c8c8c 5%, #666666 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#8c8c8c', endColorstr='#666666');
   background-color:#8c8c8c;
-  border:1px solid #9c9c9c;
+  border-color: #9c9c9c;
   color:#ffffff;
   text-shadow:1px 1px 0px #6a6a6a;
+}
+.myButton.grey:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #666666), color-stop(1, #8c8c8c) );
+	background:-moz-linear-gradient( center top, #666666 5%, #8c8c8c 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#666666', endColorstr='#8c8c8c');
+	background-color:#666666;
 }
 .myButton.small { font-size: 15px; padding: 3px 10px; }
 .myButton.large { font-size: 24px; padding: 10px 32px; }
