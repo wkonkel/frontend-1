@@ -61,19 +61,19 @@ with (Hasher('DomainShow','DomainApps')) {
       {
         case 'needs_unlock':
           return [
-            p('This domain is currently in pending transfer. To continue, please unlock this domain.',
+            p('This domain is currently pending transfer. To continue, please unlock this domain.',
               render_help_link('needs_unlock', domain_obj.current_registrar)),
             a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry')
           ];
         case 'needs_privacy_disabled':
           return [
-            p('This domain is currently in pending transfer. To continue, please disable this domain privacy.',
+            p('This domain is currently pending transfer. To continue, please disable this domain privacy.',
               render_help_link('needs_privacy_disabled', domain_obj.current_registrar)),
             a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry')
           ];
         case 'needs_auth_code':
           return [
-            p('This domain is currently in pending transfer. To continue, please input the authcode here.',
+            p('This domain is currently pending transfer. To continue, please input the authcode here.',
               render_help_link('needs_auth_code', domain_obj.current_registrar)),
             form({ action: curry(retry_transfer, domain_obj.name) },
               input({ name: 'auth_code', placeholder: 'authcode' }),
@@ -82,13 +82,13 @@ with (Hasher('DomainShow','DomainApps')) {
           ];
         case 'needs_transfer_request':
           return [
-            p('This domain is currently in pending transfer and need a transfer request.',
+            p('This domain is currently pending transfer and need a transfer request.',
               render_help_link('', domain_obj.current_registrar)),
             a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry')
           ];
         case 'transfer_requested':
           return [
-            p('This domain is currently in pending transfer. You will need to approve this transfer manually at your current registrar. Or you can wait 5 days and the transfer will automatically go through.',
+            p('This domain is currently pending transfer. You will need to approve this transfer manually at your current registrar. Or you can wait 5 days and the transfer will automatically go through.',
               render_help_link('transfer_requested', domain_obj.current_registrar)),
             a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry')
           ];
@@ -107,7 +107,7 @@ with (Hasher('DomainShow','DomainApps')) {
       params.auth_code = form_data.auth_code;
     }
     Badger.transferDomain(params, function(response) {
-      if (form_data.auth_code && (response.data.transfer_status == 'needs_auth_code')) {
+      if (form_data && form_data.auth_code && (response.data.transfer_status == 'needs_auth_code')) {
         alert('Invalid AuthCode');
       }
       set_route(get_route());
