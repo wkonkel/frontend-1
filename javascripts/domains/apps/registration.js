@@ -35,7 +35,7 @@ with (Hasher('Registration','DomainApps')) {
             domain_obj.badger_registration ? [
               a({ 'class': "myButton small", href: curry(Register.renew_domain_modal, domain) }, "Extend Registration (Renew)")
             ] : [
-              a({ 'class': "myButton small", href: null }, "Transfer To Badger.com")
+              a({ 'class': "myButton small", href: curry(Transfer.show_domain_status_table, { domains: domain }) }, "Transfer To Badger.com")
             ]
           )
         );
