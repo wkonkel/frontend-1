@@ -32,23 +32,24 @@ with (Hasher('DnsApp','DomainApps')) {
     Badger.getDomain(domain, function(response) {
       var domain_obj = response.data;
       if (response.meta.status == 'ok') {
+        var badger_dns = domain_obj.badger_dns;
+        var modify_dns = $.inArray("modify_dns", domain_obj.permissions_for_person || []) >= 0;
+        var change_nameservers = $.inArray("change_nameservers", domain_obj.permissions_for_person || []) >= 0;
+        var read_only = (!badger_dns || !modify_dns || !change_nameservers);
+        
         // if it's a domain registered at badger
         if (domain_obj.badger_registration || domain_obj.linkable_registrar) {
           render({ into: button_div }, change_name_servers_button(domain_obj));
-        } else {
+        } else if (change_nameservers) {
           render({ into: button_div }, 
             a({ 'class': 'myButton small', href: curry(show_you_need_to_update_your_nameservers_manually_modal, domain_obj) }, 'Nameservers')
           );
         }
 
-        var badger_dns = domain_obj.badger_dns;
-        var modify_dns = $.inArray("modify_dns", domain_obj.permissions_for_person || []) >= 0;
-        var read_only = (!badger_dns || !modify_dns);
-
-        if (!modify_dns) {
+        if (!badger_dns && !modify_dns && change_nameservers) {
+          render({ into: message_div }, div({ 'class': 'error-message' }, "NOTE: These records are read-only because you are not using Badger nameservers." ));
+        } else if (read_only) {
           render({ into: message_div }, div({ 'class': 'error-message' }, "NOTE: These records are read-only because you are not authorized to modify DNS for this domain" ));
-        } else if (!badger_dns && modify_dns) {
-          render({ into: message_div }, div({ 'class': 'error-message' }, "NOTE: These records are read-only because the domain is not using Badger nameservers." ));
         }
 
         render_records({ into: content_div, read_only: read_only }, domain_obj);
