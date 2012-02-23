@@ -1,9 +1,12 @@
 if (window.localStorage !== undefined) {
   // chrome/ff
   window.devLocationStorage = window.localStorage
+  Badger.getAccessToken = function() { return devLocationStorage.getItem(Badger.access_token_key); }
+  Badger.setAccessToken = function(token) { token ? devLocationStorage.setItem(Badger.access_token_key, token) : devLocationStorage.removeItem(Badger.access_token_key); }
 }
 else {
   // on IE, just store in global var, get lost on each refresh tho
+  // also cookies appear to work for ie, should update below to store cookies
   window.devLocationStorage = {
     getItem: function(key) { return this.store[key]; },
     setItem: function(key, value) { this.store[key] = value; },
@@ -25,9 +28,6 @@ if (devLocationStorage.getItem('badger_api') == 'dev') {
   Badger.api_host = 'https://api.badger.com/';
   Badger.access_token_key = 'badger_access_token_prod';
 }
-
-Badger.getAccessToken = function() { return devLocationStorage.getItem(Badger.access_token_key); }
-Badger.setAccessToken = function(token) { token ? devLocationStorage.setItem(Badger.access_token_key, token) : devLocationStorage.removeItem(Badger.access_token_key); }
 
 with (Hasher()) {
   define('set_api_host', function(env) {
