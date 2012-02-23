@@ -1,7 +1,21 @@
-if (localStorage.getItem('badger_api') == 'dev') {
+if (window.localStorage !== undefined) {
+  // chrome/ff
+  window.devLocationStorage = window.localStorage
+}
+else {
+  // on IE, just store in global var, get lost on each refresh tho
+  window.devLocationStorage = {
+    getItem: function(key) { return this.store[key]; },
+    setItem: function(key, value) { this.store[key] = value; },
+    removeItem: function(key) { this.store[key] = undefined; },
+    store: { badger_api: 'dev' } // force to dev for now
+  }; 
+}
+
+if (devLocationStorage.getItem('badger_api') == 'dev') {
   Badger.api_host = 'http://api.badger.dev/';
   Badger.access_token_key = 'badger_access_token_dev';
-} else if (localStorage.getItem('badger_api') == 'qa') {
+} else if (devLocationStorage.getItem('badger_api') == 'qa') {
   Badger.api_host = 'https://api-qa.badger.com/';
   Badger.access_token_key = 'badger_access_token_qa';
 } else if (navigator.userAgent == 'Selenium') {
@@ -12,17 +26,17 @@ if (localStorage.getItem('badger_api') == 'dev') {
   Badger.access_token_key = 'badger_access_token_prod';
 }
 
-Badger.getAccessToken = function() { return localStorage.getItem(Badger.access_token_key); }
-Badger.setAccessToken = function(token) { token ? localStorage.setItem(Badger.access_token_key, token) : localStorage.removeItem(Badger.access_token_key); }
+Badger.getAccessToken = function() { return devLocationStorage.getItem(Badger.access_token_key); }
+Badger.setAccessToken = function(token) { token ? devLocationStorage.setItem(Badger.access_token_key, token) : devLocationStorage.removeItem(Badger.access_token_key); }
 
 with (Hasher()) {
   define('set_api_host', function(env) {
-    localStorage.setItem('badger_api', env);
+    devLocationStorage.setItem('badger_api', env);
     document.location.reload();
   });
 
   after_filter('add_dev_mode_bar', function() {
-    if (!document.getElementById('dev-bar')) { 
+    if (!document.getElementById('dev-bar')) {
       document.body.appendChild(
         div({ id: 'dev-bar', style: "position: fixed; bottom: 0; right: 0; background: white; color: black; padding: 5px" }, 
           (Badger.api_host == 'http://test.example/' ? [b('test'), ' | '] : []),

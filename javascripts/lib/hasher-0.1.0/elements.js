@@ -98,7 +98,7 @@ with (Hasher()) {
         var serialized_form = {};
         var elems = this.getElementsByTagName('*');
         for (var i=0; i < elems.length; i++) {
-          if ((elems[i].tagName != 'FORM') && elems[i].name) {
+          if (elems[i].name) {
             if (elems[i].tagName == 'SELECT') {
               // TODO: support multiple select
               serialized_form[elems[i].name] = elems[i].options[elems[i].selectedIndex].value;
@@ -136,6 +136,7 @@ with (Hasher()) {
         var arguments = flatten_to_array(arguments);
         var options = shift_options_from_args(arguments);
         options.type = input_type;
+        if ((input_type == 'submit') && !options.value && arguments.length == 1) options.value = arguments.pop();
         return element('input', options, arguments);
       });
     }
