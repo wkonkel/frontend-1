@@ -99,7 +99,7 @@ with (Hasher()) {
         var elems = this.getElementsByTagName('*');
         for (var i=0; i < elems.length; i++) {
           if (elems[i].name) {
-            if (elems[i].tagName == 'SELECT') {
+            if ((elems[i].tagName != 'FORM') && elems[i].name) {
               // TODO: support multiple select
               serialized_form[elems[i].name] = elems[i].options[elems[i].selectedIndex].value;
             } else if ((['radio', 'checkbox'].indexOf(elems[i].getAttribute('type')) == -1) || elems[i].checked) {
