@@ -23,11 +23,11 @@ with (Hasher('DomainApps','Application')) {
       $('#domain-menu-item-' + domain_obj.name.replace('.','-')).remove();
       set_route(app.menu_item.href.replace(':domain', domain_obj.name));
     } else {
-      install_app_fail_notification(app, result.conflict_apps, domain_obj.name);
+      install_app_fail_notification(app, result.conflict_apps, domain_obj.name, form_data);
     }
   });
 
-  define('install_app_fail_notification', function(app, conflict_apps, domain) {
+  define('install_app_fail_notification', function(app, conflict_apps, domain, form_data) {
     show_modal(
       h1('Install ' + app.name + ' Failed'),
       p('Installation failed due to conflict with the following app' + (conflict_apps.length > 1 ? 's:' : ':')),
@@ -47,20 +47,23 @@ with (Hasher('DomainApps','Application')) {
                 })))
                ]
                : a({ 'class': 'myButton small',
-                      href: function() {
-                        load_domain(domain, function(domain_obj) {
-                          remove_app_from_domain(conflict_app, domain_obj);
-                          hide_modal();
-                          $('#domain-menu-item-' + domain_obj.name.replace('.','-')).remove();
-                          set_route('#domains/' + domain_obj.name);
-                        });
-                      }
+                      href: curry(remove_conflict_app, app, conflict_app, domain, form_data)
                     }, 'Uninstall'))
           )
         })
       )),
       div({ style: 'text-align: right; margin-top: 10px;' }, a({ href: hide_modal, 'class': 'myButton', value: "submit" }, "Close"))
     );
+  });
+
+  define('remove_conflict_app', function(app, conflict_app, domain, form_data) {
+    load_domain(domain, function(domain_obj) {
+      remove_app_from_domain(conflict_app, domain_obj, function() {
+        load_domain(domain, function(domain_obj) {
+          install_app_button_clicked(app, domain_obj, form_data);
+        });
+      });
+    });
   });
 
   define('show_modal_install_app', function(app, domain_obj) {  
@@ -267,7 +270,7 @@ with (Hasher('DomainApps','Application')) {
     }
   });
 
-  define('remove_app_from_domain', function(app, domain_obj) {  
+  define('remove_app_from_domain', function(app, domain_obj, callback) {
     for_each(app.requires.dns, function(record) {
       var server_record = domain_has_record(domain_obj, record)
       if (server_record) {
@@ -275,6 +278,18 @@ with (Hasher('DomainApps','Application')) {
         console.log(server_record);
         Badger.deleteRecord(domain_obj.name, server_record.id, function(response) {
           //TODO: notify user if error
+          if (response.meta.status == 'ok') {
+            if (callback) {
+              if (app.delete_records_count)
+                app.delete_records_count += 1;
+              else
+                app.delete_records_count = 1;
+
+              if (app.delete_records_count == app.requires.dns.length) {
+                callback();
+              }
+            }
+          }
         });
       }
     });
@@ -315,9 +330,17 @@ with (Hasher('DomainApps','Application')) {
       }
     }
 
-    app_dns = [{ id: 'user_dns', name: 'User Custom DNS', requires: { dns: domain_obj.dns } }].concat(app_dns)
-
     var conflict_app_keys = [];
+
+    var user_custom_conflict_dns = []
+    for (var index in domain_obj.dns) {
+      if (existing_conflict_record(install_app.requires.dns, domain_obj.dns[index], domain_obj.name)) {
+        user_custom_conflict_dns.push(domain_obj.dns[index]);
+        break;
+      }
+    }
+    if (user_custom_conflict_dns.length > 0)
+      conflict_app_keys.push({ id: 'user_dns', name: 'User Custom DNS', requires: { dns: user_custom_conflict_dns } });
 
     for_each(app_dns, function(app) {
       for (var index in install_app.requires.dns) {

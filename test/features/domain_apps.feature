@@ -57,7 +57,7 @@ Feature: Domain apps
     And I should see "Google App Engine DNS settings have been installed into Badger DNS."
     And I should see "Also check out Google App Engine Custom Domains."
 
-  Scenario: Install new app
+  Scenario: Install new app (Shopify)
     And I mock getDomain with domain "mydomain0.com"
     And I follow "mydomain0.com"
     When I click on item with xpath "(//a[@class='app_store_container'])[9]"
@@ -72,7 +72,12 @@ Feature: Domain apps
     And I should see "204.93.213.45" within "table:first tr:eq(2)"
     And I should see "www.mydomain0.com" within "table:first tr:eq(3)"
     And I should see "CNAME" within "table:first tr:eq(3)"
-    And I fill in "shopify_app_url" with "ea.shopify.com"
+    And I press "Install Shopify"
+    Then I click "Ok" on the confirmation
+    And I fill in "shopify_app_url" with "google.com"
+    And I press "Install Shopify"
+    Then I click "Ok" on the confirmation
+    And I fill in "shopify_app_url" with "ea.myshopify.com"
     And I mock addRecord
     And I press "Install Shopify"
     Then I should see "SHOPIFY FOR mydomain0.com" within "#content h1"
@@ -87,7 +92,7 @@ Feature: Domain apps
       |83 |CNAME      |www          |ea.heroku.com                        |1800|        |
     And I follow "mydomain0.com"
     When I click on item with xpath "(//a[@class='app_store_container'])[9]"
-    And I fill in "shopify_app_url" with "ea.shopify.com"
+    And I fill in "shopify_app_url" with "ea.myshopify.com"
     And I mock addRecord
     When I press "Install Shopify"
     Then I should see "Install Shopify Failed"
