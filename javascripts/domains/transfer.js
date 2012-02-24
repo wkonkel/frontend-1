@@ -179,7 +179,7 @@ with (Hasher('Transfer','Application')) {
     if (domain_count == 0) return close_transfer_modal();
     
     show_modal(
-      h1('CONFIRMATION: ' + domain_count + ' DOMAINS'),
+      h1('CONFIRMATION: ' + domain_count + ' DOMAIN' + (domain_count == 1 ? '' : 'S')),
 
       form({ action: register_or_transfer_all_domains },
         transfer_domains.map(function(domain) { return input({ type: "hidden", name: "transfer_domains[]", value: domain }); }),
@@ -433,7 +433,7 @@ with (Hasher('Transfer','Application')) {
   // define('checked_valid_row', function(domain) {
   //   if(domain.auth_code_verified && domain.not_locked && domain.no_privacy) {
   //     set_background_color_if_valid(domain, true);
-  //     $('#continue-transfer-btn').html('Continue with ' + $("#transfer-domains-table .success-row").length +  ' Domain' + ($("#transfer-domains-table .success-row").length > 1 ? 's' : ''));
+  //     $('#continue-transfer-btn').html('Continue with ' + $("#transfer-domains-table .success-row").length +  ' Domain' + ($("#transfer-domains-table .success-row").length == 1 ? '' : 's'));
   //   }
   // });
   //
