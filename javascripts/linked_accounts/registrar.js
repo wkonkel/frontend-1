@@ -47,14 +47,17 @@ with (Hasher('Registrar','Application')) {
 			div(
 				h1('Link your ' + data.registrar_name + ' Account'),
 				div({ 'class': 'hidden', id: 'link-form-error' }),
-				p( 'When you link your ' + data.registrar_name + ' account, you\'ll be able to manage your ' + data.registrar_name + ' domains from within Badger.com.  We won\'t make any changes to your ' + data.registrar_name + ' account or domains unless you request them.'),
+				p( 'When you link your ' + data.registrar_name + ' account, you\'ll be able to manage your ' + data.registrar_name + 
+				  ' domains from within Badger.com.  We won\'t make any changes to your ' + data.registrar_name + 
+				  ' account or domains unless you request them.'),
 				form({ id: 'registrar-link-form', action: curry(Registrar.start_link, data, 'Starting Linking...')},
 				  input({ type: 'hidden', name: 'linked_account_id', id: 'linked-account-id', value: data.id}),
 					div(input({ type: 'text', name: 'login', placeholder: login_text, value: data.login ? data.login : '' })),
           div(input({ type: 'password', name: 'password', placeholder: 'Password' })),
 					div(
 						input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
-						label({ 'for': 'agree_to_terms' }, 'I allow Badger.com to act as my agent')
+						label({ 'for': 'agree_to_terms' }, 'I hereby authorize Badger to act as my agent and to access my ' + data.registrar_name + 
+						  ' account pursuant to the ', a({ href: '#terms_of_service', onclick: hide_modal }, 'Registration Agreement'))
 					),
 					div({ style: 'text-align: left; margin-top: 10px' }, input({ 'class': 'myButton', id: 'next', type: 'submit', value: 'Link ' + data.registrar_name + ' Account'  })),
 					div({ style: 'clear: both' })
