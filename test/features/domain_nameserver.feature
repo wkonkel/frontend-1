@@ -5,7 +5,7 @@ Feature: Nameserver setting
 
   Background:
     Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
-    And I mock getDomain with domain "mydomain0.com"
+    And I mock getDomain for domain "mydomain0.com"
     And I mock getRecords for domain "mydomain0.com"
     When I visit Badger DNS for domain "mydomain0.com"
 

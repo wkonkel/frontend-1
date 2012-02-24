@@ -58,7 +58,7 @@ Feature: Domain apps
     And I should see "Also check out Google App Engine Custom Domains."
 
   Scenario: Install new app (Shopify)
-    And I mock getDomain with domain "mydomain0.com"
+    And I mock getDomain for domain "mydomain0.com"
     And I follow "mydomain0.com"
     When I click on item with xpath "(//a[@class='app_store_container'])[9]"
     Then I should see "Shopify for mydomain0.com"
