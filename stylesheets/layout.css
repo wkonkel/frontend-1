@@ -6,7 +6,7 @@ form,fieldset { margin:0; padding:0; border-style:none; }
 
 html { height: 100%; background: #0085aa url(../images/bg-page.jpg) repeat top center; }
 body { min-height: 100%; background: transparent url(../images/bg-page-fade.jpg) repeat-x top center; margin: 0; font-size: 100.01%; }
-body, input, textarea, select, td, th, a { font: 14px "Droid Sans", Arial, sans-serif; color: #333; line-height: 18px; }
+body, input, textarea, select, td, th, a { font: 14px "Helvetica Neue", Arial, sans-serif; color: #333; line-height: 18px; }
 a { color: #1E31F5; }
 
 #wrapper { width: 970px; padding: 0 10px 10px 0; margin: 0 auto; position: relative; }

@@ -1,16 +1,4 @@
 @font-face {
-  font-family: 'Droid Sans';
-  font-style: normal;
-  font-weight: normal;
-  src: local('Droid Sans'), local('DroidSans'), url('https://themes.googleusercontent.com/static/fonts/droidsans/v1/s-BiyweUPV0v-yRb-cjciL3hpw3pgy2gAi-Ip7WPMi0.woff') format('woff');
-}
-@font-face {
-  font-family: 'Droid Sans';
-  font-style: normal;
-  font-weight: bold;
-  src: local('Droid Sans Bold'), local('DroidSans-Bold'), url('https://themes.googleusercontent.com/static/fonts/droidsans/v1/EFpQQyG9GqCrobXxL-KRMXbFhgvWbfSbdVg11QabG8w.woff') format('woff');
-}
-@font-face {
   font-family: 'Oswald';
   font-style: normal;
   font-weight: normal;
