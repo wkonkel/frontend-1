@@ -92,6 +92,12 @@ with (Hasher('DomainShow','DomainApps')) {
               render_help_link('transfer_requested', domain_obj.current_registrar)),
             a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry')
           ];
+        case 'transfer_rejected':
+          return [
+            p('You attempted to transfer this domain, however, the currently owning registrar, ' + domain_obj.current_registrar + ', rejected it.',
+              render_help_link('transfer_requested', domain_obj.current_registrar)),
+            a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Resubmit Transfer Request')
+          ];
       }
     } else {
       return p('This domain is currently registered at ', domain_obj.current_registrar,

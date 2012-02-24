@@ -46,12 +46,12 @@ with (Hasher('DnsApp','DomainApps')) {
           );
         }
 
-        if (!badger_dns && !modify_dns && change_nameservers) {
+        if (!badger_dns && !modify_dns) {
           render({ into: message_div }, div({ 'class': 'error-message' }, "NOTE: These records are read-only because you are not using Badger nameservers." ));
         } else if (read_only) {
           render({ into: message_div }, div({ 'class': 'error-message' }, "NOTE: These records are read-only because you are not authorized to modify DNS for this domain" ));
         }
-
+        
         render_records({ into: content_div, read_only: read_only }, domain_obj);
       } else {
         render({ into: content_div }, error_message(response));
@@ -79,7 +79,7 @@ with (Hasher('DnsApp','DomainApps')) {
       }
     }
     
-    //move NS and SOA records into their own
+    //move NS and SOA records into their own array
     var auto_dns = [], dns = [];
     domain_obj.dns.forEach(function(r) {
       ((r.record_type == "soa" || r.record_type == "ns") ? auto_dns : dns).push(r)
