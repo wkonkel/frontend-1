@@ -121,8 +121,6 @@ with (Hasher('DomainShow','DomainApps')) {
   });
 
   define('render_all_application_icons', function(domain_obj) {
-    var modify_dns = $.inArray("modify_dns", domain_obj.permissions_for_person || []) >= 0;
-    
     var installed_apps = div();
     var available_apps = div({ id: "available-apps" });
 
@@ -153,12 +151,27 @@ with (Hasher('DomainShow','DomainApps')) {
       }
     }
 
+    var available_apps_div = div();
+
+    BadgerCache.getDomains(function(domains) {
+      var domain_names = domains.map(function(d) { return d.name });
+      var user_owns_domain = $.inArray(domain_obj.name, domain_names) >= 0;
+      
+      if (domain_obj.badger_registration && user_owns_domain) {
+        render({ into: available_apps_div },
+          h2({ style: 'border-bottom: 1px solid #888; padding-bottom: 6px' }, 'Available Applications'),
+          available_apps
+        )
+      }
+    });
+
     return [
       h2({ style: 'border-bottom: 1px solid #888; padding-bottom: 6px' }, 'Installed Applications'),
       installed_apps,
-      div({ style: 'clear: both '}),      
-      h2({ style: 'border-bottom: 1px solid #888; padding-bottom: 6px' }, 'Available Applications'),
-      available_apps,
+      div({ style: 'clear: both '}),
+      
+      available_apps_div,
+      
       div({ style: 'clear: both '})
     ];
   });
