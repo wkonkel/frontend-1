@@ -7,7 +7,7 @@ with (Hasher('Welcome','Application')) {
       div(
         //h1({ style: 'margin-top: 0' }, 'Welcome to Badger.com'),
       
-        table({ style: 'width: 100%' },
+        table({ style: 'width: 100%' }, tbody(
           tr(
             td({ style: 'vertical-align: top' }, 
               div({ style: "margin-top: 10px" },
@@ -42,7 +42,7 @@ with (Hasher('Welcome','Application')) {
             td({ style: 'vertical-align: top' }, img({ src: 'images/badger-6.png', style: 'padding: 20px 30px' }))
           )
         )
-      )
+      ))
     );
   
     setTimeout(function() { $('#search-arrow-bar').show(); }, 2500);
