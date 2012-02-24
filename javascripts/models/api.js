@@ -95,6 +95,10 @@ var Badger = {
         for (var i=0; i < Badger.login_callbacks.length; i++) Badger.login_callbacks[i].call(null);
       }
       if (callback) callback(response);
+      if (/MSIE (\d+\.\d+);/.test(navigator.userAgent) && (new Number(RegExp.$1) <= 8)) {
+        // reload page for msie
+        window.location.reload();
+      }
     });
   },
   
@@ -103,6 +107,10 @@ var Badger = {
     Badger.setAccessToken(null);
     for (var i=0; i < Badger.logout_callbacks.length; i++) Badger.logout_callbacks[i].call(null);
     if (callback) callback();
+    if (/MSIE (\d+\.\d+);/.test(navigator.userAgent) && (new Number(RegExp.$1) <= 8)) {
+      // reload page for msie
+      window.location.reload();
+    }
   },
   
   accountInfo: function(callback) {
