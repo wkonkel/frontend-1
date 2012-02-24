@@ -8,7 +8,7 @@ with (Hasher('Blogs', 'Application')) {
 
     Badger.getBlogs(function(response) {
       render({ target: 'blog-loader' }, response.data.map(function(blog) {
-        var blog_body = p();
+        var blog_body = div();
         blog_body.innerHTML = blog.body;
         return [
           h2({ 'class': 'blog-title' }, a({ href: '#blogs/' + blog.id + '-' + blog.title.replace(/ /g, '-') }, blog.title)),
@@ -25,7 +25,7 @@ with (Hasher('Blogs', 'Application')) {
     Badger.getBlog(id.split('-')[0], function(response) {
       if (response.meta.status == 'ok') {
         var blog = response.data;
-        var blog_body = p();
+        var blog_body = div();
         blog_body.innerHTML = blog.body;
         render(
           h1(blog.title),
