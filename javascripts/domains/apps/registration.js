@@ -174,7 +174,7 @@ with (Hasher('Registration','DomainApps')) {
         tr(
           td({ style: 'vertical-align: top; padding-right: 20px'},
             h2('Public Whois Listing'),
-            div({ 'class': 'long-domain-name', style: 'border: 1px solid #ccc; width: ' + (hide_modify_contacts_form ? '690px' : '409px') + '; overflow: auto; white-space: pre; padding: 5px; background: #f0f0f0' }, domain.whois.raw)
+            div({ 'class': 'long-domain-name', style: 'border: 1px solid #ccc; width: ' + (hide_modify_contacts_form ? '690px' : '409px') + '; overflow: auto; white-space: pre; padding: 5px; background: #f0f0f0' }, (domain.whois ? domain.whois.raw : 'Missing.'))
           ),
           hide_modify_contacts_form ? [] : [
             td({ style: 'vertical-align: top'},
