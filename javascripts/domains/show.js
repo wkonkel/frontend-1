@@ -156,11 +156,9 @@ with (Hasher('DomainShow','DomainApps')) {
     return [
       h2({ style: 'border-bottom: 1px solid #888; padding-bottom: 6px' }, 'Installed Applications'),
       installed_apps,
-      div({ style: 'clear: both '}),
-      modify_dns ? [
-        h2({ style: 'border-bottom: 1px solid #888; padding-bottom: 6px' }, 'Available Applications'),
-        available_apps
-      ] : [],
+      div({ style: 'clear: both '}),      
+      h2({ style: 'border-bottom: 1px solid #888; padding-bottom: 6px' }, 'Available Applications'),
+      available_apps,
       div({ style: 'clear: both '})
     ];
   });
