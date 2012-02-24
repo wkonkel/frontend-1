@@ -11,10 +11,10 @@ with (Hasher('Welcome','Application')) {
           tr(
             td({ style: 'vertical-align: top' }, 
               div({ style: "margin-top: 10px" },
-                h3({ style: "margin: 0" }, "Already have a domain?"),
-                p({ style: "margin-top: 5px; margin-bottom: 18px" }, 
-                  form({ action: function(form_data) { set_route('#domains/' + form_data.name); } }, text({ name: 'name' }), submit('Show Information'))
-                ),
+                // h3({ style: "margin: 0" }, "Already have a domain?"),
+                // p({ style: "margin-top: 5px; margin-bottom: 18px" }, 
+                //   form({ action: function(form_data) { set_route('#domains/' + form_data.name); } }, text({ name: 'name' }), submit('Show Information'))
+                // ),
 
 
                 h3({ style: "margin: 0" }, "What is badger.com?"),
