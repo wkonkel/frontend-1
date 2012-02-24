@@ -167,14 +167,16 @@ with (Hasher('Registration','DomainApps')) {
   });
   
   define('whois_view', function(domain) {
+    var hide_modify_contacts_form = (!domain.badger_registration || !domain.registrant_contact || !domain.registrant_contact.id);
+
     return div(
       table({ style: 'width: 100% '}, tbody(
         tr(
           td({ style: 'vertical-align: top; padding-right: 20px'},
             h2('Public Whois Listing'),
-            div({ 'class': 'long-domain-name', style: 'border: 1px solid #ccc; width: 409px; overflow: hidden; overflow: auto; white-space: pre; padding: 5px; background: #f0f0f0' }, domain.whois.raw)
+            div({ 'class': 'long-domain-name', style: 'border: 1px solid #ccc; width: ' + (hide_modify_contacts_form ? '690px' : '409px') + '; overflow: auto; white-space: pre; padding: 5px; background: #f0f0f0' }, domain.whois.raw)
           ),
-          (!domain.badger_registration || !domain.registrant_contact || !domain.registrant_contact.id) ? [] : [
+          hide_modify_contacts_form ? [] : [
             td({ style: 'vertical-align: top'},
               h2('Make Changes'),
 
