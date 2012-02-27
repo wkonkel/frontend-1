@@ -79,6 +79,36 @@ Feature: Domain apps
     Then I should see "SHOPIFY FOR mydomain0.com" within "#content h1"
     And I should see "Shopify DNS settings have successfully been installed into Badger DNS."
 
+  Scenario: Install new app (Heroku)
+    And I mock getDomain for domain "mydomain0.com"
+    And I follow "mydomain0.com"
+    When I click on item with xpath "(//a[@class='app_store_container'])[8]"
+    Then I should see "Heroku for mydomain0.com"
+    And I should see "DNS records to be installed"
+    When I follow "DNS records to be installed"
+    Then I should see "Subdomain" within "table:first"
+    And I should see "Type" within "table:first"
+    And I should see "Target" within "table:first"
+    And I should see "mydomain0.com" within "table:first tr:eq(2)"
+    And I should see "A" within "table:first tr:eq(2)"
+    And I should see "75.101.163.44" within "table:first tr:eq(2)"
+    And I should see "A" within "table:first tr:eq(3)"
+    And I should see "75.101.145.87" within "table:first tr:eq(3)"
+    And I should see "A" within "table:first tr:eq(4)"
+    And I should see "174.129.212.2" within "table:first tr:eq(4)"
+    And I should see "www.mydomain0.com" within "table:first tr:eq(5)"
+    And I should see "CNAME" within "table:first tr:eq(5)"
+    And I press "Install Heroku"
+    Then I should see "Heroku Application URL is invalid"
+    And I fill in "heroku_app_url" with "google.com"
+    And I press "Install Heroku"
+    Then I should see "Heroku Application URL is invalid"
+    And I fill in "heroku_app_url" with "ea.heroku.com"
+    And I mock addRecord
+    And I press "Install Heroku"
+    Then I should see "HEROKU FOR mydomain0.com" within "#content h1"
+    And I should see "Heroku DNS settings have been installed into Badger DNS."
+
   Scenario: Install new app unsuccessfully because of conflicts
     And I mock getDomain with domain "mydomain0.com" and dns:
       |id |record_type|subdomain    |content                              |ttl |priority|

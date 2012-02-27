@@ -20,7 +20,7 @@ with (Hasher('Heroku', 'DomainApps')) {
       return div(
         p("Heroku is a cloud application platform - a new way of building and deploying web apps."),
         show_required_dns(app, domain_obj),
-        p("To install this app, first, run these console commands in your project directory:"),
+        p("Before installing this app, you will need to run these console commands in your project directory:"),
         
         div({ 'style': 'background: #3b4249; color: #f8f8f8; padding: 10px; font-family: Monaco, monospace; font-size: 11px; margin-top: 6px' }, 
           div({ style: 'color: #8DA6CE' }, "$ heroku addons:add custom_domains"),
@@ -31,14 +31,26 @@ with (Hasher('Heroku', 'DomainApps')) {
           div("Added " + domain_obj.name + " as a custom domain name to YOURAPPNAME.heroku[app].com")
         ),
         
-        div({ style: 'margin: 25px 0 15px 0' }, "Then copy and paste your Heroku Application URL below:"),
-        form({ style: 'text-align: center', action: curry(install_app_button_clicked, app, domain_obj) },
+        div({ style: 'margin: 25px 0 15px 0' }, "Then, copy and paste your Heroku Application URL below:"),
+        div({ id: 'error-message', 'class': 'error-message hidden' }),
+        form({ style: 'text-align: center', action: curry(check_valid_input, app, domain_obj) },
           'http://',
           text({ name: 'heroku_app_url', placeholder: 'YOURAPPNAME.heroku[app].com', style: 'width: 250px' }),
           '/ ', 
           input({ 'class': 'myButton', type: 'submit', value: 'Install Heroku' })
         )
       );
+    }
+  });
+
+  define('check_valid_input', function(app, domain_obj, form_data) {
+    var patt = /[a-zA-Z0-9_-]+\.heroku(app)?\.com/;
+    var heroku_app_url = form_data.heroku_app_url;
+    if ((heroku_app_url != '') && (patt.test(heroku_app_url))) {
+      install_app_button_clicked(app, domain_obj, form_data);
+    } else {
+      $('#error-message').html('Heroku Application URL is invalid');
+      $('#error-message').removeClass('hidden');
     }
   });
   
