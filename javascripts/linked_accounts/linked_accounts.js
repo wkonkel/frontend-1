@@ -93,10 +93,10 @@ with (Hasher('LinkedAccounts','Application')) {
                   h3("Status: ", status),
                   div("Last Sync: " + (account.last_synced_at ? new Date(Date.parse(account.last_synced_at)).toString() : 'Never')),
 									div("Login: " + account.login + " (" + account.domain_count + " Linked Domain(s))"),
-									a({ 'class': "myButton grey", style: 'margin: 10px 0 0;', href: curry(Registrar.remove_link, account) }, "Unlink"),
+									a({ 'class': "myButton small grey", style: 'margin: 10px 0 0;', href: curry(Registrar.remove_link, account) }, "Unlink"),
 									span(' '),
-									error ? a({ 'class': "myButton red", style: 'margin: 10px 0 0;', href: curry(Registrar.show_link, account)}, "Fix Now")
-									  : a({ 'class': "myButton", style: 'margin: 10px 0 0;', href: curry(Registrar.sync_now, account)}, "Sync Now")
+									error ? a({ 'class': "myButton small red", style: 'margin: 10px 0 0;', href: curry(Registrar.show_link, account)}, "Fix Now")
+									  : a({ 'class': "myButton small", style: 'margin: 10px 0 0;', href: curry(Registrar.sync_now, account)}, "Sync Now")
 								)
 							)
 					  );
