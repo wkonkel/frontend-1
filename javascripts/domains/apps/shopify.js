@@ -41,8 +41,15 @@ with (Hasher('Shopify', 'DomainApps')) {
     render(
       h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, 'SHOPIFY FOR ' + domain)),
       domain_app_settings_button('badger_shopify', domain),
-
-      div("Shopify is now installed!  If you haven't already, you'll need to add ["+ domain + "] and [www." + domain + "] in your Shopify Preferences (under \"DNS & Domains\")")
+      p("Shopify DNS settings have successfully been installed into Badger DNS."),
+      div(
+        span("Last steps before you're all set:"), br(),
+        span("1. Log in to ", a({ href: "http://www.shopify.com/", target: '_blank' }, "Shopify"), '.'), br(),
+        span("2. Click on ", strong("Preferences"), "then click on ", strong("DNS & Domains"), '.'), br(),
+        span("3. Click on ", strong("Add a domain you already own"), ", add www." + domain + ", then click ", strong("Claim this domain"), "."), br(),
+        span("4. Click on ", strong("Add a domain you already own"), ", add " + domain + ", then click ", strong("Claim this domain"), "."), br()
+      ),
+      p (span("For more information, ", a({ href: 'http://wiki.shopify.com/Using_Your_Own_Domains', target: '_blank' }, 'click here'), "."))
     );
   });
 

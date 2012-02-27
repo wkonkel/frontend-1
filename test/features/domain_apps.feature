@@ -31,7 +31,7 @@ Feature: Domain apps
     And I should see "Available Applications"
     When I follow "SHOPIFY"
     Then I should see "SHOPIFY FOR mydomain0.com" within "#content h1"
-    And I should see "Shopify is now installed! If you haven't already, you'll need to add [mydomain0.com] and [www.mydomain0.com] in your Shopify Preferences"
+    And I should see "Shopify DNS settings have successfully been installed into Badger DNS."
     When I follow "HEROKU"
     Then I should see "HEROKU FOR mydomain0.com" within "#content h1"
     And I should see "Heroku DNS settings have been installed into Badger DNS."
@@ -81,7 +81,7 @@ Feature: Domain apps
     And I mock addRecord
     And I press "Install Shopify"
     Then I should see "SHOPIFY FOR mydomain0.com" within "#content h1"
-    And I should see "Shopify is now installed! If you haven't already, you'll need to add [mydomain0.com] and [www.mydomain0.com] in your Shopify Preferences"
+    And I should see "Shopify DNS settings have successfully been installed into Badger DNS."
 
   Scenario: Install new app unsuccessfully because of conflicts
     And I mock getDomain with domain "mydomain0.com" and dns:
