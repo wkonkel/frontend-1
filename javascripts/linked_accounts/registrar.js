@@ -16,6 +16,7 @@ with (Hasher('Registrar','Application')) {
     start_modal_spin('Removing Linked Account...');
     Badger.deleteLinkedAccount(data.id, function (response) {
 			if (response.meta.status == 'ok') {
+			  BadgerCache.reload('domains')
 			  hide_modal();
 				set_route('#linked_accounts');
       } else {
