@@ -10,7 +10,7 @@ with (Hasher('DomainShow','DomainApps')) {
     Badger.getDomain(domain, curry(handle_get_domain_response, content_div, domain));
   });
 
-  define('handle_get_domain_response', function(content_div, domain, response) {
+  define('handle_get_domain_response', function(content_div, domain, response, skip_retry) {
     var domain_obj = response.data;
     
     if (response.meta.status == 'ok') {
@@ -38,9 +38,13 @@ with (Hasher('DomainShow','DomainApps')) {
         );
       }
     } else {
-      render({ into: content_div },
-        error_message("Oops, we're having a problem finding any information for: " + domain)
-      );
+      if (!skip_retry) {
+        handle_get_domain_response(content_div, domain, response, true);
+      } else {
+        render({ into: content_div },
+          error_message("Oops, we're having a problem finding any information for: " + domain)
+        );
+      }
     }
   });
 
@@ -54,8 +58,6 @@ with (Hasher('DomainShow','DomainApps')) {
         p('This domain is VALID and will auto-renew for 1 Credit on ', new Date(Date.parse(domain_obj.expires_at)).toDateString(), '.'),
         days <= 30 ? a({ 'class': 'myButton myButton-small', href: curry(Register.renew_domain_modal, domain_obj.name) }, 'Renew') : ''
       ];
-    } else if ((domain_obj.permissions_for_person || []).indexOf('linked_account') >=0) {
-      return p('This domain is currently registered to your linked account on ' + domain_obj.current_registrar);
     } else if ((domain_obj.permissions_for_person || []).indexOf('pending_transfer') >=0) {
       switch (domain_obj.transfer_status)
       {
@@ -99,6 +101,8 @@ with (Hasher('DomainShow','DomainApps')) {
             a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Resubmit Transfer Request')
           ];
       }
+    } else if ((domain_obj.permissions_for_person || []).indexOf('linked_account') >=0) {
+      return p('This domain is currently registered to your linked account on ' + domain_obj.current_registrar);
     } else {
       return p('This domain is currently registered at ', domain_obj.current_registrar,
                ' and will expire on ', new Date(Date.parse(domain_obj.expires_at)).toDateString(), '.',
@@ -151,20 +155,16 @@ with (Hasher('DomainShow','DomainApps')) {
       }
     }
 
+    console.log(domain_obj);
+
     var available_apps_div = div();
-
-    BadgerCache.getDomains(function(domains) {
-      var domain_names = domains.map(function(d) { return d.name });
-      var user_owns_domain = $.inArray(domain_obj.name, domain_names) >= 0;
-      
-      if (domain_obj.badger_registration && user_owns_domain) {
-        render({ into: available_apps_div },
-          h2({ style: 'border-bottom: 1px solid #888; padding-bottom: 6px' }, 'Available Applications'),
-          available_apps
-        )
-      }
-    });
-
+    if (((domain_obj.permissions_for_person || []).indexOf('modify_dns') >= 0) || ((domain_obj.permissions_for_person || []).indexOf('change_nameservers') >= 0)) {
+      render({ into: available_apps_div },
+        h2({ style: 'border-bottom: 1px solid #888; padding-bottom: 6px' }, 'Available Applications'),
+        available_apps
+      );
+    }
+    
     return [
       h2({ style: 'border-bottom: 1px solid #888; padding-bottom: 6px' }, 'Installed Applications'),
       installed_apps,
