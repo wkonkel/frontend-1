@@ -29,10 +29,18 @@ with (Hasher('Tumblr', 'DomainApps')) {
       h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, 'TUMBLR FOR ' + domain)),
       domain_app_settings_button('badger_tumblr', domain),
 
-      div("Tumblr DNS settings have been installed into Badger DNS.",
-          'Also check out ',
-          a({ href: 'http://www.tumblr.com/docs/en/custom_domains', target: '_blank' }, 'Tumblr Custom Domains'), '.')
-    );
+      p("Tumblr DNS settings have successfully been installed into Badger DNS."),
+      div(
+        span("Last steps before you're all set:"), br(),
+        span("1. Log in to ", a({ href: "www.tumblr.com", target: '_blank' }, "Tumblr"), "."), br(),
+        span("2. Click the name of your blog at the top of ", a({ href: "www.tumblr.com/dashboard" }, "the Dashboard"), ", then click ", strong("Settings"), "."), br(),
+        span("3. Check the ", strong("Use a custom domain name"), "box and enter your subdomain (www." + domain + ") or domain (" + domain + ")."), br(),
+        span("4. Click the ", strong("Test your domain"), " button."), br(),
+        span("This should work without any errors.  When you're done, click ", strong("Save"), " at the bottom of the page."), br()
+      ),
+      p("Once everything is set up and saved, your Tumblr URL, -enter Tumblr URL-, will automatically redirect to " + domain + "."),
+      p (span("For more information, ", a({ href: 'http://www.tumblr.com/docs/en/custom_domains', target: '_blank' }, 'click here'), "."))
+    )
   });
 
 
