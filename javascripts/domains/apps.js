@@ -129,8 +129,8 @@ with (Hasher('DomainApps','Application')) {
           return tr(
             td({ style: 'text-align: right; padding-right: 20px' }, dns.subdomain, span({ style: 'color: #aaa' }, dns.subdomain ? '.' : '', Domains.truncate_domain_name(domain_obj.name))),
             td({ style: 'padding: 0 20px' }, dns.type.toUpperCase()),
-            td(dns.priority, ' ', dns.content),
-            td(domain_has_record(domain_obj, dns) ? 'yes' : 'no')
+            td(dns.priority, ' ', dns.content)
+            //td(domain_has_record(domain_obj, dns) ? 'yes' : 'no')
           );
         })
       ))
