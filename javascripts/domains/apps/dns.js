@@ -292,7 +292,7 @@ with (Hasher('DnsApp','DomainApps')) {
         div({ 'class': 'edit-buttons' },
           //button({ events: { 'click': curry(dns_edit, domain, record.id) }}, 'Edit'),
           a({ 'class': 'hover-buttons icon-buttons', href: curry(edit_dns, domain, record) }, img({ src: 'images/edit.gif'})),
-          a({ 'class': 'hover-buttons icon-buttons', href: curry(dns_delete, domain, record.id) }, img({ src: 'images/trash.gif'}))
+          a({ 'class': 'hover-buttons icon-buttons', href: curry(dns_delete, domain, record) }, img({ src: 'images/trash.gif'}))
       )) : td()
     );
   });
@@ -350,9 +350,9 @@ define('get_dns_params', function(id) {
     })
   });
 
-  define('dns_delete', function(domain, record_id) {
+  define('dns_delete', function(domain, record) {
     if (confirm('Are you sure you want to delete this record?')) {
-      Badger.deleteRecord(domain, record_id, function(results) {
+      Badger.deleteRecord(domain, record.id, function(results) {
         console.log(results);
         set_route(get_route());
       })
@@ -361,9 +361,6 @@ define('get_dns_params', function(id) {
 
   define('dns_update', function(domain, record) {
     $('#errors').empty();
-    
-    console.log(record);
-
     Badger.updateRecord(domain, record.id, get_dns_params(record.id), function(results) {
       if (results.meta.status == 'ok') {
         set_route(get_route());
