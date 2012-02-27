@@ -29,9 +29,14 @@ with (Hasher('FlavorsMe', 'DomainApps')) {
       h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, 'FLAVORS ME FOR ' + domain)),
       domain_app_settings_button('badger_flavorsme', domain),
 
-      div("Flavors Me DNS settings have been installed into Badger DNS.",
-          'Also check out ',
-          a({ href: 'http://help.flavors.me/kb/settings/setting-up-your-custom-domain-name', target: '_blank' }, 'Flavors Me Custom Domains'), '.')
+      p("FlavorsMe DNS settings have successfully been installed into Badger DNS."),
+      div(
+        span("Last steps before you're all set:"), br(),
+        span("1. Log in to ", a({ href: "http://flavors.me/", target: '_blank' }, "FlavorsMe"), "."), br(),
+        span("2. Hover over ", strong("the Account"), " tab, then click on ", strong("Settings"), '.'), br(),
+        span("3. Under ", strong("Domains"), " add your domain, " + domain + ", then click the ", strong("Save changes"), " button. Please note that it could take up to 72 hours for the change to fully take place."), br()
+      ),
+      p (span("For more information, ", a({ href: 'http://help.flavors.me/kb/settings/setting-up-your-custom-domain-name', target: '_blank' }, 'click here'), "."))
     );
   });
 
