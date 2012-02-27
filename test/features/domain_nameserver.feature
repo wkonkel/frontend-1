@@ -12,7 +12,5 @@ Feature: Nameserver setting
   Scenario: When I choose to edit nameserver settings, I should be able to have many options of nameserver to choose from
     Then I should see "mydomain0.com DNS"
     When I follow "Nameservers"
-    Then I should see "Change Your Nameservers"
-    And I should see "Please log into Badger.com and manually change your nameservers to:"
-    Then I should see "ns1.badger.com"
-    Then I should see "ns2.badger.com"
+    Then I should see "BADGER DNS"
+    And I should see "Already Installed!"
