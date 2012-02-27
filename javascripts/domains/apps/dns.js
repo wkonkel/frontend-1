@@ -59,7 +59,8 @@ with (Hasher('DnsApp','DomainApps')) {
     });
   });
 
-  define('render_records', function(options, domain_obj) {
+  define('render_records', function(options, domain) {
+    var domain_obj = $.extend(true, {}, domain);
     var app_dns=[];
     for (var key in Hasher.domain_apps) {
       var app = Hasher.domain_apps[key];

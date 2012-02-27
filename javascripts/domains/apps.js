@@ -313,7 +313,8 @@ with (Hasher('DomainApps','Application')) {
     return false;
   });
 
-  define('check_app_conflict', function(install_app, domain_obj) {
+  define('check_app_conflict', function(install_app, domain) {
+    var domain_obj = $.extend(true, {}, domain);
     var app_dns=[];
     for (var key in Hasher.domain_apps) {
       var app = Hasher.domain_apps[key];
