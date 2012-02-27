@@ -548,7 +548,7 @@ define('get_dns_params', function(id) {
   });
 
   define('save_name_servers', function(domain_info, new_name_servers) {
-    start_modal_spin();
+    start_modal_spin(domain_info.linkable_registrar ? 'This usually takes about 2 minutes to complete at ' + domain_info.current_registrar : '');
     $('#errors_modal').empty();
     Badger.updateDomain(domain_info.name, { name_servers: new_name_servers }, function(response) {
       if (response.meta.status == 'ok') {
