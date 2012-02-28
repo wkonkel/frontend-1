@@ -109,6 +109,29 @@ Feature: Domain apps
     Then I should see "HEROKU FOR mydomain0.com" within "#content h1"
     And I should see "Heroku DNS settings have been installed into Badger DNS."
 
+  Scenario: Install new app (Google Apps Verification)
+    And I mock getDomain for domain "mydomain0.com"
+    And I follow "mydomain0.com"
+    When I click on item with xpath "(//a[@class='app_store_container'])[15]"
+    Then I should see "Google Apps Verification for mydomain0.com"
+    And I should see "DNS records to be installed"
+    When I follow "DNS records to be installed"
+    Then I should see "Subdomain" within "table:first"
+    And I should see "Type" within "table:first"
+    And I should see "Target" within "table:first"
+    And I should see "mydomain0.com" within "table:first tr:eq(2)"
+    And I should see "TXT" within "table:first tr:eq(2)"
+    And I press "Install Google Apps Verification"
+    Then I should see /The token must be a 68-character string that begins with "google-site-verification:", followed by 43 additional characters./
+    And I fill in "google_app_verification_code" with "abcgoogle-site-verification:abcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcde"
+    And I press "Install Google Apps Verification"
+    Then I should see /The token must be a 68-character string that begins with "google-site-verification:", followed by 43 additional characters./
+    And I fill in "google_app_verification_code" with "google-site-verification:abcdeabcdeabcdeabcdeabcdeabcdebcdeabcde1234"
+    And I mock addRecord
+    And I press "Install Google Apps Verification"
+    Then I should see "GOOGLE APPS VERIFICATION FOR mydomain0.com" within "#content h1"
+    And I should see "The TXT record has been created. You can complete the verification here. When you are done verifying this URL with Google, you can remove this app."
+
   Scenario: Install new app unsuccessfully because of conflicts
     And I mock getDomain with domain "mydomain0.com" and dns:
       |id |record_type|subdomain    |content                              |ttl |priority|
