@@ -96,6 +96,16 @@ Feature: Register Domain
     And I mock accountInfo with name "East Agile Company" and 11 domain credits and 5 invites available
     And I mock purchaseCredits
     When I press "purchase-button"
+
+    Then I should see "Registrant:"
+    And I mock registerDomain api
+    And I mock getDomains with 2 normal domains, 1 in transfer domain and 1 expiring soon domains
+    And I mock addRecord
+    And I mock getRecords with empty records
+    And I mock getDomain
+    And I check "extension_org"
+    When I press "register-button"
+
     Then I should see "REGISTRATION STATUS"
     And I should see "mydomain.com" within "table#transfer-domains-table tr:eq(2)"
     And I should see "Success" within "table#transfer-domains-table tr:eq(2)"
