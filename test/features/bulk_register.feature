@@ -56,6 +56,10 @@ Feature: Bulk Register
     And I mock accountInfo with name "East Agile Company" and 11 domain credits and 5 invites available
     And I mock purchaseCredits
     And I press "purchase-button"
+    Then I should see "CONFIRMATION: 2 DOMAINS"
+    And I should see "Free Options"
+    And I should see "Registrant:"
+    Then I press "Register for 2 Credits"
     And I should see "REGISTRATION STATUS"
     And I should see "abc.com" within "#transfer-domains-table"
     And I should see "abc123.com" within "#transfer-domains-table"
@@ -143,6 +147,10 @@ Feature: Bulk Register
     And I mock accountInfo with name "East Agile Company" and 11 domain credits and 5 invites available
     And I mock purchaseCredits
     And I press "purchase-button"
+    Then I should see "CONFIRMATION: 2 DOMAINS"
+    And I should see "Free Options"
+    And I should see "Registrant:"
+    Then I press "Register for 2 Credits"
     And I should see "REGISTRATION STATUS"
     And I should see "abc.com" within "#transfer-domains-table"
     And I should see "abc123.com" within "#transfer-domains-table"

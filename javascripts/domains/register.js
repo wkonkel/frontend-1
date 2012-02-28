@@ -38,7 +38,8 @@ with (Hasher('Register','Application')) {
           register_domain(domain, available_extensions, form_data);
         }
       } else {
-        Billing.purchase_modal(curry(buy_domain, domain, available_extensions, form_data), needed_credits - current_credits);
+        // Billing.purchase_modal(curry(buy_domain, domain, available_extensions, form_data), needed_credits - current_credits);
+        Billing.purchase_modal(curry(buy_domain_modal, domain, available_extensions, form_data), needed_credits - current_credits); // after successfully buying credits, go back to the initial register modal --- CAB
       }
     });
   });
@@ -64,7 +65,8 @@ with (Hasher('Register','Application')) {
 					}
 				});
       } else {
-        Billing.purchase_modal(curry(renew_domain, form_data), needed_credits - current_credits);
+        // Billing.purchase_modal(curry(renew_domain, form_data), needed_credits - current_credits);
+        Billing.purchase_modal(curry(renew_domain_modal, form_data.domain, form_data), needed_credits - current_credits); // after successfully buying credits, go back to the initial renewal modal --- CAB
       }
     });
 	});
@@ -102,7 +104,7 @@ with (Hasher('Register','Application')) {
   });
 
 
-  define('buy_domain_modal', function(domain, available_extensions) {
+  define('buy_domain_modal', function(domain, available_extensions, form_data) {
     show_modal(
       h1({ 'class': 'long-domain-name'}, 'Register ', domain),
       div({ id: 'errors' }),
@@ -125,12 +127,7 @@ with (Hasher('Register','Application')) {
               
               h3({ style: 'margin-top: 5px; margin-bottom: 3px' }, 'Length:'),
               div(
-                select({ name: 'years', id: 'years', onchange: function(e) {
-                                          var years = parseInt($(e.target).val());
-                                          var num_domains = 1 + $('.extensions:checked').length;
-                                          var credits = num_domains * years;
-                                          $('#register-button').val('Register ' + (num_domains > 1 ? (num_domains + ' domains') : domain) + ' for ' + credits + (credits == 1 ? ' credit' : ' credits'))
-                                        } },
+                select({ name: 'years', id: 'years' },
                   option({ value: 1 }, '1 Year'),
                   option({ value: 2 }, '2 Years'),
                   option({ value: 3 }, '3 Years'),
@@ -147,14 +144,7 @@ with (Hasher('Register','Application')) {
   	              td({ style: "width: 50%" },
   	                h3({ style: 'margin-top: 0; margin-bottom: 3px' }, 'Also Register:'),
   	                available_extensions.map(function(ext) {
-  	                  return div(checkbox({ name: "extension_" + ext[0].split('.')[1], value: ext[0], id: ext[0].split('.')[1], 'class': 'extensions',
-  	                                        onchange: function(e) {
-  	                                          var years = parseInt($('#years').val());
-  	                                          var num_domains = 1 + $('.extensions:checked').length;
-  	                                          var credits = num_domains * years;
-  	                                          $('#register-button').val('Register ' + (num_domains > 1 ? (num_domains + ' domains') : domain) + ' for ' + credits + (credits == 1 ? ' credit' : ' credits'))
-  																						$('#')
-  	                                        } }),
+  	                  return div(checkbox({ name: "extension_" + ext[0].split('.')[1], value: ext[0], id: ext[0].split('.')[1], 'class': 'extensions' }),
   	                             label({ 'for': ext[0].split('.')[1] }, ' ' + ext[0]))
   	                })
   	              )
@@ -167,9 +157,26 @@ with (Hasher('Register','Application')) {
         div({ style: "text-align: center; margin-top: 30px" }, input({ 'class': 'myButton', id: 'register-button', type: 'submit', value: 'Register ' + Domains.truncate_domain_name(domain) + ' for 1 credit' }))
       )
     );
+    
+    // $('#register-button').val('Register ' + (num_domains > 1 ? (num_domains + ' domains') : domain) + ' for ' + credits + (credits == 1 ? ' credit' : ' credits'))
+    
+    $('select[name=years]').change(function(e) {
+      var years = parseInt($('#years').val());
+      var num_domains = 1 + $('.extensions:checked').length;
+      var credits = num_domains * years;
+      
+      $('#register-button').val('Register ' + (num_domains > 1 ? (num_domains + ' domains') : domain) + ' for ' + credits + (credits == 1 ? ' credit' : ' credits'))
+    })
+    
+    if (form_data) {
+      $("select[name=years] option[value=" + form_data.years + "]").attr('selected','selected');
+      $("select[name=registrant_contact_id] option[value=" + form_data.registrant_contact_id + "]").attr('selected','selected');
+      
+      $("select[name=years]").trigger('change');
+    }
   });
 
-	define('renew_domain_modal', function(domain) {
+	define('renew_domain_modal', function(domain, form_data) {
 		show_modal(
       h1({ 'class': 'long-domain-name'}, 'Extend Registration'),
       div({ id: 'errors' }),
@@ -183,10 +190,10 @@ with (Hasher('Register','Application')) {
 						option({ value: 3 }, "3"),
 						option({ value: 4 }, "4"),
 						option({ value: 5 }, "5"),
-						option({ value: 6 }, "6"),
-						option({ value: 7 }, "7"),
-						option({ value: 8 }, "8"),
-						option({ value: 9 }, "9"),
+            option({ value: 6 }, "6"),
+            option({ value: 7 }, "7"),
+            option({ value: 8 }, "8"),
+            option({ value: 9 }, "9"),
 						option({ value: 10 }, "10")
 					))
 				),
@@ -200,7 +207,13 @@ with (Hasher('Register','Application')) {
 			$("#renew-button").html("Renew for " + e.target.value + " years (" + e.target.value + " credits)");
 		});
 		
-		$("select[name=years]").change();
+    // $("select[name=years]").change();
+    $("select[name=years]").trigger('change');
+		
+		if (form_data) {
+      $("select[name=years] option[value=" + form_data.years + "]").attr('selected','selected');
+      $("select[name=years]").trigger('change');
+    }
 	});
 	
 

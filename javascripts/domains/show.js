@@ -155,8 +155,6 @@ with (Hasher('DomainShow','DomainApps')) {
       }
     }
 
-    console.log(domain_obj);
-
     var available_apps_div = div();
     if (((domain_obj.permissions_for_person || []).indexOf('modify_dns') >= 0) || ((domain_obj.permissions_for_person || []).indexOf('change_nameservers') >= 0)) {
       render({ into: available_apps_div },
