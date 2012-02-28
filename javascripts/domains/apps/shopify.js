@@ -45,7 +45,7 @@ with (Hasher('Shopify', 'DomainApps')) {
       div(
         span("Last steps before you're all set:"), br(),
         span("1. Log in to ", a({ href: "http://www.shopify.com/", target: '_blank' }, "Shopify"), '.'), br(),
-        span("2. Click on ", strong("Preferences"), "then click on ", strong("DNS & Domains"), '.'), br(),
+        span("2. Click on ", strong("Preferences "), "then click on ", strong("DNS & Domains"), '.'), br(),
         span("3. Click on ", strong("Add a domain you already own"), ", add www." + domain + ", then click ", strong("Claim this domain"), "."), br(),
         span("4. Click on ", strong("Add a domain you already own"), ", add " + domain + ", then click ", strong("Claim this domain"), "."), br()
       ),

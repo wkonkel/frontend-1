@@ -17,7 +17,7 @@ with (Hasher('Blogger', 'DomainApps')) {
 
     install_screen: function(app, domain_obj) {
       return div(
-        p('Blogger is a free weblog publishing tool from Google, for sharing text, photos and video. Install this app to point your domain to your Blogger account.'),
+        p('Blogger is a free weblog publishing tool from Google for sharing text, photos and video.'),
         p('Install this app to point your domain to your Blogger account.'),
         show_required_dns(app, domain_obj),
         form({ style: 'text-align: center', action: curry(install_app_button_clicked, app, domain_obj) },
@@ -41,7 +41,7 @@ with (Hasher('Blogger', 'DomainApps')) {
         span("4. Click on ", strong("Switch to advanced settings"), "."), br(),
         span("5. Enter your domain, " + domain + ", into the box provided and click ", strong("Save"), "."), br()
       ),
-      p("Once everything is set up and saved, your Blogger URL, -enter Blogger URL-, will automatically redirect to " + domain + "."),
+      p("Once everything is set up and saved, your Blogger URL will automatically redirect to " + domain + "."),
       p (span("For more information, ", a({ href: 'http://support.google.com/blogger/bin/static.py?hl=en&ts=1233381&page=ts.cs', target: '_blank' }, 'click here'), "."))
     );
   });

@@ -119,7 +119,7 @@ Feature: Domains
     And I mock getDomain for domain "mydomain0.com"
     When I follow "mydomain0.com"
     Then I should see "mydomain0.com" within "#content h1"
-    And I should see "This domain is VALID and will auto-renew for 1 Credit on "
+    And I should see "This domain is active and will auto-renew for 1 Credit on "
 
   Scenario: Domain registered to somebody else (on Badger or others)
     And I mock getDomain for domain "some-domain.com" with permission "" and current registrar "GoDaddy"
