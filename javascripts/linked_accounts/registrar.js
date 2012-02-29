@@ -32,16 +32,18 @@ with (Hasher('Registrar','Application')) {
 			data.id = '';
 		}
 		switch (data.site) {
-			case 'godaddy':
-				data.registrar_name = 'GoDaddy';
-				login_text = 'Customer # or Login';
-				break;
-				case 'networksolutions':
-					data.registrar_name = 'Network Solutions';
-					login_text = 'User ID';
-					break;
-			default:
-        show_modal(
+		case 'godaddy':
+			data.registrar_name = 'GoDaddy';
+			login_text = 'Customer # or Login';
+			email_warn = true;
+			break;
+		case 'networksolutions':
+			data.registrar_name = 'Network Solutions';
+			login_text = 'User ID';
+			email_warn = true;
+			break;
+		default:
+				show_modal(
           h1('Error'),
           div({ 'class': 'error-message' }, 'Unknown Site'),
           div({ style: 'text-align: right; margin-top: 10px;' }, a({ href: hide_modal, 'class': 'myButton', value: "submit" }, "Close"))
@@ -55,6 +57,7 @@ with (Hasher('Registrar','Application')) {
 				p( 'When you link your ' + data.registrar_name + ' account, you\'ll be able to manage your ' + data.registrar_name + 
 				  ' domains from within Badger.com.  We won\'t make any changes to your ' + data.registrar_name + 
 				  ' account or domains unless you request them.'),
+				email_warn ? p('When we sync your domains you will recieve an email from ' + data.registrar_name) : '',
 				form({ id: 'registrar-link-form', action: curry(Registrar.start_link, data, 'Starting Linking...')},
 				  input({ type: 'hidden', name: 'linked_account_id', id: 'linked-account-id', value: data.id}),
 					div(input({ type: 'text', name: 'login', placeholder: login_text, value: data.login ? data.login : '' })),

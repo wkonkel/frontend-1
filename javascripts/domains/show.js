@@ -53,7 +53,6 @@ with (Hasher('DomainShow','DomainApps')) {
     var current_date = new Date();
     var expire_date = new Date(Date.parse(domain_obj.expires_at));
     var days = parseInt(expire_date - current_date)/(24*3600*1000);
-
     if ((domain_obj.permissions_for_person || []).indexOf('show_private_data') >= 0) {
       return [
         p('This domain is active and will auto-renew for 1 Credit on ', new Date(Date.parse(domain_obj.expires_at)).toDateString(), '.'),
@@ -62,6 +61,11 @@ with (Hasher('DomainShow','DomainApps')) {
     } else if ((domain_obj.permissions_for_person || []).indexOf('pending_transfer') >=0) {
       switch (domain_obj.transfer_status)
       {
+        case 'remote_unlocking':
+          return [
+            p('This domain is currently being unlocked at ' + domain_obj.current_registrar  + '. This should take a couple minutes.'),
+            a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry RWH Temp')
+          ];
         case 'needs_unlock':
           return [
             p('This domain is currently pending transfer. To continue, please unlock this domain.',
@@ -100,6 +104,10 @@ with (Hasher('DomainShow','DomainApps')) {
             p('You attempted to transfer this domain, however, the currently owning registrar, ' + domain_obj.current_registrar + ', rejected it.',
               render_help_link('transfer_requested', domain_obj.current_registrar)),
             a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Resubmit Transfer Request')
+          ];
+        default:
+          return [
+            p('There was an unknown error transfering this domain')
           ];
       }
     } else if ((domain_obj.permissions_for_person || []).indexOf('linked_account') >=0) {
