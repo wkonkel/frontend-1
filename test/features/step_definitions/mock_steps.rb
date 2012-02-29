@@ -291,7 +291,7 @@ end
 
 When /^I mock remoteWhois( with privacy enabled|) with registrar name "([^"]*)"$/ do |privacy, registrar_name|
   page.execute_script("Badger.remoteWhois = function(domain_name, callback){
-    callback( { data: {status: ['clientDeleteProhibited', 'clientRenewProhibited', 'clientTransferProhibited', 'clientUpdateProhibited'],
+    callback( { data: {status: ['clientdeleteprohibited', 'clientRenewProhibited', 'clienttransferprohibited', 'clientUpdateProhibited'],
               created_registrar: '#{registrar_name}',
               privacy: #{privacy == ' with privacy enabled'}, updated_on: 'Thu May 12 00:00:00 +0700 2011',
               administrator_contact: {

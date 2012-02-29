@@ -39,7 +39,7 @@ with (Hasher('Register','Application')) {
         }
       } else {
         // Billing.purchase_modal(curry(buy_domain, domain, available_extensions, form_data), needed_credits - current_credits);
-        Billing.purchase_modal(curry(buy_domain_modal, domain, available_extensions, form_data), needed_credits - current_credits); // after successfully buying credits, go back to the initial register modal --- CAB
+        Billing.purchase_modal(curry(buy_domain_modal, domain, available_extensions, $.extend(form_data, { credits_added: true })), needed_credits - current_credits); // after successfully buying credits, go back to the initial register modal --- CAB
       }
     });
   });
@@ -66,7 +66,7 @@ with (Hasher('Register','Application')) {
 				});
       } else {
         // Billing.purchase_modal(curry(renew_domain, form_data), needed_credits - current_credits);
-        Billing.purchase_modal(curry(renew_domain_modal, form_data.domain, form_data), needed_credits - current_credits); // after successfully buying credits, go back to the initial renewal modal --- CAB
+        Billing.purchase_modal(curry(renew_domain_modal, form_data.domain, $.extend(form_data, { credits_added: true })), needed_credits - current_credits); // after successfully buying credits, go back to the initial renewal modal --- CAB
       }
     });
 	});
@@ -158,7 +158,14 @@ with (Hasher('Register','Application')) {
       )
     );
     
-    // $('#register-button').val('Register ' + (num_domains > 1 ? (num_domains + ' domains') : domain) + ' for ' + credits + (credits == 1 ? ' credit' : ' credits'))
+    // show a message after person buys credits
+    if (form_data && form_data.credits_added) {
+      BadgerCache.getAccountInfo(function(response) {
+        $("div#errors").html(
+          div({ 'class': "info-message" }, "Success! You now have " + response.data.domain_credits + " domain credits.")
+        );
+      });
+    }
     
     $('select[name=years]').change(function(e) {
       var years = parseInt($('#years').val());
@@ -201,6 +208,15 @@ with (Hasher('Register','Application')) {
 				button({ id: "renew-button", 'class': "myButton", style: "float: right; margin-top: -45px"}, "Renew domain")
 			)
 		);
+		
+		// show a message after person buys credits
+    if (form_data && form_data.credits_added) {
+      BadgerCache.getAccountInfo(function(response) {
+        $("div#errors").html(
+          div({ 'class': "info-message" }, "Success! You now have " + response.data.domain_credits + " domain credits.")
+        );
+      });
+    }
 		
 		// update the button according to, then call the trigger the change event to initially update the button 
 		$("select[name=years]").change(function(e) {
