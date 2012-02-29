@@ -146,8 +146,8 @@ input.fancy[type=text], input.fancy[type=password] { margin-top: 4px; padding: 5
 .invite-extra-info { margin: 5px 10px; width: 450px; }
 
 #invitee-information { width: 500px; }
-#invitee-information .fancy{ width: 100%; }
-#invitee-information textarea{ height: 100px; width: 100%; }
+#invitee-information .fancy{ width: 350px; }
+#invitee-information textarea{ height: 100px; width: 350px; }
 #invitee-information select{ width: 50px; }
 
 .invite-status-table { margin-top: 30px; }
@@ -172,6 +172,9 @@ input.fancy[type=text], input.fancy[type=password] { margin-top: 4px; padding: 5
 .has-placeholder { color: #777777; }
 
 .ie-modal-dialog { background:transparent; filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#80000000,endColorstr=#80000000); zoom: 1; }
+.ie-footer { background:transparent; filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#30000000,endColorstr=#30000000); zoom: 1; }
+.ie-user-nav { background:transparent; filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#40000000,endColorstr=#40000000); zoom: 1; }
+.ie-close-button { background: transparent url(../images/close.png); display: block; width: 32px; height: 32px; position: absolute; right:-10px; top: -10px; }
 
 .app_store_container { float: left; width: 90px; padding: 10px 13px 20px 13px; border: 1px solid white; }
 .app_store_container:hover { text-decoration: none; border: 1px solid #e2c822; background: #fff9d7; border-radius: 10px; cursor: pointer; }

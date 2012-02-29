@@ -6,6 +6,8 @@
 #signup-box form input[type=text], #signup-box form input[type=password] { margin-top: 4px; margin-left: 4px; padding: 5px; font-size: 17px; border: 1px solid #aaa; border-radius: 3px }
 #signup-box form select { margin-top: 4px; }
 
+input { margin-right: 4px; }
+
 .myButton {
 	-moz-box-shadow:inset 0px 1px 0px 0px #c1ed9c;
 	-webkit-box-shadow:inset 0px 1px 0px 0px #c1ed9c;
@@ -26,6 +28,7 @@
 	padding:6px 24px;
 	text-decoration:none;
 	text-shadow:1px 1px 0px #689324;
+  overflow: visible;
 }
 .myButton:hover {
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #8cb82b), color-stop(1, #9dce2c) );

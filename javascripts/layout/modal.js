@@ -17,7 +17,7 @@ with (Hasher('Application')) {
         //onclick: function(e) { if (e.target && e.target.id == 'modal-dialog') hide_modal(); }
       },
         div({ id: 'modal-content', style: options.style },
-          a({ href: curry(hide_modal, options.close_callback), 'class': 'close-button' }, 'X'),
+          a({ href: curry(hide_modal, options.close_callback), 'class': (ie_browser ? 'ie-close-button': 'close-button') }, ie_browser ? '' : 'X'),
           div({ id: 'modal-message' }),
           div({ id: 'modal-wrapper'}, args)
         )
