@@ -162,7 +162,7 @@ with (Hasher('Register','Application')) {
     if (form_data && form_data.credits_added) {
       BadgerCache.getAccountInfo(function(response) {
         $("div#errors").html(
-          div({ 'class': "info-message" }, "Success! You now have " + response.data.domain_credits + " domain credits.")
+          div({ 'class': "info-message" }, "Success! You now have " + response.data.domain_credits + " domain " + (response.data.domain_credits > 1 ? "credits" : "credit") + ".")
         );
       });
     }
@@ -213,7 +213,7 @@ with (Hasher('Register','Application')) {
     if (form_data && form_data.credits_added) {
       BadgerCache.getAccountInfo(function(response) {
         $("div#errors").html(
-          div({ 'class': "info-message" }, "Success! You now have " + response.data.domain_credits + " domain credits.")
+          div({ 'class': "info-message" }, "Success! You now have " + response.data.domain_credits + " domain " + (response.data.domain_credits > 1 ? "credits" : "credit") + ".")
         );
       });
     }
