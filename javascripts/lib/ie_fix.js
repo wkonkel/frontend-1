@@ -134,7 +134,17 @@ var Placeholder = {
         $(this).find('.has-placeholder').each(function() { $(this).val(''); });
       });
     }
-}};
+  },
+  reset_ie_input_placeholder: function() {
+    if(!$.support.placeholder) {
+      $('form input').each(function() {
+        if ($(this).attr('placeholder') != '' && $(this).attr('placeholder') != null && $(this).val() == '') {
+          $(this).val($(this).attr('placeholder'));
+        }
+      });
+    }
+  }
+};
 
 /**********************************************************************************
  * Remove css outline on left-menu in Internet Explorer 7

@@ -44,6 +44,8 @@ var Badger = {
       //   });
       // }
 
+      // Need to reset input placeholder for msie only
+      Placeholder.reset_ie_input_placeholder();
       delete Badger.jsonp_callbacks[callback_name];
       var head = document.getElementsByTagName('head')[0];
       head.removeChild(script);
