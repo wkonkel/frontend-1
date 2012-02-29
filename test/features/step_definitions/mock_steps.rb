@@ -97,7 +97,7 @@ Given /^I mock getContacts returns ([^"]*) contacts$/ do |n|
                       phone: '123456789', state: '1', zip: '084'}"
   end
   page.execute_script("Badger.getContacts = function(callback) {
-    setTimeout(callback({data : [ #{contacts.join(',')} ]}), 250);
+    setTimeout(function() { callback({data: [ #{contacts.join(',')} ]}) }, 250);
   };")
   page.execute_script("BadgerCache.flush('contacts');")
 end
