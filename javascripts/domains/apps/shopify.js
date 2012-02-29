@@ -17,6 +17,7 @@ with (Hasher('Shopify', 'DomainApps')) {
         p("Shopify offers a complete ecommerce solution that allows you to create and run your own online store. List your products, customize your store's design, accept credit card orders, and ship your goods - all with a few clicks of the mouse. Shopify is easy to use and there's no software to download or maintain."),
         p('Install this app to point your domain to your shop on Shopify.'),
         show_required_dns(app, domain_obj),
+        div({ id: 'app-error-message', 'class': 'error-message hidden' }),
         form({ style: 'text-align: center', action: curry(check_valid_input, app, domain_obj) },
           'http://',
           text({ name: 'shopify_app_url', placeholder: 'YOURSHOPNAME.myshopify.com', style: 'width: 250px' }),
@@ -33,7 +34,8 @@ with (Hasher('Shopify', 'DomainApps')) {
     if ((shopify_app_url != '') && (patt.test(shopify_app_url))) {
       install_app_button_clicked(app, domain_obj, form_data);
     } else {
-      alert('Shopify URL is invalid');
+      $('#app-error-message').html('Shopify URL is invalid');
+      $('#app-error-message').removeClass('hidden');
     }
   });
 

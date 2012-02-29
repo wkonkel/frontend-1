@@ -4,6 +4,7 @@ with (Hasher('DomainShow','DomainApps')) {
     var content_div = div('Loading...');
     render(
       h1({ 'class': 'long-domain-name' }, domain),
+      div({ id: 'error-message', 'class': 'error-message hidden' }),
       content_div
     );
 
@@ -114,13 +115,20 @@ with (Hasher('DomainShow','DomainApps')) {
   define('retry_transfer', function(domain_name, form_data){
     var params = { retry: true, name: domain_name };
     if (form_data) {
+      if (form_data.auth_code == '') {
+        $('#error-message').html('AuthCode cannot be empty');
+        $('#error-message').removeClass('hidden');
+        return;
+      }
       params.auth_code = form_data.auth_code;
     }
     Badger.transferDomain(params, function(response) {
       if (form_data && form_data.auth_code && (response.data.transfer_status == 'needs_auth_code')) {
-        alert('Invalid AuthCode');
+        $('#error-message').html('Invalid AuthCode');
+        $('#error-message').removeClass('hidden');
+      } else {
+        set_route(get_route());
       }
-      set_route(get_route());
     });
   });
 

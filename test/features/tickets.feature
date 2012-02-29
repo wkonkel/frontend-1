@@ -51,9 +51,12 @@ Feature: Tickets
     And I should see "Some bug found on website"
     And I should see "Admin: Website Bug response"
     And I should see "Attachments: response_attachment.jpg"
-    And I fill in "response" with "you're welcome"
-    And I mock addResponseTicket
     And I press "Reply"
+    Then I should see "Response cannot be empty"
+    And I fill in "response" with "you're welcome"
+    And I mock addResponseTicket with response status "unprocessable_entity"
+    And I press "Reply"
+    Then I should see "Add Response Result"
 
   Scenario: Create a new ticket
     When I follow "Create a New Ticket"

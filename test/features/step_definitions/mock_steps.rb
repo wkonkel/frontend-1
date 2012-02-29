@@ -515,8 +515,14 @@ When /^I mock createTicket$/ do
   };")
 end
 
-When /^I mock addResponseTicket$/ do
+When /^I mock addResponseTicket with response status "([^"]*)"$/ do |status|
   page.execute_script("Badger.addResponseTicket = function(id, data, callback){
-    callback({ meta: { status: 'ok' }, data: { message: 'Response added' } });
+    callback({ meta: { status: '#{status}' }, data: { message: 'Add Response Result' } });
+  };")
+end
+
+When /^I mock transferDomain return status "([^"]*)"$/ do |status|
+  page.execute_script("Badger.transferDomain = function(data, callback){
+    callback({ meta: { status: 'ok' }, data: { transfer_status: '#{status}' } });
   };")
 end

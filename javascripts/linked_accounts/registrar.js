@@ -41,7 +41,11 @@ with (Hasher('Registrar','Application')) {
 					login_text = 'User ID';
 					break;
 			default:
-				alert('Unknown Site');
+        show_modal(
+          h1('Error'),
+          div({ 'class': 'error-message' }, 'Unknown Site'),
+          div({ style: 'text-align: right; margin-top: 10px;' }, a({ href: hide_modal, 'class': 'myButton', value: "submit" }, "Close"))
+        );
 				return false;
 		}
 		show_modal(

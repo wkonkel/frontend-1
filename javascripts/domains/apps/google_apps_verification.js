@@ -15,7 +15,7 @@ with (Hasher('GoogleAppsVerification', 'DomainApps')) {
       return div(
         p('Please copy and paste the unique Google Apps security token for your app here:'),
         show_required_dns(app, domain_obj),
-        div({ id: 'error-message', 'class': 'error-message hidden' }),
+        div({ id: 'app-error-message', 'class': 'error-message hidden' }),
         form({ style: 'text-align: center', action: curry(check_valid_input, app, domain_obj) },
           text({ name: 'google_app_verification_code', placeholder: 'google-site-verification:aa37fe774dfdb416...', style: 'width: 250px' }),
           input({ 'class': 'myButton', type: 'submit', value: 'Install Google Apps Verification' })
@@ -30,8 +30,8 @@ with (Hasher('GoogleAppsVerification', 'DomainApps')) {
     if ((google_app_verification_code != '') && (patt.test(google_app_verification_code)) && (google_app_verification_code.length == 68)) {
       install_app_button_clicked(app, domain_obj, form_data);
     } else {
-      $('#error-message').html('The token must be a 68-character string that begins with "google-site-verification:", followed by 43 additional characters.');
-      $('#error-message').removeClass('hidden');
+      $('#app-error-message').html('The token must be a 68-character string that begins with "google-site-verification:", followed by 43 additional characters.');
+      $('#app-error-message').removeClass('hidden');
     }
   });
 

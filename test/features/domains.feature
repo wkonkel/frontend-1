@@ -146,6 +146,17 @@ Feature: Domains
     When I visit domain page for domain "some-domain.com"
     Then I should see "some-domain.com" within "#content h1"
     And I should see "This domain is currently pending transfer. To continue, please input the authcode here."
+    When I press "Retry"
+    Then I should see "AuthCode cannot be empty"
+    When I fill in "auth_code" with "authcode123"
+    And I mock transferDomain return status "needs_auth_code"
+    And I press "Retry"
+    Then I should see "Invalid AuthCode"
+    When I fill in "auth_code" with "validauthcode123"
+    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and transfer status "transfer_requested"
+    And I mock transferDomain return status "transfer_requested"
+    And I press "Retry"
+    Then I should see "You will need to approve this transfer manually at your current registrar."
 
   Scenario: Domain of GoDaddy in transfer process need to disable privacy
     And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and transfer status "needs_privacy_disabled"

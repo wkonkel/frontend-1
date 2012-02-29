@@ -77,8 +77,9 @@ with (Hasher('Ticket','Application')) {
           ticket.status == 'closed' ? '' : response_form(id)
         )
       } else {
-        render({ target: ticket_info }, div());
-        alert(response.data.message);
+        render({ target: ticket_info },
+          div({ 'class': 'error-message'}, response.data.message)
+        );
       }
 
       if (ticket.status != 'closed') {
@@ -156,6 +157,7 @@ with (Hasher('Ticket','Application')) {
 
   define('response_form', function(id) {
     var result = form({ id: "response-form", action: add_response },
+      div({ id: 'error-message', 'class': 'error-message hidden' }),
       hidden({ name: 'id', value: id}),
       textarea({ style: 'width: 98%; height: 60px; margin: 10px 0;', name: 'response' }),
       div({ id: "response-file-uploader" }),
@@ -192,11 +194,13 @@ with (Hasher('Ticket','Application')) {
         if (response.meta.status == 'ok') {
           set_route('#tickets/' + form_data.id + '/response/' + response.data.response_id)
         } else {
-          alert(response.data.message);
+          $('#error-message').html(response.data.message);
+          $('#error-message').removeClass('hidden');
         }
       });
     } else {
-      alert('Response is empty')
+      $('#error-message').html('Response cannot be empty');
+      $('#error-message').removeClass('hidden');
     }
   });
 

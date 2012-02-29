@@ -69,10 +69,10 @@ Feature: Domain apps
     And I should see "www.mydomain0.com" within "table:first tr:eq(3)"
     And I should see "CNAME" within "table:first tr:eq(3)"
     And I press "Install Shopify"
-    Then I click "Ok" on the confirmation
+    And I should see "Shopify URL is invalid"
     And I fill in "shopify_app_url" with "google.com"
     And I press "Install Shopify"
-    Then I click "Ok" on the confirmation
+    And I should see "Shopify URL is invalid"
     And I fill in "shopify_app_url" with "ea.myshopify.com"
     And I mock addRecord
     And I press "Install Shopify"
