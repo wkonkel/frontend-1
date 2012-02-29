@@ -93,12 +93,12 @@ var Badger = {
       if (response.meta.status == 'ok') {
         Badger.setAccessToken(response.data.access_token);
         for (var i=0; i < Badger.login_callbacks.length; i++) Badger.login_callbacks[i].call(null);
+        if (/MSIE (\d+\.\d+);/.test(navigator.userAgent) && (new Number(RegExp.$1) <= 8)) {
+          // reload page for msie
+          window.location.reload();
+        }
       }
       if (callback) callback(response);
-      if (/MSIE (\d+\.\d+);/.test(navigator.userAgent) && (new Number(RegExp.$1) <= 8)) {
-        // reload page for msie
-        window.location.reload();
-      }
     });
   },
   
