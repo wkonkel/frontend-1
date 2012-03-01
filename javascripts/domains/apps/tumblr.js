@@ -33,8 +33,8 @@ with (Hasher('Tumblr', 'DomainApps')) {
       div(
         span("Last steps before you're all set:"), br(),
         span("1. Log in to ", a({ href: "http://www.tumblr.com", target: '_blank' }, "Tumblr"), "."), br(),
-        span("2. Click the name of your blog at the top of ", a({ href: "http://www.tumblr.com/dashboard" }, "the Dashboard"), ", then click ", strong("Settings"), "."), br(),
-        span("3. Check the ", strong("Use a custom domain name"), "box and enter your subdomain (www." + domain + ") or domain (" + domain + ")."), br(),
+        span("2. Click the name of your blog at the top of ", a({ href: "http://www.tumblr.com/dashboard", target: '_blank' }, "the Dashboard"), ", then click ", strong("Settings"), "."), br(),
+        span("3. Check the ", strong("Use a custom domain name"), " box and enter your subdomain (www." + domain + ") or domain (" + domain + ")."), br(),
         span("4. Click the ", strong("Test your domain"), " button."), br(),
         span("5. This should work without any errors.  When you're done, click ", strong("Save"), " at the bottom of the page."), br()
       ),

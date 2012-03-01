@@ -34,7 +34,7 @@ with (Hasher('FlavorsMe', 'DomainApps')) {
         span("Last steps before you're all set:"), br(),
         span("1. Log in to ", a({ href: "http://flavors.me/", target: '_blank' }, "FlavorsMe"), "."), br(),
         span("2. Hover over the ", strong("Account"), " tab, then click on ", strong("Settings"), '.'), br(),
-        span("3. Under ", strong("Domains"), " add your domain (" + domain + ") then click the ", strong("Save changes"), " button. Please note that it could take up to 72 hours for the change to fully take place."), br()
+        span("3. Under ", strong("Domains"), ", add your domain (" + domain + ") then click the ", strong("Save changes"), " button. Please note that it could take up to 72 hours for the change to fully take place."), br()
       ),
       p (span("For more information, ", a({ href: 'http://help.flavors.me/kb/settings/setting-up-your-custom-domain-name', target: '_blank' }, 'click here'), "."))
     );
