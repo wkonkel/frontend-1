@@ -256,7 +256,12 @@ with (Hasher('DomainApps','Application')) {
   });
 
   define('install_app_on_domain', function(app, domain_obj, form_data, need_confirm) {
-    var apps_conflict = check_app_conflict(app, domain_obj)
+    var tmp_app = $.extend(true, {}, app);
+    for_each(tmp_app.requires.dns, function(record) {
+      if (record.name)
+        record.content = (form_data||{})[record.name]
+    })
+    var apps_conflict = check_app_conflict(tmp_app, domain_obj)
     if (apps_conflict.length > 0) {
       return { success: false, conflict_apps: apps_conflict };
     } else {
@@ -325,9 +330,13 @@ with (Hasher('DomainApps','Application')) {
       var type_matches = !!((tmp_record.type||tmp_record.record_type||'').toLowerCase() == (record.type||record.record_type||'').toLowerCase());
       var subdomain_matches = !!(sanitize_domain(tmp_record.subdomain) == sanitize_domain(record.subdomain));
 
-      if (type_matches && subdomain_matches) return tmp_record;
+      var content_matches = true;
+      if (((record.type||record.record_type||'').toLowerCase() == 'txt') && type_matches && record.content) {
+        content_matches = (((record.content || '').toLowerCase().indexOf('spf1') != -1 && (tmp_record.content||'').toLowerCase().indexOf('spf1') != -1) || ((record.content || '').toLowerCase().indexOf('spf2') != -1 && (tmp_record.content||'').toLowerCase().indexOf('spf2') != -1));
     }
 
+      if (type_matches && subdomain_matches && content_matches) return tmp_record;
+    }
     return false;
   });
 
@@ -337,15 +346,18 @@ with (Hasher('DomainApps','Application')) {
     for (var key in Hasher.domain_apps) {
       var app = Hasher.domain_apps[key];
       if (app.requires && app.requires.dns && app_is_installed_on_domain(app, domain_obj)) {
+        var app_result = $.extend(true, {}, app);
+        app_result.requires.dns = [];
         for (var i=0; i < app.requires.dns.length; i++) {
           var found_record = domain_has_record(domain_obj, app.requires.dns[i]);
           if (found_record) {
+            app_result.requires.dns.push(found_record);
             domain_obj.dns = $.grep(domain_obj.dns, function(value) {
               return value != found_record;
             });
           }
         }
-        app_dns.push(app);
+        app_dns.push(app_result);
       }
     }
 

@@ -161,7 +161,6 @@ Feature: Domain apps
     And I follow "mydomain0.com"
     When I click on item with xpath "(//a[@class='app_store_container'])[9]"
     And I fill in "shopify_app_url" with "ea.myshopify.com"
-    And I mock addRecord
     When I press "Install Shopify"
     Then I should see "Install Shopify Failed"
     And I should see "Installation failed due to conflict with the following app:"
@@ -170,3 +169,25 @@ Feature: Domain apps
     And I should see "www.mydomain0.com"
     And I should see "myweb.com"
     And I should see "12.12.192.12"
+
+  Scenario: Install new app unsuccessfully because of spf txt dns conflicts
+    And I mock getDomain with domain "mydomain0.com" and dns:
+      |id |record_type|subdomain    |content                              |ttl |priority|
+      |80 |TXT        |             |v=spf1 record1                       |1800|        |
+      |81 |TXT        |mysubdomain  |v= record2                           |1800|        |
+      |82 |TXT        |mysubdomain  |v=spf1 record3                       |1800|        |
+      |83 |TXT        |             |v=spf1 mx mx:rhinonamesmail.com ~all |1800|        |
+      |84 |MX         |             |smtp.badger.com                      |1800|10      |
+      |85 |TXT        |             |google-site-verification:0123456     |1800|        |
+    And I follow "mydomain0.com"
+    When I click on item with xpath "(//a[@class='app_store_container'])[6]"
+    When I press "Install Google Mail"
+    Then I should see "Install Google Mail Failed"
+    And I should see "Installation failed due to conflict with the following apps:"
+    And I should see "User Custom DNS"
+    And I should see "Please remove this conflict DNS record in Badger DNS:"
+    And I should see "v=spf1 record1"
+    And I should not see "v= record2"
+    And I should not see "v=spf1 record3"
+    And I should see "Email Forwarding"
+    And I should see "Uninstall"
