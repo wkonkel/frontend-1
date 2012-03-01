@@ -72,7 +72,7 @@ Feature: Badger DNS
 
   Scenario: When I want to edit a dns and click on save, the edit will be saved
     When I wait until "#dns-row-78" is visible
-    And I make visible "#dns-row-78 .edit-buttons"
+    And I run javascript "document.getElementById('dns-row-78').getElementsByTagName('div')[1].style.visibility='visible'"
     And I click on item with xpath "(//tr[@id='dns-row-78']/td/div/a)[1]"
     And I fill in "dns-78-edit-subdomain" with "123agile"
     And I fill in "dns-78-edit-content-ipv4" with "1.2.3.4"
@@ -97,8 +97,9 @@ Feature: Badger DNS
     And I should see "1 hour" within "#content table tr:eq(3)"
 
   Scenario: When I want to edit a dns and click on cancel, the edit will not be saved
-    When I click on item with xpath "//tr[@id='dns-row-78']"
-    When I click on item with xpath "(//tr[@id='dns-row-78']/td/div/a)[1]"
+    When I wait until "#dns-row-78" is visible
+    And I run javascript "document.getElementById('dns-row-78').getElementsByTagName('div')[1].style.visibility='visible'"
+    And I click on item with xpath "(//tr[@id='dns-row-78']/td/div/a)[1]"
     And I fill in "dns-78-edit-subdomain" with "eastagile"
     And I fill in "dns-78-edit-content-ipv4" with "1.2.3.4"
     And I select "1 hour" from "dns-78-edit-ttl"
@@ -111,8 +112,9 @@ Feature: Badger DNS
     And I should see "30 mins" within "#content table tr:eq(5)"
 
   Scenario: When I want to edit a dns but the dns is failed to update, there will be an error message
-    When I click on item with xpath "//tr[@id='dns-row-78']"
-    When I click on item with xpath "(//tr[@id='dns-row-78']/td/div/a)[1]"
+    When I wait until "#dns-row-78" is visible
+    And I run javascript "document.getElementById('dns-row-78').getElementsByTagName('div')[1].style.visibility='visible'"
+    And I click on item with xpath "(//tr[@id='dns-row-78']/td/div/a)[1]"
     And I fill in "dns-78-edit-subdomain" with "eastagile"
     And I fill in "dns-78-edit-content-ipv4" with "1.2.3.4"
     And I select "1 hour" from "dns-78-edit-ttl"

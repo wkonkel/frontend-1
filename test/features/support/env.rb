@@ -8,7 +8,6 @@ Capybara.app_host = 'file://' + File.expand_path(File.dirname(__FILE__) + '/../.
 
 Capybara.register_driver :selenium do |app|
   if ENV['HEADLESS'] == 'true'
-    puts "Runnning in headless mode with Firefox"
     require 'headless'
     headless = Headless.new
     headless.start
@@ -19,7 +18,6 @@ Capybara.register_driver :selenium do |app|
     profile['general.useragent.override'] = 'Selenium'
     Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile)
   else
-    puts "Runnning in normal mode with chrome"
     Capybara::Selenium::Driver.new(app, :browser => :chrome, :switches => ['--user-agent=Selenium'])
   end
 end

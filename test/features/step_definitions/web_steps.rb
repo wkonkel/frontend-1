@@ -149,6 +149,10 @@ When /^(?:|I )click on "([^"]*)"$/ do |field|
   find("##{field}").click
 end
 
+When /^(?:|I )run javascript "([^"]*)"$/ do |js|
+  page.evaluate_script(js)
+end
+
 When /^(?:|I )make visible "([^"]*)"$/ do |selector|
   page.evaluate_script("$('#{selector}').css('visibility', 'visible')")
 end

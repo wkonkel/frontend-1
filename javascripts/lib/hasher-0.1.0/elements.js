@@ -108,7 +108,11 @@ with (Hasher()) {
                 if (!serialized_form[name]) serialized_form[name] = [];
                 serialized_form[name].push(elems[i].value);
               } else {
-                serialized_form[elems[i].name] = elems[i].value;
+                if (elems[i].getAttribute('placeholder') && (elems[i].value == elems[i].getAttribute('placeholder'))) {
+                  serialized_form[elems[i].name] = '';
+                } else {
+                  serialized_form[elems[i].name] = elems[i].value;
+                }
               }
             } 
           }
