@@ -9,7 +9,7 @@ Capybara.app_host = 'file://' + File.expand_path(File.dirname(__FILE__) + '/../.
 Capybara.register_driver :selenium do |app|
   if ENV['HEADLESS'] == 'true'
     require 'headless'
-    headless = Headless.new(:reuse => false)
+    headless = Headless.new(:display => 98)
     headless.start
     at_exit { headless.destroy }
 
