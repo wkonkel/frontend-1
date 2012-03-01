@@ -55,7 +55,9 @@ with (Hasher('Signup','Application')) {
         )
       )
     );
-    $('input[name="email"]').focus();
+    if (!/MSIE (\d+\.\d+);/.test(navigator.userAgent)) {
+      $('input[name="email"]').focus();
+    }
   });
 
   define('process_login', function(callback, form) {
