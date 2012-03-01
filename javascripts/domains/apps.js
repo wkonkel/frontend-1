@@ -33,13 +33,14 @@ with (Hasher('DomainApps','Application')) {
 
   define('install_app_fail_notification', function(app, conflict_apps, domain, form_data) {
     show_modal(
-      h1('Install ' + app.name + ' Failed'),
+      h1(app.name + ' Installation Failed'),
       p('Installation failed due to conflict with the following app' + (conflict_apps.length > 1 ? 's:' : ':')),
       table({ 'class': 'fancy-table' }, tbody(
         conflict_apps.map(function(conflict_app) {
           return tr(
             td(conflict_app.name),
-            td(conflict_app.id == 'user_dns' ? [
+            td(
+              conflict_app.id == 'user_dns' ? [
                 'Please remove ', conflict_app.requires.dns.length > 1 ? 'these conflict DNS records' : 'this conflict DNS record', ' in Badger DNS: ',
                 table({ style: 'width: 100%;' }, tbody(
                   conflict_app.requires.dns.map(function(record) {
@@ -48,16 +49,19 @@ with (Hasher('DomainApps','Application')) {
                       td(div({ 'class': 'long-domain-name', style: 'width: 150px;' }, record.subdomain.replace(domain,''), span({ style: 'color: #888' }, domain))),
                       td(record.priority, ' ', Domains.truncate_domain_name(record.content))
                     );
-                })))
-               ]
-               : a({ 'class': 'myButton small',
-                      href: curry(remove_conflict_app, app, conflict_app, domain, form_data)
-                    }, 'Uninstall')),
-            td({ style: 'width: 50px;' }, img({ id: conflict_app.id + '_uninstall_spinner', 'class': 'hidden', src: 'images/ajax-loader.gif' }))
-          )
+                  })
+                ))
+              ] : [
+                div({ style: 'text-align: right' }, 
+                  a({ id: conflict_app.id + '_uninstall_button', 'class': 'myButton small', href: curry(remove_conflict_app, app, conflict_app, domain, form_data) }, 'Uninstall'),
+                  img({ id: conflict_app.id + '_uninstall_spinner', 'class': 'hidden', src: 'images/ajax-loader.gif' })
+                )
+              ]
+            )
+          );
         })
       )),
-      div({ style: 'text-align: right; margin-top: 10px;' }, a({ href: hide_modal, 'class': 'myButton', value: "submit" }, "Close"))
+      div({ style: 'text-align: center; margin-top: 20px;' }, a({ href: hide_modal, 'class': 'myButton', value: "submit" }, "Cancel"))
     );
   });
 
@@ -70,11 +74,18 @@ with (Hasher('DomainApps','Application')) {
   });
 
   define('remove_conflict_app', function(app, conflict_app, domain, form_data) {
-    $('#' + conflict_app.id + '_uninstall_spinner').removeClass('hidden')
+    $('#' + conflict_app.id + '_uninstall_button').css('visibility', 'hidden');
+    $('#' + conflict_app.id + '_uninstall_spinner').removeClass('hidden');
     load_domain(domain, function(domain_obj) {
       remove_app_from_domain(conflict_app, domain_obj, function() {
         load_domain(domain, function(domain_obj) {
-          install_app_button_clicked(app, domain_obj, form_data, true);
+          show_modal(
+            h1(conflict_app.name, ' Was Uninstalled'),
+            p('To continue installing ' + app.name + ', click the Install button below.'),
+            div({ style: 'text-align: center' },
+              a({ 'class': 'myButton', href: curry(install_app_button_clicked, app, domain_obj, form_data) }, "Install " + app.name)
+            )
+          );
         });
       });
     });
