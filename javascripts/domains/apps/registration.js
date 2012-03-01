@@ -32,7 +32,7 @@ with (Hasher('Registration','DomainApps')) {
 
         render({ target: button_div }, 
           div({ style: "float: right; margin-top: -44px" }, 
-            domain_obj.badger_registration ? [
+            (domain_obj.badger_registration && $.inArray("renew", (domain_obj.permissions_for_person || [])) >= 0) ? [
               a({ 'class': "myButton small", href: curry(Register.renew_domain_modal, domain) }, "Extend Registration (Renew)")
             ] : [
               a({ 'class': "myButton small", href: curry(Transfer.show_domain_status_table, { domains: domain }) }, "Transfer To Badger.com")
