@@ -152,3 +152,21 @@ Feature: Domain apps
     When I follow "Uninstall"
     Then I should see "Install Shopify Confirmation"
     And I should see "To install this application, click the Install button below."
+
+  Scenario: Install new app unsuccessfully because of user custom dns conflicts
+    And I mock getDomain with domain "mydomain0.com" and dns:
+      |id |record_type|subdomain    |content                              |ttl |priority|
+      |80 |A          |             |12.12.192.12                         |1800|        |
+      |83 |CNAME      |www          |myweb.com                            |1800|        |
+    And I follow "mydomain0.com"
+    When I click on item with xpath "(//a[@class='app_store_container'])[9]"
+    And I fill in "shopify_app_url" with "ea.myshopify.com"
+    And I mock addRecord
+    When I press "Install Shopify"
+    Then I should see "Install Shopify Failed"
+    And I should see "Installation failed due to conflict with the following app:"
+    And I should see "User Custom DNS"
+    And I should see "Please remove these conflict DNS records in Badger DNS:"
+    And I should see "www.mydomain0.com"
+    And I should see "myweb.com"
+    And I should see "12.12.192.12"

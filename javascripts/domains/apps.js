@@ -355,7 +355,6 @@ with (Hasher('DomainApps','Application')) {
     for (var index in domain_obj.dns) {
       if (existing_conflict_record(install_app.requires.dns, domain_obj.dns[index], domain_obj.name)) {
         user_custom_conflict_dns.push(domain_obj.dns[index]);
-        break;
       }
     }
     if (user_custom_conflict_dns.length > 0)
