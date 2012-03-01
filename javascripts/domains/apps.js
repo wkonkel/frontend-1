@@ -16,12 +16,16 @@ with (Hasher('Application')) {
 
 with (Hasher('DomainApps','Application')) {
    
-  define('install_app_button_clicked', function(app, domain_obj, form_data) {
-    var result = install_app_on_domain(app, domain_obj, form_data);
+  define('install_app_button_clicked', function(app, domain_obj, form_data, need_confirm) {
+    var result = install_app_on_domain(app, domain_obj, form_data, need_confirm);
     hide_modal();
     if (result.success) {
-      $('#domain-menu-item-' + domain_obj.name.replace('.','-')).remove();
-      set_route(app.menu_item.href.replace(':domain', domain_obj.name));
+      if (result.need_confirm){
+        install_confirm(app, domain_obj, form_data);
+      } else {
+        $('#domain-menu-item-' + domain_obj.name.replace('.','-')).remove();
+        set_route(app.menu_item.href.replace(':domain', domain_obj.name));
+      }
     } else {
       install_app_fail_notification(app, result.conflict_apps, domain_obj.name, form_data);
     }
@@ -48,7 +52,8 @@ with (Hasher('DomainApps','Application')) {
                ]
                : a({ 'class': 'myButton small',
                       href: curry(remove_conflict_app, app, conflict_app, domain, form_data)
-                    }, 'Uninstall'))
+                    }, 'Uninstall')),
+            td({ style: 'width: 50px;' }, img({ id: conflict_app.id + '_uninstall_spinner', 'class': 'hidden', src: 'images/ajax-loader.gif' }))
           )
         })
       )),
@@ -56,11 +61,20 @@ with (Hasher('DomainApps','Application')) {
     );
   });
 
+  define('install_confirm', function(app, domain_obj, form_data) {
+    show_modal(
+      h1('Install ', app.name, ' Confirmation'),
+      p('To install this application, click the Install button below.'),
+      a({ 'class': 'myButton', href: curry(install_app_button_clicked, app, domain_obj, form_data) }, "Install " + app.name)
+    );
+  });
+
   define('remove_conflict_app', function(app, conflict_app, domain, form_data) {
+    $('#' + conflict_app.id + '_uninstall_spinner').removeClass('hidden')
     load_domain(domain, function(domain_obj) {
       remove_app_from_domain(conflict_app, domain_obj, function() {
         load_domain(domain, function(domain_obj) {
-          install_app_button_clicked(app, domain_obj, form_data);
+          install_app_button_clicked(app, domain_obj, form_data, true);
         });
       });
     });
@@ -241,32 +255,36 @@ with (Hasher('DomainApps','Application')) {
     return false;
   });
 
-  define('install_app_on_domain', function(app, domain_obj, form_data) {
+  define('install_app_on_domain', function(app, domain_obj, form_data, need_confirm) {
     var apps_conflict = check_app_conflict(app, domain_obj)
     if (apps_conflict.length > 0) {
       return { success: false, conflict_apps: apps_conflict };
     } else {
-      for_each(app.requires.dns, function(record) {
-        if (!domain_has_record(domain_obj, record)) {
-          var dns_fields = {
-            record_type: record.type,
-            priority: record.priority,
-            subdomain: record.subdomain,
-            ttl: 1800,
-            content: record.name ? (form_data||{})[record.name] : record.content
-          };
+      if (need_confirm) {
+        return { success: true, need_confirm: true }
+      } else {
+        for_each(app.requires.dns, function(record) {
+          if (!domain_has_record(domain_obj, record)) {
+            var dns_fields = {
+              record_type: record.type,
+              priority: record.priority,
+              subdomain: record.subdomain,
+              ttl: 1800,
+              content: record.name ? (form_data||{})[record.name] : record.content
+            };
 
-          Badger.addRecord(domain_obj.name, dns_fields, function(response) {
-            // TODO: notify the user if error
-            // if (response.meta.status == 'ok') {
-            //   index(domain);
-            // } else {
-            //   $('#errors').empty().append(error_message(response));
-            // }
-          });
-        }
-      });
-      return { success: true };
+            Badger.addRecord(domain_obj.name, dns_fields, function(response) {
+              // TODO: notify the user if error
+              // if (response.meta.status == 'ok') {
+              //   index(domain);
+              // } else {
+              //   $('#errors').empty().append(error_message(response));
+              // }
+            });
+          }
+        });
+        return { success: true };
+      }
     }
   });
 

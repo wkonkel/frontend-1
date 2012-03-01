@@ -148,3 +148,7 @@ Feature: Domain apps
     And I should see "Installation failed due to conflict with the following app:"
     And I should see "Heroku" within "table:first tr"
     And I should see "Uninstall" within "table:first tr"
+    And I mock deleteRecord
+    When I follow "Uninstall"
+    Then I should see "Install Shopify Confirmation"
+    And I should see "To install this application, click the Install button below."

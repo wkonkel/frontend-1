@@ -289,6 +289,25 @@ When /^I mock createContact$/ do
   };")
 end
 
+When /^I mock deleteRecord/ do
+  page.execute_script("Badger.deleteRecord = function(name, id, callback){
+    Badger.getDomain = function(name, callback){
+        callback({ meta: { status: 'ok' },
+                    data: {
+                      name: 'mydomain0.com', expires_on: '2011-11-30T04:21:43Z', status: 'active', registered_on: '2011-10-30T04:21:43Z',
+                      created_at: '2011-10-30T04:21:43Z', updated_at: '2011-10-30T04:21:43Z', updated_on: '2011-10-30T04:21:43Z',
+                      name_servers: ['ns1.badger.com', 'ns2.badger.com'], created_registrar: 'rhino', badger_registration: true,
+                      whois: 'The data contained in this whois database is provided \"as is\" with no guarantee or warranties regarding its accuracy.',
+                      current_registrar: 'Badger.com', badger_dns: true, permissions_for_person: ['modify_dns', 'change_nameservers'],
+                      dns: [],
+                      registrant_contact: { address: 'My address', address2: '', city: 'HCM', country: 'VN', created_at: '2011-11-12T14:29:26Z',
+                            email: 'tester@eastagile.com', fax: '', first_name: 'East', id: 4, last_name: 'Agile Company', organization: '',
+                            phone: '123456789', state: '1', zip: '084' } }});
+      };
+      callback({ meta : {status: 'ok'} });
+  };")
+end
+
 When /^I mock remoteWhois( with privacy enabled|) with registrar name "([^"]*)"$/ do |privacy, registrar_name|
   page.execute_script("Badger.remoteWhois = function(domain_name, callback){
     callback( { data: {status: ['clientdeleteprohibited', 'clientRenewProhibited', 'clienttransferprohibited', 'clientUpdateProhibited'],
