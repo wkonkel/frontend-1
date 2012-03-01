@@ -83,7 +83,7 @@ with (Hasher('DomainApps','Application')) {
             h1(conflict_app.name, ' Was Uninstalled'),
             p('To continue installing ' + app.name + ', click the Install button below.'),
             div({ style: 'text-align: center' },
-              a({ 'class': 'myButton', href: curry(install_app_button_clicked, app, domain_obj, form_data) }, "Install " + app.name)
+              a({ 'class': 'myButton', href: curry(install_app_button_clicked, app, domain_obj, form_data, true) }, "Install " + app.name)
             )
           );
         });
