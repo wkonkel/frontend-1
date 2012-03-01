@@ -71,8 +71,9 @@ Feature: Badger DNS
     And I should see "Uninstall Email Forwarding"
 
   Scenario: When I want to edit a dns and click on save, the edit will be saved
-    When I click on item with xpath "//tr[@id='dns-row-78']"
-    When I click on item with xpath "(//tr[@id='dns-row-78']/td/div/a)[1]"
+    When I wait until "#dns-row-78" is visible
+    And I make visible "#dns-row-78 .edit-buttons"
+    And I click on item with xpath "(//tr[@id='dns-row-78']/td/div/a)[1]"
     And I fill in "dns-78-edit-subdomain" with "123agile"
     And I fill in "dns-78-edit-content-ipv4" with "1.2.3.4"
     And I select "1 hour" from "dns-78-edit-ttl"

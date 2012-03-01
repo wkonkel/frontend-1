@@ -33,3 +33,9 @@ Given /^I mock neccessary data to mock login with ([^"]*) domain credits and ([^
   step 'I mock getInviteStatus with 0 accepted and 0 pending and 0 revoked'
   step 'I mock login'
 end
+
+require 'ruby-debug'
+Then /^debugger$/ do
+  debugger
+  :debugger
+end
