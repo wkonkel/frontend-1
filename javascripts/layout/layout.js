@@ -85,14 +85,14 @@ with (Hasher('Application')) {
 
   layout('default_layout', function(yield) {
     var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
-    return div({ id: 'wrapper' },
+    return div({ id: 'wrapper', 'class': (ie_browser ? 'ie-browser' : '') },
 
       div({ id: 'header' },
         h1({ id: 'logo' }, a({ href: '#'}, 'badger.com')),
         
         Badger.getAccessToken() ? 
           user_nav()
-        : div({ id: 'user-nav', 'class': (ie_browser ? 'ie-user-nav' : '') },
+        : div({ id: 'user-nav' },
           span(a({ href: Signup.show_login_modal }, 'Login')),
           a({ href: Signup.show_register_modal }, 'Create Account')
         )
@@ -111,7 +111,7 @@ with (Hasher('Application')) {
         div({ style: 'clear: both' })
       ),
 
-      div({ id: 'footer', 'class': (ie_browser ? 'ie-footer' : '') },
+      div({ id: 'footer' },
         div({ 'class': "col" },
           h2('COMPANY'),
           ul(
@@ -162,8 +162,7 @@ with (Hasher('Application')) {
   });
 
   define('user_nav', function() {
-    var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
-    var user_nav = div({ id: 'user-nav', 'class': (ie_browser ? 'ie-user-nav' : '') },
+    var user_nav = div({ id: 'user-nav' },
       a({ href: Badger.logout }, 'Logout')
     );
 

@@ -8,8 +8,8 @@ with (Hasher('Application')) {
     var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
     document.body.appendChild(
       div({ 
-        'id': 'modal-dialog', 
-        'class': (ie_browser? 'ie-modal-dialog ' : '') + 'modal-dialog'
+        'id': 'modal-dialog',
+        'class': (ie_browser? 'ie-browser ' : '') + 'modal-dialog'
 
         // disabling "click on background to hide modal" functionality for now... it's too easy
         // to accidently lose your progress. need a "are you sure you want to close the modal"
@@ -17,7 +17,7 @@ with (Hasher('Application')) {
         //onclick: function(e) { if (e.target && e.target.id == 'modal-dialog') hide_modal(); }
       },
         div({ id: 'modal-content', style: options.style },
-          a({ href: curry(hide_modal, options.close_callback), 'class': (ie_browser ? 'ie-close-button': 'close-button') }, ie_browser ? '' : 'X'),
+          a({ href: curry(hide_modal, options.close_callback), 'class': 'close-button' }, ie_browser ? '' : 'X'),
           div({ id: 'modal-message' }),
           div({ id: 'modal-wrapper'}, args)
         )
