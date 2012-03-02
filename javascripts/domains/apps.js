@@ -17,18 +17,14 @@ with (Hasher('Application')) {
 with (Hasher('DomainApps','Application')) {
    
   define('install_app_button_clicked', function(app, domain_obj, form_data, need_confirm) {
-    var result = install_app_on_domain(app, domain_obj, form_data, need_confirm);
+    start_modal_spin('Processing...');
+    install_app_on_domain(app, domain_obj, form_data);
+  });
+
+  define('install_app_success', function(app, domain_obj) {
     hide_modal();
-    if (result.success) {
-      if (result.need_confirm){
-        install_confirm(app, domain_obj, form_data);
-      } else {
-        $('#domain-menu-item-' + domain_obj.name.replace('.','-')).remove();
-        set_route(app.menu_item.href.replace(':domain', domain_obj.name));
-      }
-    } else {
-      install_app_fail_notification(app, result.conflict_apps, domain_obj.name, form_data);
-    }
+    $('#domain-menu-item-' + domain_obj.name.replace('.','-')).remove();
+    set_route(app.menu_item.href.replace(':domain', domain_obj.name));
   });
 
   define('install_app_fail_notification', function(app, conflict_apps, domain, form_data) {
@@ -83,7 +79,7 @@ with (Hasher('DomainApps','Application')) {
             h1(conflict_app.name, ' Was Uninstalled'),
             p('To continue installing ' + app.name + ', click the Install button below.'),
             div({ style: 'text-align: center' },
-              a({ 'class': 'myButton', href: curry(install_app_button_clicked, app, domain_obj, form_data, true) }, "Install " + app.name)
+              a({ 'class': 'myButton', href: curry(install_app_on_domain, app, domain_obj, form_data, true) }, "Install " + app.name)
             )
           );
         });
@@ -274,10 +270,11 @@ with (Hasher('DomainApps','Application')) {
     })
     var apps_conflict = check_app_conflict(tmp_app, domain_obj)
     if (apps_conflict.length > 0) {
-      return { success: false, conflict_apps: apps_conflict };
+      // callback to remove modal spin
+      install_app_fail_notification(app, apps_conflict, domain_obj.name, form_data);
     } else {
       if (need_confirm) {
-        return { success: true, need_confirm: true }
+        install_confirm(app, domain_obj, form_data);
       } else {
         for_each(app.requires.dns, function(record) {
           if (!domain_has_record(domain_obj, record)) {
@@ -296,10 +293,20 @@ with (Hasher('DomainApps','Application')) {
               // } else {
               //   $('#errors').empty().append(error_message(response));
               // }
+              if (response.meta.status == 'ok') {
+                if (app.install_records_count)
+                  app.install_records_count += 1;
+                else
+                  app.install_records_count = 1;
+
+                if (app.install_records_count == app.requires.dns.length) {
+                  // callback to remove modal spin
+                  install_app_success(app, domain_obj);
+                }
+              }
             });
           }
         });
-        return { success: true };
       }
     }
   });

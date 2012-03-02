@@ -122,15 +122,18 @@ Feature: Domain apps
     And I should see "mydomain0.com" within "table:first tr:eq(2)"
     And I should see "TXT" within "table:first tr:eq(2)"
     And I press "Install Google Apps Verification"
-    Then I should see /The token must be a 68-character string that begins with "google-site-verification:", followed by 43 additional characters./
+    Then I should see /The code you entered is invalid. Validation codes usually start with "google-site-verification"./
     And I fill in "google_app_verification_code" with "abcgoogle-site-verification:abcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcde"
     And I press "Install Google Apps Verification"
-    Then I should see /The token must be a 68-character string that begins with "google-site-verification:", followed by 43 additional characters./
+    Then I should see /The code you entered is invalid. Validation codes usually start with "google-site-verification"./
     And I fill in "google_app_verification_code" with "google-site-verification:abcdeabcdeabcdeabcdeabcdeabcdebcdeabcde1234"
     And I mock addRecord
+    And I mock getDomain with domain "mydomain0.com" and dns:
+      |id |record_type|subdomain    |content                              |ttl |priority|
+      |80 |TXT        |             |google-site-verification:0123456     |1800|        |
     And I press "Install Google Apps Verification"
     Then I should see "GOOGLE APPS VERIFICATION FOR mydomain0.com" within "#content h1"
-    And I should see "The TXT record has been created. You can complete the verification here. When you are done verifying this URL with Google, you can remove this app."
+    And I should see "The TXT record below has been added to the DNS configuration for"
 
   Scenario: Install new app unsuccessfully because of conflicts
     And I mock getDomain with domain "mydomain0.com" and dns:
@@ -152,6 +155,9 @@ Feature: Domain apps
     When I follow "Uninstall"
     Then I should see "Heroku Was Uninstalled"
     And I should see "To continue installing Shopify, click the Install button below."
+    When I follow "Continue"
+    Then I should see "Install Shopify Confirmation"
+    And I should see "To install this application, click the Install button below."
 
   Scenario: Install new app unsuccessfully because of user custom dns conflicts
     And I mock getDomain with domain "mydomain0.com" and dns:
