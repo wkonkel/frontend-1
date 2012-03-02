@@ -60,7 +60,9 @@ with (Hasher('Registrar','Application')) {
 				email_warn ? p('When we sync your domains you will recieve an email from ' + data.registrar_name) : '',
 				form({ id: 'registrar-link-form', action: curry(Registrar.start_link, data, 'Starting Linking...')},
 				  input({ type: 'hidden', name: 'linked_account_id', id: 'linked-account-id', value: data.id}),
-					div(input({ type: 'text', name: 'login', placeholder: login_text, value: data.login ? data.login : '' })),
+					div(
+					  data.last_synced_at ? span('Login: ' + data.login) : input({ type: 'text', name: 'login', placeholder: login_text, value: data.login ? data.login : '' })
+					),
           div(input({ type: 'password', name: 'password', placeholder: 'Password' })),
 					div(
 						input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
