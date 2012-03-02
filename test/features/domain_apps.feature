@@ -144,14 +144,14 @@ Feature: Domain apps
     And I fill in "shopify_app_url" with "ea.myshopify.com"
     And I mock addRecord
     When I press "Install Shopify"
-    Then I should see "Install Shopify Failed"
+    Then I should see "Shopify Installation Failed"
     And I should see "Installation failed due to conflict with the following app:"
     And I should see "Heroku" within "table:first tr"
     And I should see "Uninstall" within "table:first tr"
     And I mock deleteRecord
     When I follow "Uninstall"
-    Then I should see "Install Shopify Confirmation"
-    And I should see "To install this application, click the Install button below."
+    Then I should see "Heroku Was Uninstalled"
+    And I should see "To continue installing Shopify, click the Install button below."
 
   Scenario: Install new app unsuccessfully because of user custom dns conflicts
     And I mock getDomain with domain "mydomain0.com" and dns:
@@ -162,7 +162,7 @@ Feature: Domain apps
     When I click on item with xpath "(//a[@class='app_store_container'])[9]"
     And I fill in "shopify_app_url" with "ea.myshopify.com"
     When I press "Install Shopify"
-    Then I should see "Install Shopify Failed"
+    Then I should see "Shopify Installation Failed"
     And I should see "Installation failed due to conflict with the following app:"
     And I should see "User Custom DNS"
     And I should see "Please remove these conflict DNS records in Badger DNS:"
@@ -182,7 +182,7 @@ Feature: Domain apps
     And I follow "mydomain0.com"
     When I click on item with xpath "(//a[@class='app_store_container'])[6]"
     When I press "Install Google Mail"
-    Then I should see "Install Google Mail Failed"
+    Then I should see "Google Mail Installation Failed"
     And I should see "Installation failed due to conflict with the following apps:"
     And I should see "User Custom DNS"
     And I should see "Please remove this conflict DNS record in Badger DNS:"

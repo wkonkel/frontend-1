@@ -93,7 +93,7 @@ with (Hasher('Ticket','Application')) {
   });
 
   define('attachment_field', function(id) {
-    document.domain = document.location.host.split('.').slice(-2).join('.');
+    document.domain = (document.location.host.split('.').slice(-2).join('.') || 'localhost');
     var response_attachment_uploader = new qq.FileUploader({
       // pass the dom node (ex. $(selector)[0] for jQuery users)
       element: $('#' + id)[0],
