@@ -3,7 +3,7 @@ with (Hasher('EmailForwards', 'DomainApps')) {
   register_domain_app({
     id: 'badger_email_forward',
     name: 'Email Forwarding',
-    menu_item: { text: 'EMAIL FORWARDING', href: '#domains/:domain/email_forwards' },
+    menu_item: { text: 'EMAIL FORWARDING', href: '#domains/:domain/email_forwards', css_class: 'email-forwarding' },
     icon: 'images/apps/email-forward.png',
     requires: {
       dns: [

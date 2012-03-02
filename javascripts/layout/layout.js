@@ -34,12 +34,14 @@ with (Hasher('Application')) {
     // select active link and expand parent
     $('#sidebar ul').removeClass('expanded');
     $('#sidebar a').removeClass('active');
+    $('#sidebar li').removeClass('active');
     if (request_uri == '#search') {
       $('#form-search').addClass('active');
     } else {
       $('#form-search').removeClass('active');
       var links = $('#sidebar a[href="' + request_uri + '"]').addClass('active');
       var parent_li = links.parent();
+      parent_li.addClass("active");
       if (!parent_li.parent().is('#menu')) parent_li = parent_li.parent().parent();
       parent_li.find('ul').addClass('expanded');
     }
@@ -269,10 +271,10 @@ with (Hasher('Application')) {
 
   define('left_nav', function() {
     var badger_menu_items = [
-      li({ 'class': "website" }, a({ href: "#blogs" }, 'OUR BLOG')),
-      li({ 'class': "website" }, a({ href: "#faqs" }, 'FAQS')),
-      li({ 'class': "website" }, a({ href: "#knowledge_center" }, 'KNOWLEDGE CENTER')),
-      li({ 'class': "website" }, a({ href: "#contact_us" }, 'CONTACT US'))
+      li({ 'class': "blog" }, a({ href: "#blogs" }, 'OUR BLOG')),
+      li({ 'class': "faq" }, a({ href: "#faqs" }, 'FAQS')),
+      li({ 'class': "knowledge-center" }, a({ href: "#knowledge_center" }, 'KNOWLEDGE CENTER')),
+      li({ 'class': "contact-us" }, a({ href: "#contact_us" }, 'CONTACT US'))
     ];
     
     return ul({ id: 'menu' },
@@ -280,8 +282,8 @@ with (Hasher('Application')) {
         li({ id: 'nav-my-domains' },
           a({ href: "#filter_domains/all/list" }, span(span('MY DOMAINS'), span({ id: 'my-domains-count' }))),
           ul(
-            li({ 'class': "website"}, a({ href: "#domain-transfers" }, 'TRANSFERS')),
-            li({ 'class': "website"}, a({ href: "#filter_domains/expiringsoon/list" }, 'EXPIRING SOON'))
+            li({ 'class': "transfer"}, a({ href: "#domain-transfers" }, 'TRANSFERS')),
+            li({ 'class': "expiring-soon"}, a({ href: "#filter_domains/expiringsoon/list" }, 'EXPIRING SOON'))
           )
         ),
 
@@ -308,11 +310,11 @@ with (Hasher('Application')) {
 
   define('my_account_nav', function() {
     var nav = ul(
-      li({ 'class': "website" }, a({ href: "#tickets" }, 'SUPPORT TICKETS')),
-      li({ 'class': "email" }, a({ href: "#account/profiles" }, 'WHOIS PROFILES')),
-      li({ 'class': "website" }, a({ href: "#account/billing" }, 'CREDITS & BILLING')),
-			li({ 'class': "website" }, a({ href: "#linked_accounts" }, 'LINKED ACCOUNTS')),
-      li({ 'class': "website hidden", id : 'invites_available'}, a({ href: "#invites" }, span('SEND INVITES'), span({ id: 'invite_available_count' })))
+      li({ 'class': "support-ticket" }, a({ href: "#tickets" }, 'SUPPORT TICKETS')),
+      li({ 'class': "whois-pro" }, a({ href: "#account/profiles" }, 'WHOIS PROFILES')),
+      li({ 'class': "credit-billing" }, a({ href: "#account/billing" }, 'CREDITS & BILLING')),
+			li({ 'class': "linked-account" }, a({ href: "#linked_accounts" }, 'LINKED ACCOUNTS')),
+      li({ 'class': "send-invite hidden", id : 'invites_available'}, a({ href: "#invites" }, span('SEND INVITES'), span({ id: 'invite_available_count' })))
     );
 
     return nav;
@@ -333,8 +335,9 @@ with (Hasher('Application')) {
       } else if (domain_obj.current_registrar) {
         for (var key in Hasher.domain_apps) {
           if (DomainApps.app_is_installed_on_domain(Hasher.domain_apps[key], domain_obj) && Hasher.domain_apps[key].menu_item) {
+            css_class = Hasher.domain_apps[key].menu_item.css_class || "website"
             app_list.appendChild(
-              li({ 'class': "website" },
+              li({ 'class':  css_class },
                 a({
                   href: Hasher.domain_apps[key].menu_item.href.replace(/:domain/, domain)
                 }, Hasher.domain_apps[key].menu_item.text)

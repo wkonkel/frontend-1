@@ -3,7 +3,7 @@ with (Hasher('WebForwards', 'DomainApps')) {
   register_domain_app({
     id: 'badger_web_forward',
     name: 'URL Forwarding',
-    menu_item: { text: 'URL FORWARDING', href: '#domains/:domain/web_forwards' },
+    menu_item: { text: 'URL FORWARDING', href: '#domains/:domain/web_forwards', css_class: 'url-forwarding' },
     icon: 'images/apps/web-forward.png',
     
     requires: {

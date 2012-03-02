@@ -4,7 +4,7 @@ with (Hasher('DnsApp','DomainApps')) {
     id: 'dns',
     name: 'DNS',
     icon: 'images/apps/dns.png',
-    menu_item: { text: 'DNS', href: '#domains/:domain/dns' }
+    menu_item: { text: 'DNS', href: '#domains/:domain/dns', css_class: 'dns' }
   });
 
   // // use cases:

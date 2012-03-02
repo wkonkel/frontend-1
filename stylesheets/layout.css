@@ -85,18 +85,50 @@ a { color: #1E31F5; }
 #menu { border-top:1px solid #14161e; margin:0; padding:0; list-style:none; }
 #menu li { border-bottom:1px solid #191c25; background:#292f3e; }
 #menu li a { color:#919ab2; display:block; padding:9px 10px 9px 17px; text-shadow: 0px 1px 1px #000; font: 17px "Oswald", Arial, sans-serif; }
-#sidebar .active { background-image: url(../images/bg-menu-hover.png); background-repeat: no-repeat; background-position: 100% 50%; }
 
 /* submenu */
 #menu ul { border-top:1px solid #14161e; font-size:16px; margin:-1px 0; padding:0; list-style:none; display: none; }
 #menu ul.expanded { display: block; }
-#menu ul li { background: #212632 url(../images/sprite.png) no-repeat; }
 #menu ul li a { color:#fff; padding:9px 10px 10px 48px; font-size: 16px; }
-#menu ul .website {background-position:17px 13px;}
-#menu ul .email {background-position:17px -58px;}
-#menu ul .dns {background-position:17px -99px;}
-#menu ul .analytics {background-position:17px -140px;}
+#menu ul .website {background: #212632 url(../images/sprite.png) no-repeat 17px 13px;}
+#menu ul .email {background: #212632 url(../images/sprite.png) no-repeat 17px -58px;}
+#menu ul .analytics {background: #212632 url(../images/sprite.png) no-repeat 17px -140px;}
 
+#menu ul li { background: #212632 url(../images/icon-sprite.png) no-repeat; }
+#menu ul li.active {background-color: #8b95a9}
+#menu ul li.active a {background: url(../images/bg-menu-hover.png) no-repeat 100% 50%}
+/* Menu height = 31 px*/
+#menu ul li.blog {background-position:17px 13px;}
+#menu ul li.faq {background-position:17px -18px;}
+#menu ul li.knowledge-center {background-position:17px -49px;}
+#menu ul li.contact-us {background-position:17px -80px;}
+#menu ul li.support-ticket {background-position:17px -110px;}
+#menu ul li.whois-pro {background-position:17px -141px;}
+#menu ul li.credit-billing {background-position:17px -172px;}
+#menu ul li.linked-account {background-position:17px -201px;}
+#menu ul li.send-invite {background-position:17px -232px;}
+#menu ul li.transfer {background-position:17px -268px;}
+#menu ul li.expiring-soon {background-position:17px -299px;}
+#menu ul li.registration {background-position:17px -330px;}
+#menu ul li.dns {background-position:17px -361px;}
+#menu ul li.email-forwarding {background-position:17px -391px;}
+#menu ul li.url-forwarding {background-position:17px -421px;}
+
+#menu ul li.blog:hover, #menu ul li.blog.active {background-position:17px -454px;}
+#menu ul li.faq:hover, #menu ul li.faq.active {background-position:17px -486px;}
+#menu ul li.knowledge-center:hover, #menu ul li.knowledge-center.active {background-position:17px -517px;}
+#menu ul li.contact-us:hover, #menu ul li.contact-us.active {background-position:17px -548px;}
+#menu ul li.support-ticket:hover, #menu ul li.support-ticket.active {background-position:17px -578px;}
+#menu ul li.whois-pro:hover, #menu ul li.whois-pro.active {background-position:17px -609px;}
+#menu ul li.credit-billing:hover, #menu ul li.credit-billing.active {background-position:17px -640px;}
+#menu ul li.linked-account:hover, #menu ul li.linked-account.active {background-position:17px -669px;}
+#menu ul li.send-invite:hover, #menu ul li.send-invite.active {background-position:17px -700px;}
+#menu ul li.transfer:hover, #menu ul li.transfer.active {background-position:17px -735px;}
+#menu ul li.expiring-soon:hover, #menu ul li.expiring-soon.active {background-position:17px -766px;}
+#menu ul li.registration:hover, #menu ul li.registration.active {background-position:17px -797px;}
+#menu ul li.dns:hover, #menu ul li.dns.active {background-position:17px -828px;}
+#menu ul li.email-forwarding:hover, #menu ul li.email-forwarding.active {background-position:17px -859px;}
+#menu ul li.url-forwarding:hover, #menu ul li.url-forwarding.active {background-position:17px -889px;}
 
 
 
