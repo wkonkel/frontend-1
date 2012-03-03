@@ -1,6 +1,9 @@
 with (Hasher('Domains','Application')) {
   route('#domain-transfers', function(filter, view_type) {
     var target_div = div('Loading...');
+    
+    // force reload of domains
+    BadgerCache.flush('domains')
 
     render(
       h1('Domain Transfers'),

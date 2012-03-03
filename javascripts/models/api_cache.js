@@ -9,15 +9,15 @@ var BadgerCache = {
 
   reload: function(key) {
     BadgerCache.flush(key);
-    BadgerCache.load();
+    BadgerCache.load(key);
   },
   
-  load: function() {
+  load: function(key) {
     if (Badger.getAccessToken()) {
-      BadgerCache.getDomains();
-      BadgerCache.getPaymentMethods();
-      BadgerCache.getContacts();
-      BadgerCache.getAccountInfo();
+      if (!key || (key == 'domains')) BadgerCache.getDomains();
+      if (!key || (key == 'payment_methods')) BadgerCache.getPaymentMethods();
+      if (!key || (key == 'contacts')) BadgerCache.getContacts();
+      if (!key || (key == 'account_info')) BadgerCache.getAccountInfo();
     }
   },
   
