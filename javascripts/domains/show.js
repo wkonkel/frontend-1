@@ -63,8 +63,7 @@ with (Hasher('DomainShow','DomainApps')) {
       {
         case 'remote_unlocking':
           return [
-            p('This domain is currently being unlocked at ' + domain_obj.current_registrar  + '. This should take a couple minutes.'),
-            a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry RWH Temp')
+            p('This domain is currently being unlocked at ' + domain_obj.current_registrar  + '. This should take a couple minutes.')
           ];
         case 'needs_unlock':
           return [
