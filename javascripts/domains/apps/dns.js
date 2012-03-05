@@ -500,6 +500,11 @@ define('get_dns_params', function(id) {
               li("Servers around the world."),
               li("Manage from within Badger.com")
             ),
+            
+            div({ id: "badger-dns-options-div", style: "margin-left: 24px; margin-top: 10px; display: none" },
+              div({ style: "font-weight: bold" }, "Options"),
+              div({}, input({ type: "checkbox", name: "import-dns", checked: "checked" }), "Migrate DNS to Badger.com")
+            ),
 
             div({ id: 'badger-dns-installed-div', style: 'margin-top: 30px; font-size: 20px; font-weight: bold; text-align: center; font-style: italic; display: none'}, 
               img({ src: "images/check.png" }),
@@ -520,10 +525,10 @@ define('get_dns_params', function(id) {
                 },
                 dns_provider_options(domain_info.name_servers.join(','))
               ),
-
+              
               div({ style: 'font-weight: bold; margin-top: 10px' }, 'Name Servers:'),
               ul({ id: 'name_server_ul', style: 'margin-left: 0px; padding-left: 0; margin-top: 0' }),
-              
+
               div({ style: 'margin-top: 10px' }, input({ 'class': 'myButton', type: 'submit', value: 'Save' }))
             )
           )
@@ -541,6 +546,7 @@ define('get_dns_params', function(id) {
       $('#radio-nameservers-badger').click();
     } else {
       $('#badger-dns-install-button-div').show();
+      $('#badger-dns-options-div').show();
       $('#radio-nameservers-remote').click();
     }
 
@@ -549,8 +555,11 @@ define('get_dns_params', function(id) {
 
   define('save_name_servers', function(domain_info, new_name_servers) {
     start_modal_spin(domain_info.linkable_registrar ? 'This usually takes about 2 minutes to complete at ' + domain_info.current_registrar : '');
+    
+    var import_dns = !!$("input[name=import-dns]").attr('checked');
+    
     $('#errors_modal').empty();
-    Badger.updateDomain(domain_info.name, { name_servers: new_name_servers }, function(response) {
+    Badger.updateDomain(domain_info.name, { name_servers: new_name_servers, import_dns: import_dns }, function(response) {
       if (response.meta.status == 'ok') {
         hide_modal();
         $('#domain-menu-item-' + domain_info.name.replace('.','-')).remove();
