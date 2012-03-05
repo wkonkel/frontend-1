@@ -97,7 +97,8 @@ a { color: #1E31F5; }
 #menu ul .analytics {background: #212632 url(../images/sprite.png) no-repeat 17px -140px;}
 */
 
-#menu ul li { background: #212632 url(../images/icon-sprite.png) no-repeat; }
+#menu ul li { background: #212632 url(../images/icon-sprite.png) no-repeat 17px -18px; }
+#menu ul li a { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /*#menu ul li.active {background-color: #8b95a9}*/
 #menu ul li.active a {background: url(../images/bg-menu-hover.png) no-repeat 100% 50%}
 /* Menu height = 31 px*/
