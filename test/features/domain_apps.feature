@@ -155,7 +155,7 @@ Feature: Domain apps
     When I follow "Uninstall"
     Then I should see "Heroku Was Uninstalled"
     And I should see "To continue installing Shopify, click the Install button below."
-    When I follow "Continue"
+    When I follow "Install Shopify"
     Then I should see "Install Shopify Confirmation"
     And I should see "To install this application, click the Install button below."
 

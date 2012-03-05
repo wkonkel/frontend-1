@@ -72,9 +72,13 @@ Feature: Badger DNS
 
   Scenario: When I want to edit a dns and click on save, the edit will be saved
     When I wait until "#dns-row-78" is visible
-    And I run javascript "$('#dns-row-78 td div:last').css('visibility', 'visible')"
-    And I run javascript "window.scrollTo(960, 0)"
-    And I click on item with xpath "//tr[@id='dns-row-78']/td/div/a[1]"
+    And I run javascript "document.getElementById('dns-row-78').getElementsByTagName('div')[1].style.visibility='visible'"
+    And I click on item with xpath "(//tr[@id='dns-row-78']/td/div/a)[1]"
+    ### NOTE: these fail in firefox  (i.e. running via "HEADLESS=true cucumber")
+    # And I run javascript "$('#dns-row-78 td div:last').css('visibility', 'visible')"
+    # And I run javascript "window.scrollTo(960, 0)"
+    # And I click on item with xpath "//tr[@id='dns-row-78']/td/div/a[1]"
+    #########
     And I fill in "dns-78-edit-subdomain" with "123agile"
     And I fill in "dns-78-edit-content-ipv4" with "1.2.3.4"
     And I select "1 hour" from "dns-78-edit-ttl"
@@ -99,9 +103,13 @@ Feature: Badger DNS
 
   Scenario: When I want to edit a dns and click on cancel, the edit will not be saved
     When I wait until "#dns-row-78" is visible
-    And I run javascript "$('#dns-row-78 td div:last').css('visibility', 'visible')"
-    And I run javascript "window.scrollTo(960, 0)"
-    And I click on item with xpath "//tr[@id='dns-row-78']/td/div/a[1]"
+    And I run javascript "document.getElementById('dns-row-78').getElementsByTagName('div')[1].style.visibility='visible'"
+    And I click on item with xpath "(//tr[@id='dns-row-78']/td/div/a)[1]"
+    ### NOTE: these fail in firefox  (i.e. running via "HEADLESS=true cucumber")
+    # And I run javascript "$('#dns-row-78 td div:last').css('visibility', 'visible')"
+    # And I run javascript "window.scrollTo(960, 0)"
+    # And I click on item with xpath "//tr[@id='dns-row-78']/td/div/a[1]"
+    #########
     And I fill in "dns-78-edit-subdomain" with "eastagile"
     And I fill in "dns-78-edit-content-ipv4" with "1.2.3.4"
     And I select "1 hour" from "dns-78-edit-ttl"
@@ -115,9 +123,13 @@ Feature: Badger DNS
 
   Scenario: When I want to edit a dns but the dns is failed to update, there will be an error message
     When I wait until "#dns-row-78" is visible
-    And I run javascript "$('#dns-row-78 td div:last').css('visibility', 'visible')"
-    And I run javascript "window.scrollTo(960, 0)"
-    And I click on item with xpath "//tr[@id='dns-row-78']/td/div/a[1]"
+    And I run javascript "document.getElementById('dns-row-78').getElementsByTagName('div')[1].style.visibility='visible'"
+    And I click on item with xpath "(//tr[@id='dns-row-78']/td/div/a)[1]"
+    ### NOTE: these fail in firefox  (i.e. running via "HEADLESS=true cucumber")
+    # And I run javascript "$('#dns-row-78 td div:last').css('visibility', 'visible')"
+    # And I run javascript "window.scrollTo(960, 0)"
+    # And I click on item with xpath "//tr[@id='dns-row-78']/td/div/a[1]"
+    #########
     And I fill in "dns-78-edit-subdomain" with "eastagile"
     And I fill in "dns-78-edit-content-ipv4" with "1.2.3.4"
     And I select "1 hour" from "dns-78-edit-ttl"
