@@ -134,47 +134,58 @@ Feature: Domains
     Then I should see "some-domain.com" within "#content h1"
     And I should see "This domain is currently registered to your linked account on GoDaddy"
 
-  Scenario: Domain in transfer process need to be unlocked
-    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and transfer status "needs_unlock"
+  Scenario: Domain transfer with Godaddy registrar (with privacy)
+    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[['Enter auth code', ''], ['Approve transfer', '']]" and steps completed "[['Initiate transfer', 'ok'], ['Unlock domain', 'ok'], ['Disable privacy', 'ok']]"
     When I visit domain page for domain "some-domain.com"
-    Then I should see "some-domain.com" within "#content h1"
-    And I should see "This domain is currently pending transfer. To continue, please unlock this domain."
-    And I should see "Retry"
+    Then I should see "20%" within "#content table:first"
+    And I should see "40%" within "#content table:first"
+    And I should see "60%" within "#content table:first"
+    And I should see "80%" within "#content table:first"
+    And I should see "100%" within "#content table:first"
+    And I should see "Initiate transfer" within "#content table:first tr:eq(2) td:eq(1)"
+    And I should see "Done" within "#content table:first tr:eq(2) td:eq(1)"
+    And I should see "Unlock domain" within "#content table:first tr:eq(2) td:eq(2)"
+    And I should see "Done" within "#content table:first tr:eq(2) td:eq(2)"
+    And I should see "Disable privacy" within "#content table:first tr:eq(2) td:eq(3)"
+    And I should see "Done" within "#content table:first tr:eq(2) td:eq(3)"
+    And I should see "Enter auth code" within "#content table:first tr:eq(2) td:eq(4)"
+    And I should see "Approve transfer" within "#content table:first tr:eq(2) td:eq(5)"
 
-  Scenario: Domain in transfer process need authcode
-    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and transfer status "needs_auth_code"
+  Scenario: Domain transfer with other registrar than GoDaddy (without privacy)
+    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[['Unlock domain', ''], ['Approve transfer', '']]" and steps completed "[['Initiate transfer', 'ok'], ['Enter auth code', 'ok']]"
     When I visit domain page for domain "some-domain.com"
-    Then I should see "some-domain.com" within "#content h1"
-    And I should see "This domain is currently pending transfer. To continue, please input the authcode here."
-    When I press "Retry"
-    Then I should see "AuthCode cannot be empty"
-    When I fill in "auth_code" with "authcode123"
-    And I mock transferDomain return status "needs_auth_code"
-    And I press "Retry"
-    Then I should see "Invalid AuthCode"
-    When I fill in "auth_code" with "validauthcode123"
-    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and transfer status "transfer_requested"
-    And I mock transferDomain return status "transfer_requested"
-    And I press "Retry"
-    Then I should see "You will need to approve this transfer manually at your current registrar."
+    Then I should see "25%" within "#content table:first"
+    And I should see "50%" within "#content table:first"
+    And I should see "75%" within "#content table:first"
+    And I should see "100%" within "#content table:first"
+    And I should see "Initiate transfer" within "#content table:first tr:eq(2) td:eq(1)"
+    And I should see "Done" within "#content table:first tr:eq(2) td:eq(1)"
+    And I should see "Enter auth code" within "#content table:first tr:eq(2) td:eq(2)"
+    And I should see "Done" within "#content table:first tr:eq(2) td:eq(2)"
+    And I should see "Unlock domain" within "#content table:first tr:eq(2) td:eq(3)"
+    And I should see "Approve transfer" within "#content table:first tr:eq(2) td:eq(4)"
 
-  Scenario: Domain of GoDaddy in transfer process need to disable privacy
-    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and transfer status "needs_privacy_disabled"
+  Scenario: Domain transfer with remote unlocking
+    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and current registrar "GoDaddy" and steps pending "[['Unlock domain', 'remote_unlocking'], ['Approve transfer', '']]" and steps completed "[['Initiate transfer', 'ok'],['Disable privacy', 'ok'], ['Enter auth code', 'ok']]"
     When I visit domain page for domain "some-domain.com"
-    Then I should see "some-domain.com" within "#content h1"
-    And I should see "This domain is currently pending transfer. To continue, please disable this domain privacy."
-    And I should see "Retry"
+    And I should see "This domain is currently being unlocked at GoDaddy. This should take a couple minutes."
 
-  Scenario: Domain of in transfer process need to retry again
-    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and transfer status "needs_transfer_request"
+  Scenario: Domain transfer with needs_transfer_request
+    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[['Approve transfer', 'needs_transfer_request']]" and steps completed "[['Initiate transfer', 'ok'], ['Unlock domain', 'ok'], ['Enter auth code', 'ok']]"
     When I visit domain page for domain "some-domain.com"
-    Then I should see "some-domain.com" within "#content h1"
     And I should see "This domain is currently pending transfer and need a transfer request."
-    And I should see "Retry"
 
-  Scenario: Domain of in transfer process need approval of current registrar
-    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and transfer status "transfer_requested"
+  Scenario: Domain transfer with needs_transfer_request
+    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[['Approve transfer', 'needs_transfer_request']]" and steps completed "[['Initiate transfer', 'ok'], ['Unlock domain', 'ok'], ['Enter auth code', 'ok']]"
     When I visit domain page for domain "some-domain.com"
-    Then I should see "some-domain.com" within "#content h1"
+    And I should see "This domain is currently pending transfer and need a transfer request."
+
+  Scenario: Domain transfer with transfer_requested
+    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[['Approve transfer', 'transfer_requested']]" and steps completed "[['Initiate transfer', 'ok'], ['Unlock domain', 'ok'], ['Enter auth code', 'ok']]"
+    When I visit domain page for domain "some-domain.com"
     And I should see "This domain is currently pending transfer. You will need to approve this transfer manually at your current registrar. Or you can wait 5 days and the transfer will automatically go through."
-    And I should see "Retry"
+
+  Scenario: Domain transfer with transfer_rejected
+    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and current registrar "GoDaddy" and steps pending "[['Approve transfer', 'transfer_rejected']]" and steps completed "[['Initiate transfer', 'ok'], ['Unlock domain', 'ok'], ['Enter auth code', 'ok']]"
+    When I visit domain page for domain "some-domain.com"
+    And I should see "You attempted to transfer this domain, however, the currently owning registrar, GoDaddy, rejected it."

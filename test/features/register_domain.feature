@@ -66,12 +66,6 @@ Feature: Register Domain
     And I fill in "password" with "mypassword123"
     And I fill in "confirm_password" with "mypassword123"
     And I check "agree_to_terms"
-    And I mock createAccount
-    And I mock neccessary data to mock login with 0 domain credits and 0 invites available
-    And I mock getContacts returns 0 contacts
-    And I mock getAccessToken return with "accessToken123"
-    When I press "Create Account"
-    Then I should see "Create Profile"
     And I fill in "first_name" with "John"
     And I fill in "last_name" with "Doe"
     And I fill in "email" with "john@doe.com"
@@ -81,9 +75,11 @@ Feature: Register Domain
     And I fill in "state" with "1"
     And I fill in "zip" with "84"
     And I select "Vietnam" from "country"
+    And I mock createAccount
+    And I mock neccessary data to mock login with 0 domain credits and 0 invites available
     And I mock getContacts returns 1 contacts
-    And I mock createContact
-    When I press "Create Profile"
+    And I mock getAccessToken return with "accessToken123"
+    When I press "Create Account"
     Then I should see "Registrant:"
     And I mock registerDomain api
     And I mock getDomains with 2 normal domains, 1 in transfer domain and 1 expiring soon domains

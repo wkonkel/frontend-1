@@ -70,7 +70,10 @@ Given /^I mock getDomains with ([^"]*) normal domains, ([^"]*) in transfer domai
     domains << "{ name: 'mydomain#{i}.com', expires_at: '2012-11-16T14:21:43Z' }"
   end
   transfer.to_i.times do |i|
-    domains << "{ name: 'transfer#{i}.com', expires_at: '2012-11-16T14:21:43Z', permissions_for_person: ['pending_transfer'] }"
+    domains << "{ name: 'transfer#{i}.com', expires_at: '2012-11-16T14:21:43Z', permissions_for_person: ['pending_transfer'],
+                  steps_completed: [['Initiate transfer', 'ok'], ['Unlock domain', 'ok']],
+                  steps_pending: [['Enter auth code', ''], ['Approve transfer', '']]
+                }"
   end
   expire.to_i.times do |i|
     domains << "{ name: 'expiresoon#{i}.com', expires_at: '2011-11-30T14:21:43Z' }"
@@ -141,16 +144,18 @@ Given /^I mock getDomain( with domain "([^"]*)"|)$/ do |with_domain, domain|
   };")
 end
 
-Given /^I mock getDomain for domain "([^"]*)"(?: available for register "([^"]*)")?(?: with permission "([^"]*)")?(?: and transfer status "([^"]*)")?(?: and current registrar "([^"]*)")?$/ do |domain, register_available, permission, status, registrar|
+Given /^I mock getDomain for domain "([^"]*)"(?: available for register "([^"]*)")?(?: with permission "([^"]*)")?(?: and current registrar "([^"]*)")?(?: and steps pending "([^"]*)" and steps completed "([^"]*)")?$/ do |domain, register_available, permission, registrar, steps_pending, steps_completed|
   domain ||= "mydomain.com"
   register_available ||= false
+  steps_pending ||= "[]"
+  steps_completed ||= "[]"
   status ||= false
   permissions_for_person = (permission ? permission.split(',').map {|p| "'#{p}'" } : ["'modify_dns'", "'show_private_data'", "'change_nameservers'"])
   registrar ||= 'Badger.com'
   page.execute_script("Badger.getDomain = function(name, callback){
     callback({ meta: { status: 'ok' },
                 data: {
-                  name: '#{domain}', available: true, can_register: #{register_available}, transfer_status: '#{status}',
+                  name: '#{domain}', available: true, can_register: #{register_available}, steps_completed: #{steps_completed}, steps_pending: #{steps_pending},
                   expires_on: '2011-11-30T04:21:43Z', status: 'active', registered_on: '2011-10-30T04:21:43Z',
                   created_at: '2011-10-30T04:21:43Z', updated_at: '2011-10-30T04:21:43Z', updated_on: '2011-10-30T04:21:43Z',
                   name_servers: ['ns1.badger.com', 'ns2.badger.com'], created_registrar: 'rhino', badger_registration: true,

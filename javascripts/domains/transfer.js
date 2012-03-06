@@ -185,7 +185,7 @@ with (Hasher('Transfer','Application')) {
         transfer_domains.map(function(domain) { return input({ type: "hidden", name: "transfer_domains[]", value: domain }); }),
         new_domains.map(function(domain) { return input({ type: "hidden", name: "new_domains[]", value: domain }); }),
 
-        table({ style: 'width: 100%' },
+        table({ style: 'width: 100%' }, tbody(
           tr(
             td({ style: 'width: 50%; vertical-align: top'},
               h3({ style: 'margin-bottom: 3px' }, 'Free Options:'),
@@ -210,7 +210,7 @@ with (Hasher('Transfer','Application')) {
               )
             )
           )
-        ),
+        )),
 
         div({ style: "margin-top: 20px; text-align: right "},
           input({ type: 'hidden', name: 'hidden_tag_anchor', id: 'hidden_tag_anchor', value: '' }),

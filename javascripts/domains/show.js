@@ -13,7 +13,7 @@ with (Hasher('DomainShow','DomainApps')) {
 
   define('handle_get_domain_response', function(content_div, domain, response, skip_retry) {
     var domain_obj = response.data;
-    
+
     if (response.meta.status == 'ok') {
       if (!domain_obj.current_registrar) {
         if (domain_obj.can_register) {
@@ -33,7 +33,7 @@ with (Hasher('DomainShow','DomainApps')) {
           Badger.getDomain(domain_obj.name, curry(handle_get_domain_response, content_div, domain));
         }, 1000);
       } else {
-        render({ into: content_div }, 
+        render({ into: content_div },
           domain_status_description(domain_obj),
           render_all_application_icons(domain_obj)
         );
@@ -59,56 +59,7 @@ with (Hasher('DomainShow','DomainApps')) {
         days <= 30 ? a({ 'class': 'myButton myButton-small', href: curry(Register.renew_domain_modal, domain_obj.name) }, 'Renew') : ''
       ];
     } else if ((domain_obj.permissions_for_person || []).indexOf('pending_transfer') >=0) {
-      switch (domain_obj.transfer_status)
-      {
-        case 'remote_unlocking':
-          return [
-            p('This domain is currently being unlocked at ' + domain_obj.current_registrar  + '. This should take a couple minutes.')
-          ];
-        case 'needs_unlock':
-          return [
-            p('This domain is currently pending transfer. To continue, please unlock this domain.',
-              render_help_link('needs_unlock', domain_obj.current_registrar)),
-            a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry')
-          ];
-        case 'needs_privacy_disabled':
-          return [
-            p('This domain is currently pending transfer. To continue, please disable this domain privacy.',
-              render_help_link('needs_privacy_disabled', domain_obj.current_registrar)),
-            a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry')
-          ];
-        case 'needs_auth_code':
-          return [
-            p('This domain is currently pending transfer. To continue, please input the authcode here.',
-              render_help_link('needs_auth_code', domain_obj.current_registrar)),
-            form({ action: curry(retry_transfer, domain_obj.name) },
-              input({ name: 'auth_code', placeholder: 'authcode' }),
-              input({ 'class': 'myButton myButton-small', type: 'submit', value: 'Retry' })
-            )
-          ];
-        case 'needs_transfer_request':
-          return [
-            p('This domain is currently pending transfer and need a transfer request.',
-              render_help_link('', domain_obj.current_registrar)),
-            a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry')
-          ];
-        case 'transfer_requested':
-          return [
-            p('This domain is currently pending transfer. You will need to approve this transfer manually at your current registrar. Or you can wait 5 days and the transfer will automatically go through.',
-              render_help_link('transfer_requested', domain_obj.current_registrar)),
-            a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Retry')
-          ];
-        case 'transfer_rejected':
-          return [
-            p('You attempted to transfer this domain, however, the currently owning registrar, ' + domain_obj.current_registrar + ', rejected it.',
-              render_help_link('transfer_requested', domain_obj.current_registrar)),
-            a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name) }, 'Resubmit Transfer Request')
-          ];
-        default:
-          return [
-            p('There was an unknown error transfering this domain')
-          ];
-      }
+      return display_transfer_status(domain_obj);
     } else if ((domain_obj.permissions_for_person || []).indexOf('linked_account') >=0) {
       return p('This domain is currently registered to your linked account on ' + domain_obj.current_registrar);
     } else {
@@ -119,22 +70,92 @@ with (Hasher('DomainShow','DomainApps')) {
     }
   });
 
-  define('retry_transfer', function(domain_name, form_data){
-    var params = { retry: true, name: domain_name };
-    if (form_data) {
-      if (form_data.auth_code == '') {
-        $('#error-message').html('AuthCode cannot be empty');
-        $('#error-message').removeClass('hidden');
-        return;
+  define('display_transfer_status', function(domain_obj) {
+    var count = 0;
+    var step_percentage = 100/(domain_obj.steps_completed.length + domain_obj.steps_pending.length);
+
+    var process_bar = [];
+    var detail_information = [];
+    for (var step_name in domain_obj.steps_completed) {
+      count++;
+      process_bar.push(td({ style: 'background-color: #669933; text-align: center; color: white; width: ' + step_percentage + '%;' }, step_percentage * count + '%'))
+      detail_information.push(render_transfer_description(domain_obj, domain_obj.steps_completed[step_name][0], domain_obj.steps_completed[step_name][1], step_percentage))
+    }
+
+    for (var step_name in domain_obj.steps_pending) {
+      count++;
+      process_bar.push(td({ style: 'background-color: #ddddee; text-align: center; width: ' + step_percentage + '%;' }, step_percentage * count + '%'))
+      detail_information.push(render_transfer_description(domain_obj, domain_obj.steps_pending[step_name][0], domain_obj.steps_pending[step_name][1], step_percentage))
+    }
+
+    return [
+      table({ style: 'width: 100%; border-spacing: 0;' }, tbody(
+        tr(
+          process_bar
+        ),
+        tr(
+          detail_information
+        )
+      )),
+      br(),
+      a({ 'class': 'myButton myButton-small', href: curry(retry_transfer, domain_obj.name, $('#auth_code') ? { auth_code: $('#auth_code').val() } : {}) }, 'Retry')
+    ];
+  });
+
+  define('render_transfer_description', function(domain_obj, step_name, value, step_percentage) {
+    var title = div(step_name);
+    var details = div();
+    if(value == 'ok') {
+      details = div('Done')
+    } else {
+      switch (step_name) {
+      case 'Initiate transfer':
+        details = div('Instruction to Initiate Transfer');
+        break;
+      case 'Unlock domain':
+        if (value == 'remote_unlocking')
+          details = div('This domain is currently being unlocked at ' + domain_obj.current_registrar  + '. This should take a couple minutes.');
+        else
+          details = div('Instruction to Unlock Domain');
+        break;
+      case 'Disable privacy':
+        details = div('Instruction to Disable privacy');
+        break;
+      case 'Enter auth code':
+        details = input({ id: 'auth_code', placeholder: 'authcode' });
+        break;
+      case 'Approve transfer':
+        if (value == 'needs_transfer_request') {
+          details = div('This domain is currently pending transfer and need a transfer request.',
+                        render_help_link('', domain_obj.current_registrar));
+        } else if (value == 'transfer_requested') {
+          details = div('This domain is currently pending transfer. You will need to approve this transfer manually at your current registrar. Or you can wait 5 days and the transfer will automatically go through.',
+              render_help_link('transfer_requested', domain_obj.current_registrar));
+        } else if (value == 'transfer_rejected') {
+          details = div('You attempted to transfer this domain, however, the currently owning registrar, ' + domain_obj.current_registrar + ', rejected it.',
+              render_help_link('transfer_rejected', domain_obj.current_registrar));
+        } else {
+          details = div('Instruction to Approve transfer');
+        }
+        break;
       }
-      params.auth_code = form_data.auth_code;
+    }
+    var step_detail = div({ style: 'height: 100px; margin: 3px; padding: 2px;', 'class': 'info-message' }, title, details)
+    return td({ style: 'text-align: center; width: ' + step_percentage + '%;' }, step_detail)
+  });
+
+  define('retry_transfer', function(domain_name){
+    var params = { retry: true, name: domain_name };
+    var auth_code = null;
+    if ($('#auth_code')) {
+      auth_code = $('#auth_code').val();
+      params.auth_code = auth_code;
     }
     Badger.transferDomain(params, function(response) {
-      if (form_data && form_data.auth_code && (response.data.transfer_status == 'needs_auth_code')) {
+      set_route(get_route());
+      if (auth_code && (response.data.transfer_status.steps_completed.indexOf('Enter auth code') == -1)) {
         $('#error-message').html('Invalid AuthCode');
         $('#error-message').removeClass('hidden');
-      } else {
-        set_route(get_route());
       }
     });
   });
@@ -177,14 +198,14 @@ with (Hasher('DomainShow','DomainApps')) {
         available_apps
       );
     }
-    
+
     return [
       h2({ style: 'border-bottom: 1px solid #888; padding-bottom: 6px' }, 'Installed Applications'),
       installed_apps,
       div({ style: 'clear: both '}),
-      
+
       available_apps_div,
-      
+
       div({ style: 'clear: both '})
     ];
   });
