@@ -550,3 +550,20 @@ When /^I mock transferDomain return status "([^"]*)"$/ do |status|
     callback({ meta: { status: 'ok' }, data: { transfer_status: '#{status}' } });
   };")
 end
+
+Given /^I mock closeTicket returns status "([^"]*)"$/ do |status|
+  if status == 'ok'
+    message = 'Ticket closed'
+  else
+    message = 'Unable to close ticket'
+  end
+  page.execute_script("Badger.closeTicket = function(id, callback) {
+    callback({ meta: { status: '#{status}' }, data: { message: '#{message}' } });
+  };")
+
+  # TODO: make document.domain in attachment_field work when Capybara.app_host is a specific link to the index file
+  # Then can remove the row below
+  page.execute_script("with (Hasher('Ticket','Application')) {
+    define('attachment_field', function(id) {});
+  }")
+end

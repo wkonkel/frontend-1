@@ -431,6 +431,10 @@ var Badger = {
 
   addResponseTicket: function(id, data, callback) {
     Badger.api("/tickets/" + id + '/add_response', 'POST', data, callback);
+  },
+
+  closeTicket: function(id, callback) {
+    Badger.api("tickets/" + id + '/close_ticket', 'POST', callback);
   }
 
 

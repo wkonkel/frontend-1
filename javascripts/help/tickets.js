@@ -36,6 +36,8 @@ with (Hasher('Ticket','Application')) {
     var ticket_info = div(p('Loading...'))
     render(
       h1('Ticket Information'),
+      div({ id: 'success-message', 'class': 'success-message hidden' }),
+      div({ id: 'error-message', 'class': 'error-message hidden' }),
       ticket_info
     );
 
@@ -46,7 +48,7 @@ with (Hasher('Ticket','Application')) {
           table(tbody(
             tr(
               td(strong('Status: ')),
-              td(ticket.status)
+              td(ticket.status, ' ', ticket.status == 'closed' ? '' : a({ href: curry(close_ticket, id), 'class': 'myButton small'}, "Close Ticket"))
             ),
             tr(
               td(strong('Created on: ')),
@@ -202,6 +204,21 @@ with (Hasher('Ticket','Application')) {
       $('#error-message').html('Response cannot be empty');
       $('#error-message').removeClass('hidden');
     }
+  });
+
+  define('close_ticket', function(id) {
+    Badger.closeTicket(id, function(response) {
+      set_route('#tickets/' + id);
+      if (response.meta.status == 'ok') {
+        $('#success-message').html(response.data.message);
+        $('#success-message').removeClass('hidden');
+        $('#error-message').addClass('hidden');
+      } else {
+        $('#error-message').html(response.data.message);
+        $('#error-message').removeClass('hidden');
+        $('#success-message').addClass('hidden');
+      }
+    })
   });
 
   define('render_ticket_table', function(header, tickets) {

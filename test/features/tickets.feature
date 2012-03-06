@@ -58,6 +58,18 @@ Feature: Tickets
     And I press "Reply"
     Then I should see "Add Response Result"
 
+  Scenario: Close a ticket
+    And I mock getTicket
+    And I follow "Website Bug 0"
+    And I mock closeTicket returns status "unprocessable_entity"
+    When I follow "Close Ticket"
+    Then I should see "Unable to close ticket"
+    And I follow "TICKETS"
+    And I follow "Website Bug 0"
+    And I mock closeTicket returns status "ok"
+    When I follow "Close Ticket"
+    Then I should see "Ticket closed"
+
   Scenario: Create a new ticket
     When I follow "Create a New Ticket"
     Then I should see "Create A New Ticket"
