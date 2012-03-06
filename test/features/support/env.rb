@@ -3,7 +3,7 @@ require 'capybara/dsl'
 require 'capybara/cucumber'
 
 Capybara.default_driver = :selenium
-Capybara.default_wait_time = 0.5
+Capybara.default_wait_time = 1.0
 Capybara.app_host = 'file://' + File.expand_path(File.dirname(__FILE__) + '/../../..')
 
 Capybara.register_driver :selenium do |app|
