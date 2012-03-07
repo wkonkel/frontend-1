@@ -20,6 +20,8 @@ with (Hasher('Registration','DomainApps')) {
     render(
       h1({ 'class': 'long-domain-name' }, Domains.truncate_domain_name(domain, 20), ' Registration'),
       button_div,
+      div({ 'class': 'error-message hidden', id: 'error-message' }),
+      div({ 'class': 'success-message hidden', id: 'success-message' }),
       domain_data_block(domain),
       whois_div
     );
@@ -178,8 +180,8 @@ with (Hasher('Registration','DomainApps')) {
             h2('Public Whois Listing'),
             div({ 'class': 'long-domain-name', style: 'border: 1px solid #ccc; width: ' + (hide_modify_contacts_form ? '690px' : '409px') + '; overflow: auto; white-space: pre; padding: 5px; background: #f0f0f0' }, (domain.whois ? domain.whois.raw : 'Missing.'))
           ),
-          hide_modify_contacts_form ? [] : [
-            td({ style: 'vertical-align: top'},
+          td({ style: 'vertical-align: top'},
+            hide_modify_contacts_form ? [] : [
               h2('Make Changes'),
 
               form({ action: curry(update_whois, domain) },
@@ -221,10 +223,38 @@ with (Hasher('Registration','DomainApps')) {
                   input({ type: 'submit', 'class': 'myButton small', value: 'Save' })
                 )
               )
-            )
-          ]
+            ],
+            (domain.permissions_for_person || []).indexOf('transfer_out') != -1 ?
+              div({ 'class': 'info-message', style: 'border-color: #aaa; background: #eee; padding-top: 0px; margin-top: 10px;' },
+                h3('Want to transfer this domain to another registrar?'),
+                  domain.locked ? [
+                    p("This domain is currently locked.  If you'd like to transfer this domain to another registrar, unlock this domain to receive the auth code."),
+                    a({ 'class': 'myButton small', href: curry(lock_domain, domain.name, false) }, 'Unlock Domain')
+                  ]
+                  : [
+                    p('Domain Auth Code:'),
+                    p({ style: 'text-align: center' }, strong(domain.auth_code)),
+                    a({ 'class': 'myButton small', href: curry(lock_domain, domain.name, true) }, 'Lock Domain')
+                  ]
+              ) : []
+          )
         )
       ))
     );
+  });
+
+  define('lock_domain', function(domain, locked) {
+    Badger.updateDomain(domain, { locked: locked }, function(response) {
+      set_route(get_route());
+      if (response.meta.status == 'ok') {
+        $('#success-message').html(locked ? 'Domain has been locked' : 'Domain has been unlocked');
+        $('#success-message').removeClass('hidden');
+        $('#error-message').addClass('hidden');
+      } else {
+        $('#error-message').html(response.data.message);
+        $('#error-message').removeClass('hidden');
+        $('#success-message').addClass('hidden');
+      }
+    });
   });
 }

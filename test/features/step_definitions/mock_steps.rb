@@ -144,7 +144,8 @@ Given /^I mock getDomain( with domain "([^"]*)"|)$/ do |with_domain, domain|
   };")
 end
 
-Given /^I mock getDomain for domain "([^"]*)"(?: available for register "([^"]*)")?(?: with permission "([^"]*)")?(?: and current registrar "([^"]*)")?(?: and steps pending "([^"]*)" and steps completed "([^"]*)")?$/ do |domain, register_available, permission, registrar, steps_pending, steps_completed|
+Given /^I mock getDomain for domain "([^"]*)"(?: available for register "([^"]*)")?(?: with permission "([^"]*)")?(?: and current registrar "([^"]*)")?(?: and steps pending "([^"]*)" and steps completed "([^"]*)")?(?: and domain locked "([^"]*)")?$/ do |domain, register_available, permission, registrar, steps_pending, steps_completed, locked|
+  locked ||= true
   domain ||= "mydomain.com"
   register_available ||= false
   steps_pending ||= "[]"
@@ -156,7 +157,8 @@ Given /^I mock getDomain for domain "([^"]*)"(?: available for register "([^"]*)
     callback({ meta: { status: 'ok' },
                 data: {
                   name: '#{domain}', available: true, can_register: #{register_available}, steps_completed: #{steps_completed}, steps_pending: #{steps_pending},
-                  expires_on: '2011-11-30T04:21:43Z', status: 'active', registered_on: '2011-10-30T04:21:43Z',
+                  auth_code: 'authCode123',
+                  expires_on: '2011-11-30T04:21:43Z', status: 'active', registered_on: '2011-10-30T04:21:43Z', locked: #{locked},
                   created_at: '2011-10-30T04:21:43Z', updated_at: '2011-10-30T04:21:43Z', updated_on: '2011-10-30T04:21:43Z',
                   name_servers: ['ns1.badger.com', 'ns2.badger.com'], created_registrar: 'rhino', badger_registration: true,
                   whois: 'The data contained in this whois database is provided \"as is\" with no guarantee or warranties regarding its accuracy.',
@@ -187,6 +189,23 @@ Given /^I mock getDomain with domain "([^"]*)" and dns:$/ do |domain, table|
                         email: 'tester@eastagile.com', fax: '', first_name: 'East', id: 4, last_name: 'Agile Company', organization: '',
                         phone: '123456789', state: '1', zip: '084' } }});
   };")
+end
+
+Given /^I mock updateDomain returns status "([^"]*)"$/ do |status|
+  if status == 'ok'
+    message = 'Ticket closed'
+  else
+    message = 'Unable to close ticket'
+  end
+  page.execute_script("Badger.updateDomain = function(id, options, callback) {
+    callback({ meta: { status: '#{status}' }, data: { message: '#{message}' } });
+  };")
+
+  # TODO: make document.domain in attachment_field work when Capybara.app_host is a specific link to the index file
+  # Then can remove the row below
+  page.execute_script("with (Hasher('Ticket','Application')) {
+    define('attachment_field', function(id) {});
+  }")
 end
 
 Given /^I mock getRecords with empty records$/ do

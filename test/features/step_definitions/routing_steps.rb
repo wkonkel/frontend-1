@@ -24,6 +24,10 @@ When /^I visit Badger DNS for domain "([^"]*)"$/ do |domain|
   visit("/index.html#domains/#{domain}/dns")
 end
 
+When /^I visit Registration for domain "([^"]*)"$/ do |domain|
+  visit("/index.html#domains/#{domain}/registration")
+end
+
 When /^I visit Email Forwarding for domain "([^"]*)"$/ do |domain|
   visit("/index.html#domains/#{domain}/email_forwards")
 end
