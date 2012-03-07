@@ -10,7 +10,7 @@ with (Hasher('LinkedAccounts','Application')) {
 			)
 		)
 				
-		Badger.getLinkedAccounts(function(response) {
+		BadgerCache.getLinkedAccounts(function(response) {
 			render({ target: target_div },
 				(response.data || []).length == 0 ? [
 					div({ 'class': 'info-message', style: "margin: 25px 0" },
@@ -37,34 +37,24 @@ with (Hasher('LinkedAccounts','Application')) {
 	});
 	
 	define('linked_accounts_table', function(accounts) {
-		return table({ id: "accounts-table", 'class': "fancy-table" }, tbody(
+		var accounts_table = table({ id: "accounts-table", 'class': "fancy-table" }, tbody(
 			// if the user has not linked any accounts yet, we want to show all of the accounts that they can link immediately.
-			(accounts.length == 0 ? [
+			accounts.length == 0 ? [
 				show_account_link_rows(accounts)
 			] : [
 				(accounts || []).map(function(account) {
 					if (account.site == "twitter") {
-						var row = linked_accounts_table_row("Twitter",
+						return linked_accounts_table_row("Twitter",
 						  div({ id: ("twitter-" + account.id), style: "text-align: center" },
 							  img({ src: "images/ajax-loader.gif" })
 						  )
 						);
-						
-						update_linked_account_row_handler(account);
-						
-						return row;
 					} else if (account.site == "facebook") {
-						
-						var row = linked_accounts_table_row("Facebook",
+						return linked_accounts_table_row("Facebook",
 						  div({ id: ("facebook-" + account.id), style: "text-align: center" },
 							  img({ src: "images/ajax-loader.gif" })
 						  )
 						);
-						
-						update_linked_account_row_handler(account);
-						
-						return row;
-						
 					} else if (account.site == "godaddy" || account.site == "networksolutions") {
 					  var name = 'Unknown';
 					  var status = 'Unknown';
@@ -103,10 +93,16 @@ with (Hasher('LinkedAccounts','Application')) {
 					} else {
 						console.log("Unknown account (" + account.site + ")", account);
 					}
-					
 				})
-			])
+			]
 		));
+		
+		// after the table is created, run the linked account remote info commands to add data
+		(accounts||[]).map(function(account) {
+		  if (account.site == 'facebook' || account.site == 'twitter') update_linked_account_row_handler(account);
+		});
+		
+		return accounts_table;
 	});
 	
 	define('linked_accounts_table_row', function(site, button) {
@@ -117,12 +113,19 @@ with (Hasher('LinkedAccounts','Application')) {
 	});
 	
 	define('update_linked_account_row_handler', function(account) {
-	  Badger.getAuthorizedAccountInfo(account.id, function(response) {
+	  // the cache is too damn fast, compensate a little for that
+	  if ($("#accounts-table").length == 0) {
+	    setTimeout(function() {
+  	    update_linked_account_row_handler(account);
+  	  }, 100);
+	  }
+	  
+    BadgerCache.getAuthorizedAccountInfo(account.id, function(response) {
 		  if (response.data.status == "linked") {
 				$("#" + account.site + "-" + account.id).html(
 					div({ 'class': "status-message", style: "margin: 5px auto 5px auto; height: 25px; width: 350px;" },
 						img({ style: "margin-top: -11px", src: response.data.profile_image_url }),
-						div({ style: "float: right; margin: 4px 25px auto auto;" }, response.data.name + " (@" + response.data.username + ")")
+						div({ style: "float: right; margin: 4px 25px auto auto;" }, response.data.name + " (" + response.data.username + ")")
 					)
 				).css("text-align", "left");
 		  } else {
@@ -130,7 +133,7 @@ with (Hasher('LinkedAccounts','Application')) {
           var link_action = curry(TwitterAccount.show_link_accounts_modal, response.data.id);
         else if (account.site == "facebook")
           var link_action = curry(Facebook.show_link_accounts_modal, response.data.id);
-		    
+
 				$("#" + account.site + "-" + account.id).html(
 				  div({ style: "margin: 15px 15px 15px auto; float: right" },span({ 'class': "error" }, "Account unlinked. ", a({ href: link_action }, "Link again?")))
 				).css("text-align", "left");

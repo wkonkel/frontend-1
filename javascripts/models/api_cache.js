@@ -5,6 +5,8 @@ var BadgerCache = {
     if (!key || (key == 'contacts')) BadgerCache.cached_contacts = null;
     if (!key || (key == 'account_info')) BadgerCache.cached_account_info = null;
     if (!key || (key == 'invite_status')) BadgerCache.cached_invite_status = null;
+    if (!key || (key == 'linked_accounts')) BadgerCache.cached_linked_account = null;
+    if (!key || (key == 'linked_accounts_remote_info')) BadgerCache.cached_linked_accounts_remote_info = {};
   },
 
   reload: function(key) {
@@ -18,6 +20,7 @@ var BadgerCache = {
       if (!key || (key == 'payment_methods')) BadgerCache.getPaymentMethods();
       if (!key || (key == 'contacts')) BadgerCache.getContacts();
       if (!key || (key == 'account_info')) BadgerCache.getAccountInfo();
+      if (!key || (key == 'linked_accounts')) BadgerCache.getLinkedAccounts();
     }
   },
   
@@ -29,6 +32,32 @@ var BadgerCache = {
       Badger.accountInfo(function(results) { 
         BadgerCache.cached_account_info = results;
         callback(BadgerCache.cached_account_info);
+      });
+    }
+  },
+  
+  getLinkedAccounts: function(callback) {
+    callback = callback || function(){};
+    if (BadgerCache.cached_linked_accounts) {
+      callback(BadgerCache.cached_linked_accounts);
+    } else {
+      Badger.getLinkedAccounts(function(results) { 
+        BadgerCache.cached_linked_accounts = results;
+        callback(BadgerCache.cached_linked_accounts);
+      });
+    }
+  },
+  
+  getAuthorizedAccountInfo: function(linked_account_id, callback) {
+    callback = callback || function(){};
+    BadgerCache.cached_linked_accounts_remote_info = BadgerCache.cached_linked_accounts_remote_info || {};
+    var key = linked_account_id.toString();
+    if (BadgerCache.cached_linked_accounts_remote_info[key]) {
+      callback(BadgerCache.cached_linked_accounts_remote_info[key]);
+    } else {
+      Badger.getAuthorizedAccountInfo(linked_account_id, function(results) { 
+        BadgerCache.cached_linked_accounts_remote_info[key] = results;
+        callback(BadgerCache.cached_linked_accounts_remote_info[key]);
       });
     }
   },
