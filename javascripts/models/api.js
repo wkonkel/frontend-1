@@ -435,6 +435,14 @@ var Badger = {
 
   closeTicket: function(id, callback) {
     Badger.api("tickets/" + id + '/close_ticket', 'POST', callback);
+  },
+
+  getTermsOfServices: function(callback) {
+    Badger.api("/terms_of_services", callback);
+  },
+
+  getTermsOfService: function(id, callback) {
+    Badger.api("/terms_of_services/" + id , callback);
   }
 
 

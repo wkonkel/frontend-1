@@ -586,3 +586,29 @@ Given /^I mock closeTicket returns status "([^"]*)"$/ do |status|
     define('attachment_field', function(id) {});
   }")
 end
+
+When /^I mock getTermsOfServices$/ do
+  terms = "[{ id: 'credits_terms', title: 'Credits Terms' },
+            { id: 'anti_spam_policy', title: 'Anti Spam Policy' },
+            { id: 'domain_privacy_services_agreement', title: 'Domain Privacy Services Agreement' },
+            { id: 'domain_name_services_agreement', title: 'Domain Name Services Agreement' }
+           ]"
+
+  page.execute_script("Badger.getTermsOfServices = function(callback){
+    callback({ meta: { status: 'ok' }, data: #{terms} });
+  };")
+end
+
+When /^I mock getTermsOfService returns status "([^"]*)"$/ do |status|
+  if status != 'ok'
+    data = "{ message: 'Terms of Service not found' }"
+  else
+    data = "{ title: 'Credits Terms',
+              content: 'This is Credit Terms'
+            }"
+  end
+
+  page.execute_script("Badger.getTermsOfService = function(id, callback){
+    callback({ meta: { status: '#{status}' }, data: #{data} });
+  };")
+end
