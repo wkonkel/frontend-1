@@ -39,9 +39,9 @@ Feature: Register
   Scenario: I should be able to see terms of service even if I am not logged in
     Given I am on the home page
     And I am not logged in
+    And I mock getTermsOfServices
     And I view terms of service when registering
-    Then I should see "Domain Name Registration Agreement"
-    Then I should see "1. Introduction"
+    Then I should see "Domain Name Services Agreement"
 
   # NOTE: this is now a server side message, not done in client side JS
   # Scenario: I see error when registering new user without checking terms of service
