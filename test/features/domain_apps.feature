@@ -129,8 +129,8 @@ Feature: Domain apps
     And I fill in "google_app_verification_code" with "google-site-verification:abcdeabcdeabcdeabcdeabcdeabcdebcdeabcde1234"
     And I mock addRecord
     And I mock getDomain with domain "mydomain0.com" and dns:
-      |id |record_type|subdomain    |content                              |ttl |priority|
-      |80 |TXT        |             |google-site-verification:0123456     |1800|        |
+      |id |record_type|subdomain    |content                                                             |ttl |priority|
+      |80 |TXT        |             |google-site-verification:abcdeabcdeabcdeabcdeabcdeabcdebcdeabcde1234|1800|        |
     And I press "Install Google Apps Verification"
     Then I should see "GOOGLE APPS VERIFICATION FOR mydomain0.com" within "#content h1"
     And I should see "The TXT record below has been added to the DNS configuration for"

@@ -66,24 +66,7 @@ with (Hasher('DnsApp','DomainApps')) {
 
   define('render_records', function(options, domain) {
     var domain_obj = $.extend(true, {}, domain);
-    var app_dns=[];
-    for (var key in Hasher.domain_apps) {
-      var app = Hasher.domain_apps[key];
-      if (app.requires && app.requires.dns && app_is_installed_on_domain(app, domain_obj)) {
-        var app_result = { app_id: key, app_name: app.name, dns: [] }
-        for (var i=0; app.requires.dns && (i<app.requires.dns.length); i++) {
-          var found_record = domain_has_record(domain_obj, app.requires.dns[i]);
-          if (found_record) {
-            app_result.dns.push(found_record);
-
-            domain_obj.dns = $.grep(domain_obj.dns, function(value) {
-              return value != found_record;
-            });
-          }
-        }
-        app_dns.push(app_result);
-      }
-    }
+    var app_dns= get_dns_of_installed_apps_list(domain_obj);
     
     //move NS and SOA records into their own array
     var auto_dns = [], dns = [];
@@ -142,7 +125,7 @@ with (Hasher('DnsApp','DomainApps')) {
           auto_dns.length == 0 ? [] : auto_dns_record_rows(sort_auto_dns_records(auto_dns), domain_obj.name),
 
           app_dns.map(function(app_item) {
-            return app_dns_rows(app_item.app_name, app_item.app_id, sort_dns_records(app_item.dns), domain_obj.name);
+            return app_dns_rows(app_item.name, app_item.id, sort_dns_records(app_item.requires.dns), domain_obj.name);
           })
         )
       )

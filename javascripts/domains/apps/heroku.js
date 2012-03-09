@@ -10,7 +10,7 @@ with (Hasher('Heroku', 'DomainApps')) {
         { type: 'a', content: "75.101.163.44" },
         { type: 'a', content: "75.101.145.87" },
         { type: 'a', content: "174.129.212.2" },
-        { type: 'cname', subdomain: 'www', content: /[a-zA-Z0-9_-]+\.heroku(app)?\.com/, name: 'heroku_app_url' }
+        { type: 'cname', subdomain: 'www', content: /[a-zA-Z0-9_-]+\.heroku(app)?\.com/, content_input: 'heroku_app_url' }
       ]
     },
 
@@ -19,7 +19,6 @@ with (Hasher('Heroku', 'DomainApps')) {
       // Cedar Apps: Use YOURAPPNAME.herokuapp.com      ]
       return div(
         p("Heroku is a cloud application platform - a new way of building and deploying web apps."),
-        show_required_dns(app, domain_obj),
         p("Before installing this app, you will need to run these console commands in your project directory:"),
         
         div({ 'style': 'background: #3b4249; color: #f8f8f8; padding: 10px; font-family: Monaco, monospace; font-size: 11px; margin-top: 6px' }, 
@@ -33,7 +32,8 @@ with (Hasher('Heroku', 'DomainApps')) {
         
         div({ style: 'margin: 25px 0 15px 0' }, "Then, copy and paste your Heroku Application URL below:"),
         div({ id: 'app-error-message', 'class': 'error-message hidden' }),
-        form({ style: 'text-align: center', action: curry(check_valid_input, app, domain_obj) },
+        form({ action: curry(check_valid_input, app, domain_obj) },
+          show_required_dns(app, domain_obj),
           'http://',
           text({ name: 'heroku_app_url', placeholder: 'YOURAPPNAME.heroku[app].com', style: 'width: 250px' }),
           '/ ', 

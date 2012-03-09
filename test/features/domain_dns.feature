@@ -16,7 +16,7 @@ Feature: Badger DNS
       |84 |TXT        |             |v=spf2 mx mx:rhinonamesmail.com ~all |1800|        |
       |85 |MX         |             |smtp.eastagile.com                   |1800|10      |
       |86 |MX         |             |smtp.aloha.com                       |1800|20      |
-      |87 |CNAME      |blog         |ghs.google.com                       |1800|        |
+      |87 |CNAME      |blog         |abc.blogger.com                      |1800|        |
       |88 |MX         |             |smtp.google.com                      |1800|20      |
     When I visit Badger DNS for domain "mydomain0.com"
 
@@ -36,7 +36,7 @@ Feature: Badger DNS
     And I should see "30 mins" within "#content table tr:eq(5)"
     And I should see "CNAME" within "#content table tr:eq(6)"
     And I should see "blog.mydomain0.com" within "#content table:first tr:eq(6)"
-    And I should see "ghs.google.com" within "#content table tr:eq(6)"
+    And I should see "abc.blogger.com" within "#content table tr:eq(6)"
     And I should see "30 mins" within "#content table tr:eq(6)"
     And I should see "MX" within "#content table tr:eq(7)"
     And I should see "10 smtp.eastagile.com" within "#content table:first tr:eq(7)"

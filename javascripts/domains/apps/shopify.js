@@ -8,7 +8,7 @@ with (Hasher('Shopify', 'DomainApps')) {
     requires: {
       dns: [
         { type: 'a', content: "204.93.213.45" },
-        { type: 'cname', subdomain: 'www', content: /[a-zA-Z0-9_-]+\.myshopify\.com/, name: 'shopify_app_url' }
+        { type: 'cname', subdomain: 'www', content: /[a-zA-Z0-9_-]+\.myshopify\.com/, content_input: 'shopify_app_url' }
       ]
     },
 
@@ -16,9 +16,9 @@ with (Hasher('Shopify', 'DomainApps')) {
       return div(
         p("Shopify offers a complete ecommerce solution that allows you to create and run your own online store. List your products, customize your store's design, accept credit card orders, and ship your goods - all with a few clicks of the mouse. Shopify is easy to use and there's no software to download or maintain."),
         p('Install this app to point your domain to your shop on Shopify.'),
-        show_required_dns(app, domain_obj),
-        div({ id: 'app-error-message', 'class': 'error-message hidden' }),
-        form({ style: 'text-align: center', action: curry(check_valid_input, app, domain_obj) },
+        form({ action: curry(check_valid_input, app, domain_obj) },
+          show_required_dns(app, domain_obj),
+          div({ id: 'app-error-message', 'class': 'error-message hidden' }),
           'http://',
           text({ name: 'shopify_app_url', placeholder: 'YOURSHOPNAME.myshopify.com', style: 'width: 250px' }),
           '/ ',

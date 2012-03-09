@@ -7,16 +7,16 @@ with (Hasher('GoogleAppsVerification', 'DomainApps')) {
     menu_item: { text: 'GOOGLE APPS VERIFICATION', href: '#domains/:domain/google_verification' },
     requires: {
       dns: [
-        { type: 'txt', content: /^(google-site-verification|google_site_verification).*/, name: 'google_app_verification_code' }
+        { type: 'txt', content: /^(google-site-verification|google_site_verification).*/, content_input: 'google_app_verification_code' }
       ]
     },
 
     install_screen: function(app, domain_obj) {
       return div(
         p('Please copy and paste the unique Google Apps security token for your app here:'),
-        show_required_dns(app, domain_obj),
-        div({ id: 'app-error-message', 'class': 'error-message hidden' }),
-        form({ style: 'text-align: center', action: curry(check_valid_input, app, domain_obj) },
+        form({ action: curry(check_valid_input, app, domain_obj) },
+          show_required_dns(app, domain_obj),
+          div({ id: 'app-error-message', 'class': 'error-message hidden' }),
           text({ name: 'google_app_verification_code', placeholder: 'google-site-verification:aa37fe774dfdb416...', style: 'width: 250px' }),
           input({ 'class': 'myButton', type: 'submit', value: 'Install Google Apps Verification' })
         )

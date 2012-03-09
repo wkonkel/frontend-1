@@ -15,8 +15,8 @@ with (Hasher('EmailForwards', 'DomainApps')) {
     install_screen: function(app, domain_obj) {
       return div(
         p("Install this app to forward your email of this domain to another email account."),
-        show_required_dns(app, domain_obj),
-        form({ style: 'text-align: center', action: curry(install_app_button_clicked, app, domain_obj) },
+        form({ action: curry(install_app_button_clicked, app, domain_obj) },
+          show_required_dns(app, domain_obj),
           input({ 'class': 'myButton', type: 'submit', style: 'margin-top: 10px', value: 'Install Email Forwarding' })
         )
       );

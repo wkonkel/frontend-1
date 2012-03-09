@@ -8,6 +8,9 @@ with (Hasher('Posterous', 'DomainApps')) {
     requires: {
       dns: [
         { type: 'a', content: "184.106.20.102" }
+      ],
+      subdomain_dns: [
+        { type: 'cname', subdomain: /[a-zA-Z0-9_-]+/, content: "posterours.com", subdomain_input: "subdomain" }
       ]
     },
 
@@ -15,8 +18,8 @@ with (Hasher('Posterous', 'DomainApps')) {
       return div(
         p('Posterous Spaces is one of the most amazing tools available to share safely online.'),
         p('Install this app to point your domain to your Posterous Space.'),
-        show_required_dns(app, domain_obj),
-        form({ style: 'text-align: center', action: curry(install_app_button_clicked, app, domain_obj) },
+        form({ action: curry(install_app_button_clicked, app, domain_obj) },
+          show_required_dns(app, domain_obj),
           input({ 'class': 'myButton', type: 'submit', value: 'Install Posterous' })
         )
       );

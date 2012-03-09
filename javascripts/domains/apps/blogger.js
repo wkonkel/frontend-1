@@ -12,6 +12,9 @@ with (Hasher('Blogger', 'DomainApps')) {
         { type: 'a', content: "216.239.36.21" },
         { type: 'a', content: "216.239.38.21" },
         { type: 'cname', subdomain: 'www', content: 'ghs.google.com' }
+      ],
+      subdomain_dns: [
+        { type: 'cname', subdomain: /[a-zA-Z0-9_-]+/, content: "ghs.google.com", subdomain_input: "subdomain" }
       ]
     },
 
@@ -19,8 +22,8 @@ with (Hasher('Blogger', 'DomainApps')) {
       return div(
         p('Blogger is a free weblog publishing tool from Google for sharing text, photos and video.'),
         p('Install this app to point your domain to your Blogger account.'),
-        show_required_dns(app, domain_obj),
-        form({ style: 'text-align: center', action: curry(install_app_button_clicked, app, domain_obj) },
+        form({ action: curry(install_app_button_clicked, app, domain_obj) },
+          show_required_dns(app, domain_obj),
           input({ 'class': 'myButton', type: 'submit', value: 'Install Blogger' })
         )
       );
