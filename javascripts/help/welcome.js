@@ -2,7 +2,7 @@ with (Hasher('Welcome','Application')) {
 
   route('#welcome', function() {
     render(
-      div({ 'id': 'search-arrow-bar', 'class': 'info-message', style: 'font-weight: bold; padding: 8px 15px; font-size: 16px' }, "«---- Search for available domains using this search box.  ", i({ style: 'font-weight: normal' }, '(Hint: type your name)')),
+      div({ 'id': 'search-arrow-bar', 'class': 'info-message', style: 'font-weight: bold; padding: 8px 15px; font-size: 16px' }, "«--- Search for available domains using this search box.  ", i({ style: 'font-weight: normal' }, '(Hint: type your name)')),
     
       div(
         //h1({ style: 'margin-top: 0' }, 'Welcome to Badger.com'),
