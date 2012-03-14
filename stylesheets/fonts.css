@@ -5,13 +5,6 @@
   src: local('Oswald '), local('Oswald'), url('../fonts/Oswald.woff') format('woff');
 }
 
-/*@font-face {
-  font-family: 'Adelle';
-  font-style: normal;
-  font-weight: normal;
-  src: local('Adelle'), url('../fonts/AdelleBasic.otf');
-}*/
-
 @font-face {
   font-family: 'AdelleBold';
   font-style: normal;
