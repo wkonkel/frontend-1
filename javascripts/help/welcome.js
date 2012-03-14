@@ -7,9 +7,9 @@ with (Hasher('Welcome','Application')) {
         img({ src: 'images/badger-6.png', style: 'padding: 20px 30px; float: right' }),
         ul(
           li('Fast search and simple registration process.'),
+          li('Free privacy, DNS and email/url forwarding.'),
           li('Automatic transfers with no downtime.'),
-          li('Popular shortcuts for quick configuration.'),
-          li('Free privacy, DNS and email/url forwarding.')
+          li('Popular shortcuts for quick configuration.')
         ),
         
         div({ style: 'text-align: center; margin-top: 30px' },
