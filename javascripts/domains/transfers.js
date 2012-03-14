@@ -47,7 +47,7 @@ with (Hasher('Domains','Application')) {
     });
   });
   
-  define('complete_percentage_for', function(domain) {
-    return (domain.steps_completed.length * 100)/(domain.steps_completed.length + domain.steps_pending.length) + '%';
+  define('complete_percentage_for', function(domain_obj) {
+    return !domain_obj.transfer_steps ? "100%" : parseInt(100 * (domain_obj.transfer_steps.completed.length / domain_obj.transfer_steps.count)) + '%';
   });
 }

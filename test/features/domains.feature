@@ -119,7 +119,7 @@ Feature: Domains
     And I mock getDomain for domain "mydomain0.com"
     When I follow "mydomain0.com"
     Then I should see "mydomain0.com" within "#content h1"
-    And I should see "This domain is active and will auto-renew for 1 Credit on "
+    And I should see "This domain is active and will auto-renew for "
 
   Scenario: Domain registered to somebody else (on Badger or others)
     And I mock getDomain for domain "some-domain.com" with permission "" and current registrar "GoDaddy"
@@ -135,57 +135,47 @@ Feature: Domains
     And I should see "This domain is currently registered to your linked account on GoDaddy"
 
   Scenario: Domain transfer with Godaddy registrar (with privacy)
-    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[['Enter auth code', ''], ['Approve transfer', '']]" and steps completed "[['Initiate transfer', 'ok'], ['Unlock domain', 'ok'], ['Disable privacy', 'ok']]"
+    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[{ name: 'Enter auth code', value: '' }, { name: 'Approve transfer', value: '' }, { name: 'Processed', value: '' }]" and steps completed "[{ name: 'Initiate transfer', value: 'ok' }, { name: 'Unlock domain', value: 'ok' }, { name: 'Disable privacy', value: 'ok' }]" and steps count "6"
+
     When I visit domain page for domain "some-domain.com"
-    Then I should see "20%" within "#content table:first"
-    And I should see "40%" within "#content table:first"
-    And I should see "60%" within "#content table:first"
-    And I should see "80%" within "#content table:first"
-    And I should see "100%" within "#content table:first"
-    And I should see "Initiate transfer" within "#content table:first tr:eq(2) td:eq(1)"
-    And I should see "Done" within "#content table:first tr:eq(2) td:eq(1)"
-    And I should see "Unlock domain" within "#content table:first tr:eq(2) td:eq(2)"
-    And I should see "Done" within "#content table:first tr:eq(2) td:eq(2)"
-    And I should see "Disable privacy" within "#content table:first tr:eq(2) td:eq(3)"
-    And I should see "Done" within "#content table:first tr:eq(2) td:eq(3)"
-    And I should see "Enter auth code" within "#content table:first tr:eq(2) td:eq(4)"
-    And I should see "Approve transfer" within "#content table:first tr:eq(2) td:eq(5)"
+		Then I should see "Transfer Progress"
+		And I should see "Initiate the domain transfer on Badger.com"
+		Then I should see "Unlock domain"
+		And I should see "You need to unlock this domain at"
+		Then I should see "Disable privacy"
+		And I should see "You need to disable privacy for this domain at"
+		Then I should see "Enter auth code"
+		Then I should see "Approve transfer"
+		And I should see "You need to complete the steps above first."
+		Then I should see "Processed"
+		And I should see "Once the transfer request is approved, we can finish setting up the domain on Badger.com"
+		Then I should see "50%"
 
   Scenario: Domain transfer with other registrar than GoDaddy (without privacy)
-    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[['Unlock domain', ''], ['Approve transfer', '']]" and steps completed "[['Initiate transfer', 'ok'], ['Enter auth code', 'ok']]"
+		And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[{ name: 'Approve transfer', value: '' }, { name: 'Processed', value: '' }, { name: 'Unlock domain', value: 'ok' }]" and steps completed "[{ name: 'Initiate transfer', value: 'ok' }, { name: 'Disable privacy', value: 'ok' }, { name: 'Enter auth code', value: 'ok' }]" and steps count "6"
+
     When I visit domain page for domain "some-domain.com"
-    Then I should see "25%" within "#content table:first"
-    And I should see "50%" within "#content table:first"
-    And I should see "75%" within "#content table:first"
-    And I should see "100%" within "#content table:first"
-    And I should see "Initiate transfer" within "#content table:first tr:eq(2) td:eq(1)"
-    And I should see "Done" within "#content table:first tr:eq(2) td:eq(1)"
-    And I should see "Enter auth code" within "#content table:first tr:eq(2) td:eq(2)"
-    And I should see "Done" within "#content table:first tr:eq(2) td:eq(2)"
-    And I should see "Unlock domain" within "#content table:first tr:eq(2) td:eq(3)"
-    And I should see "Approve transfer" within "#content table:first tr:eq(2) td:eq(4)"
+		Then I should see "Transfer Progress"
+		And I should see "Initiate the domain transfer on Badger.com"
+		Then I should see "Unlock domain"
+		And I should see "You need to unlock this domain at"
+		Then I should see "Disable privacy"
+		And I should see "You need to disable privacy for this domain at"
+		Then I should see "Enter auth code"
+		Then I should see "Approve transfer"
+		And I should see "You need to complete the steps above first."
+		Then I should see "Processed"
+		And I should see "Once the transfer request is approved, we can finish setting up the domain on Badger.com"
+		Then I should see "50%"
 
   Scenario: Domain transfer with remote unlocking
-    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and current registrar "GoDaddy" and steps pending "[['Unlock domain', 'remote_unlocking'], ['Approve transfer', '']]" and steps completed "[['Initiate transfer', 'ok'],['Disable privacy', 'ok'], ['Enter auth code', 'ok']]"
-    When I visit domain page for domain "some-domain.com"
-    And I should see "This domain is currently being unlocked at GoDaddy. This should take a couple minutes."
+		And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[{ name: 'Approve transfer', value: 'pending_transfer' }, { name: 'Processed', value: '' }, { name: 'Unlock domain', value: 'pending' }]" and steps completed "[{ name: 'Initiate transfer', value: 'ok' }, { name: 'Disable privacy', value: 'ok' }, { name: 'Enter auth code', value: 'ok' }]" and steps count "6"
 
-  Scenario: Domain transfer with needs_transfer_request
-    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[['Approve transfer', 'needs_transfer_request']]" and steps completed "[['Initiate transfer', 'ok'], ['Unlock domain', 'ok'], ['Enter auth code', 'ok']]"
     When I visit domain page for domain "some-domain.com"
-    And I should see "This domain is currently pending transfer and need a transfer request."
-
-  Scenario: Domain transfer with needs_transfer_request
-    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[['Approve transfer', 'needs_transfer_request']]" and steps completed "[['Initiate transfer', 'ok'], ['Unlock domain', 'ok'], ['Enter auth code', 'ok']]"
-    When I visit domain page for domain "some-domain.com"
-    And I should see "This domain is currently pending transfer and need a transfer request."
-
-  Scenario: Domain transfer with transfer_requested
-    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[['Approve transfer', 'transfer_requested']]" and steps completed "[['Initiate transfer', 'ok'], ['Unlock domain', 'ok'], ['Enter auth code', 'ok']]"
-    When I visit domain page for domain "some-domain.com"
-    And I should see "This domain is currently pending transfer. You will need to approve this transfer manually at your current registrar. Or you can wait 5 days and the transfer will automatically go through."
+    And I should see "This domain is currently being unlocked"
 
   Scenario: Domain transfer with transfer_rejected
-    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and current registrar "GoDaddy" and steps pending "[['Approve transfer', 'transfer_rejected']]" and steps completed "[['Initiate transfer', 'ok'], ['Unlock domain', 'ok'], ['Enter auth code', 'ok']]"
+		And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[{ name: 'Approve transfer', value: 'transfer_rejected' }, { name: 'Processed', value: '' }]" and steps completed "[{ name: 'Initiate transfer', value: 'ok' }, { name: 'Disable privacy', value: 'ok' }, { name: 'Enter auth code', value: 'ok' }, { name: 'Unlock domain', value: 'ok' }]" and steps count "6"
+
     When I visit domain page for domain "some-domain.com"
-    And I should see "You attempted to transfer this domain, however, the currently owning registrar, GoDaddy, rejected it."
+    And I should see "You attempted to transfer this domain, however, the currently owning registrar"

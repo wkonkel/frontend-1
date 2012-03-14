@@ -144,19 +144,26 @@ Given /^I mock getDomain( with domain "([^"]*)"|)$/ do |with_domain, domain|
   };")
 end
 
-Given /^I mock getDomain for domain "([^"]*)"(?: available for register "([^"]*)")?(?: with permission "([^"]*)")?(?: and current registrar "([^"]*)")?(?: and steps pending "([^"]*)" and steps completed "([^"]*)")?(?: and domain locked "([^"]*)")?$/ do |domain, register_available, permission, registrar, steps_pending, steps_completed, locked|
+Given /^I mock getDomain for domain "([^"]*)"(?: available for register "([^"]*)")?(?: with permission "([^"]*)")?(?: and current registrar "([^"]*)")?(?: and steps pending "([^"]*)" and steps completed "([^"]*)" and steps count "([^"]*)")?(?: and domain locked "([^"]*)")?$/ do |domain, register_available, permission, registrar, steps_pending, steps_completed, steps_count, locked|
   locked ||= true
   domain ||= "mydomain.com"
   register_available ||= false
   steps_pending ||= "[]"
   steps_completed ||= "[]"
+  steps_count ||= 0
   status ||= false
   permissions_for_person = (permission ? permission.split(',').map {|p| "'#{p}'" } : ["'modify_dns'", "'show_private_data'", "'change_nameservers'"])
   registrar ||= 'Badger.com'
-  page.execute_script("Badger.getDomain = function(name, callback){
+  
+  page.execute_script("Badger.getDomain = function(name, callback) {
     callback({ meta: { status: 'ok' },
                 data: {
-                  name: '#{domain}', available: true, can_register: #{register_available}, steps_completed: #{steps_completed}, steps_pending: #{steps_pending},
+                  name: '#{domain}', available: true, can_register: #{register_available}, 
+                  transfer_steps: {
+                    count: #{steps_count},
+                    completed: #{steps_completed},
+                    pending: #{steps_pending}
+                  },
                   auth_code: 'authCode123',
                   expires_on: '2011-11-30T04:21:43Z', status: 'active', registered_on: '2011-10-30T04:21:43Z', locked: #{locked},
                   created_at: '2011-10-30T04:21:43Z', updated_at: '2011-10-30T04:21:43Z', updated_on: '2011-10-30T04:21:43Z',
