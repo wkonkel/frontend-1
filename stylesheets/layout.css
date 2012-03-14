@@ -343,3 +343,6 @@ label { cursor: pointer; }
 
 .domain-row .domain_row_trash_icon { display: none; }
 .domain-row:hover .domain_row_trash_icon { display: block; cursor: pointer; }
+
+
+.legal-indent { margin-left: 50px; }
