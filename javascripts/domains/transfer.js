@@ -221,10 +221,12 @@ with (Hasher('Transfer','Application')) {
   });
 
   define('possibly_show_close_button_on_register_screen', function(domain_count) {
+    var domain_name = (domain_count == 1) ? $("#transfer-domains-table tr[id$=-domain] td")[0].innerHTML : null;
+    
     if ($('#transfer-domains-table .success-row, #transfer-domains-table .error-row').length == domain_count) {
       $('#transfer-domains-table').after(
         div({ style: 'margin-top: 10px; text-align: right' },
-          a({ href: close_transfer_modal, 'class': 'myButton' }, 'Close')
+          a({ href: curry(close_transfer_modal, domain_name), 'class': 'myButton' }, 'Close')
         )
       );
     }
@@ -307,12 +309,13 @@ with (Hasher('Transfer','Application')) {
     });
   });
 
-  define('close_transfer_modal', function() {
+  define('close_transfer_modal', function(domain_name) {
     BadgerCache.flush('domains');
     BadgerCache.getDomains(function() { update_my_domains_count(); });
     update_credits(true);
     hide_modal();
-    set_route('#');
+    
+    domain_name ? set_route('#domains/' + domain_name) : set_route('#domain-transfers');
   });
 
 

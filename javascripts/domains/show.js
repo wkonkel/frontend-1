@@ -93,10 +93,6 @@ with (Hasher('DomainShow','DomainApps')) {
     var expire_date = new Date(Date.parse(domain_obj.expires_at));
     var days = parseInt(expire_date - current_date)/(24*3600*1000);
 
-
-    console.log(domain_obj);
-
-
     if (domain_obj.transfer_steps && domain_obj.transfer_steps.count && domain_obj.transfer_steps.completed && domain_obj.transfer_steps.completed.length < domain_obj.transfer_steps.count) {
       return display_transfer_status(domain_obj);
     } else if ((domain_obj.permissions_for_person || []).indexOf('show_private_data') >= 0) {
@@ -175,13 +171,18 @@ with (Hasher('DomainShow','DomainApps')) {
     case 'Unlock domain':
       if (step_obj.value == 'pending')
         details = div('This domain is currently being unlocked at ' + domain_obj.current_registrar  + '. This should take a couple minutes.');
+      else if (step_obj.value == 'ok')
+        details = div('This domain has been unlocked.')
       else
         details = div('You need to unlock this domain at ' + domain_obj.current_registrar + '.',
           render_help_link('needs_unlock', domain_obj.current_registrar));
       break;
     case 'Disable privacy':
-      details = div('You need to disable privacy for this domain at ' + domain_obj.current_registrar + '.',
-        render_help_link('needs_unlock', domain_obj.current_registrar));
+      if (step_obj.value == 'ok' || step_obj.value == 'skip')
+        details = div('Privacy is disabled for this domain')
+      else
+        details = div('You need to disable privacy for this domain at ' + domain_obj.current_registrar + '.',
+          render_help_link('needs_unlock', domain_obj.current_registrar));
       break;
     case 'Enter auth code':
       details = [
@@ -208,7 +209,7 @@ with (Hasher('DomainShow','DomainApps')) {
         );
         $("#refresh-transfer-steps-button").html("Retry");
       } else if (step_obj.name == 'pending_remote_approval') {
-        details = div("This domain transfer is currently pending approval at GoDaddy. This should take a couple minutes.");
+        details = div("This domain transfer is currently pending approval at " + domain_obj.current_registrar + ". This should take a couple minutes.");
       } else if (step_obj.value == 'pending_transfer' || step_obj.value == 'ok') {
         details = div('This domain is currently pending transfer. You will need to approve this transfer manually at your current registrar. Or you can wait 5 days and the transfer will automatically go through.',
             render_help_link('transfer_requested', domain_obj.current_registrar));

@@ -135,7 +135,7 @@ Feature: Domains
     And I should see "This domain is currently registered to your linked account on GoDaddy"
 
   Scenario: Domain transfer with Godaddy registrar (with privacy)
-    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[{ name: 'Enter auth code', value: '' }, { name: 'Approve transfer', value: '' }, { name: 'Processed', value: '' }]" and steps completed "[{ name: 'Initiate transfer', value: 'ok' }, { name: 'Unlock domain', value: 'ok' }, { name: 'Disable privacy', value: 'ok' }]" and steps count "6"
+    And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[{ name: 'Enter auth code', value: '' }, { name: 'Disable privacy', value: '' }, { name: 'Approve transfer', value: '' }, { name: 'Processed', value: '' }]" and steps completed "[{ name: 'Initiate transfer', value: 'ok' }, { name: 'Disable privacy', value: 'ok' }]" and steps count "6"
 
     When I visit domain page for domain "some-domain.com"
 		Then I should see "Transfer Progress"
@@ -152,7 +152,7 @@ Feature: Domains
 		Then I should see "50%"
 
   Scenario: Domain transfer with other registrar than GoDaddy (without privacy)
-		And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[{ name: 'Approve transfer', value: '' }, { name: 'Processed', value: '' }, { name: 'Unlock domain', value: 'ok' }]" and steps completed "[{ name: 'Initiate transfer', value: 'ok' }, { name: 'Disable privacy', value: 'ok' }, { name: 'Enter auth code', value: 'ok' }]" and steps count "6"
+		And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[{ name: 'Approve transfer', value: '' }, { name: 'Processed', value: '' }, { name: 'Unlock domain', value: '' }]" and steps completed "[{ name: 'Initiate transfer', value: 'ok' }, { name: 'Disable privacy', value: 'ok' }, { name: 'Enter auth code', value: 'ok' }]" and steps count "6"
 
     When I visit domain page for domain "some-domain.com"
 		Then I should see "Transfer Progress"
@@ -160,7 +160,7 @@ Feature: Domains
 		Then I should see "Unlock domain"
 		And I should see "You need to unlock this domain at"
 		Then I should see "Disable privacy"
-		And I should see "You need to disable privacy for this domain at"
+		And I should see "Privacy is disabled for this domain"
 		Then I should see "Enter auth code"
 		Then I should see "Approve transfer"
 		And I should see "You need to complete the steps above first."
