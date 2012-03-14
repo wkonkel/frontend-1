@@ -3,17 +3,28 @@ with (Hasher('Welcome','Application')) {
     render(
     
       div({ id: 'homepage-welcome' },
+        h2("Domains for $15/year."),
+        img({ src: 'images/badger-6.png', style: 'padding: 20px 30px; float: right' }),
         ul(
           li('Fast search and simple registration process.'),
           li('Automatic transfers with no downtime.'),
           li('Popular shortcuts for quick configuration.'),
           li('Free privacy, DNS and email/url forwarding.')
         ),
+        
+        div({ style: 'text-align: center; margin-top: 30px' },
+          a({ href: get_started, 'class': 'myButton', style: 'font-size: 30px; padding: 15px 30px' }, 'Get Started')
+        )
 
-        img({ src: 'images/badger-6.png', style: 'padding: 20px 30px; float: right' }),
-        h2("$15/year")
+        // img({ src: 'images/badger-6.png', style: 'padding: 20px 30px; float: right' }),
+        // h2("$15/year")
       )
     );
+  });
+
+  define('get_started', function() {
+    set_route('#search'); 
+    $('#form-search-input').focus();
   });
 }
 
