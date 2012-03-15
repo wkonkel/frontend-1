@@ -154,9 +154,7 @@ with (Hasher('DomainShow','DomainApps')) {
         
         div({ style: "float: right; margin-top: -30px" },
           // a({ 'class': 'myButton', style: "margin-right: 10px", href: null }, 'Cancel'),
-          a({ id: "refresh-transfer-steps-button", 'class': 'myButton' , href: curry(retry_transfer, domain_obj.name, $('#auth_code') ? { auth_code: $('#auth_code').val() } : {}) },
-            (domain_obj.transfer_steps.pending && domain_obj.transfer_steps.pending.length > 0 && domain_obj.transfer_steps.pending[0].value == 'transfer_rejected') ? 'Retry' : 'Refresh'
-          ),
+          a({ id: "retry-transfer-button", 'class': 'myButton', href: curry(retry_transfer, domain_obj.name, $('#auth_code') ? { auth_code: $('#auth_code').val() } : {}) }, 'Retry'),
           div({ id: "refresh-transfer-steps-loader", style: "display: none" }, img({ src: "images/ajax-loader.gif" }))
         )
       ),
@@ -169,8 +167,10 @@ with (Hasher('DomainShow','DomainApps')) {
       details = div('Initiate the domain transfer on Badger.com');
       break;
     case 'Unlock domain':
-      if (step_obj.value == 'pending')
+      if (step_obj.value == 'pending') {
         details = div('This domain is currently being unlocked at ' + domain_obj.current_registrar  + '. This should take a couple minutes.');
+        setTimeout(curry(retry_transfer, domain_obj.name), 8000);
+      }
       else if (step_obj.value == 'ok')
         details = div('This domain has been unlocked.')
       else
@@ -202,23 +202,30 @@ with (Hasher('DomainShow','DomainApps')) {
       //                 render_help_link('needs_privacy_disabled', domain_obj.current_registrar));
       } else if (step_obj.value == 'transfer_rejected') {
         details = div(
-          div(
-            'You attempted to transfer this domain, however, the currently owning registrar, ' + domain_obj.current_registrar + ', rejected it.',
-            render_help_link('transfer_rejected', domain_obj.current_registrar)  
-          )
+          'You attempted to transfer this domain, however, the currently owning registrar, ' + domain_obj.current_registrar + ', rejected it.',
+          render_help_link('transfer_rejected', domain_obj.current_registrar)  
         );
-        $("#refresh-transfer-steps-button").html("Retry");
+        $("#retry-transfer-button").css('display','');
       } else if (step_obj.name == 'pending_remote_approval') {
         details = div("This domain transfer is currently pending approval at " + domain_obj.current_registrar + ". This should take a couple minutes.");
+        setTimeout(curry(retry_transfer, domain_obj.name), 8000);
       } else if (step_obj.value == 'pending_transfer' || step_obj.value == 'ok') {
         details = div('This domain is currently pending transfer. You will need to approve this transfer manually at your current registrar. Or you can wait 5 days and the transfer will automatically go through.',
             render_help_link('transfer_requested', domain_obj.current_registrar));
+        setTimeout(curry(retry_transfer, domain_obj.name), 8000);
       } else {
         details = div('You need to complete the steps above first.');
       }
       break;
     case 'Processed':
-      details = div("Once the transfer request is approved, we can finish setting up the domain on Badger.com");
+      if (step_obj.value == 'pending') {
+        details = div({ style: "font-style: italic" }, "Setting up domain...");
+        setTimeout(curry(retry_transfer, domain_obj.name), 8000);
+      } else if (step_obj.value == 'ok') {
+        details = div("Domain has been processed, and is ready to go!");
+      } else {
+        details = div("Once the transfer request is approved, we can finish setting up the domain on Badger.com");
+      }
       break;
     default:
       details = div();
@@ -259,7 +266,7 @@ with (Hasher('DomainShow','DomainApps')) {
       $("#auth-code-progress-indicator").html(img({ src: "images/ajax-loader.gif" }))
     }
     
-    $("#refresh-transfer-steps-button").css('display','none');
+    $("#retry-transfer-button").css('display','none');
     $("#refresh-transfer-steps-loader").css('display','');
     
     Badger.transferDomain(params, function(transfer_response) {
@@ -279,7 +286,6 @@ with (Hasher('DomainShow','DomainApps')) {
       var domain_obj = domain_response.data;
       
       // bring the transfer button back
-      $("#refresh-transfer-steps-button").css('display','');
       $("#refresh-transfer-steps-loader").css('display','none');
       
       var new_percentage = parseInt(100 * (domain_obj.transfer_steps.completed.length / domain_obj.transfer_steps.count));
@@ -288,10 +294,7 @@ with (Hasher('DomainShow','DomainApps')) {
       update_progress_bar(new_percentage);
       
       // if it completed, set a timeout to reload page, after which the apps should be displayed
-      if (new_percentage == 100) {
-        $("#refresh-transfer-steps-button").css('display','none');
-        setTimeout(curry(set_route, '#domains/' + domain_name), 1500);
-      }
+      if (new_percentage == 100) setTimeout(curry(set_route, '#domains/' + domain_name), 1500);
       
       // remove and replace with new rows
       $("#transfer-steps tr").remove();
