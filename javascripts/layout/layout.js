@@ -11,7 +11,7 @@ with (Hasher('Application')) {
       check_if_domain_should_be_added_to_sidebar(request_uri);
       if (Badger.getAccessToken()) {
         update_my_domains_count();
-        update_invites_available_count();
+        //update_invites_available_count();
       }
       update_sidebar_with_correct_actives(request_uri);
       OutlineFix.fix_ie_7();
@@ -52,25 +52,25 @@ with (Hasher('Application')) {
       var count = results.length;
       if (count > 0) {
         $('#my-domains-count').html(" (" + count + ")");
-        if ($('#all-my-domains-h1'))
-          $('#all-my-domains-h1').html(" (" + count + ")");
+        $('#all-my-domains-h1').html(" (" + count + ")");
+        $('#user_nav_domains').html(count + " Domains");
       }
     });
   });
 
-  define('update_invites_available_count', function() {
-    BadgerCache.getAccountInfo(function(response) {
-      $('#nav-my-account ul li#invites_available #invite_available_count').html(' (' + response.data.invites_available + ')')
-      if (response.data.invites_available > 0) {
-        $('#nav-my-account ul li#invites_available').removeClass('hidden');
-      } else {
-        BadgerCache.getInviteStatus(function(response) {
-          if (response.data.length > 0)
-            $('#nav-my-account ul li#invites_available').removeClass('hidden');
-        });
-      }
-    });
-  });
+  // define('update_invites_available_count', function() {
+  //   BadgerCache.getAccountInfo(function(response) {
+  //     $('#nav-my-account ul li#invites_available #invite_available_count').html(' (' + response.data.invites_available + ')')
+  //     if (response.data.invites_available > 0) {
+  //       $('#nav-my-account ul li#invites_available').removeClass('hidden');
+  //     } else {
+  //       BadgerCache.getInviteStatus(function(response) {
+  //         if (response.data.length > 0)
+  //           $('#nav-my-account ul li#invites_available').removeClass('hidden');
+  //       });
+  //     }
+  //   });
+  // });
 
   define('check_if_domain_should_be_added_to_sidebar', function(request_uri) {
     if (!request_uri) request_uri = get_route();
@@ -87,81 +87,96 @@ with (Hasher('Application')) {
 
   layout('default_layout', function(yield) {
     var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
-    return div({ id: 'wrapper', 'class': (ie_browser ? 'ie-browser' : '') },
+    return [
+      header(),
 
-      div({ id: 'header' },
-        h1({ id: 'logo' }, a({ href: '#'}, 'badger.com')),
-        
+      div({ id: 'wrapper' },
+        div({ id: 'main', 'class': 'whitebg' },
+          div({ 'id': 'content' }, 
+            yield
+          )
+        )
+      ),
+      
+      footer()
+    ];
+  });
+
+
+
+  define('chatbar', function() {
+    return div({ 'class': 'closed', id: 'chatbar' },
+      a({ href: Chat.hide_chat, 'class': 'close-button' }, 'X'),
+      a({ href: Chat.minimize_chat, 'class': 'close-button min-button' }, '–'),
+      h1({ onclick: Chat.show_chat }, 'Badger Chatroom'),
+      div({ "class": "content" })
+    );
+  });
+
+  define('header', function() {
+    return div({ id: 'header' },
+      div({ 'class': 'inner' },
+        h1({ id: 'logo' }, a({ href: '#'}, 'badger')),
+
+        search_box(),
+      
         Badger.getAccessToken() ? 
           user_nav()
         : div({ id: 'user-nav' },
           span(a({ href: Signup.show_login_modal }, 'Login')),
           a({ href: Signup.show_register_modal }, 'Create Account')
         )
-      ),
-
-      div({ id: 'main' },
-        div({ id: "sidebar" },
-          search_box(),
-          left_nav()
-        ),
-
-        div({ 'id': 'content' },
-          yield
-        ),
-
-        div({ style: 'clear: both' })
-      ),
-
-      div({ id: 'footer' },
-        div({ 'class': "col" },
-          h2('COMPANY'),
-          ul(
-            li(a({ href: "#blogs" }, 'Blog')),
-            li(a({ href: "#terms_of_service" }, 'Terms of Service')),
-						li(a({ href: "http://www.icann.org/en/registrars/registrant-rights-responsibilities-en.htm", target: "_blank" }, 'ICANN Registrant Rights')),
-            li(a({ href: "https://whois.badger.com/", target: '_blank' }, 'Whois Lookup'))
-          )
-        ),
-        div({ 'class': "col" },
-          h2('HELP AND SUPPORT'),
-          ul(
-            li(a({ href: "#contact_us" }, 'Contact Us')),
-            li(a({ href: "#faqs" }, 'Frequently Asked Questions')),
-            li(a({ href: "#knowledge_center" }, 'Knowledge Center')),
-            li(a({ href: 'https://github.com/badger/frontend', target: '_blank' }, 'API Docs for Developers'))
-          )
-        ),
-        div({ 'class': "col" },
-          h2('CONNECT WITH US'),
-          ul(
-            li(a({ href: "mailto:support@badger.com" }, 'support@badger.com')),
-            li(a({ href: 'tel:+1-415-787-5050' }, '+1-415-787-5050' )),
-            li(
-              a({ href: "https://twitter.com/badger", target: "_blank" }, 'Twitter'),
-              ' / ',
-              a({ href: "https://www.facebook.com/BadgerDotCom", target: "_blank" }, 'Facebook'),
-              ' / ',
-              a({ href: "irc://irc.freenode.net/badger", target: "_blank" }, 'IRC')
-            )
-          )
-        ),
-        div({ 'class': "col" },
-          h2('ACCREDITATIONS'),
-          img({ src: 'images/icann.png' })
-        ),
-
-        div({ style: 'clear: both'})
-      ),
-      
-      div({ 'class': 'closed', id: 'chatbar' },
-        a({ href: Chat.hide_chat, 'class': 'close-button' }, 'X'),
-        a({ href: Chat.minimize_chat, 'class': 'close-button min-button' }, '–'),
-        h1({ onclick: Chat.show_chat }, 'Badger Chatroom'),
-        div({ "class": "content" })
       )
     );
   });
+  
+  define('footer', function() {
+    return div({ id: 'footer' },
+      div({ 'class': 'outer' },
+        div({ 'class': 'inner' },
+          div({ 'class': "col" },
+            h2('COMPANY'),
+            ul(
+              li(a({ href: "#blogs" }, 'Blog')),
+              li(a({ href: "#terms_of_service" }, 'Terms of Service')),
+    					li(a({ href: "http://www.icann.org/en/registrars/registrant-rights-responsibilities-en.htm", target: "_blank" }, 'ICANN Registrant Rights')),
+              li(a({ href: "https://whois.badger.com/", target: '_blank' }, 'Whois Lookup'))
+            )
+          ),
+          div({ 'class': "col" },
+            h2('HELP AND SUPPORT'),
+            ul(
+              li(a({ href: "#contact_us" }, 'Contact Us')),
+              li(a({ href: "#faqs" }, 'Frequently Asked Questions')),
+              li(a({ href: "#knowledge_center" }, 'Knowledge Center')),
+              li(a({ href: 'https://github.com/badger/frontend', target: '_blank' }, 'API Docs for Developers'))
+            )
+          ),
+          div({ 'class': "col" },
+            h2('CONNECT WITH US'),
+            ul(
+              li(a({ href: "mailto:support@badger.com" }, 'support@badger.com')),
+              li(a({ href: 'tel:+1-415-787-5050' }, '+1-415-787-5050' )),
+              li(
+                a({ href: "https://twitter.com/badger", target: "_blank" }, 'Twitter'),
+                ' / ',
+                a({ href: "https://www.facebook.com/BadgerDotCom", target: "_blank" }, 'Facebook'),
+                ' / ',
+                a({ href: "irc://irc.freenode.net/badger", target: "_blank" }, 'IRC')
+              )
+            )
+          ),
+          div({ 'class': "col" },
+            h2('ACCREDITATIONS'),
+            img({ src: 'images/icann.png' })
+          ),
+
+          div({ style: 'clear: both'})
+        )
+      )
+    )
+  });
+
 
   define('user_nav', function() {
     var user_nav = div({ id: 'user-nav' },
@@ -171,9 +186,11 @@ with (Hasher('Application')) {
     BadgerCache.getAccountInfo(function(response) {
       //$(user_nav).prepend(span(a({ href: '#account/settings'}, response.data.name)));
       $(user_nav).prepend(span({ id: 'use_nav_name' }, a({ href: '#account' }, response.data.name)));
-      $(user_nav).prepend(span({ id: 'user_nav_invites_available', 'class': response.data.invites_available <= 0 ? 'hidden' : '' }, a({ href: '#invites' }, response.data.invites_available + ' Invites')));
+      //$(user_nav).prepend(span({ id: 'user_nav_invites_available', 'class': response.data.invites_available <= 0 ? 'hidden' : '' }, a({ href: '#invites' }, response.data.invites_available + ' Invites')));
       $(user_nav).prepend(span(a({ href: '#account/billing', id: 'user_nav_credits' }, 'Credits')));
+      $(user_nav).prepend(span(a({ href: '#filter_domains/all/list', id: 'user_nav_domains' }, 'Domains')));
       update_credits();
+      //update_domains();
     });
 
     return user_nav;

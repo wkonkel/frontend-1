@@ -3,7 +3,7 @@ with (Hasher('DomainShow','DomainApps')) {
   route('#domains/:domain', function(domain) {
     var content_div = div('Loading...');
     render(
-      h1({ 'class': 'long-domain-name' }, domain),
+      h1({ 'class': 'long-domain-name' }, a({ href: '#filter_domains/all/list' }, 'MY DOMAINS'), ' » ', domain.toUpperCase()),
       div({ id: 'error-message', 'class': 'error-message hidden' }),
       content_div
     );
@@ -332,7 +332,7 @@ with (Hasher('DomainShow','DomainApps')) {
           )
         );
         // add a clear every six icons
-        if (target.childNodes.length % 7 == 6) target.appendChild(div({ style: 'clear: left ' }));
+        if (target.childNodes.length % 9 == 8) target.appendChild(div({ style: 'clear: left ' }));
       }
     }
 

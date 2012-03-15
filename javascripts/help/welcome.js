@@ -3,8 +3,8 @@ with (Hasher('Welcome','Application')) {
     render(
     
       div({ id: 'homepage-welcome' },
+        img({ src: 'images/badger-6.png' }),
         h2("Domains for $15/year."),
-        img({ src: 'images/badger-6.png', style: 'padding: 20px 30px; float: right' }),
         ul(
           li('Fast search and simple registration process.'),
           li('Free privacy, DNS and email/url forwarding.'),
@@ -12,12 +12,9 @@ with (Hasher('Welcome','Application')) {
           li('Popular shortcuts for quick configuration.')
         ),
         
-        div({ style: 'text-align: center; margin-top: 30px' },
+        div({ 'class': 'get-started-wrapper' },
           a({ href: get_started, 'class': 'myButton', style: 'font-size: 30px; padding: 15px 30px' }, 'Get Started')
         )
-
-        // img({ src: 'images/badger-6.png', style: 'padding: 20px 30px; float: right' }),
-        // h2("$15/year")
       )
     );
   });
@@ -27,6 +24,50 @@ with (Hasher('Welcome','Application')) {
     $('#form-search-input').focus();
   });
 }
+
+
+
+// define('render_homepage_blurb', function() {
+//   render(
+//     div({ id: 'homepage' },
+//               
+//       div({ 'class': 'rotater' },
+//         div(
+//           img({ src: 'images/v2/home-search.png' }),
+//           h2('Fast search and simple registration process.'), 
+//           h3('$10/year'),
+//           p("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum luctus dignissim viverra.")
+//         ),
+//         div(
+//           img({ src: 'images/v2/home-search.png' }),
+//           h2('Automatic transfers with no downtime.'),
+//           h3('$10/year'),
+//           p("Don't let them badger you again.")
+//         ),
+//         div(
+//           img({ src: 'images/v2/home-apps.png' }),
+//           h2('Popular shortcuts for quick configuration.'),
+//           h3('$10/year'),
+//           p("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum luctus dignissim viverra.")
+//         ),
+//         div(
+//           img({ src: 'images/v2/home-search.png' }),
+//           h2('Free privacy, DNS and email/url forwarding.'), 
+//           h3('$10/year'),
+//           p("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum luctus dignissim viverra.")
+//         )
+//       )
+//     )
+//   );
+//   
+//   var rotater = null;
+//   (rotater = function() {
+//     $('.rotater div:visible:first').hide().next().show();
+//     if ($('.rotater div:visible:first').length == 0) $('.rotater div:first').show();
+//     setTimeout(rotater, 4000);
+//   })();
+// });
+
 
 
 // div({ 'id': 'search-arrow-bar', 'class': 'info-message', style: 'font-weight: bold; padding: 8px 15px; font-size: 16px' }, "«--- Search for available domains using this search box.  ", i({ style: 'font-weight: normal' }, '(Hint: type your name)')),
@@ -64,5 +105,3 @@ with (Hasher('Welcome','Application')) {
 //         p({ style: "margin-top: 5px; margin-bottom: 18px" }, "You can jump right in and ", a({ href: Transfer.show }, "transfer a domain"), ".")              
 //       )
 //     ),
-//   )
-// ))

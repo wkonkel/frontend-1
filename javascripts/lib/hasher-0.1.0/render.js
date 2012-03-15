@@ -7,10 +7,11 @@ with (Hasher()) {
     options.target =  options.target || options.into || document.body;
     if (typeof(options.target) == 'string') options.target = document.getElementById(options.target);
     if (options.layout) {
-      var layout_element = options.layout(arguments);
-      if (layout_element.parentNode != options.target) {
+      var layout_elements = options.layout(arguments);
+      if (!layout_elements.push) layout_elements = [layout_elements];
+      if (layout_elements[0].parentNode != options.target) {
         options.target.innerHTML = '';
-        options.target.appendChild(layout_element);
+        for (var i=0; i < layout_elements.length; i++) options.target.appendChild(layout_elements[i]);
       }
     } else {
       options.target.innerHTML = '';
