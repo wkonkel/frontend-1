@@ -49,7 +49,7 @@ with (Hasher('Registration','DomainApps')) {
   define('logo_url_for_registrar', function(name) {
     var src;
     
-    if (name.match(/badger/i)) src = "images/apps/badger.png";
+    if (name && name.match(/badger/i)) src = "images/apps/badger.png";
     else if (name.match(/godaddy/i)) src = "images/apps/godaddy.png";
     else if (name.match(/enom/i)) src = "images/apps/enom.png";
     else if (name.match(/1and1/)) src = "images/apps/1and1.png";
