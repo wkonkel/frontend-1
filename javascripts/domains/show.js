@@ -178,7 +178,7 @@ with (Hasher('DomainShow','DomainApps')) {
       }
       break;
     case 'Approve transfer':
-      if (step_obj.value == 'ok') {
+      if (step_obj.value == 'ok' || step_obj.value == 'transfer_approved') {
         details = div({ style: "text-decoration: line-through" }, 'Transfer completed!');
       // } else if (step_obj.value == 'needs_transfer_request') {
       //   details = div('This domain is currently pending transfer and needs a transfer request.',
@@ -211,13 +211,14 @@ with (Hasher('DomainShow','DomainApps')) {
         details = div("Domain has been processed, and is ready to go!");
       } else {
         details = div("Once the transfer request is approved, we can finish setting up the domain on Badger.com");
+        setTimeout(function() { retry_transfer(domain_obj.name, true) }, 8000);
       }
       break;
     default:
       details = div();
     }
     
-    var step_completed     = (step_obj.value == 'ok' || step_obj.value == 'skip');
+    var step_completed     = (step_obj.value == 'ok' || step_obj.value == 'skip' || step_obj.value == 'transfer_approved');
     var step_pending       = (step_obj.value == 'pending' || step_obj.value == 'pending_transfer_reject'); 
     var step_failed        = (step_obj.value == 'failed' || step_obj.value == null || step_obj.value == undefined);
     
