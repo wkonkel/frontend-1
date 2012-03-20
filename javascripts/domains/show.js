@@ -64,7 +64,7 @@ with (Hasher('DomainShow','DomainApps')) {
     var expire_date = new Date(Date.parse(domain_obj.expires_at));
     var days = parseInt(expire_date - current_date)/(24*3600*1000);
 
-    if (domain_obj.transfer_steps && domain_obj.transfer_steps.count && domain_obj.transfer_steps.completed && domain_obj.transfer_steps.completed.length < domain_obj.transfer_steps.count) {
+    if (domain_obj.transfer_steps && domain_obj.transfer_steps.completed.length > 0 && domain_obj.transfer_steps.pending.length > 0 && domain_obj.transfer_steps.count > 0) {
       return display_transfer_status(domain_obj);
     } else if ((domain_obj.permissions_for_person || []).indexOf('show_private_data') >= 0) {
       return [
@@ -84,6 +84,22 @@ with (Hasher('DomainShow','DomainApps')) {
     }
   });
   
+  define('set_retry_transfer_timeout_if_necessary', function(domain_obj, seconds) {
+    if (!domain_obj.transfer_steps || !domain_obj.transfer_steps.pending || domain_obj.transfer_steps.pending.length == 0) return;
+    
+    var needs_timeout = false;
+    domain_obj.transfer_steps.pending.forEach(function(step) {
+      if (step.name == 'Unlock domain' && ['pending_remote_unlock', null].indexOf(step.value) >= 0)
+        needs_timeout = true;
+      else if (step.name == 'Approve transfer' && ['pending_remote_approval', 'pending_transfer'].indexOf(step.value) >= 0)
+        needs_timeout = true;
+      else if (step.name == 'Processed' && ['pending'].indexOf(step.value) >= 0)
+        needs_timeout = true;
+    });
+    
+    if (needs_timeout) setTimeout(curry(retry_transfer, domain_obj.name, false), seconds || 15000);
+  });
+  
   define('detail_information_rows', function(domain_obj) {
     var detail_information_rows_array = [];
     
@@ -99,6 +115,10 @@ with (Hasher('DomainShow','DomainApps')) {
       )
     });
     
+    // set a timeout to automatically reload data if needed
+    // TODO: remove the 5000ms time for debug
+    set_retry_transfer_timeout_if_necessary(domain_obj, 5000);
+    
     return detail_information_rows_array;
   });
 
@@ -111,7 +131,7 @@ with (Hasher('DomainShow','DomainApps')) {
       if (step.name == "Approve transfer" && step.value == "transfer_rejected")
         show_retry = true;
     });
-
+    
     return div({ id: "transfer-progress-report", 'class': "info-message", style: "padding: 10px" },
       div({ id: "progress-bar", style: "margin: -10px auto 15px auto" },
         table( tbody(
@@ -131,39 +151,36 @@ with (Hasher('DomainShow','DomainApps')) {
       
       div({ style: "float: right; margin-top: -30px" },
         // a({ 'class': 'myButton', style: "margin-right: 10px", href: null }, 'Cancel'),
-        a({ id: "retry-transfer-button", 'class': 'myButton', style: (show_retry ? null : "display: none"), href: curry(retry_transfer, domain_obj.name, false) }, 'Retry'),
+        a({ id: "retry-transfer-button", 'class': 'myButton', style: (show_retry ? null : "display: none"), href: curry(retry_transfer, domain_obj.name, true) }, 'Retry'),
         div({ id: "refresh-transfer-steps-loader", style: "display: none" }, img({ src: "images/ajax-loader.gif" }))
       )
     );
   });
 
   define('transfer_description_row', function(domain_obj, step_obj) {
-    switch (step_obj.name) {
-    case 'Initiate transfer':
+    if (step_obj.name == 'Initiate transfer') {
       details = div('Initiate the domain transfer on Badger.com');
-      break;
-    case 'Unlock domain':
-      if (step_obj.value == 'pending') {
+    } else if (step_obj.name == 'Unlock domain') {
+      if (step_obj.value == 'pending_remote_unlock') {
         details = div('This domain is currently being unlocked at ' + domain_obj.current_registrar  + '. This should take a couple minutes.');
-        setTimeout(function() { retry_transfer(domain_obj.name) }, 8000);
       }
       else if (step_obj.value == 'ok') {
         details = div('This domain has been unlocked.')
       }
       else {
         details = div('You need to unlock this domain at ' + domain_obj.current_registrar + '.',
-          render_help_link('needs_unlock', domain_obj.current_registrar));
-        setTimeout(function() { retry_transfer(domain_obj.name) }, 8000);
+          render_help_link('needs_unlock', domain_obj.current_registrar)
+        );
       }
-      break;
-    case 'Disable privacy':
-      if (step_obj.value == 'ok' || step_obj.value == 'skip')
+    } else if (step_obj.name == 'Disable privacy') {
+      if (step_obj.value == 'ok' || step_obj.value == 'skip') {
         details = div('Privacy is disabled for this domain')
-      else
+      } else {
         details = div('You need to disable privacy for this domain at ' + domain_obj.current_registrar + '.',
-          render_help_link('needs_unlock', domain_obj.current_registrar));
-      break;
-    case 'Enter auth code':
+          render_help_link('needs_unlock', domain_obj.current_registrar)
+        );
+      }
+    } else if (step_obj.name == 'Enter auth code') {
       if (step_obj.value == 'waiting') {
         details = div("First, you need to unlock the domain and disable privacy")
       } else {
@@ -176,50 +193,41 @@ with (Hasher('DomainShow','DomainApps')) {
           )
         );
       }
-      break;
-    case 'Approve transfer':
+    } else if (step_obj.name == 'Approve transfer') {
       if (step_obj.value == 'ok' || step_obj.value == 'transfer_approved') {
         details = div({ style: "text-decoration: line-through" }, 'Transfer completed!');
-      // } else if (step_obj.value == 'needs_transfer_request') {
-      //   details = div('This domain is currently pending transfer and needs a transfer request.',
-      //                 render_help_link('needs_privacy_disabled', domain_obj.current_registrar));
       } else if (step_obj.value == 'transfer_rejected') {
         details = div(
           'You attempted to transfer this domain, however, the currently owning registrar, ' + domain_obj.current_registrar + ', rejected it.',
           render_help_link('transfer_rejected', domain_obj.current_registrar)  
         );
+        
+        // bring the retry button out of hiding
         $("#retry-transfer-button").css('display','');
-      } else if (step_obj.name == 'pending_remote_approval') {
+      } else if (step_obj.value == 'pending_action_by_poller') {
+        details = div("Processing response from " + domain_obj.current_registrar + "...")
+      } else if (step_obj.value == 'pending_remote_approval') {
         details = div("This domain transfer is currently pending approval at " + domain_obj.current_registrar + ". This should take a couple minutes.");
-        setTimeout(function() { retry_transfer(domain_obj.name) }, 8000);
-      } else if(step_obj.value == 'pending_transfer_reject') {
-        details = div("Processing response from " + domain_obj.current_registrar + "...");
-        setTimeout(function() { retry_transfer(domain_obj.name, true) }, 8000);
       } else if (step_obj.value == 'pending_transfer' || step_obj.value == 'ok') {
         details = div('This domain is currently pending transfer. You will need to approve this transfer manually at your current registrar. Or you can wait 5 days and the transfer will automatically go through.',
             render_help_link('transfer_requested', domain_obj.current_registrar));
-        setTimeout(function() { retry_transfer(domain_obj.name) }, 8000);
       } else {
         details = div('You need to complete the steps above first.');
       }
-      break;
-    case 'Processed':
+    } else if (step_obj.name == 'Processed') {
       if (step_obj.value == 'pending') {
         details = div({ style: "font-style: italic" }, "Setting up domain...");
-        setTimeout(function() { retry_transfer(domain_obj.name, true) }, 8000);
       } else if (step_obj.value == 'ok') {
         details = div("Domain has been processed, and is ready to go!");
       } else {
         details = div("Once the transfer request is approved, we can finish setting up the domain on Badger.com");
-        setTimeout(function() { retry_transfer(domain_obj.name, true) }, 8000);
       }
-      break;
-    default:
+    } else {
       details = div();
     }
     
     var step_completed     = (step_obj.value == 'ok' || step_obj.value == 'skip' || step_obj.value == 'transfer_approved');
-    var step_pending       = (step_obj.value == 'pending' || step_obj.value == 'pending_transfer_reject'); 
+    var step_pending       = (step_obj.value == 'pending' || step_obj.value == 'pending_action_by_poller'); 
     var step_failed        = (step_obj.value == 'failed' || step_obj.value == null || step_obj.value == undefined);
     
     var progress_indicator;
@@ -241,8 +249,10 @@ with (Hasher('DomainShow','DomainApps')) {
     );
   });
 
-  define('retry_transfer', function(domain_name, skip_transfer){
-    var params = { retry: true, name: domain_name, skip_transfer: (skip_transfer || false) };
+  define('retry_transfer', function(domain_name, force_transfer_request){
+    force_transfer_request = force_transfer_request ? force_transfer_request : false;
+    
+    var params = { retry: true, name: domain_name, force_transfer_request: force_transfer_request };
 
     var auth_code = null;
     if ($('#auth_code').length > 0) {
@@ -276,30 +286,22 @@ with (Hasher('DomainShow','DomainApps')) {
     Badger.getDomain(domain_name, function(domain_response) {
       var domain_obj = domain_response.data;
       
-      // bring the transfer button back
-      $("#refresh-transfer-steps-loader").css('display','none');
+      // if the transfer steps are no longer present, then the transfer succeeded!
+      var new_percentage = !domain_obj.transfer_steps ? 100 : parseInt(100 * (domain_obj.transfer_steps.completed.length / domain_obj.transfer_steps.count));
       
-      var new_percentage = parseInt(100 * (domain_obj.transfer_steps.completed.length / domain_obj.transfer_steps.count));
+      // hide the ajax loader
+      $("#refresh-transfer-steps-loader").css('display','none');
       
       // update the progress bar with the current percentage
       update_progress_bar(new_percentage);
       
       // if it completed, set a timeout to reload page, after which the apps should be displayed
-      if (new_percentage == 100) setTimeout(curry(set_route, '#domains/' + transfer_params.name), 1500);
+      if (new_percentage == 100) setTimeout(curry(set_route, '#domains/' + domain_name), 1500);
       
-      // remove and replace with new rows unless it is auth code
+      // remove and replace with updated rows
       $("#transfer-steps tr").remove();
-      $("#transfer-steps").append(
-        detail_information_rows(domain_response.data)
-      );
-      
-      var auth_code = $("#auth_code").val();
-      if (auth_code && auth_code.length > 0) {
-        // give focus back
-        if (document.activeElement == $("#auth_code")[0]) $("#auth_code").focus();
-        // add the value back
-        $("#auth_code").val(auth_code);
-      }
+      // add the transfer steps, unless it was just completed
+      if (domain_obj.transfer_steps) $("#transfer-steps").append(detail_information_rows(domain_obj));
     });
   });
 
@@ -341,7 +343,7 @@ with (Hasher('DomainShow','DomainApps')) {
         available_apps
       );
     }
-
+    
     return [
       h2({ style: 'border-bottom: 1px solid #888; padding-bottom: 6px' }, 'Installed Applications'),
       installed_apps,

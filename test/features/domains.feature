@@ -169,7 +169,7 @@ Feature: Domains
 		Then I should see "50%"
 
   Scenario: Domain transfer with remote unlocking
-		And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[{ name: 'Approve transfer', value: 'pending_transfer' }, { name: 'Processed', value: '' }, { name: 'Unlock domain', value: 'pending' }]" and steps completed "[{ name: 'Initiate transfer', value: 'ok' }, { name: 'Disable privacy', value: 'ok' }, { name: 'Enter auth code', value: 'ok' }]" and steps count "6"
+		And I mock getDomain for domain "some-domain.com" with permission "pending_transfer" and steps pending "[{ name: 'Approve transfer', value: 'pending_transfer' }, { name: 'Processed', value: '' }, { name: 'Unlock domain', value: 'pending_remote_unlock' }]" and steps completed "[{ name: 'Initiate transfer', value: 'ok' }, { name: 'Disable privacy', value: 'ok' }, { name: 'Enter auth code', value: 'ok' }]" and steps count "6"
 
     When I visit domain page for domain "some-domain.com"
     And I should see "This domain is currently being unlocked"
