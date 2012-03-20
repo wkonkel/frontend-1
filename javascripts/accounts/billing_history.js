@@ -4,14 +4,15 @@ with (Hasher('Billing','Application')) {
     var target_div = div('Loading...');
 
     render(
-      h1('Credits & Billing History'),
+      h1('My Account » Credits & Billing History'),
       div({ style: 'float: right; margin-top: -44px' },
         a({ 'class': 'myButton small', href: curry(purchase_modal, function() { 
           set_route('#account/billing');
           hide_modal();
         }) }, 'Purchase Credits')
       ),
-      target_div
+      
+      Account.account_nav_table(target_div)
     );
     
     Badger.getCreditHistory(function(results) {

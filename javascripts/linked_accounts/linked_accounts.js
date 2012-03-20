@@ -6,7 +6,7 @@ with (Hasher('LinkedAccounts','Application')) {
 		render(
 			div(
 				h1('Linked Accounts'),
-				target_div
+				Account.account_nav_table(target_div)
 			)
 		)
 				

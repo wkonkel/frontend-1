@@ -9,15 +9,9 @@ Feature: Account
 
   Scenario: As a logged in user I want to see My Account page
     Then I should see "East Agile Company"
-    And I should see "SETTINGS"
     And I should see "Change Password"
     And I should see "Change First/Last Name"
     And I should see "Change Email Address"
-    And I should see "SHORTCUTS"
-    And I should see "Support Tickets"
-    And I should see "Whois Profiles"
-    And I should see "Credits & Billing"
-    And I should see "Linked Accounts"
 
   Scenario: As a logged in user I want to see Whois profiles page
     Then I follow "Whois Profiles"

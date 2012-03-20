@@ -314,3 +314,7 @@ label { cursor: pointer; }
 
 
 .legal-indent { margin-left: 50px; }
+
+
+.tld img { display: block; margin: 0 auto; }
+
