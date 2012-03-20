@@ -3,21 +3,51 @@ with (Hasher('Welcome','Application')) {
     render(
     
       div({ id: 'homepage-welcome' },
-        img({ src: 'images/badger-6.png' }),
-        h2("Domains for $15/year."),
-        ul(
-          li('Fast search and simple registration process.'),
-          li('Free privacy, DNS and email/url forwarding.'),
-          li('Automatic transfers with no downtime.'),
-          li('Popular shortcuts for quick configuration.')
+        h2("Domains for ", span("$15"), " a year."),
+        div({ 'class': 'get-started-wrapper', style: "float: right; margin-top: -85px" },
+          a({ href: get_started, 'class': 'myButton', style: 'font-size: 30px; padding: 15px 30px' }, 'Get Started')
+        ),
+        img({ src: 'images/badger-6.png', 'class': 'badger', style: 'margin-top: 50px' }),
+
+        h3('Shortcuts for easy setup:'),
+        div({ style: 'height: 120px' },
+          app_icon('gmail2', 'Gmail'),
+          app_icon('wordpress', 'Wordpress'),
+          app_icon('shopify', 'Shopify'),
+          app_icon('heroku', 'Heroku'),
+          app_icon('blogger', 'Blogger')
+        ),
+
+        h3({ style: "margin-bottom: 0" }, 'Automatic transfers from:'),
+        div({ style: 'height: 120px' },
+          app_icon('godaddy', 'GoDaddy'),
+          app_icon('enom', 'eNom'),
+          app_icon('namecheap', 'Namecheap'),
+          app_icon('ns', 'Network Solutions'),
+          app_icon('1and1', '1&1')
         ),
         
-        div({ 'class': 'get-started-wrapper' },
-          a({ href: get_started, 'class': 'myButton', style: 'font-size: 30px; padding: 15px 30px' }, 'Get Started')
-        )
+        
+        
+        div({ style: "clear: both" })
+        
+        // ul(
+        //   li('Automatic transfers with no downtime.'),
+        //   //li('Fast search and simple registration process.'),
+        //   li('DNS shortcuts for popular apps.'),
+        //   li('Free privacy, DNS and email/url forwarding.')
+        // ),
+        
       )
     );
   });
+  
+  define('app_icon', function(img_src, name, callback) {
+    return a({ 'class': 'app_store_container', href: callback || get_started },
+      img({ 'class': 'app_store_icon', src: 'images/apps/' + img_src + '.png' } ),
+      span({ style: 'text-align: center; font-weight: bold' }, name)
+    );
+  })
 
   define('get_started', function() {
     set_route('#search'); 

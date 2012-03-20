@@ -1,6 +1,10 @@
 with (Hasher('Domains','Application')) {
   route('#filter_domains/:filter/:view_type', function(filter, view_type) {
-    render('');
+    render(
+      h1('MY DOMAINS'),
+      p('Loading...')
+    );
+				
     BadgerCache.getDomains(function(domains) {
       var results = [];
       if (view_type == null)

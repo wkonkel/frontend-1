@@ -98,7 +98,9 @@ with (Hasher('Application')) {
         )
       ),
       
-      footer()
+      footer(),
+      
+      chatbar()
     ];
   });
 
@@ -116,14 +118,14 @@ with (Hasher('Application')) {
   define('header', function() {
     return div({ id: 'header' },
       div({ 'class': 'inner' },
-        h1({ id: 'logo' }, a({ href: '#'}, 'badger')),
+        h1({ id: 'logo' }, a({ href: '#welcome'}, 'badger')),
 
         search_box(),
       
         Badger.getAccessToken() ? 
           user_nav()
         : div({ id: 'user-nav' },
-          span(a({ href: Signup.show_login_modal }, 'Login')),
+          span(a({ href: curry(Signup.show_login_modal, curry(set_route, '#filter_domains/all/list') ) }, 'Login')),
           a({ href: Signup.show_register_modal }, 'Create Account')
         )
       )
@@ -135,7 +137,7 @@ with (Hasher('Application')) {
       div({ 'class': 'outer' },
         div({ 'class': 'inner' },
           div({ 'class': "col" },
-            h2('COMPANY'),
+            h2('Company'),
             ul(
               li(a({ href: "#blogs" }, 'Blog')),
               li(a({ href: "#terms_of_service" }, 'Terms of Service')),
@@ -144,7 +146,7 @@ with (Hasher('Application')) {
             )
           ),
           div({ 'class': "col" },
-            h2('HELP AND SUPPORT'),
+            h2('Help and Support'),
             ul(
               li(a({ href: "#contact_us" }, 'Contact Us')),
               li(a({ href: "#faqs" }, 'Frequently Asked Questions')),
@@ -153,7 +155,7 @@ with (Hasher('Application')) {
             )
           ),
           div({ 'class': "col" },
-            h2('CONNECT WITH US'),
+            h2('Connect With Us'),
             ul(
               li(a({ href: "mailto:support@badger.com" }, 'support@badger.com')),
               li(a({ href: 'tel:+1-415-787-5050' }, '+1-415-787-5050' )),
@@ -167,7 +169,7 @@ with (Hasher('Application')) {
             )
           ),
           div({ 'class': "col" },
-            h2('ACCREDITATIONS'),
+            h2('Accreditations'),
             img({ src: 'images/icann.png' })
           ),
 

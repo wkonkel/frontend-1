@@ -86,6 +86,16 @@ with (Hasher()) {
     return element('a', options, arguments);
   });
   
+  define('img', function() { 
+    var arguments = flatten_to_array(arguments);
+    var options = shift_options_from_args(arguments);
+    
+    if (!options.src && (arguments.length == 1)) options.src = arguments.pop();
+    
+    return element('img', options, arguments);
+  });
+  
+  
   define('form', function() {
     var arguments = flatten_to_array(arguments);
     var options = shift_options_from_args(arguments);
