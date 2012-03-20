@@ -3,7 +3,7 @@ with (Hasher('DomainShow','DomainApps')) {
   route('#domains/:domain', function(domain) {
     var content_div = div('Loading...');
     render(
-      h1({ 'class': 'long-domain-name' }, a({ href: '#filter_domains/all/list' }, 'MY DOMAINS'), ' » ', domain.toUpperCase()),
+      h1_for_domain(domain),
       div({ id: 'error-message', 'class': 'error-message hidden' }),
       content_div
     );

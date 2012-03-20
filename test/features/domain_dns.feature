@@ -21,7 +21,7 @@ Feature: Badger DNS
     When I visit Badger DNS for domain "mydomain0.com"
 
   Scenario: When I visit Badger DNS page for my domain, I should see all DNS application I have installed (Email Forwarding ad Google Calendar) in sorted order
-    Then I should see "mydomain0.com DNS"
+    Then I should see "DNS" within "#content h1"
     And I should see "A" within "#content table tr:eq(3)"
     And I should see "abc.mydomain0.com" within "#content table:first tr:eq(3)"
     And I should see "123.123.123.123" within "#content table tr:eq(3)"

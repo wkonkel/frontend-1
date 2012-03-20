@@ -5,9 +5,9 @@ Feature: Tickets
 
   Background:
     Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
-    And I follow "MY ACCOUNT"
+    And I follow "East Agile Company"
     And I mock getTickets
-    When I follow "SUPPORT TICKETS"
+    When I follow "Support Tickets"
 
   Scenario: View all pending and closed tickets
     Then I should see "Support Tickets"
@@ -64,7 +64,7 @@ Feature: Tickets
     And I mock closeTicket returns status "unprocessable_entity"
     When I follow "Close Ticket"
     Then I should see "Unable to close ticket"
-    And I follow "TICKETS"
+    And I follow "Support Tickets"
     And I follow "Website Bug 0"
     And I mock closeTicket returns status "ok"
     When I follow "Close Ticket"

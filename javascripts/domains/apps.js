@@ -14,6 +14,20 @@ with (Hasher('Application')) {
 }
 
 with (Hasher('DomainApps','Application')) {
+  define('h1_for_domain', function(domain, current_header) {
+    return h1({ 'class': 'h1_for_domains' }, 
+      a({ href: '#filter_domains/all/list' }, 'My Domains'), 
+      ' » ', 
+      current_header ? [
+        a({ href: '#domains/' + domain, 'class': 'long-domain-name' }, domain), 
+        ' » ', 
+        current_header
+      ] : [
+        domain
+      ]
+    );
+  });
+  
   define('install_app_button_clicked', function(app, domain_obj, form_data) {
     if (form_data.install_on_subdomain && form_data.subdomain == "") {
       $('#subdomain-input-error').removeClass('hidden');

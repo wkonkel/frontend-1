@@ -41,7 +41,7 @@ with (Hasher('Shopify', 'DomainApps')) {
 
   route('#domains/:domain/shopify', function(domain) {
     render(
-      h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, 'SHOPIFY FOR ' + domain)),
+      h1_for_domain(domain, 'Shopify'),
       domain_app_settings_button('badger_shopify', domain),
       p("Shopify DNS settings have successfully been installed into Badger DNS."),
       div(

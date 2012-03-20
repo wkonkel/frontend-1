@@ -9,8 +9,7 @@ Feature: Faqs
       | id | question                       | answer                                                    |
       | 1  | Step to buy a domain?          | Following 3 step below                                    |
       | 2  | How to transfer a domain       | Go to the domain section and click Transfer in a domain   |
-    When I follow "BADGER.COM"
-    And I follow "FAQS"
+    And I follow "Frequently Asked Questions"
 
   Scenario: As a logged in user I want to see all faqs
     Then I should see "Step to buy a domain?"

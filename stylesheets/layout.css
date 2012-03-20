@@ -213,6 +213,8 @@ label { cursor: pointer; }
   width: 100%;
 }
 
+.h1_for_domains { white-space:nowrap; text-transform: uppercase; }
+
 #main #content h1.header-with-right-btn {
   padding-right: 80px;
 }

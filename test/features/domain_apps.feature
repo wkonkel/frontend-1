@@ -29,27 +29,33 @@ Feature: Domain apps
     Then I should see "mydomain0.com" within "#content h1"
     And I should see "Installed Applications"
     And I should see "Available Applications"
-    When I follow "SHOPIFY"
-    Then I should see "SHOPIFY FOR mydomain0.com" within "#content h1"
+    And I follow "Shopify"
+    Then I should see "Shopify" within "#content h1"
     And I should see "Shopify DNS settings have successfully been installed into Badger DNS."
-    When I follow "HEROKU"
-    Then I should see "HEROKU FOR mydomain0.com" within "#content h1"
+    When I follow "mydomain0.com"
+    And I follow "Heroku"
+    Then I should see "Heroku" within "#content h1"
     And I should see "Heroku DNS settings have been installed into Badger DNS."
     And I should see "Also check out Heroku Custom Domains."
-    When I follow "POSTEROUS"
-    Then I should see "POSTEROUS FOR mydomain0.com" within "#content h1"
+    When I follow "mydomain0.com"
+    And I follow "Posterous"
+    Then I should see "Posterous" within "#content h1"
     And I should see "Posterous DNS settings have successfully been installed into Badger DNS."
-    When I follow "TUMBLR"
-    Then I should see "TUMBLR FOR mydomain0.com" within "#content h1"
+    When I follow "mydomain0.com"
+    And I follow "Tumblr"
+    Then I should see "Tumblr" within "#content h1"
     And I should see "Tumblr DNS settings have successfully been installed into Badger DNS."
-    When I follow "BLOGGER"
-    Then I should see "BLOGGER FOR mydomain0.com" within "#content h1"
+    When I follow "mydomain0.com"
+    And I follow "Blogger"
+    Then I should see "Blogger" within "#content h1"
     And I should see "Blogger DNS settings have successfully been installed into Badger DNS."
-    When I follow "FLAVORS ME"
-    Then I should see "FLAVORS ME FOR mydomain0.com" within "#content h1"
-    And I should see "FlavorsMe DNS settings have successfully been installed into Badger DNS."
-    When I follow "GOOGLE APP ENGINE"
-    Then I should see "GOOGLE APP ENGINE FOR mydomain0.com" within "#content h1"
+    When I follow "mydomain0.com"
+    And I follow "Flavors.me"
+    Then I should see "Flavors.me" within "#content h1"
+    And I should see "Flavors.me DNS settings have successfully been installed into Badger DNS."
+    When I follow "mydomain0.com"
+    And I follow "Google App Engine"
+    Then I should see "Google App Engine" within "#content h1"
     And I should see "Google App Engine DNS settings have been installed into Badger DNS."
     And I should see "Also check out Google App Engine Custom Domains."
 
@@ -76,7 +82,7 @@ Feature: Domain apps
     And I fill in "shopify_app_url" with "ea.myshopify.com"
     And I mock addRecord
     And I press "Install Shopify"
-    Then I should see "SHOPIFY FOR mydomain0.com" within "#content h1"
+    Then I should see "Shopify" within "#content h1"
     And I should see "Shopify DNS settings have successfully been installed into Badger DNS."
 
   Scenario: Install new app (Heroku)
@@ -106,7 +112,7 @@ Feature: Domain apps
     And I fill in "heroku_app_url" with "ea.heroku.com"
     And I mock addRecord
     And I press "Install Heroku"
-    Then I should see "HEROKU FOR mydomain0.com" within "#content h1"
+    Then I should see "Heroku" within "#content h1"
     And I should see "Heroku DNS settings have been installed into Badger DNS."
 
   Scenario: Install new app (Google Apps Verification)
@@ -132,7 +138,7 @@ Feature: Domain apps
       |id |record_type|subdomain    |content                                                             |ttl |priority|
       |80 |TXT        |             |google-site-verification:abcdeabcdeabcdeabcdeabcdeabcdebcdeabcde1234|1800|        |
     And I press "Install Google Apps Verification"
-    Then I should see "GOOGLE APPS VERIFICATION FOR mydomain0.com" within "#content h1"
+    Then I should see "Google Verification" within "#content h1"
     And I should see "The TXT record below has been added to the DNS configuration for"
 
   Scenario: Install new app unsuccessfully because of conflicts

@@ -5,10 +5,10 @@ Feature: Account
 
   Background:
     Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
-    And I follow "MY ACCOUNT"
+    And I follow "East Agile Company"
 
   Scenario: As a logged in user I want to see My Account page
-    Then I should see "MY ACCOUNT"
+    Then I should see "East Agile Company"
     And I should see "SETTINGS"
     And I should see "Change Password"
     And I should see "Change First/Last Name"
@@ -20,7 +20,7 @@ Feature: Account
     And I should see "Linked Accounts"
 
   Scenario: As a logged in user I want to see Whois profiles page
-    Then I follow "WHOIS PROFILES"
+    Then I follow "Whois Profiles"
     And I should see "Create New Profile"
     And I should see "East Agile Company"
     And I should see "tester@eastagile.com"

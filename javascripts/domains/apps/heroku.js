@@ -56,7 +56,7 @@ with (Hasher('Heroku', 'DomainApps')) {
   
   route('#domains/:domain/heroku', function(domain) {
     render(
-      h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, 'HEROKU FOR ' + domain)),
+      h1_for_domain(domain, 'Heroku'),
       domain_app_settings_button('badger_heroku', domain),
 
       div({ id: 'web-forwards-errors' }),

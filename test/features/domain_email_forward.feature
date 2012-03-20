@@ -10,7 +10,7 @@ Feature: Email Forward
     When I visit Email Forwarding for domain "mydomain0.com"
 
   Scenario: When I have wildcard email, I should be able to see it display with the "*" character
-    Then I should see "mydomain0.com EMAIL FORWARD"
+    Then I should see "Email Forward" within "#content h1"
     And I should see "*@mydomain0.com" within "#id-"
     And I should see "*@abc.com" within "#id-"
     And I should see "abc@mydomain0.com" within "#id-abc"

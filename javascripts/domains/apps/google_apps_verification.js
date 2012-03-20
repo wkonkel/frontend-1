@@ -40,7 +40,7 @@ with (Hasher('GoogleAppsVerification', 'DomainApps')) {
       var found_record = domain_has_record(domain_obj, Hasher.domain_apps.badger_google_apps_verification.requires.dns[0])
       if (found_record) {
         render(
-          h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, 'GOOGLE APPS VERIFICATION FOR ' + domain)),
+          h1_for_domain(domain, 'Google Verification'),
           domain_app_settings_button('badger_google_apps_verification', domain),
 
           p("The TXT record below has been added to the DNS configuration for ", domain,":"),

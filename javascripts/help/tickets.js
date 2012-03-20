@@ -35,7 +35,7 @@ with (Hasher('Ticket','Application')) {
   define('render_ticket_info', function(id, response_id) {
     var ticket_info = div(p('Loading...'))
     render(
-      h1('Ticket Information'),
+      h1(a({ href: '#tickets' }, 'Support Tickets'), ' » Ticket Information'),
       div({ id: 'success-message', 'class': 'success-message hidden' }),
       div({ id: 'error-message', 'class': 'error-message hidden' }),
       ticket_info

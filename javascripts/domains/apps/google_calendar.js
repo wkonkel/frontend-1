@@ -26,7 +26,7 @@ with (Hasher('GoogleCalendar', 'DomainApps')) {
 
   route('#domains/:domain/google_apps/calendar', function(domain) {
     render(
-      h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, "Google Calendar for ", domain)),
+      h1_for_domain(domain, 'Google Calendar'),
       domain_app_settings_button('google_calendar', domain),
       p("If you haven't already, you'll need to ", a({ href: 'https://www.google.com/a/cpanel/domain/new', target: '_blank'}, 'setup Google Apps for Your Domain'), '.'),
       p("Once you've done that, you can head on over to ", a({ href: 'http://calendar.' + domain + '/', target: '_blank' }, 'calendar.' + domain), " and get started!")
