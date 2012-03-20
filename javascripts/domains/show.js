@@ -288,6 +288,12 @@ with (Hasher('DomainShow','DomainApps')) {
       
       // if the transfer steps are no longer present, then the transfer succeeded!
       var new_percentage = !domain_obj.transfer_steps ? 100 : parseInt(100 * (domain_obj.transfer_steps.completed.length / domain_obj.transfer_steps.count));
+      var old_percentage = parseInt($("td#progress-bar-percentage").html());
+      
+      if (new_percentage != old_percentage) {
+        console.log('FLUSHING DOMAINS');
+        BadgerCache.flush('domains');
+      }
       
       // hide the ajax loader
       $("#refresh-transfer-steps-loader").css('display','none');
