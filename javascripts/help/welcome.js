@@ -11,20 +11,20 @@ with (Hasher('Welcome','Application')) {
 
         h3('Shortcuts for easy setup:'),
         div({ style: 'height: 120px' },
-          app_icon('gmail2', 'Gmail'),
-          app_icon('wordpress', 'Wordpress'),
-          app_icon('shopify', 'Shopify'),
-          app_icon('heroku', 'Heroku'),
-          app_icon('blogger', 'Blogger')
+          app_icon('images/apps/gmail2.png', 'Gmail'),
+          app_icon('images/apps/wordpress.png', 'Wordpress'),
+          app_icon('images/apps/shopify.png', 'Shopify'),
+          app_icon('images/apps/heroku.png', 'Heroku'),
+          app_icon('images/apps/blogger.png', 'Blogger')
         ),
 
         h3({ style: "margin-bottom: 0" }, 'Automatic transfers from:'),
         div({ style: 'height: 120px' },
-          app_icon('godaddy', 'GoDaddy'),
-          app_icon('enom', 'eNom'),
-          app_icon('namecheap', 'Namecheap'),
-          app_icon('ns', 'Network Solutions'),
-          app_icon('1and1', '1&1')
+          app_icon('images/apps/godaddy.png', 'GoDaddy'),
+          app_icon('images/apps/enom.png', 'eNom'),
+          app_icon('images/apps/namecheap.png', 'Namecheap'),
+          app_icon('images/apps/ns.png', 'Network Solutions'),
+          app_icon('images/apps/1and1.png', '1&1')
         ),
         
         
@@ -44,7 +44,7 @@ with (Hasher('Welcome','Application')) {
   
   define('app_icon', function(img_src, name, callback) {
     return a({ 'class': 'app_store_container', href: callback || get_started },
-      img({ 'class': 'app_store_icon', src: 'images/apps/' + img_src + '.png' } ),
+      img({ 'class': 'app_store_icon', src: img_src } ),
       span({ style: 'text-align: center; font-weight: bold' }, name)
     );
   })
