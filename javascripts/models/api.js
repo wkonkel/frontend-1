@@ -197,6 +197,10 @@ var Badger = {
     delete data.name;
     Badger.api("/domains/" + name + "/transfer", 'POST', data, callback);
   },
+  
+  cancelDomainTransfer: function(domain_name, callback) {
+    Badger.api("/domains/" + domain_name + "/transfer", 'POST', { cancel: true }, callback);
+  },
 
 	renewDomain: function(name, years, callback) {
 		Badger.api("/domains/" + name + "/renew", "POST", { years: years }, callback);

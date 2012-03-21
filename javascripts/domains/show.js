@@ -1,5 +1,8 @@
 with (Hasher('DomainShow','DomainApps')) {
 
+  // put this in global scope so that it can be cleared anywhere
+  var retry_transfer_timeout;
+
   route('#domains/:domain', function(domain) {
     var content_div = div('Loading...');
     render(
@@ -97,7 +100,7 @@ with (Hasher('DomainShow','DomainApps')) {
         needs_timeout = true;
     });
     
-    if (needs_timeout) setTimeout(curry(retry_transfer, domain_obj.name, false), seconds || 15000);
+    if (needs_timeout) retry_transfer_timeout = setTimeout(curry(retry_transfer, domain_obj.name, false), seconds || 15000);
   });
   
   define('detail_information_rows', function(domain_obj) {
@@ -148,13 +151,43 @@ with (Hasher('DomainShow','DomainApps')) {
           detail_information_rows(domain_obj)
         ))
       ),
+
+      div({ style: "float: left; margin-top: -25px; margin-right: 497px" },
+        a({ 'class': 'myButton small', href: curry(cancel_transfer_modal, domain_obj.name) }, 'Cancel Transfer')
+      ),
       
       div({ style: "float: right; margin-top: -30px" },
-        // a({ 'class': 'myButton', style: "margin-right: 10px", href: null }, 'Cancel'),
         a({ id: "retry-transfer-button", 'class': 'myButton', style: (show_retry ? null : "display: none"), href: curry(retry_transfer, domain_obj.name, true) }, 'Retry'),
         div({ id: "refresh-transfer-steps-loader", style: "display: none" }, img({ src: "images/ajax-loader.gif" }))
       )
     );
+  });
+  
+  define('cancel_transfer_modal', function(domain_name) {
+    // clear the retry_transfer timer if it is pending execution
+    clearTimeout(retry_transfer_timeout);
+    
+    return show_modal({ style: "height: 160px" },
+      h1("Cancel Domain Transfer"),
+      
+      p({ style: "font-weight: bold" }, "Are you sure you want to cancel this domain transfer?"),
+      p("You can always start the transfer process again later, but someone else may transfer the domain before you do!"),
+      
+      div({ style: "float: right" },
+        a({ 'class': 'myButton', style: "margin-right: 15px", href: hide_modal }, 'Go Back'),
+        a({ 'class': 'myButton red', href: curry(cancel_transfer, domain_name) }, 'Cancel')
+      )
+    );
+  });
+  
+  define('cancel_transfer', function(domain_name) {
+    start_modal_spin("Cancelling domain transfer...");
+    
+    Badger.cancelDomainTransfer(domain_name, function() {
+      hide_modal();
+      update_credits(true);
+      set_route("#domains/" + domain_name);
+    });
   });
 
   define('transfer_description_row', function(domain_obj, step_obj) {
