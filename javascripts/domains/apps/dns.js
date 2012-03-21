@@ -47,7 +47,7 @@ with (Hasher('DnsApp','DomainApps')) {
           );
         }
 
-        if (!domain_obj.badger_registration && domain_obj.using_current_registrar_nameservers) {
+        if (domain_obj.badger_registration && !badger_dns && domain_obj.using_current_registrar_nameservers) {
           render({ into: message_div }, div({ 'class': 'error-message' }, "You are still using the name servers provided by ", domain_obj.current_registrar , ", ",
             a({ href: curry(change_name_servers_modal, domain_obj) }, "switch to Badger.com?") )
           );
