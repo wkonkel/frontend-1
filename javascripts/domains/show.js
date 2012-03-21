@@ -100,7 +100,7 @@ with (Hasher('DomainShow','DomainApps')) {
         needs_timeout = true;
     });
     
-    if (needs_timeout) retry_transfer_timeout = setTimeout(curry(retry_transfer, domain_obj.name, false), seconds || 15000);
+    if (needs_timeout) retry_transfer_timeout = setTimeout(curry(retry_transfer, domain_obj.name, false), seconds);
   });
   
   define('detail_information_rows', function(domain_obj) {
@@ -119,8 +119,7 @@ with (Hasher('DomainShow','DomainApps')) {
     });
     
     // set a timeout to automatically reload data if needed
-    // TODO: remove the 5000ms time for debug
-    set_retry_transfer_timeout_if_necessary(domain_obj, 5000);
+    set_retry_transfer_timeout_if_necessary(domain_obj, 10000);
     
     return detail_information_rows_array;
   });
@@ -134,6 +133,8 @@ with (Hasher('DomainShow','DomainApps')) {
       if (step.name == "Approve transfer" && step.value == "transfer_rejected")
         show_retry = true;
     });
+    
+    var show_cancel_transfer = domain_obj.transfer_steps && domain_obj.transfer_steps.can_cancel;
     
     return div({ id: "transfer-progress-report", 'class': "info-message", style: "padding: 10px" },
       div({ id: "progress-bar", style: "margin: -10px auto 15px auto" },
@@ -153,7 +154,7 @@ with (Hasher('DomainShow','DomainApps')) {
       ),
 
       div({ style: "float: left; margin-top: -25px; margin-right: 497px" },
-        a({ 'class': 'myButton small', href: curry(cancel_transfer_modal, domain_obj.name) }, 'Cancel Transfer')
+        a({ id: "cancel-transfer-button", 'class': 'myButton small', style: (show_cancel_transfer ? null : "display: none"), href: curry(cancel_transfer_modal, domain_obj.name) }, 'Cancel Transfer')
       ),
       
       div({ style: "float: right; margin-top: -30px" },
@@ -283,6 +284,12 @@ with (Hasher('DomainShow','DomainApps')) {
   });
 
   define('retry_transfer', function(domain_name, force_transfer_request){
+    // if no longer on the page, clear the timeout and return
+    if (get_route() != "#domains/" + domain_name) {
+      clearTimeout(retry_transfer_timeout);
+      return;
+    }
+    
     force_transfer_request = force_transfer_request ? force_transfer_request : false;
     
     var params = { retry: true, name: domain_name, force_transfer_request: force_transfer_request };
@@ -324,7 +331,6 @@ with (Hasher('DomainShow','DomainApps')) {
       var old_percentage = parseInt($("td#progress-bar-percentage").html());
       
       if (new_percentage != old_percentage) {
-        console.log('FLUSHING DOMAINS');
         BadgerCache.flush('domains');
       }
       
@@ -341,6 +347,14 @@ with (Hasher('DomainShow','DomainApps')) {
       $("#transfer-steps tr").remove();
       // add the transfer steps, unless it was just completed
       if (domain_obj.transfer_steps) $("#transfer-steps").append(detail_information_rows(domain_obj));
+      
+      // show the button again if we can transfer now
+      if (domain_obj.transfer_steps && domain_obj.transfer_steps.can_cancel) {
+        $("#cancel-transfer-button").css('display','');
+      } else {
+        $("#cancel-transfer-button").css('display','none');
+      }
+      
     });
   });
 
