@@ -78,7 +78,7 @@ with (Hasher('Domains','Application')) {
     });
   });
   
-  define('domain_nav_table', function() {
+  define('domain_index_nav_table', function() {
     var active_url = get_route().replace('grid', 'list');
     
     return table({ style: 'width: 100%' }, tbody(
@@ -135,7 +135,7 @@ with (Hasher('Domains','Application')) {
         a({ 'class': 'myButton small', href: Transfer.show }, 'Transfer in a Domain')
       ),
       
-      domain_nav_table(
+      domain_index_nav_table(
         (typeof domains == 'undefined') ? [
           div('Loading domains...')
         ]:((domains.length == 0) ? 

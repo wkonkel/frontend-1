@@ -28,6 +28,32 @@ with (Hasher('DomainApps','Application')) {
     );
   });
   
+  define('domain_nav_table', function() {
+    var active_url = get_route();
+    var domain = active_url.split('/')[1];
+    
+    return table({ style: 'width: 100%' }, tbody(
+      tr(
+        td({ style: 'width: 200px; vertical-align: top' },
+          ul({ id: 'domains-left-nav' },
+            [
+              ['Applications', '#domains/' + domain],
+              ['Registration', '#domains/' + domain + '/registration'],
+              ['DNS', '#domains/' + domain + '/dns']
+            ].map(function(pair) {
+              return li(a({ href: pair[1], 'class': (active_url == pair[1] ? 'active' : '') }, pair[0]));
+            })
+          )
+        ),
+        
+        td({ style: 'vertical-align: top'},
+          arguments
+        )
+      )
+    ));
+  });
+  
+  
   define('install_app_button_clicked', function(app, domain_obj, form_data) {
     if (form_data.install_on_subdomain && form_data.subdomain == "") {
       $('#subdomain-input-error').removeClass('hidden');

@@ -22,8 +22,10 @@ with (Hasher('Registration','DomainApps')) {
       button_div,
       div({ 'class': 'error-message hidden', id: 'error-message' }),
       div({ 'class': 'success-message hidden', id: 'success-message' }),
-      domain_data_block(domain),
-      whois_div
+      domain_nav_table(
+        domain_data_block(domain),
+        whois_div
+      )
     );
 
     Badger.getContacts(function() {

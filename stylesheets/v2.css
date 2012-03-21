@@ -124,5 +124,6 @@ html, body, #wrapper, #footer { min-width: 970px; }
 
 #domains-left-nav { margin: 0; padding: 0; }
 #domains-left-nav li { margin: 0; padding: 0; list-style: none; }
-#domains-left-nav a { display: block; height: 30px; background: #eee; line-height: 30px; margin-right: 30px; padding-left: 10px; color: #000; font-weight: bold; }
-#domains-left-nav a.active { margin-right: 0; background: #bbb url(../images/v2/domains-left-nav-bg.png) no-repeat right center; margin-right: 10px; border: 0; }
+#domains-left-nav a { display: block; height: 30px; background: #eee; line-height: 30px; margin-right: 30px; padding-left: 10px; font-weight: bold; color: #333; }
+#domains-left-nav a:hover { color: #333; }
+#domains-left-nav a.active { margin-right: 0; background: #bbb url(../images/v2/domains-left-nav-bg.png) no-repeat right center; margin-right: 10px; border: 0;  }

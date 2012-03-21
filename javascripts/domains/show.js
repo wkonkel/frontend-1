@@ -5,7 +5,7 @@ with (Hasher('DomainShow','DomainApps')) {
     render(
       h1_for_domain(domain),
       div({ id: 'error-message', 'class': 'error-message hidden' }),
-      content_div
+      domain_nav_table(content_div)
     );
 
     Badger.getDomain(domain, curry(handle_get_domain_response, content_div, domain));
@@ -332,7 +332,7 @@ with (Hasher('DomainShow','DomainApps')) {
           )
         );
         // add a clear every six icons
-        if (target.childNodes.length % 9 == 8) target.appendChild(div({ style: 'clear: left ' }));
+        if (target.childNodes.length % 7 == 6) target.appendChild(div({ style: 'clear: left ' }));
       }
     }
 

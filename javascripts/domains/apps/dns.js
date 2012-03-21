@@ -25,8 +25,10 @@ with (Hasher('DnsApp','DomainApps')) {
     render(
       h1_for_domain(domain, 'DNS'),
       button_div,
-      message_div,
-      content_div
+      domain_nav_table(
+        message_div,
+        content_div
+      )
     );
 
     Badger.getDomain(domain, function(response) {
