@@ -172,6 +172,8 @@ with (Hasher('LinkedAccounts','Application')) {
 	});
 	
 	define('close_window_and_reload_linked_accounts', function(old_account_id) {
+	  BadgerCache.flush('linked_accounts');
+	  
 	  // if fixing broken linked account, delete the old one
 	  if (old_account_id) {
 	    Badger.deleteLinkedAccount(old_account_id, function(response) {
