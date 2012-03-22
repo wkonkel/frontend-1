@@ -10,9 +10,9 @@ body { font-size: 100.01%; }
 body, input, textarea, select, td, th { font: 14px "Helvetica Neue", Arial, sans-serif; color: #333; line-height: 18px; }
 a { color: #1E31F5; }
 h1, h2, h3, h4 { font: 28px "AdelleBold", Arial, sans-serif; margin: 5px 0 7px; padding: 0; border-bottom: 1px solid #333; }
-h2 { font-size: 24px; }
-h3 { font-size: 20px; }
-h4 { font-size: 18px; }
+h2 { font-size: 24px; border-bottom: 0; }
+h3 { font-size: 20px; border-bottom: 0; }
+h4 { font-size: 18px; border-bottom: 0; }
 h1 a, h2 a, h3 a, h4 a, h5 a { color: #333; }
 
 /* page background */
