@@ -106,6 +106,7 @@ var Badger = {
   
   // erases local cookie
   logout: function(callback) {
+    if (!Badger.getAccessToken()) return;
     Badger.setAccessToken(null);
     for (var i=0; i < Badger.logout_callbacks.length; i++) Badger.logout_callbacks[i].call(null);
     if (callback) callback();

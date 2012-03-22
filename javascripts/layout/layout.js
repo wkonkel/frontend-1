@@ -196,7 +196,7 @@ with (Hasher('Application')) {
       $(user_nav).prepend(span(a({ href: '#account/billing', id: 'user_nav_credits' }, 'Credits')));
       $(user_nav).prepend(span(a({ href: '#filter_domains/all/list', id: 'user_nav_domains' }, 'Domains')));
       update_credits();
-      update_my_domains_count();
+      //update_my_domains_count();
     });
 
     return user_nav;
