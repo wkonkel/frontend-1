@@ -385,7 +385,7 @@ with (Hasher('DomainShow','DomainApps')) {
           )
         );
         // add a clear every six icons
-        if (target.childNodes.length % 7 == 6) target.appendChild(div({ style: 'clear: left ' }));
+        if (target.childNodes.length % 9 == 8) target.appendChild(div({ style: 'clear: left ' }));
       }
     }
 
