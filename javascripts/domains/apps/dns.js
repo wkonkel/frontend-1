@@ -484,11 +484,6 @@ define('get_dns_params', function(id) {
               li("Manage from within Badger.com")
             ),
             
-            div({ id: "badger-dns-options-div", style: "margin-left: 24px; margin-top: 10px; display: none" },
-              div({ style: "font-weight: bold" }, "Options"),
-              div({}, input({ type: "checkbox", name: "import-dns", checked: "checked" }), "Migrate DNS to Badger.com")
-            ),
-
             div({ id: 'badger-dns-installed-div', style: 'margin-top: 30px; font-size: 20px; font-weight: bold; text-align: center; font-style: italic; display: none'}, 
               img({ src: "images/check.png" }),
               'Already Installed!'

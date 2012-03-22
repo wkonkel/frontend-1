@@ -195,10 +195,6 @@ with (Hasher('Transfer','Application')) {
                 ),
 
                 div(
-                  checkbox({ name: 'import_dns', value: 'yes', checked: 'checked' }), 'Migrate DNS to Badger.com' // used to be 'Automatically import DNS' --- CAB
-                ),
-
-                div(
                   checkbox({ name: 'auto_renew', value: 'yes', checked: 'checked' }), 'Auto-renew on expiration date'
                 )
               )
