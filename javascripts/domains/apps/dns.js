@@ -23,10 +23,12 @@ with (Hasher('DnsApp','DomainApps')) {
     var button_div = div({ style: 'float: right; margin-top: -44px' });
     
     render(
-      h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, domain + ' DNS')),
+      h1_for_domain(domain, 'DNS'),
       button_div,
-      message_div,
-      content_div
+      domain_nav_table(
+        message_div,
+        content_div
+      )
     );
 
     Badger.getDomain(domain, function(response) {

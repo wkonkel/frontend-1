@@ -27,7 +27,7 @@ with (Hasher('WebForwards', 'DomainApps')) {
   route('#domains/:domain/web_forwards', function(domain) {
     render(
       div({ id: 'web-forwards-wrapper' },
-        h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, 'URL FORWARDING FOR ' + domain)),
+      h1_for_domain(domain, 'URL Forwards'),
         domain_app_settings_button('badger_web_forward', domain),
 
         div({ id: 'web-forwards-errors' }),

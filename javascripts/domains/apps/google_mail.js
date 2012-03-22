@@ -34,7 +34,7 @@ with (Hasher('GoogleMail', 'DomainApps')) {
 
   route('#domains/:domain/google_apps/gmail', function(domain) {
     render(
-      h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, "Google Mail for ", domain)),
+      h1_for_domain(domain, 'Google Mail'),
       domain_app_settings_button('google_mail', domain),
       p("If you haven't already, you'll need to ", a({ href: 'https://www.google.com/a/cpanel/domain/new', target: '_blank'}, 'setup Google Apps for Your Domain'), '.'),
       p("Once you've done that, you can head on over to ", a({ href: 'http://mail.' + domain + '/', target: '_blank' }, 'mail.' + domain), " and get started!")

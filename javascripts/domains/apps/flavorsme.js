@@ -2,7 +2,7 @@ with (Hasher('FlavorsMe', 'DomainApps')) {
 
   register_domain_app({
     id: 'badger_flavorsme',
-    name: 'FlavorsMe',
+    name: 'Flavors.me',
     icon: 'images/apps/flavorsme.png',
     menu_item: { text: 'FLAVORS ME', href: '#domains/:domain/flavorsme' },
     requires: {
@@ -29,10 +29,10 @@ with (Hasher('FlavorsMe', 'DomainApps')) {
 
   route('#domains/:domain/flavorsme', function(domain) {
     render(
-      h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, 'FLAVORS ME FOR ' + domain)),
+      h1_for_domain(domain, 'Flavors.me'),
       domain_app_settings_button('badger_flavorsme', domain),
 
-      p("FlavorsMe DNS settings have successfully been installed into Badger DNS."),
+      p("Flavors.me DNS settings have successfully been installed into Badger DNS."),
       div(
         span("Last steps before you're all set:"), br(),
         span("1. Log in to ", a({ href: "http://flavors.me/", target: '_blank' }, "FlavorsMe"), "."), br(),

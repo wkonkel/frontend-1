@@ -10,13 +10,13 @@ with (Hasher('Application')) {
       window.foobar = Hasher.instance.default_layout.yield_parent
       reset_layout('default_layout');
       render({ layout: default_layout }, old_yield_parent.childNodes);
-      update_sidebar();
+      //update_sidebar();
     });
 
     Badger.onLogout(function() {
       BadgerCache.flush();
       reset_layout('default_layout');
-      set_route('#welcome');
+      if (get_route() != '#welcome') set_route('#welcome');
     });
   });
 }

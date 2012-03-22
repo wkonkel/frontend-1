@@ -4,11 +4,11 @@ with (Hasher('Whois','Application')) {
     var target_div = div('Loading...');
     
     render(
-      h1('Profiles'),
+      h1('My Account » Profiles'),
       div({ style: 'float: right; margin-top: -44px' }, 
         a({ 'class': 'myButton small', href: curry(Whois.edit_whois_modal, null, curry(set_route, '#account/profiles')) }, 'Create New Profile')
       ),
-      target_div
+      Account.account_nav_table(target_div)
     );
 
     BadgerCache.getContacts(function(results) {

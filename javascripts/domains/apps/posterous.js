@@ -28,7 +28,7 @@ with (Hasher('Posterous', 'DomainApps')) {
 
   route('#domains/:domain/posterous', function(domain) {
     render(
-      h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, 'POSTEROUS FOR ' + domain)),
+      h1_for_domain(domain, 'Posterous'),
       domain_app_settings_button('badger_posterous', domain),
 
       p("Posterous DNS settings have successfully been installed into Badger DNS."),

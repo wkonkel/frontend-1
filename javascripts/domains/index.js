@@ -1,6 +1,10 @@
 with (Hasher('Domains','Application')) {
   route('#filter_domains/:filter/:view_type', function(filter, view_type) {
-    render('');
+    render(
+      h1('MY DOMAINS'),
+      p('Loading...')
+    );
+				
     BadgerCache.getDomains(function(domains) {
       var results = [];
       if (view_type == null)
@@ -73,6 +77,26 @@ with (Hasher('Domains','Application')) {
       });
     });
   });
+  
+  define('domain_index_nav_table', function() {
+    var active_url = get_route().replace('grid', 'list');
+    
+    return table({ style: 'width: 100%' }, tbody(
+      tr(
+        td({ style: 'width: 200px; vertical-align: top' },
+          ul({ id: 'domains-left-nav' },
+            li(a({ href: '#filter_domains/all/list', 'class': (active_url == '#filter_domains/all/list' ? 'active' : '') }, 'All Domains')),
+            li(a({ href: '#domain-transfers', 'class': (active_url == '#domain-transfers' ? 'active' : '') }, 'Transfers')),
+            li(a({ href: '#filter_domains/expiringsoon/list', 'class': (active_url == '#filter_domains/expiringsoon/list' ? 'active' : '') }, 'Expiring Soon'))
+          )
+        ),
+        
+        td({ style: 'vertical-align: top'},
+          arguments
+        )
+      )
+    ));
+  });
 
 
   define('index_view', function(domains, filter, view_type) {
@@ -85,7 +109,7 @@ with (Hasher('Domains','Application')) {
         break;
       case 'expiringsoon':
         empty_domain_message = [div("It looks like you don't have any domains expiring soon.")];
-        title = "DOMAINS EXPIRING SOON";
+        title = "MY DOMAINS » EXPIRING SOON";
         break;
       default:
         empty_domain_message = [
@@ -110,14 +134,16 @@ with (Hasher('Domains','Application')) {
       div({ style: 'float: right; margin-top: -44px' },
         a({ 'class': 'myButton small', href: Transfer.show }, 'Transfer in a Domain')
       ),
-
-      (typeof domains == 'undefined') ? [
-        div('Loading domains...')
-      ]:((domains.length == 0) ? 
-				empty_domain_message
-      : [ 
-        this[view_type + '_view'](domains)
-			])
+      
+      domain_index_nav_table(
+        (typeof domains == 'undefined') ? [
+          div('Loading domains...')
+        ]:((domains.length == 0) ? 
+  				empty_domain_message
+        : [ 
+          this[view_type + '_view'](domains)
+  			])
+      )
     );
   });
 

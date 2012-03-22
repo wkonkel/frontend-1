@@ -3,25 +3,9 @@ with (Hasher('Account','Application')) {
     var account_setings = div();
 
     render(
-      div(
-        h1('My Account'),
-        table({ style: 'width: 100%; border-collapse: collapse' }, tbody(
-          tr(
-            td({ style: 'width: 50%; vertical-align: top; padding-right: 10px'},
-              h2("SETTINGS"),
-              account_setings
-            ),
-            td({ style: 'width: 50%; vertical-align: top; padding-left: 10px'},
-              h2("SHORTCUTS"),
-              ul(
-                li(a({ href: "#tickets" }, 'Support Tickets')),
-                li(a({ href: "#account/profiles" }, 'Whois Profiles')),
-                li(a({ href: "#account/billing" }, 'Credits & Billing')),
-          			li(a({ href: "#linked_accounts" }, 'Linked Accounts'))
-          		)
-            )
-          )
-        ))
+      h1('My Account » Settings'),
+      account_nav_table(
+        account_setings
       )
     );
 
@@ -34,8 +18,29 @@ with (Hasher('Account','Application')) {
         )
       )
     });
+  });
 
-
+  define('account_nav_table', function() {
+    var active_url = get_route();
+    
+    return table({ style: 'width: 100%' }, tbody(
+      tr(
+        td({ style: 'width: 200px; vertical-align: top' },
+          ul({ id: 'domains-left-nav' },
+            li(a({ href: '#tickets', 'class': (active_url == '#tickets' ? 'active' : '') }, 'Support Tickets')),
+            li(a({ href: '#account', 'class': (active_url == '#account' ? 'active' : '') }, 'Settings')),
+            li(a({ href: '#account/profiles', 'class': (active_url == '#account/profiles' ? 'active' : '') }, 'Whois Profiles')),
+            li(a({ href: '#account/billing', 'class': (active_url == '#account/billing' ? 'active' : '') }, 'Credits & Billing')),
+            li(a({ href: '#linked_accounts', 'class': (active_url == '#linked_accounts' ? 'active' : '') }, 'Linked Accounts'))
+            //li(a({ href: '#invites', 'class': (active_url == '#invites' ? 'active' : '') }, 'Sent Invites'))
+          )
+        ),
+        
+        td({ style: 'vertical-align: top'},
+          arguments
+        )
+      )
+    ));
   });
   
 	define('change_password', function(data) {

@@ -5,9 +5,9 @@ Feature: Tickets
 
   Background:
     Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
-    And I follow "MY ACCOUNT"
+    And I follow "East Agile Company"
     And I mock getTickets
-    When I follow "SUPPORT TICKETS"
+    When I follow "Support Tickets"
 
   Scenario: View all pending and closed tickets
     Then I should see "Support Tickets"
@@ -23,16 +23,16 @@ Feature: Tickets
     And I should see "1/31/2012" within "#content table:first tr:eq(2)"
     And I should see "open" within "#content table:first tr:eq(2)"
     And I should see "Your Closed Tickets"
-    And I should see "Subject" within "#content div:eq(2) table:last"
-    And I should see "Category" within "#content div:eq(2) table:last"
-    And I should see "Created on" within "#content div:eq(2) table:last"
-    And I should see "Updated on" within "#content div:eq(2) table:last"
-    And I should see "Status" within "#content div:eq(2) table:last"
-    And I should see "Request Feature 0" within "#content div:eq(2) table:last tr:eq(2)"
-    And I should see "Request Feature" within "#content div:eq(2) table:last tr:eq(2)"
-    And I should see "1/28/2012" within "#content div:eq(2) table:last tr:eq(2)"
-    And I should see "1/31/2012" within "#content div:eq(2) table:last tr:eq(2)"
-    And I should see "closed" within "#content div:eq(2) table:last tr:eq(2)"
+    And I should see "Subject" within "#content"
+    And I should see "Category" within "#content"
+    And I should see "Created on" within "#content"
+    And I should see "Updated on" within "#content"
+    And I should see "Status" within "#content"
+    And I should see "Request Feature 0" within "#content"
+    And I should see "Request Feature" within "#content"
+    And I should see "1/28/2012" within "#content"
+    And I should see "1/31/2012" within "#content"
+    And I should see "closed" within "#content"
 
   Scenario: I should view and see all the attachments of the ticket and response, and also be able to response to a ticket
     And I mock getTicket
@@ -64,7 +64,7 @@ Feature: Tickets
     And I mock closeTicket returns status "unprocessable_entity"
     When I follow "Close Ticket"
     Then I should see "Unable to close ticket"
-    And I follow "TICKETS"
+    And I follow "Support Tickets"
     And I follow "Website Bug 0"
     And I mock closeTicket returns status "ok"
     When I follow "Close Ticket"

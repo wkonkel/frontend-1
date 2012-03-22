@@ -3,11 +3,11 @@ with (Hasher('Domains','Application')) {
     var target_div = div('Loading...');
     
     render(
-      h1('Domain Transfers'),
+      h1("MY DOMAINS » TRANSFERS"),
       div({ style: 'float: right; margin-top: -44px' },
         a({ 'class': 'myButton small', href: Transfer.show }, 'Transfer in a Domain')
       ),
-      target_div
+      Domains.domain_index_nav_table(target_div)
     );
 
     BadgerCache.getDomains(function(domains) {

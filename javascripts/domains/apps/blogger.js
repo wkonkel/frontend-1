@@ -32,7 +32,7 @@ with (Hasher('Blogger', 'DomainApps')) {
 
   route('#domains/:domain/blogger', function(domain) {
     render(
-      h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, 'BLOGGER FOR ' + domain)),
+      h1_for_domain(domain, 'Blogger'),
       domain_app_settings_button('badger_blogger', domain),
 
       p("Blogger DNS settings have successfully been installed into Badger DNS."),

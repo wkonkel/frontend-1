@@ -6,9 +6,9 @@ with (Hasher('DomainShow','DomainApps')) {
   route('#domains/:domain', function(domain) {
     var content_div = div('Loading...');
     render(
-      h1({ 'class': 'long-domain-name' }, domain),
+      h1_for_domain(domain),
       div({ id: 'error-message', 'class': 'error-message hidden' }),
-      content_div
+      domain_nav_table(content_div)
     );
 
     Badger.getDomain(domain, curry(handle_get_domain_response, content_div, domain));

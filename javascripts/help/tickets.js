@@ -2,13 +2,13 @@ with (Hasher('Ticket','Application')) {
 
   route('#tickets', function() {
     render(
-			h1('Support Tickets'),
+			h1('My Account » Support Tickets'),
 
       div({ style: 'float: right; margin-top: -44px' },
         a({ 'class': 'myButton small', href: ticket_form }, 'Create a New Ticket')
       ),
 
-      div({ id: 'tickets' }, p('Loading...'))
+      Account.account_nav_table(div({ id: 'tickets' }, p('Loading...')))
     );
 
     Badger.getTickets(function(response) {
@@ -35,10 +35,10 @@ with (Hasher('Ticket','Application')) {
   define('render_ticket_info', function(id, response_id) {
     var ticket_info = div(p('Loading...'))
     render(
-      h1('Ticket Information'),
+      h1('My Account » ', a({ href: '#tickets' }, 'Support Tickets'), ' » Ticket Information'),
       div({ id: 'success-message', 'class': 'success-message hidden' }),
       div({ id: 'error-message', 'class': 'error-message hidden' }),
-      ticket_info
+      Account.account_nav_table(ticket_info)
     );
 
     Badger.getTicket(id, function(response) {

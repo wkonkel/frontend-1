@@ -2,13 +2,13 @@ with (Hasher('Search','Application')) {
   route('#search', function() {
     render(
       div(
+        p({ id: 'search-help', 'class': 'info-message', style: "font-size: 20px; margin: 0 0 25px; text-align: center" }, 'Start typing in the search box above and results will appear below.'),
         h1('Search Results'),
         div({ style: 'float: right; margin-top: -44px' },
           a({ 'class': 'myButton small', href: Transfer.show }, 'Transfer in a Domain')
         ),
         table({ id: 'search-results', 'class': 'fancy-table' }, tbody()),
         div({ id: 'search-instructions' },
-          p('Start typing to search for available domains.'),
           p('If you would like to register many domains at once, try our ', a({ href: curry(Transfer.show, 'register') }, 'Bulk Register Tool'), '.')
         )
       )
@@ -30,6 +30,7 @@ with (Hasher('Search','Application')) {
 		var search_callback = function() {
       Badger.domainSearch(current_value, true, function(resp) {
         $('#search-instructions').remove();
+        $('#search-help').remove();
         var most_recent_result = $('#search-results tbody tr:first td:first').text();
         if (resp.data.domains[0][0].indexOf(most_recent_result) == 0) {
           $('#search-results tbody tr:first').remove();

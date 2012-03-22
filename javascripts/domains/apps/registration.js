@@ -18,12 +18,14 @@ with (Hasher('Registration','DomainApps')) {
     var button_div = div();
     
     render(
-      h1({ 'class': 'long-domain-name' }, Domains.truncate_domain_name(domain, 20), ' Registration'),
+      h1_for_domain(domain, 'Registration'),
       button_div,
       div({ 'class': 'error-message hidden', id: 'error-message' }),
       div({ 'class': 'success-message hidden', id: 'success-message' }),
-      domain_data_block(domain),
-      whois_div
+      domain_nav_table(
+        domain_data_block(domain),
+        whois_div
+      )
     );
 
     Badger.getContacts(function() {

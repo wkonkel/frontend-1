@@ -9,7 +9,7 @@ Feature: Badger Registration
   Scenario: When I visit Registration I should see information (current registration, whois) of my domain
     And I mock getDomain for domain "mydomain0.com" with permission "renew,transfer_out"
     When I visit Registration for domain "mydomain0.com"
-    Then I should see "mydomain0.com Registration"
+    Then I should see "Registration" within "#content h1"
     And I should see "Current Registration"
     And I should see "Badger.com until "
     And I should see "Created"

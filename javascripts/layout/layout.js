@@ -5,72 +5,76 @@ with (Hasher('Application')) {
     else set_route('#welcome');
   });
 
-  define('update_sidebar', function() {
-    if ($('#sidebar')) {
-      var request_uri = get_route();
-      check_if_domain_should_be_added_to_sidebar(request_uri);
-      if (Badger.getAccessToken()) {
-        update_my_domains_count();
-        update_invites_available_count();
-      }
-      update_sidebar_with_correct_actives(request_uri);
-      OutlineFix.fix_ie_7();
-    }
+  // define('update_sidebar', function() {
+  //   if ($('#sidebar')) {
+  //     var request_uri = get_route();
+  //     check_if_domain_should_be_added_to_sidebar(request_uri);
+  //     if (Badger.getAccessToken()) {
+  //       update_my_domains_count();
+  //       //update_invites_available_count();
+  //     }
+  //     update_sidebar_with_correct_actives(request_uri);
+  //     OutlineFix.fix_ie_7();
+  //   }
+  // 
+  //   // Fix placeholder does not work in IE
+  //   Placeholder.fix_ie();
+  // })
+  // 
+  // after_filter('update_sidebar', update_sidebar);
 
-    // Fix placeholder does not work in IE
-    Placeholder.fix_ie();
-  })
 
-  after_filter('update_sidebar', update_sidebar);
+  // define('update_sidebar_with_correct_actives', function(request_uri) {
+  //   if (!request_uri) request_uri = get_route();
+  //   if (request_uri.indexOf("filter_domains") != -1) request_uri = request_uri.replace('grid', 'list');
+  //   if (request_uri.indexOf("#blogs/") == 0) request_uri = '#blogs';
+  //   if (request_uri.indexOf("#tickets/") == 0) request_uri = '#tickets';
+  //   if (request_uri.indexOf("#knowledge_center/") != -1) request_uri = '#knowledge_center';
+  // 
+  //   // select active link and expand parent
+  //   $('#sidebar ul').removeClass('expanded');
+  //   $('#sidebar a').removeClass('active');
+  //   $('#sidebar li').removeClass('active');
+  //   if (request_uri == '#search') {
+  //     $('#form-search').addClass('active');
+  //   } else {
+  //     $('#form-search').removeClass('active');
+  //     var links = $('#sidebar a[href="' + request_uri + '"]').addClass('active');
+  //     var parent_li = links.parent();
+  //     parent_li.addClass("active");
+  //     if (!parent_li.parent().is('#menu')) parent_li = parent_li.parent().parent();
+  //     parent_li.find('ul').addClass('expanded');
+  //   }
+  // });
 
-
-  define('update_sidebar_with_correct_actives', function(request_uri) {
-    if (!request_uri) request_uri = get_route();
-    if (request_uri.indexOf("filter_domains") != -1) request_uri = request_uri.replace('grid', 'list');
-    if (request_uri.indexOf("#blogs/") == 0) request_uri = '#blogs';
-    if (request_uri.indexOf("#tickets/") == 0) request_uri = '#tickets';
-    if (request_uri.indexOf("#knowledge_center/") != -1) request_uri = '#knowledge_center';
-
-    // select active link and expand parent
-    $('#sidebar ul').removeClass('expanded');
-    $('#sidebar a').removeClass('active');
-    $('#sidebar li').removeClass('active');
-    if (request_uri == '#search') {
-      $('#form-search').addClass('active');
-    } else {
-      $('#form-search').removeClass('active');
-      var links = $('#sidebar a[href="' + request_uri + '"]').addClass('active');
-      var parent_li = links.parent();
-      parent_li.addClass("active");
-      if (!parent_li.parent().is('#menu')) parent_li = parent_li.parent().parent();
-      parent_li.find('ul').addClass('expanded');
-    }
-  });
 
   define('update_my_domains_count', function() {
+    if (!Badger.getAccessToken()) return;
     BadgerCache.getDomains(function(results) {
       var count = results.length;
       if (count > 0) {
         $('#my-domains-count').html(" (" + count + ")");
-        if ($('#all-my-domains-h1'))
-          $('#all-my-domains-h1').html(" (" + count + ")");
+        $('#all-my-domains-h1').html(" (" + count + ")");
+        $('#user_nav_domains').html(count + " Domains");
       }
     });
   });
 
-  define('update_invites_available_count', function() {
-    BadgerCache.getAccountInfo(function(response) {
-      $('#nav-my-account ul li#invites_available #invite_available_count').html(' (' + response.data.invites_available + ')')
-      if (response.data.invites_available > 0) {
-        $('#nav-my-account ul li#invites_available').removeClass('hidden');
-      } else {
-        BadgerCache.getInviteStatus(function(response) {
-          if (response.data.length > 0)
-            $('#nav-my-account ul li#invites_available').removeClass('hidden');
-        });
-      }
-    });
-  });
+  after_filter('update_my_domains_count', update_my_domains_count);
+
+  // define('update_invites_available_count', function() {
+  //   BadgerCache.getAccountInfo(function(response) {
+  //     $('#nav-my-account ul li#invites_available #invite_available_count').html(' (' + response.data.invites_available + ')')
+  //     if (response.data.invites_available > 0) {
+  //       $('#nav-my-account ul li#invites_available').removeClass('hidden');
+  //     } else {
+  //       BadgerCache.getInviteStatus(function(response) {
+  //         if (response.data.length > 0)
+  //           $('#nav-my-account ul li#invites_available').removeClass('hidden');
+  //       });
+  //     }
+  //   });
+  // });
 
   define('check_if_domain_should_be_added_to_sidebar', function(request_uri) {
     if (!request_uri) request_uri = get_route();
@@ -87,81 +91,98 @@ with (Hasher('Application')) {
 
   layout('default_layout', function(yield) {
     var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
-    return div({ id: 'wrapper', 'class': (ie_browser ? 'ie-browser' : '') },
+    return [
+      header(),
 
-      div({ id: 'header' },
-        h1({ id: 'logo' }, a({ href: '#'}, 'badger.com')),
-        
+      div({ id: 'wrapper' },
+        div({ id: 'main', 'class': 'whitebg' },
+          div({ 'id': 'content' }, 
+            yield
+          )
+        )
+      ),
+      
+      footer(),
+      
+      chatbar()
+    ];
+  });
+
+
+
+  define('chatbar', function() {
+    return div({ 'class': 'closed', id: 'chatbar' },
+      a({ href: Chat.hide_chat, 'class': 'close-button' }, 'X'),
+      a({ href: Chat.minimize_chat, 'class': 'close-button min-button' }, '–'),
+      h1({ onclick: Chat.show_chat }, 'Badger Chatroom'),
+      div({ "class": "content" })
+    );
+  });
+
+  define('header', function() {
+    return div({ id: 'header' },
+      div({ 'class': 'inner' },
+        h1({ id: 'logo' }, a({ href: '#welcome'}, 'badger')),
+
+        search_box(),
+      
         Badger.getAccessToken() ? 
           user_nav()
         : div({ id: 'user-nav' },
-          span(a({ href: Signup.show_login_modal }, 'Login')),
+          span(a({ href: curry(Signup.show_login_modal, curry(set_route, '#filter_domains/all/list') ) }, 'Login')),
           a({ href: Signup.show_register_modal }, 'Create Account')
         )
-      ),
-
-      div({ id: 'main' },
-        div({ id: "sidebar" },
-          search_box(),
-          left_nav()
-        ),
-
-        div({ 'id': 'content' },
-          yield
-        ),
-
-        div({ style: 'clear: both' })
-      ),
-
-      div({ id: 'footer' },
-        div({ 'class': "col" },
-          h2('COMPANY'),
-          ul(
-            li(a({ href: "#blogs" }, 'Blog')),
-            li(a({ href: "#terms_of_service" }, 'Terms of Service')),
-						li(a({ href: "http://www.icann.org/en/registrars/registrant-rights-responsibilities-en.htm", target: "_blank" }, 'ICANN Registrant Rights')),
-            li(a({ href: "https://whois.badger.com/", target: '_blank' }, 'Whois Lookup'))
-          )
-        ),
-        div({ 'class': "col" },
-          h2('HELP AND SUPPORT'),
-          ul(
-            li(a({ href: "#contact_us" }, 'Contact Us')),
-            li(a({ href: "#faqs" }, 'Frequently Asked Questions')),
-            li(a({ href: "#knowledge_center" }, 'Knowledge Center')),
-            li(a({ href: 'https://github.com/badger/frontend', target: '_blank' }, 'API Docs for Developers'))
-          )
-        ),
-        div({ 'class': "col" },
-          h2('CONNECT WITH US'),
-          ul(
-            li(a({ href: "mailto:support@badger.com" }, 'support@badger.com')),
-            li(a({ href: 'tel:+1-415-787-5050' }, '+1-415-787-5050' )),
-            li(
-              a({ href: "https://twitter.com/badger", target: "_blank" }, 'Twitter'),
-              ' / ',
-              a({ href: "https://www.facebook.com/BadgerDotCom", target: "_blank" }, 'Facebook'),
-              ' / ',
-              a({ href: "irc://irc.freenode.net/badger", target: "_blank" }, 'IRC')
-            )
-          )
-        ),
-        div({ 'class': "col" },
-          h2('ACCREDITATIONS'),
-          img({ src: 'images/icann.png' })
-        ),
-
-        div({ style: 'clear: both'})
-      ),
-      
-      div({ 'class': 'closed', id: 'chatbar' },
-        a({ href: Chat.hide_chat, 'class': 'close-button' }, 'X'),
-        a({ href: Chat.minimize_chat, 'class': 'close-button min-button' }, '–'),
-        h1({ onclick: Chat.show_chat }, 'Badger Chatroom'),
-        div({ "class": "content" })
       )
     );
   });
+  
+  define('footer', function() {
+    return div({ id: 'footer' },
+      div({ 'class': 'outer' },
+        div({ 'class': 'inner' },
+          div({ 'class': "col" },
+            h2('Company'),
+            ul(
+              li(a({ href: "#blogs" }, 'Blog')),
+              li(a({ href: "#terms_of_service" }, 'Terms of Service')),
+    					li(a({ href: "http://www.icann.org/en/registrars/registrant-rights-responsibilities-en.htm", target: "_blank" }, 'ICANN Registrant Rights')),
+              li(a({ href: "https://whois.badger.com/", target: '_blank' }, 'Whois Lookup'))
+            )
+          ),
+          div({ 'class': "col" },
+            h2('Help and Support'),
+            ul(
+              li(a({ href: "#contact_us" }, 'Contact Us')),
+              li(a({ href: "#faqs" }, 'Frequently Asked Questions')),
+              li(a({ href: "#knowledge_center" }, 'Knowledge Center')),
+              li(a({ href: 'https://github.com/badger/frontend', target: '_blank' }, 'API Docs for Developers'))
+            )
+          ),
+          div({ 'class': "col" },
+            h2('Connect With Us'),
+            ul(
+              li(a({ href: "mailto:support@badger.com" }, 'support@badger.com')),
+              li(a({ href: 'tel:+1-415-787-5050' }, '+1-415-787-5050' )),
+              li(
+                a({ href: "https://twitter.com/badger", target: "_blank" }, 'Twitter'),
+                ' / ',
+                a({ href: "https://www.facebook.com/BadgerDotCom", target: "_blank" }, 'Facebook'),
+                ' / ',
+                a({ href: "irc://irc.freenode.net/badger", target: "_blank" }, 'IRC')
+              )
+            )
+          ),
+          div({ 'class': "col" },
+            h2('Accreditations'),
+            img({ src: 'images/icann.png' })
+          ),
+
+          div({ style: 'clear: both'})
+        )
+      )
+    )
+  });
+
 
   define('user_nav', function() {
     var user_nav = div({ id: 'user-nav' },
@@ -171,9 +192,11 @@ with (Hasher('Application')) {
     BadgerCache.getAccountInfo(function(response) {
       //$(user_nav).prepend(span(a({ href: '#account/settings'}, response.data.name)));
       $(user_nav).prepend(span({ id: 'use_nav_name' }, a({ href: '#account' }, response.data.name)));
-      $(user_nav).prepend(span({ id: 'user_nav_invites_available', 'class': response.data.invites_available <= 0 ? 'hidden' : '' }, a({ href: '#invites' }, response.data.invites_available + ' Invites')));
+      //$(user_nav).prepend(span({ id: 'user_nav_invites_available', 'class': response.data.invites_available <= 0 ? 'hidden' : '' }, a({ href: '#invites' }, response.data.invites_available + ' Invites')));
       $(user_nav).prepend(span(a({ href: '#account/billing', id: 'user_nav_credits' }, 'Credits')));
+      $(user_nav).prepend(span(a({ href: '#filter_domains/all/list', id: 'user_nav_domains' }, 'Domains')));
       update_credits();
+      //update_domains();
     });
 
     return user_nav;
@@ -269,92 +292,92 @@ with (Hasher('Application')) {
   // left nav
   //////////////
 
-  define('left_nav', function() {
-    var badger_menu_items = [
-      li({ 'class': "blog" }, a({ href: "#blogs" }, 'OUR BLOG')),
-      li({ 'class': "faq" }, a({ href: "#faqs" }, 'FAQS')),
-      li({ 'class': "knowledge-center" }, a({ href: "#knowledge_center" }, 'KNOWLEDGE CENTER')),
-      li({ 'class': "contact-us" }, a({ href: "#contact_us" }, 'CONTACT US'))
-    ];
-    
-    return ul({ id: 'menu' },
-      Badger.getAccessToken() ? [
-        li({ id: 'nav-my-domains' },
-          a({ href: "#filter_domains/all/list" }, span(span('MY DOMAINS'), span({ id: 'my-domains-count' }))),
-          ul(
-            li({ 'class': "transfer"}, a({ href: "#domain-transfers" }, 'TRANSFERS')),
-            li({ 'class': "expiring-soon"}, a({ href: "#filter_domains/expiringsoon/list" }, 'EXPIRING SOON'))
-          )
-        ),
-
-        li({ id: 'nav-my-account' },
-          a({ href: "#account" }, 'MY ACCOUNT'),
-          my_account_nav()
-        ),
-
-        li({ id: 'nav-help-and-support' },
-          a({ href: "#welcome" }, 'BADGER.COM'),
-          ul(badger_menu_items)
-        )
-      ] : [
-        li(a({ href: "#welcome" }, 'BADGER.COM')),
-        badger_menu_items
-      ]
-
-    );
-  });
+  // define('left_nav', function() {
+  //   var badger_menu_items = [
+  //     li({ 'class': "blog" }, a({ href: "#blogs" }, 'OUR BLOG')),
+  //     li({ 'class': "faq" }, a({ href: "#faqs" }, 'FAQS')),
+  //     li({ 'class': "knowledge-center" }, a({ href: "#knowledge_center" }, 'KNOWLEDGE CENTER')),
+  //     li({ 'class': "contact-us" }, a({ href: "#contact_us" }, 'CONTACT US'))
+  //   ];
+  //   
+  //   return ul({ id: 'menu' },
+  //     Badger.getAccessToken() ? [
+  //       li({ id: 'nav-my-domains' },
+  //         a({ href: "#filter_domains/all/list" }, span(span('MY DOMAINS'), span({ id: 'my-domains-count' }))),
+  //         ul(
+  //           li({ 'class': "transfer"}, a({ href: "#domain-transfers" }, 'TRANSFERS')),
+  //           li({ 'class': "expiring-soon"}, a({ href: "#filter_domains/expiringsoon/list" }, 'EXPIRING SOON'))
+  //         )
+  //       ),
+  // 
+  //       li({ id: 'nav-my-account' },
+  //         a({ href: "#account" }, 'MY ACCOUNT'),
+  //         my_account_nav()
+  //       ),
+  // 
+  //       li({ id: 'nav-help-and-support' },
+  //         a({ href: "#welcome" }, 'BADGER.COM'),
+  //         ul(badger_menu_items)
+  //       )
+  //     ] : [
+  //       li(a({ href: "#welcome" }, 'BADGER.COM')),
+  //       badger_menu_items
+  //     ]
+  // 
+  //   );
+  // });
   
-  define('badger_menu_items', function() {
-    return ;
-  });
+  // define('badger_menu_items', function() {
+  //   return ;
+  // });
 
-  define('my_account_nav', function() {
-    var nav = ul(
-      li({ 'class': "support-ticket" }, a({ href: "#tickets" }, 'SUPPORT TICKETS')),
-      li({ 'class': "whois-pro" }, a({ href: "#account/profiles" }, 'WHOIS PROFILES')),
-      li({ 'class': "credit-billing" }, a({ href: "#account/billing" }, 'CREDITS & BILLING')),
-			li({ 'class': "linked-account" }, a({ href: "#linked_accounts" }, 'LINKED ACCOUNTS')),
-      li({ 'class': "send-invite hidden", id : 'invites_available'}, a({ href: "#invites" }, span('SEND INVITES'), span({ id: 'invite_available_count' })))
-    );
+  // define('my_account_nav', function() {
+  //   var nav = ul(
+  //     li({ 'class': "support-ticket" }, a({ href: "#tickets" }, 'SUPPORT TICKETS')),
+  //     li({ 'class': "whois-pro" }, a({ href: "#account/profiles" }, 'WHOIS PROFILES')),
+  //     li({ 'class': "credit-billing" }, a({ href: "#account/billing" }, 'CREDITS & BILLING')),
+  //      li({ 'class': "linked-account" }, a({ href: "#linked_accounts" }, 'LINKED ACCOUNTS')),
+  //     li({ 'class': "send-invite hidden", id : 'invites_available'}, a({ href: "#invites" }, span('SEND INVITES'), span({ id: 'invite_available_count' })))
+  //   );
+  // 
+  //   return nav;
+  // });
 
-    return nav;
-  });
-
-  define('domain_menu_item', function(domain) {
-    //var domain = Domain.find(domain);
-    var app_list = ul();
-
-    load_domain(domain, function(domain_obj) {
-      if (domain_obj.current_registrar == 'Unknown') {
-        var timeout = setTimeout(function() {
-          Badger.getDomain(domain_obj.name, function(response) {
-            clearTimeout(timeout);
-            domain_menu_item(domain);
-          });
-        }, 1000);
-      } else if (domain_obj.current_registrar) {
-        for (var key in Hasher.domain_apps) {
-          if (DomainApps.app_is_installed_on_domain(Hasher.domain_apps[key], domain_obj) && Hasher.domain_apps[key].menu_item) {
-            css_class = Hasher.domain_apps[key].menu_item.css_class || "website"
-            app_list.appendChild(
-              li({ 'class':  css_class },
-                a({
-                  href: Hasher.domain_apps[key].menu_item.href.replace(/:domain/, domain)
-                }, Hasher.domain_apps[key].menu_item.text)
-              )
-            );
-          }
-        }
-
-        update_sidebar_with_correct_actives(get_route());
-      }
-    });
-
-    return li({ id: 'domain-menu-item-' + domain.replace('.','-'), 'class': 'domain-menu-item' },
-      a({ href: "#domains/" + domain }, div({ 'class': 'long-domain-name' }, domain.toUpperCase())),
-      app_list
-    );
-  });
+  // define('domain_menu_item', function(domain) {
+  //   //var domain = Domain.find(domain);
+  //   var app_list = ul();
+  // 
+  //   load_domain(domain, function(domain_obj) {
+  //     if (domain_obj.current_registrar == 'Unknown') {
+  //       var timeout = setTimeout(function() {
+  //         Badger.getDomain(domain_obj.name, function(response) {
+  //           clearTimeout(timeout);
+  //           domain_menu_item(domain);
+  //         });
+  //       }, 1000);
+  //     } else if (domain_obj.current_registrar) {
+  //       for (var key in Hasher.domain_apps) {
+  //         if (DomainApps.app_is_installed_on_domain(Hasher.domain_apps[key], domain_obj) && Hasher.domain_apps[key].menu_item) {
+  //           css_class = Hasher.domain_apps[key].menu_item.css_class || "website"
+  //           app_list.appendChild(
+  //             li({ 'class':  css_class },
+  //               a({
+  //                 href: Hasher.domain_apps[key].menu_item.href.replace(/:domain/, domain)
+  //               }, Hasher.domain_apps[key].menu_item.text)
+  //             )
+  //           );
+  //         }
+  //       }
+  // 
+  //       update_sidebar_with_correct_actives(get_route());
+  //     }
+  //   });
+  // 
+  //   return li({ id: 'domain-menu-item-' + domain.replace('.','-'), 'class': 'domain-menu-item' },
+  //     a({ href: "#domains/" + domain }, div({ 'class': 'long-domain-name' }, domain.toUpperCase())),
+  //     app_list
+  //   );
+  // });
 
 }
 

@@ -29,7 +29,7 @@ with (Hasher('Tumblr', 'DomainApps')) {
 
   route('#domains/:domain/tumblr', function(domain) {
     render(
-      h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, 'TUMBLR FOR ' + domain)),
+      h1_for_domain(domain, 'Tumblr'),
       domain_app_settings_button('badger_tumblr', domain),
 
       p("Tumblr DNS settings have successfully been installed into Badger DNS."),

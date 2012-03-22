@@ -28,7 +28,7 @@ with (Hasher('GoogleAppEngine', 'DomainApps')) {
 
   route('#domains/:domain/google_app_engine', function(domain) {
     render(
-      h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, 'GOOGLE APP ENGINE FOR ' + domain)),
+      h1_for_domain(domain, 'Google App Engine'),
       domain_app_settings_button('badger_google_app_engine', domain),
 
       div("Google App Engine DNS settings have been installed into Badger DNS.",
