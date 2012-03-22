@@ -29,6 +29,10 @@ with (Hasher('DomainApps','Application')) {
   });
   
   define('domain_nav_table', function() {
+    // TODO: Not quite ready
+    return arguments;
+    
+    
     var active_url = get_route();
     var domain = active_url.split('/')[1];
     

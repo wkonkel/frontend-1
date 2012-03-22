@@ -10,7 +10,7 @@ with (Hasher('Application')) {
       window.foobar = Hasher.instance.default_layout.yield_parent
       reset_layout('default_layout');
       render({ layout: default_layout }, old_yield_parent.childNodes);
-      //update_sidebar();
+      update_my_domains_count();
     });
 
     Badger.onLogout(function() {

@@ -188,7 +188,7 @@ with (Hasher('Application')) {
     var user_nav = div({ id: 'user-nav' },
       a({ href: Badger.logout }, 'Logout')
     );
-
+    
     BadgerCache.getAccountInfo(function(response) {
       //$(user_nav).prepend(span(a({ href: '#account/settings'}, response.data.name)));
       $(user_nav).prepend(span({ id: 'use_nav_name' }, a({ href: '#account' }, response.data.name)));
@@ -196,7 +196,7 @@ with (Hasher('Application')) {
       $(user_nav).prepend(span(a({ href: '#account/billing', id: 'user_nav_credits' }, 'Credits')));
       $(user_nav).prepend(span(a({ href: '#filter_domains/all/list', id: 'user_nav_domains' }, 'Domains')));
       update_credits();
-      //update_domains();
+      update_my_domains_count();
     });
 
     return user_nav;
