@@ -51,15 +51,15 @@ with (Hasher('GoogleAppsVerification', 'DomainApps')) {
             a({ href: 'http://www.google.com/a/' + domain, target: '_blank' }, 'here'),
             ". When you are done verifying this URL with Google, you can remove this app."
           ),
-          p("For more information, you can read the ",
-            a({ href: 'http://support.google.com/webmasters/bin/answer.py?hl=en&answer=35179' }, "Google Site Verification help article"),
+          p("For more detailed instructions, you can read ",
+            a({ href: 'https://www.badger.com/#knowledge_center/49-Google-Apps-Verification' }, "this Knowledge Center article"),
             '.'
           )
         );
       } else {
         render(
           h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, 'GOOGLE APPS VERIFICATION FOR ' + domain)),
-          div({ 'class': 'error-message' }, 'Could not found TXT record for Google Apps Verification.')
+          div({ 'class': 'error-message' }, 'Could not find TXT record for Google Apps Verification.')
         );
       }
 
