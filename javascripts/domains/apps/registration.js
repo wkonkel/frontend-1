@@ -140,6 +140,8 @@ with (Hasher('Registration','DomainApps')) {
 
 
   define('update_whois', function(domain, form_data) {
+    hide_button_and_show_ajax_loader("#save-contacts-button");
+    
     // force sends a "privacy=false"... exclusion isn't enough
     form_data['privacy'] = form_data['privacy'] ? 'true' : 'false';
     Badger.updateDomain(domain.name, form_data, function(response) {
@@ -223,7 +225,7 @@ with (Hasher('Registration','DomainApps')) {
                   ),
 
                   div({ style: "text-align: right" },
-                    input({ type: 'submit', 'class': 'myButton small', value: 'Save' })
+                    input({ id: "save-contacts-button", type: 'submit', 'class': 'myButton small', value: 'Save' })
                   )
                 )
               )
