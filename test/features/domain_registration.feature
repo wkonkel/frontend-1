@@ -16,7 +16,7 @@ Feature: Badger Registration
     And I should see "Through"
     And I should see "Previously"
     And I should see "Public Whois Listing"
-    And I should see "Make Changes"
+    And I should see "Change Contacts"
     And I should see "Registrant"
     And I should see "Administrator"
     And I should see "Billing"
@@ -39,7 +39,7 @@ Feature: Badger Registration
     When I visit Registration for domain "mydomain0.com"
     Then I should see "Want to transfer this domain to another registrar?"
     And I should see "Domain Auth Code"
-    And I should see "authCode123"
+    # And I should see "authCode123" within "#auth-code" # --- Changed this so that auto code shows up in an input field
     And I mock updateDomain returns status "ok"
     And I mock getDomain for domain "mydomain0.com" with permission "renew,transfer_out" and domain locked "false"
     When I follow "Lock Domain"

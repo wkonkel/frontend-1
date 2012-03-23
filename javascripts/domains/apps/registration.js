@@ -184,59 +184,70 @@ with (Hasher('Registration','DomainApps')) {
           ),
           td({ style: 'vertical-align: top'},
             hide_modify_contacts_form ? [] : [
-              h2('Make Changes'),
+              div({ 'class': "info-message", style: "border-color: #aaa; background: #eee; margin-top: 42px;" },
+                h2('Change Contacts'),
 
-              form({ action: curry(update_whois, domain) },
-                table(tbody(
-                  tr(
-                    td('Registrant:'),
-                    td(select({ name: 'registrant_contact_id', style: 'width: 150px' },
-                      profile_options_for_select(domain.registrant_contact.id)
-                    ))
+                form({ action: curry(update_whois, domain) },
+                  table(tbody(
+                    tr(
+                      td('Registrant:'),
+                      td(select({ name: 'registrant_contact_id', style: 'width: 150px' },
+                        profile_options_for_select(domain.registrant_contact.id)
+                      ))
+                    ),
+                    tr(
+                      td('Administrator:'),
+                      td(select({ name: 'administrator_contact_id', style: 'width: 150px' },
+                        option({ value: '' }, 'Same as Registrant'),
+                        profile_options_for_select(domain.administrator_contact && domain.administrator_contact.id)
+                      ))
+                    ),
+                    tr(
+                      td('Billing:'),
+                      td(select({ name: 'billing_contact_id', style: 'width: 150px' },
+                        option({ value: '' }, 'Same as Registrant'),
+                        profile_options_for_select(domain.billing_contact && domain.billing_contact.id)
+                      ))
+                    ),
+                    tr(
+                      td('Technical:'),
+                      td(select({ name: 'technical_contact_id', style: 'width: 150px' },
+                        option({ value: '' }, 'Same as Registrant'),
+                        profile_options_for_select(domain.technical_contact && domain.technical_contact.id)
+                      ))
+                    )
+                  )),
+                  div(
+                    (domain.whois.privacy ? input({ name: 'privacy', type: 'checkbox', checked: 'checked' }) : input({ name: 'privacy', type: 'checkbox' })),
+                    'Keep contact information private'
                   ),
-                  tr(
-                    td('Administrator:'),
-                    td(select({ name: 'administrator_contact_id', style: 'width: 150px' },
-                      option({ value: '' }, 'Same as Registrant'),
-                      profile_options_for_select(domain.administrator_contact && domain.administrator_contact.id)
-                    ))
-                  ),
-                  tr(
-                    td('Billing:'),
-                    td(select({ name: 'billing_contact_id', style: 'width: 150px' },
-                      option({ value: '' }, 'Same as Registrant'),
-                      profile_options_for_select(domain.billing_contact && domain.billing_contact.id)
-                    ))
-                  ),
-                  tr(
-                    td('Technical:'),
-                    td(select({ name: 'technical_contact_id', style: 'width: 150px' },
-                      option({ value: '' }, 'Same as Registrant'),
-                      profile_options_for_select(domain.technical_contact && domain.technical_contact.id)
-                    ))
+
+                  div({ style: "text-align: right" },
+                    input({ type: 'submit', 'class': 'myButton small', value: 'Save' })
                   )
-                )),
-                div(
-                  (domain.whois.privacy ? input({ name: 'privacy', type: 'checkbox', checked: 'checked' }) : input({ name: 'privacy', type: 'checkbox' })),
-                  'Keep contact information private'
-                ),
-
-                div({ style: "text-align: right" },
-                  input({ type: 'submit', 'class': 'myButton small', value: 'Save' })
                 )
               )
             ],
             (domain.permissions_for_person || []).indexOf('transfer_out') != -1 ?
-              div({ 'class': 'info-message', style: 'border-color: #aaa; background: #eee; padding-top: 0px; margin-top: 10px;' },
+              div({ 'class': 'info-message', style: 'border-color: #aaa; background: #eee; margin-top: 30px' },
                 h3('Want to transfer this domain to another registrar?'),
                   domain.locked ? [
-                    p("This domain is currently locked.  If you'd like to transfer this domain to another registrar, unlock this domain to receive the auth code."),
-                    a({ 'class': 'myButton small', href: curry(lock_domain, domain.name, false) }, 'Unlock Domain')
+                    p({ style: "padding-bottom: 10px" }, "This domain is currently locked.  If you'd like to transfer this domain to another registrar, unlock this domain to receive the auth code."),
+                    
+                    div({ style: "text-align: right" },
+                      a({ 'class': 'myButton small', id: "unlock-domain-button", href: curry(lock_domain, domain.name, false) }, 'Unlock Domain')
+                    )
                   ]
                   : [
-                    p('Domain Auth Code:'),
-                    p({ style: 'text-align: center' }, strong(domain.auth_code)),
-                    a({ 'class': 'myButton small', href: curry(lock_domain, domain.name, true) }, 'Lock Domain')
+                    div({ style: "text-align: center; margin-bottom: 10px" },
+                      p({ style: "font-weight: bold; margin-bottom: 3px" }, 'Domain Auth Code:'),
+                      // p({ style: 'text-align: center' }, strong(domain.auth_code)),
+                      input({ id: "auth-code", 'class': "fancy", style: "text-align: center", size: "17", value: domain.auth_code, readonly: true })
+                    ),
+                    
+                    div({ style: "text-align: right" },
+                      a({ 'class': 'myButton small', id: "lock-domain-button", href: curry(lock_domain, domain.name, true) }, 'Lock Domain')
+                    )
                   ]
               ) : []
           )
@@ -244,8 +255,16 @@ with (Hasher('Registration','DomainApps')) {
       ))
     );
   });
-
+  
+  define('hide_button_and_show_ajax_loader', function(button_id) {
+    $(button_id).hide().after(
+      img({ src: "images/ajax-loader.gif" })
+    );
+  });
+  
   define('lock_domain', function(domain, locked) {
+    hide_button_and_show_ajax_loader("#" + (locked ? "lock" : "unlock") + "-domain-button");
+    
     Badger.updateDomain(domain, { locked: locked }, function(response) {
       set_route(get_route());
       if (response.meta.status == 'ok') {
