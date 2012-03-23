@@ -13,7 +13,9 @@ with (Hasher('GoogleAppsVerification', 'DomainApps')) {
 
     install_screen: function(app, domain_obj) {
       return div(
-        p('Please copy and paste the unique Google Apps security token for your app here:'),
+        p('Use this shortcut to verify your domain for Google Apps. Be sure to select ', span({ style: "font-weight: bold" }, 'Add a DNS record to your domain\'s configuration'), ' under ', span({ style: "font-weight: bold" }, 'Alternate methods'), ' as your verification method.'),
+        p('Copy and paste the unique Google Apps security token for your app (beginning with google-site-verification) here:'),
+        
         form({ action: curry(check_valid_input, app, domain_obj) },
           show_required_dns(app, domain_obj),
           div({ id: 'app-error-message', 'class': 'error-message hidden' }),
