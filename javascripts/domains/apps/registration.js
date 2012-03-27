@@ -276,8 +276,8 @@ with (Hasher('Registration','DomainApps')) {
           ),
           
           // TODO I have no idea how long it will registrars to acknowledge their poll messages
-          p("When the registrar you want to transfer this domain to sends the transfer request, this page will be updated, allowing you to reject or accept it the transfer."),
-          p("If you do not plan on transferring this domain out of Badger.com, we recommend that you lock the lock it again."),
+          p("When the registrar you want to transfer this domain to sends the transfer request, this page will be updated, allowing you to reject or accept the transfer."),
+          p("If you do not plan on transferring this domain out of Badger.com, we recommend that you lock the domain again."),
 
           div({ style: "text-align: right" },
             a({ 'class': 'myButton small', id: "lock-domain-button", href: curry(set_route, get_route()) }, 'Reload Page'),
