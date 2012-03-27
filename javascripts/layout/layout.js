@@ -47,15 +47,18 @@ with (Hasher('Application')) {
   //   }
   // });
 
-
-  define('update_my_domains_count', function() {
+  define('update_my_domains_count', function(refresh) {
     if (!Badger.getAccessToken()) return;
+    if (refresh) BadgerCache.flush('domains');
+    
     BadgerCache.getDomains(function(results) {
       var count = results.length;
       if (count > 0) {
         $('#my-domains-count').html(" (" + count + ")");
         $('#all-my-domains-h1').html(" (" + count + ")");
-        $('#user_nav_domains').html(count + " Domains");
+        $('#user-nav-domains').html(count + " Domains");
+      } else {
+        $('#user-nav-domains').html("Domains");
       }
     });
   });
@@ -194,7 +197,7 @@ with (Hasher('Application')) {
       $(user_nav).prepend(span({ id: 'use_nav_name' }, a({ href: '#account' }, response.data.name)));
       //$(user_nav).prepend(span({ id: 'user_nav_invites_available', 'class': response.data.invites_available <= 0 ? 'hidden' : '' }, a({ href: '#invites' }, response.data.invites_available + ' Invites')));
       $(user_nav).prepend(span(a({ href: '#account/billing', id: 'user_nav_credits' }, 'Credits')));
-      $(user_nav).prepend(span(a({ href: '#filter_domains/all/list', id: 'user_nav_domains' }, 'Domains')));
+      $(user_nav).prepend(span(a({ href: '#filter_domains/all/list', id: 'user-nav-domains' }, 'Domains')));
       update_credits();
       //update_my_domains_count();
     });

@@ -193,6 +193,10 @@ var Badger = {
     Badger.api("/domains/" + name + "/register", 'POST', data, callback);
   },
 
+  transferOutDomain: function(domain, operation, callback) {
+    Badger.api("/domains/" + name + "/transfer_out", 'POST', { operation: operation }, callback);
+  },
+
   transferDomain: function(data, callback) {
     var name = data.name;
     delete data.name;

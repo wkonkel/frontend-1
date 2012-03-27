@@ -2,7 +2,6 @@ with (Hasher('DomainShow','DomainApps')) {
 
   // put this in global scope so that it can be cleared anywhere
   var retry_transfer_timeout;
-  var can_cancel_transfer = true;
 
   route('#domains/:domain', function(domain) {
     var content_div = div('Loading...');
@@ -136,7 +135,7 @@ with (Hasher('DomainShow','DomainApps')) {
     });
     
     return div({ id: "transfer-progress-report", 'class': "info-message", style: "padding: 10px; margin-top: 20px" },
-      a({ id: "cancel-transfer-button", 'class': 'close-button', style: "position: relative; float: right; margin-top: -10px; margin-right: -10px", href: curry(cancel_transfer_modal, domain_obj) }, 'X'),
+      cancel_transfer_button(domain_obj),
       
       div({ id: "progress-bar", style: "margin: -10px auto 15px auto" },
         table( tbody(
@@ -161,6 +160,12 @@ with (Hasher('DomainShow','DomainApps')) {
     );
   });
   
+  define('cancel_transfer_button', function(domain_obj, callback) {
+    return div({ id: "cancel-transfer-button-div" },
+      a({ 'class': 'close-button', style: "position: relative; float: right; margin-top: -10px; margin-right: -10px", href: callback || curry(cancel_transfer_modal, domain_obj) }, 'X')
+    );
+  })
+  
   define('cancel_transfer_modal', function(domain_obj) {
     // determine if it is pending remote approval
     var pending_remote_approval = false;
@@ -170,13 +175,14 @@ with (Hasher('DomainShow','DomainApps')) {
       });
     }
     
+    var can_cancel_transfer = domain_obj.transfer_steps && domain_obj.transfer_steps.can_cancel ? domain_obj.transfer_steps.can_cancel : false;
+    
     return show_modal(
       h1("Cancel Domain Transfer"),
       
       can_cancel_transfer ? [
-        div({ style: "height: 110px" },
-          p({ style: "font-weight: bold" }, "Are you sure you want to cancel this domain transfer?"),
-          p("You can always start the transfer process again later, but someone else may transfer the domain before you do!")
+        div({ style: "height: 65px" },
+          p({ style: "font-weight: bold" }, "Are you sure you want to cancel this domain transfer?")
         ),
         div({ style: "float: right; margin-top: -20px" },
           a({ 'class': 'myButton', style: "margin-right: 15px", href: hide_modal }, 'Go Back'),
@@ -187,9 +193,9 @@ with (Hasher('DomainShow','DomainApps')) {
           p({ style: "font-weight: bold" }, "This domain transfer is currently pending remote approval, and cannot be cancelled right now."),
           
           pending_remote_approval ? [
-            p("The transfer request will automatically be approved at " + domain_obj.current_registrar + ", and the transfer can no longer be cancelled.")
+            p("The transfer request will automatically be approved at ", span({ style: "font-weight: bold" }, domain_obj.current_registrar), ", and cannot be cancelled.")
           ] : [
-            p("If you reject the request at " + domain_obj.current_registrar + ", then you can cancel the transfer.")
+            p("If you reject the transfer request at ", span({ style: "font-weight: bold" }, domain_obj.current_registrar), ", then you can cancel the transfer here.")
           ]
         ),
         div({ style: "float: right; margin-top: -20px" },
@@ -206,9 +212,12 @@ with (Hasher('DomainShow','DomainApps')) {
     start_modal_spin("Cancelling domain transfer...");
     
     Badger.cancelDomainTransfer(domain_name, function() {
-      hide_modal();
+      // update domains and credits counts
       update_credits(true);
-      set_route("#domains/" + domain_name);
+      update_my_domains_count(true);
+      
+      hide_modal();
+      set_route("#domain-transfers");
     });
   });
 
@@ -373,10 +382,13 @@ with (Hasher('DomainShow','DomainApps')) {
       // add the transfer steps, unless it was just completed
       if (domain_obj.transfer_steps) $("#transfer-steps").append(detail_information_rows(domain_obj));
       
-      // allow cancelling of the transfer
-      can_cancel_transfer = (domain_obj.transfer_steps && domain_obj.transfer_steps.can_cancel);
-      
+      // update the cancel button with the latest domain info
+      update_cancel_transfer_button_href(domain_obj);
     });
+  });
+  
+  define('update_cancel_transfer_button_href', function(domain_obj) {
+    $("#cancel-transfer-button-div").empty().html(cancel_transfer_button(domain_obj));
   });
 
   define('render_all_application_icons', function(domain_obj) {

@@ -75,7 +75,7 @@ with (Hasher('Registration','DomainApps')) {
           tr(
             td({ style: 'width: 50%; vertical-align: top; padding-right: 5px' },
 
-              div({ 'class': 'info-message' },
+              div({ 'class': 'info-message', style: "width: 381px" },
         			  div({ style: "float: left; padding-right: 10px" }, logo_for_registrar(domain_obj.current_registrar) ),
 
         			  h3({ style: 'margin: 0 0 12px' }, 'Current Registration'),
@@ -140,12 +140,12 @@ with (Hasher('Registration','DomainApps')) {
 
 
   define('update_whois', function(domain, form_data) {
-    hide_button_and_show_ajax_loader("#save-contacts-button");
+    hide_and_show_ajax_loader("#save-contacts-button");
     
     // force sends a "privacy=false"... exclusion isn't enough
     form_data['privacy'] = form_data['privacy'] ? 'true' : 'false';
     Badger.updateDomain(domain.name, form_data, function(response) {
-      console.log(response);
+      // console.log(response); --- commented out debug output CAB
       set_route(get_route());
     });
   });
@@ -230,48 +230,85 @@ with (Hasher('Registration','DomainApps')) {
                 )
               )
             ],
-            (domain.permissions_for_person || []).indexOf('transfer_out') != -1 ?
-              div({ 'class': 'info-message', style: 'border-color: #aaa; background: #eee; margin-top: 30px' },
-                h3('Want to transfer this domain to another registrar?'),
-                  domain.locked ? [
-                    p({ style: "padding-bottom: 10px" }, "This domain is currently locked.  If you'd like to transfer this domain to another registrar, unlock this domain to receive the auth code."),
-                    
-                    div({ style: "text-align: right" },
-                      a({ 'class': 'myButton small', id: "unlock-domain-button", href: curry(lock_domain, domain.name, false) }, 'Unlock Domain')
-                    )
-                  ]
-                  : [
-                    div({ style: "text-align: center; margin-bottom: 10px" },
-                      p({ style: "font-weight: bold; margin-bottom: 3px" }, 'Domain Auth Code:'),
-                      // p({ style: 'text-align: center' }, strong(domain.auth_code)),
-                      input({ id: "auth-code", 'class': "fancy", style: "text-align: center", size: "17", value: domain.auth_code, readonly: true })
-                    ),
-                    
-                    div({ style: "text-align: right" },
-                      a({ 'class': 'myButton small', id: "lock-domain-button", href: curry(lock_domain, domain.name, true) }, 'Lock Domain')
-                    )
-                  ]
-              ) : []
+
+            transfer_out_domain_if_allowed(domain) // show the transfer out UI
           )
         )
       ))
     );
   });
   
-  define('hide_button_and_show_ajax_loader', function(button_id) {
+  define('reload_domain_object', function() {
+    
+  });
+  
+  define('transfer_out_domain_if_allowed', function(domain_obj) {
+    if ((domain_obj.permissions_for_person || []).indexOf('transfer_out') == -1) return div();
+    
+    if (domain_obj.transfer_out && domain_obj.transfer_out.approve_transfer_out == 'pending_transfer_out') {
+      return div({ id: "transfer-out-pending", 'class': 'info-message', style: 'border-color: #aaa; background: #eee; margin-top: 42px' },
+        h3("Transfer request received"),
+        
+        p("We have received a transfer request from ", span({ style: "font-weight: bold" }, domain_obj.transfer_out.receiving_registrar), "."),
+        p("If you approve this transfer request, then your domain will be transferred out of Badger.com."),
+        p("If you do not take action by ", span({ style: "font-weight: bold" }, new Date(Date.parse(domain_obj.transfer_out.auto_approval_date)).toDateString()), ", the transfer will automatically be approved."),
+        
+        div({ id:  "approve-reject-buttons", style: "text-align: right" },
+          a({ id: "approve-transfer_button", 'class': 'myButton small', href: curry(transfer_out, domain_obj, "approve") }, 'Approve'),
+          a({ id: "reject-transfer-button", 'class': 'myButton small red', style: "margin-left: 10px", href: curry(transfer_out, domain_obj, "reject") }, 'Reject')
+        )
+      );
+    } else {
+      return div({ id: "lock-domain", 'class': 'info-message', style: 'border-color: #aaa; background: #eee; margin-top: 30px' },
+        h3('Want to transfer this domain to another registrar?'),
+        domain_obj.locked ? [
+          p({ style: "padding-bottom: 10px" }, "This domain is currently locked.  If you'd like to transfer this domain to another registrar, unlock this domain to receive the auth code."),
+          
+          div({ style: "text-align: right" },
+            a({ 'class': 'myButton small', id: "unlock-domain-button", href: curry(lock_domain, domain_obj.name, false) }, 'Unlock Domain')
+          )
+        ]
+        : [
+          p({ style: "font-weight: bold; text-align: center; margin-bottom: 0px" }, "Domain Auth Code:"),
+          
+          div({ style: "text-align: center; margin-bottom: 10px" },
+            input({ id: "auth-code", 'class': "fancy", style: "text-align: center", size: "17", value: domain_obj.auth_code, readonly: true })
+          ),
+          
+          // TODO I have no idea how long it will registrars to acknowledge their poll messages
+          p("When the registrar you want to transfer this domain to sends the transfer request, this page will be updated, allowing you to reject or accept it the transfer."),
+          p("If you do not plan on transferring this domain out of Badger.com, we recommend that you lock the lock it again."),
+
+          div({ style: "text-align: right" },
+            a({ 'class': 'myButton small', id: "lock-domain-button", href: curry(set_route, get_route()) }, 'Reload Page'),
+            a({ 'class': 'myButton small', id: "lock-domain-button", style: "margin-left: 15px", href: curry(lock_domain, domain_obj.name, true) }, 'Lock Domain')
+          )
+        ]
+      );
+    }
+  });
+  
+  define('transfer_out', function(domain_obj, operation) {
+    hide_and_show_ajax_loader("#approve-reject-buttons");
+    
+    // perform transfer out request and reload the page
+    Badger.transferOutDomain(domain_obj.name, operation, curry(set_route, get_route()));
+  })
+  
+  define('hide_and_show_ajax_loader', function(button_id) {
     $(button_id).hide().after(
       img({ src: "images/ajax-loader.gif" })
     );
   });
   
   define('lock_domain', function(domain, locked) {
-    hide_button_and_show_ajax_loader("#" + (locked ? "lock" : "unlock") + "-domain-button");
+    hide_and_show_ajax_loader("#" + (locked ? "lock" : "unlock") + "-domain-button");
     
     Badger.updateDomain(domain, { locked: locked }, function(response) {
       set_route(get_route());
       if (response.meta.status == 'ok') {
-        $('#success-message').html(locked ? 'Domain has been locked' : 'Domain has been unlocked');
-        $('#success-message').removeClass('hidden');
+        // $('#success-message').html(locked ? 'Domain has been locked' : 'Domain has been unlocked');
+        // $('#success-message').removeClass('hidden');
         $('#error-message').addClass('hidden');
       } else {
         $('#error-message').html(response.data.message);
