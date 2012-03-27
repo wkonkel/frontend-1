@@ -264,7 +264,7 @@ with (Hasher('Registration','DomainApps')) {
         domain_obj.locked ? [
           p({ style: "padding-bottom: 10px" }, "This domain is currently locked.  If you'd like to transfer this domain to another registrar, unlock this domain to receive the auth code."),
           
-          div({ style: "text-align: right" },
+          div({ id: "unlock-domain-button-div", style: "text-align: right" },
             a({ 'class': 'myButton small', id: "unlock-domain-button", href: curry(lock_domain, domain_obj.name, false) }, 'Unlock Domain')
           )
         ]
@@ -279,9 +279,9 @@ with (Hasher('Registration','DomainApps')) {
           p("When the registrar you want to transfer this domain to sends the transfer request, this page will be updated, allowing you to reject or accept the transfer."),
           p("If you do not plan on transferring this domain out of Badger.com, we recommend that you lock the domain again."),
 
-          div({ style: "text-align: right" },
-            a({ 'class': 'myButton small', id: "lock-domain-button", href: curry(set_route, get_route()) }, 'Reload Page'),
-            a({ 'class': 'myButton small', id: "lock-domain-button", style: "margin-left: 15px", href: curry(lock_domain, domain_obj.name, true) }, 'Lock Domain')
+          div({ id: "lock-domain-button-div", style: "text-align: right" },
+            a({ 'class': 'myButton small', href: curry(set_route, get_route()) }, 'Reload Page'),
+            a({ 'class': 'myButton small', style: "margin-left: 15px", href: curry(lock_domain, domain_obj.name, true) }, 'Lock Domain')
           )
         ]
       );
@@ -297,12 +297,14 @@ with (Hasher('Registration','DomainApps')) {
   
   define('hide_and_show_ajax_loader', function(button_id) {
     $(button_id).hide().after(
-      img({ src: "images/ajax-loader.gif" })
+      div({ style: "text-align: right" },
+        img({ src: "images/ajax-loader.gif" })
+      )
     );
   });
   
   define('lock_domain', function(domain, locked) {
-    hide_and_show_ajax_loader("#" + (locked ? "lock" : "unlock") + "-domain-button");
+    hide_and_show_ajax_loader("#" + (locked ? "lock" : "unlock") + "-domain-button-div");
     
     Badger.updateDomain(domain, { locked: locked }, function(response) {
       set_route(get_route());
