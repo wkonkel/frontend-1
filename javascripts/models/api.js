@@ -187,8 +187,6 @@ var Badger = {
       if (response.data.legacy_rhinonames_domain && (response.data.created_registrar || "").match(/wild\s*west/i)) response.data.created_registrar   = "RhinoNames"
       if (response.data.legacy_rhinonames_domain && (response.data.updated_registrar || "").match(/wild\s*west/i)) response.data.updated_registrar   = "RhinoNames"
       
-      console.log(response.data);
-      
       callback(response);
     });
   },

@@ -5,7 +5,7 @@ var BadgerCache = {
     if (!key || (key == 'contacts')) BadgerCache.cached_contacts = null;
     if (!key || (key == 'account_info')) BadgerCache.cached_account_info = null;
     if (!key || (key == 'invite_status')) BadgerCache.cached_invite_status = null;
-    if (!key || (key == 'linked_accounts')) BadgerCache.cached_linked_account = null;
+    if (!key || (key == 'linked_accounts')) BadgerCache.cached_linked_accounts = null;
     if (!key || (key == 'linked_accounts_remote_info')) BadgerCache.cached_linked_accounts_remote_info = {};
   },
 
