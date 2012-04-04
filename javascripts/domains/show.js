@@ -94,7 +94,7 @@ with (Hasher('DomainShow','DomainApps')) {
     domain_obj.transfer_steps.pending.forEach(function(step) {
       if (step.name == 'Unlock domain' && ['pending_remote_unlock', null].indexOf(step.value) >= 0)
         needs_timeout = true;
-      else if (step.name == 'Approve transfer' && ['pending_remote_approval', 'pending_transfer'].indexOf(step.value) >= 0)
+      else if (step.name == 'Approve transfer' && ['pending_remote_approval', 'pending_transfer', 'remote_approval_failed'].indexOf(step.value) >= 0)
         needs_timeout = true;
       else if (step.name == 'Processed' && ['pending'].indexOf(step.value) >= 0)
         needs_timeout = true;
@@ -286,10 +286,13 @@ with (Hasher('DomainShow','DomainApps')) {
         // bring the retry button out of hiding
         $("#retry-transfer-button").css('display','');
       } else if (step_obj.value == 'pending_remote_approval') {
-        details = div("This domain transfer is currently pending approval at " + domain_obj.current_registrar + ". This should take a couple minutes.");
+        details = div("This domain transfer is currently pending approval at " + domain_obj.current_registrar + ". This can take up to an hour.");
         progress_indicator = img({ src: "images/ajax-loader.gif" });
+      } else if (step_obj.value == 'remote_approval_failed') {
+        details = div("We were unable to approve the transfer automatically, you will need to approve it manually at your current registrar, or you can wait 5 days and the transfer will automatically go through.");
+        progress_indicator = img({ src: "images/icon-no-light.gif" });
       } else if (step_obj.value == 'pending_transfer' || step_obj.value == 'ok') {
-        details = div('This domain is currently pending transfer. You will need to approve this transfer manually at your current registrar. Or you can wait 5 days and the transfer will automatically go through.',
+        details = div("This domain is currently pending transfer. You will need to approve this transfer manually at your current registrar, or you can wait 5 days and the transfer will automatically go through.",
           render_help_link('transfer_requested', domain_obj.current_registrar)
         );
         progress_indicator = img({ src: "images/icon-no-light.gif" });
