@@ -387,7 +387,7 @@ var Badger = {
 	},
 	
 	syncLinkedAccount: function(id, data, callback) {
-		Badger.api("/linked_accounts/" + id + "/sync", data, callback);
+		Badger.api("/linked_accounts/" + id + "/sync", "POST", data, callback);
 	},
 	
 	getLinkedAccounts: function(callback) {

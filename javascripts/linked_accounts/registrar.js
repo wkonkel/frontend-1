@@ -63,14 +63,14 @@ with (Hasher('Registrar','Application')) {
 				p( 'When you link your ' + data.registrar_name + ' account, you\'ll be able to manage your ' + data.registrar_name + 
 				  ' domains from within Badger.com.  We won\'t make any changes to your ' + data.registrar_name + 
 				  ' account or domains unless you request them.'),
-				email_warn ? p('When we sync your domains you will recieve an email from ' + data.registrar_name) : '',
+				email_warn ? p('When we sync your domains, you will recieve an email from ' + data.registrar_name + '. You may also receive additional emails during the transfer process, such as notifications that your account email has changed. This is part of the transfer process, and afterwards, your account information will remain unchanged.') : '',
 				form({ id: 'registrar-link-form', action: curry(Registrar.start_link, data, 'Starting Linking...')},
 				  input({ type: 'hidden', name: 'linked_account_id', id: 'linked-account-id', value: data.id}),
 					div(
-					  data.last_synced_at ? span('Login: ' + data.login) : input({ type: 'text', name: 'login', placeholder: login_text, value: data.login ? data.login : '' })
+					  data.last_synced_at ? span('Login: ' + data.login) : input({ 'class': "fancy", type: 'text', name: 'login', placeholder: login_text, value: data.login ? data.login : '' })
 					),
-          div(input({ type: 'password', name: 'password', placeholder: 'Password' })),
-					div(
+          div(input({ 'class': "fancy", type: 'password', name: 'password', placeholder: 'Password' })),
+					div({ style: "margin-top: 10px" }, 
 						input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
 						label({ 'for': 'agree_to_terms' }, 'I hereby authorize Badger to act as my agent and to access my ' + data.registrar_name + 
 						  ' account pursuant to the ', a({ href: '#terms_of_service', onclick: hide_modal }, 'Registration Agreement'))

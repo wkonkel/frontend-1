@@ -94,6 +94,8 @@ with (Hasher('DomainShow','DomainApps')) {
     domain_obj.transfer_steps.pending.forEach(function(step) {
       if (step.name == 'Unlock domain' && ['pending_remote_unlock', null].indexOf(step.value) >= 0)
         needs_timeout = true;
+      else if (step.name == 'Enter auth code' && ['fetching_auth_code'].indexOf(step.value) >= 0)
+        needs_timeout = true;
       else if (step.name == 'Approve transfer' && ['pending_remote_approval', 'pending_transfer', 'remote_approval_failed'].indexOf(step.value) >= 0)
         needs_timeout = true;
       else if (step.name == 'Processed' && ['pending'].indexOf(step.value) >= 0)
@@ -235,12 +237,15 @@ with (Hasher('DomainShow','DomainApps')) {
       if (step_obj.value == 'pending_remote_unlock') {
         details = div('This domain is currently being unlocked at ' + domain_obj.current_registrar  + '. This should take a couple minutes.');
         progress_indicator = img({ src: "images/ajax-loader.gif" });
-      }
-      else if (step_obj.value == 'ok') {
+      } else if (step_obj.value == 'remote_unlock_failed') {
+        details = div("We were unable to unlock the domain at " + domain_obj.current_registrar + ". You will need to unlock this domain manually",
+          render_help_link('needs_unlock', domain_obj.current_registrar)
+        );
+        progress_indicator = img({ src: "images/icon-no-light.gif" });
+      } else if (step_obj.value == 'ok' || step_obj.value == 'remote_unlock_success') {
         details = div({ style: "text-decoration: line-through" }, 'This domain has been unlocked.');
         progress_indicator = img({ src: "images/check.png" });
-      }
-      else {
+      } else {
         details = div('You need to unlock this domain at ' + domain_obj.current_registrar + '.',
           render_help_link('needs_unlock', domain_obj.current_registrar)
         );
@@ -259,13 +264,33 @@ with (Hasher('DomainShow','DomainApps')) {
     } else if (step_obj.name == 'Enter auth code') {
       if (step_obj.value == 'waiting') {
         details = div("First, you need to unlock the domain and disable privacy");
+      } else if (step_obj.value == 'fetching_auth_code') {
+        details = div("Importing auth code from " + domain_obj.current_registrar + "...");
+        progress_indicator = img({ src: "images/ajax-loader.gif" });
+      } else if (step_obj.value == 'fetch_auth_code_success') {
+        details = div("verifying auth code from " + domain_obj.current_registrar + "...");
+        progress_indicator = img({ src: "images/ajax-loader.gif" });
       } else if (step_obj.value == 'ok') {
         details = div({ style: "text-decoration: line-through" }, "Auth code verified!");
         progress_indicator = img({ src: "images/check.png" });
       } else {
         details = div(
-          div({ id: "auth-code-row" },
-            span(input({ id: 'auth_code', placeholder: 'authcode', value: step_obj.value || '' }), a({ 'class': "myButton small", style: "padding-left: 10px", href: curry(retry_transfer, domain_obj.name) }, 'Submit'))
+          (step_obj.value == 'fetched_auth_code_invalid' ? [
+            div({ style: "padding: 5px auto 5px auto" }, "There was a problem reading the domain auth code from " + domain_obj.current_registrar + ", and you will need to get it from them manually.",
+              render_help_link('enter_auth_code', domain_obj.current_registrar),
+              " Once you have the auth code, enter it here and click Submit to request the transfer."
+            )
+          ] : [
+            div({ style: "padding: 5px 0px 5px 0px" }, "In order to proceed, you need the domain auth code from " + domain_obj.current_registrar + ".",
+              render_help_link('needs_unlock', domain_obj.current_registrar),
+              " Once you have the auth code, enter it here and click Submit to request the transfer."
+            )
+          ]),
+          div({ style: "margin-bottom: 5px" },
+            input({ 'class': "fancy", id: 'auth_code', placeholder: 'auth code', value: step_obj.value || '' }),
+            div({ id: "auth-code-row", style: "float: right; padding-top: 3px; margin-right: 355px" },
+              a({ 'class': "myButton", href: curry(retry_transfer, domain_obj.name) }, 'Submit')
+            )
           ),
           div({ id: "auth-code-row-veryifying", style: "display: none" },
             div({ style: "font-style: italic" }, "Verifying auth code...")
@@ -289,15 +314,15 @@ with (Hasher('DomainShow','DomainApps')) {
         details = div("This domain transfer is currently pending approval at " + domain_obj.current_registrar + ". This can take up to an hour.");
         progress_indicator = img({ src: "images/ajax-loader.gif" });
       } else if (step_obj.value == 'remote_approval_failed') {
-        details = div("We were unable to approve the transfer automatically, you will need to approve it manually at your current registrar, or you can wait 5 days and the transfer will automatically go through.");
+        details = div("We were unable to approve the transfer at " + domain_obj.current_registrar + ", and you will need to approve it manually. You can also wait 5 days and the transfer request will automatically be approved.");
         progress_indicator = img({ src: "images/icon-no-light.gif" });
       } else if (step_obj.value == 'pending_transfer' || step_obj.value == 'ok') {
-        details = div("This domain is currently pending transfer. You will need to approve this transfer manually at your current registrar, or you can wait 5 days and the transfer will automatically go through.",
+        details = div("This domain is currently pending transfer, and you need to approve the request at " + domain_obj.current_registrar + " to proceed. You can also wait 5 days and the transfer request will automatically be approved.",
           render_help_link('transfer_requested', domain_obj.current_registrar)
         );
         progress_indicator = img({ src: "images/icon-no-light.gif" });
       } else {
-        details = div('You need to complete the steps above first.');
+        details = div("When the other steps are completed, a transfer request will be sent to " + domain_obj.current_registrar + ".");
       }
     } else if (step_obj.name == 'Processed') {
       if (step_obj.value == 'pending') {
@@ -339,8 +364,8 @@ with (Hasher('DomainShow','DomainApps')) {
         params.auth_code = auth_code;
         
         $("#auth-code-row").hide();
-        $("#auth-code-row-veryifying").css('display', '');
-        $("#auth-code-progress-indicator").html(img({ src: "images/ajax-loader.gif" }))
+        // $("#auth-code-row-veryifying").css('display', '');
+        // $("#auth-code-progress-indicator").html(img({ src: "images/ajax-loader.gif" }))
       }
     }
     
