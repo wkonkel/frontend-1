@@ -147,6 +147,14 @@ with (Hasher('DomainShow','DomainApps')) {
             td({ style: "width: 25%" }, p({ style: "font: 25px 'AdelleBold', Arial, sans-serif" }, "Transfer Progress")),
             td({ style: "width: 10%; text-align: center; font-weight: bold; font-size: 20px", id: "progress-bar-percentage" }, step_percentage + "%"),
             td({ style: "width: 50%" }, div({ 'class': "meter green nostripes" }, span({ style: "width: " + step_percentage + "%" })))
+          ),
+          tr(
+            (domain_obj.transfer_steps && domain_obj.transfer_steps.automatic) ? [
+              div({ 'class': "status-message", style: "padding: 10px 0px 10px 0px; text-align: center; margin-top: -20px; margin-bottom: 0px" }, "Estimated transfer time: ", span({ style: "font-weight: bold" }, "5 minutes")),
+              p("Feel free to leave this page and come back later.")
+            ] : [
+              
+            ]
           )
         ))
       ),
@@ -237,7 +245,7 @@ with (Hasher('DomainShow','DomainApps')) {
       progress_indicator = img({ src: "images/check.png" });
     } else if (step_obj.name == 'Unlock domain') {
       if (step_obj.value == 'pending_remote_unlock') {
-        details = div('This domain is currently being unlocked at ' + domain_obj.current_registrar  + '. This should take a couple minutes.');
+        details = div('This domain is currently being unlocked at ' + domain_obj.current_registrar  + '. This can take up to 5 minutes.');
         progress_indicator = img({ src: "images/ajax-loader.gif" });
       } else if (step_obj.value == 'remote_unlock_failed') {
         details = div("We were unable to unlock the domain at " + domain_obj.current_registrar + ". You will need to unlock this domain manually",
@@ -267,10 +275,10 @@ with (Hasher('DomainShow','DomainApps')) {
       if (step_obj.value == 'waiting') {
         details = div("First, you need to unlock the domain and disable privacy");
       } else if (step_obj.value == 'fetching_auth_code') {
-        details = div("Reading auth code from " + domain_obj.current_registrar + "...");
+        details = div("Reading auth code from " + domain_obj.current_registrar + ", this may take up to an hour.");
         progress_indicator = img({ src: "images/ajax-loader.gif" });
       } else if (step_obj.value == 'fetch_auth_code_success') {
-        details = div("Verifying auth code from " + domain_obj.current_registrar + "...");
+        details = div("Verifying auth code from " + domain_obj.current_registrar + ", this may take about 5 minutes");
         progress_indicator = img({ src: "images/ajax-loader.gif" });
       } else if (step_obj.value == 'ok') {
         details = div({ style: "text-decoration: line-through" }, "Auth code verified!");
@@ -323,9 +331,9 @@ with (Hasher('DomainShow','DomainApps')) {
           ". You can also wait 5 days and the transfer request will automatically be approved."
         );
         progress_indicator = img({ src: "images/icon-no-light.gif" });
-      } else if (step_obj.value == 'pending_transfer' || step_obj.value == 'ok') {
-        details = div("This domain is currently pending transfer, and you need to approve the request at " + domain_obj.current_registrar + ".", render_help_link('transfer_requested', domain_obj.current_registrar),
-          " You can also wait 5 days and the transfer request will automatically be approved."
+      } else if (step_obj.value == 'pending_transfer' || step_obj.value == 'ok' || step_obj.value == 'already_pending_transfer') {
+        details = div("This domain is currently pending transfer, but you need to approve the request manually through " + domain_obj.current_registrar + ".", render_help_link('transfer_requested', domain_obj.current_registrar),
+          (step_obj.value == 'already_pending_transfer' ? "" : " You can also wait 5 days and the transfer request will automatically be approved.")
         );
         progress_indicator = img({ src: "images/icon-no-light.gif" });
       } else {
@@ -339,7 +347,7 @@ with (Hasher('DomainShow','DomainApps')) {
         details = div({ style: "text-decoration: line-through" }, "Domain has been processed, and is ready to go!");
         progress_indicator = img({ src: "images/check.png" });
       } else {
-        details = div("Once the transfer request is approved, we can finish setting up the domain on Badger.com");
+        details = div("Once the transfer request is approved, we can finish setting up the domain on Badger.com.");
       }
     } else {
       details = div();
