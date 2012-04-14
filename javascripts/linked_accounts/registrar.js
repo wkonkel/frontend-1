@@ -110,6 +110,8 @@ with (Hasher('Registrar','Application')) {
 				$('#modal-dialog a.close-button').show();
         stop_modal_spin();
       }
+      
+      BadgerCache.reload('linked_accounts');
 		};
 		
 		if (data.sync) {
