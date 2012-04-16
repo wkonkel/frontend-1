@@ -2,9 +2,9 @@ source "http://rubygems.org"
 
 gem 'rake'
 gem 'selenium-webdriver', '2.20.0'
-gem 'cucumber', '1.1.9'
+gem 'cucumber'
 gem 'rspec', '2.6.0'
 gem 'jasmine', '1.0.2.1'
 gem 'capybara', '1.1.2'
 gem 'headless'
-gem 'ruby-debug'
+gem 'ruby-debug',   :platforms => :ruby_18

@@ -34,7 +34,10 @@ Given /^I mock neccessary data to mock login with ([^"]*) domain credits and ([^
   step 'I mock login'
 end
 
-require 'ruby-debug'
+# ruby-debug is broken & unmaintained under Ruby 1.9
+# Alternatives are Ruby 1.9's own 'debug' and https://github.com/cldwalker/debugger
+# require 'ruby-debug'
+# require 'debug'
 Then /^debugger$/ do
   debugger
   :debugger
