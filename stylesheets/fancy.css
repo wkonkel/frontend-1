@@ -1,14 +1,18 @@
+form.fancy { }
+form.fancy label { float: left; text-align: right; font-size: 17px; width: 200px; padding-right: 20px; font-weight: bold; }
+form.fancy label.normal { float: none; text-align: inherit; font-size: inherit; width: inherit; padding-right: inherit; font-weight: inherit; }
+form.fancy fieldset.no-label { padding-left: 220px }
+form.fancy fieldset { margin: 0; padding: 0; border: 0; line-height: 50px; }
+form.fancy input[type="text"], form.fancy input[type="password"] { margin-top: 4px; padding: 5px 10px; font-size: 17px; border: 1px solid #aaa; border-radius: 3px; width: 250px }
+form.fancy input[type="text"].short, form.fancy input[type="password"].short { width: 150px; } 
+form.fancy input[type="text"].shortish, form.fancy input[type="password"].shortish { width: 180px; } 
+form.fancy input[type="text"].supershort, form.fancy input[type="password"].supershort { width: 80px; } 
+form.fancy select { font-size: 17px; }
+form.fancy .right-margin { margin-right: 8px }
+form.fancy textarea { margin-top: 4px; padding: 5px 10px; font-size: 17px; border: 1px solid #aaa; border-radius: 3px; width: 400px; height: 100px; }
 
-/*#signup-box h1 { font-size: 27px; color: #333; line-height: 36px; font-weight: bold; margin: 0 0 15px 0; }*/
-/*#signup-box h2 { font-size: 20px; color: #333; line-height: 24px; margin-top: 20px; font-weight: normal; margin: 0 0 10px 0;  }*/
-/*#signup-box h3 { text-align: center; margin: 50px 0; font-size: 20px; color: #333; font-weight: normal;  }*/
-#signup-box form { margin: 20px 0 10px 0; } 
-#signup-box form input[type=text], #signup-box form input[type=password] { margin-top: 4px; margin-left: 4px; padding: 3px; font-size: 17px; border: 1px solid #aaa; border-radius: 3px }
-#signup-box form select { margin-top: 4px; }
 
-input { margin-right: 4px; }
-
-.myButton {
+form.fancy input[type="submit"], form.fancy .button, .myButton {
 	-moz-box-shadow:inset 0px 1px 0px 0px #c1ed9c;
 	-webkit-box-shadow:inset 0px 1px 0px 0px #c1ed9c;
 	box-shadow:inset 0px 1px 0px 0px #c1ed9c;
@@ -30,19 +34,19 @@ input { margin-right: 4px; }
 	text-shadow:1px 1px 0px #689324;
   overflow: visible;
 }
-.myButton:hover {
+form.fancy input[type="submit"]:hover, .myButton:hover {
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #8cb82b), color-stop(1, #9dce2c) );
 	background:-moz-linear-gradient( center top, #8cb82b 5%, #9dce2c 100% );
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#8cb82b', endColorstr='#9dce2c');
 	background-color:#8cb82b;
 	cursor: pointer;
 }
-.myButton:active {
+form.fancy input[type="submit"]:active, .myButton:active {
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #8cb82b), color-stop(1, #8cb82b) );
 	background:-moz-linear-gradient( center top, #8cb82b 5%, #8cb82b 100% );
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#8cb82b', endColorstr='#8cb82b');
 }
-.myButton.red {
+form.fancy input[type="submit"].red, .myButton.red {
   -moz-box-shadow:inset 0px 1px 0px 0px #fdc1cc;
   -webkit-box-shadow:inset 0px 1px 0px 0px #fdc1cc;
   box-shadow:inset 0px 1px 0px 0px #fdc1cc;
@@ -54,13 +58,13 @@ input { margin-right: 4px; }
   color:#ffffff;
   text-shadow:1px 1px 0px #a30824;
 }
-.myButton.red:hover {
+form.fancy input[type="submit"].red:hover, .myButton.red:hover {
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #c81c2b), color-stop(1, #c81c2b) );
 	background:-moz-linear-gradient( center top, #c81c2b 5%, #c81c2b 100% );
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#c81c2b', endColorstr='#c81c2b');
 	background-color:#c81c2b;
 }
-.myButton.grey {
+form.fancy input[type="submit"].grey, .myButton.grey {
   -moz-box-shadow:inset 0px 1px 0px 0px #c9c9c9;
   -webkit-box-shadow:inset 0px 1px 0px 0px #c9c9c9;
   box-shadow:inset 0px 1px 0px 0px #c9c9c9;
@@ -72,11 +76,11 @@ input { margin-right: 4px; }
   color:#ffffff;
   text-shadow:1px 1px 0px #6a6a6a;
 }
-.myButton.grey:hover {
+form.fancy input[type="submit"].grey:hover, .myButton.grey:hover {
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #666666), color-stop(1, #8c8c8c) );
 	background:-moz-linear-gradient( center top, #666666 5%, #8c8c8c 100% );
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#666666', endColorstr='#8c8c8c');
 	background-color:#666666;
 }
-.myButton.small { font-size: 15px; padding: 3px 10px; }
-.myButton.large { font-size: 24px; padding: 10px 32px; }
+form.fancy input[type="submit"].small, .myButton.small { font-size: 15px; padding: 3px 10px; }
+form.fancy input[type="submit"].large, .myButton.large { font-size: 24px; padding: 10px 32px; }

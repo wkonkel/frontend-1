@@ -2,14 +2,23 @@ with (Hasher('Search','Application')) {
   route('#search', function() {
     render(
       div(
-        p({ id: 'search-help', 'class': 'info-message', style: "font-size: 20px; margin: 0 0 25px; text-align: center" }, 'Start typing in the search box above and results will appear below.'),
         h1('Search Results'),
-        div({ style: 'float: right; margin-top: -44px' },
-          a({ 'class': 'myButton small', href: Transfer.show }, 'Transfer in a Domain')
+        div({ 'class': 'sidebar' },
+          info_message(
+            h3("Already own a domain?"),
+            p('We can automatically transfer your domains to Badger.'),
+            div({ 'class': 'centered-button' }, a({ 'class': 'myButton small', href: Transfer.show }, 'Transfer a Domain'))
+          ),
+          
+          info_message(
+            h3("Need lots of domains?"),
+            p('Register many domains at once with our ', a({ href: curry(Transfer.show, 'register') }, 'Bulk Register Tool'), '.')
+          )
         ),
-        table({ id: 'search-results', 'class': 'fancy-table' }, tbody()),
-        div({ id: 'search-instructions' },
-          p('If you would like to register many domains at once, try our ', a({ href: curry(Transfer.show, 'register') }, 'Bulk Register Tool'), '.')
+        
+        div({ 'class': 'has-sidebar' },
+          p({ id: 'search-help', 'class': 'success-message', style: "font-size: 18px; margin: 0 0 25px; text-align: center" }, 'Start typing in the search box above and results will appear here.'),
+          table({ id: 'search-results', 'class': 'fancy-table' }, tbody())
         )
       )
     );

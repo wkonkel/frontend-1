@@ -33,6 +33,9 @@ with (Hasher()) {
         element.className = options['class'];
       } else if (k == 'style') {
         element.style.cssText = options.style;
+      } else if (k == 'placeholder') {
+        //add spaces to the end of placeholder so the serialized_form-hack doesn't match
+        element.setAttribute(k, options[k] + '          ');
       } else {
         element.setAttribute(k, options[k]);
       }
@@ -57,7 +60,7 @@ with (Hasher()) {
     'div', 'p', 'span', 'img', 'br', 'hr', 'i', 'b', 'strong', 'u',
     'ul', 'ol', 'li', 'dl', 'dt', 'dd',
     'table', 'tr', 'td', 'th', 'thead', 'tbody', 'tfoot',
-    'select', 'option', 'optgroup', 'textarea', 'button', 'label',
+    'select', 'option', 'optgroup', 'textarea', 'button', 'label', 'fieldset',
     function(tag) { 
       define(tag, function() { return element(tag, arguments) }); 
     }

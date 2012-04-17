@@ -6,7 +6,7 @@ with (Hasher()) {
     var callback = function() {
       setTimeout(callback, 100);
       var hash = get_route();
-      if (hash != Hasher.current_route) set_route(hash, true);
+      if (hash != Hasher.current_route) set_route(hash, { skip_updating_browser_bar: true });
     }
     callback();
   });
@@ -34,9 +34,16 @@ with (Hasher()) {
     return r;
   });
 
-  define('set_route', function(path, skip_updating_browser_bar) {
-    if (!skip_updating_browser_bar) window.location.href = window.location.href.split('#')[0] + path;
+  define('set_route', function(path, options) {
+    if (!options) options = {};
+
+    if (!options.skip_updating_browser_bar) window.location.href = window.location.href.split('#')[0] + path;
     Hasher.current_route = path;
+
+    if (options.reload_page) {
+      window.location.reload();
+      return;
+    }
 
     for (var i=0; i < Hasher.routes.length; i++) {
       var route = Hasher.routes[i];
@@ -51,5 +58,10 @@ with (Hasher()) {
 
     alert('404 not found: ' + path);
   });
-
+  
+  define('reload_page_with_route', function(path) {
+    Hasher.current_route = path;
+    window.location.href = window.location.href.split('#')[0] + path;
+    window.location.reload();
+  });
 }

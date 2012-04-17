@@ -6,7 +6,7 @@ with (Hasher('Whois','Application')) {
     render(
       h1('My Account » Profiles'),
       div({ style: 'float: right; margin-top: -44px' }, 
-        a({ 'class': 'myButton small', href: curry(Whois.edit_whois_modal, null, curry(set_route, '#account/profiles')) }, 'Create New Profile')
+        a({ 'class': 'myButton small', href: '#account/profiles/new' }, 'Create New Profile')
       ),
       Account.account_nav_table(target_div)
     );
@@ -44,6 +44,89 @@ with (Hasher('Whois','Application')) {
     });
   });
   
+
+  route('#account/profiles/new', function() {
+    render_create_or_edit_whois_page({});
+  });
+
+  route('#account/profiles/edit/:id', function() {
+    render_create_or_edit_whois_page({});
+  });
+
+  define('render_create_or_edit_whois_page', function(data) {
+    render(
+      div(
+        h1('Create Contact'),
+
+        div({ style: 'float: left; width: 200px'},
+          Account.account_nav_table()
+        ),
+        
+        form({ 'class': 'fancy', style: 'margin-left: 220px', action: create_or_update_whois },
+          // info_message(
+          //   h3("Will this data be private?"),
+          //   p("All Badger.com domains come with WHOIS privacy.  If you disable this feature on a domain, then your contact information will become public.")
+          // )
+          //form({ action: curry(create_or_update_whois, data.id, callback) },
+          div({ id: 'signup-errors' }),
+      
+          fieldset(
+            label({ 'for': 'first_name-input' }, 'First and last name:'),
+            text({ 'class': 'short right-margin', id: 'first_name-input', name: 'first_name', placeholder: 'John', value: data.first_name || '' }),
+            text({ 'class': 'short', name: 'last_name', placeholder: 'Doe', value: data.last_name || '' })
+          ),
+
+          fieldset(
+            label({ 'for': 'organization-input' }, 'Organization:'),
+            text({ id: 'organization-input', name: 'organization', placeholder: 'Badger Inc (optional)', value: data.organization || '' })
+          ),
+
+          fieldset(
+            label({ 'for': 'email-input' }, 'Email address:'),
+            text({ id: 'email-input', name: 'email', placeholder: 'john.doe@badger.com' })
+          ),
+
+          fieldset(
+            label({ 'for': 'phone-input' }, 'Phone and fax:'),
+            text({ 'class': 'shortish right-margin', id: 'phone-input', name: 'phone', placeholder: '555-555-5555', value: data.phone || '' }),
+            text({ 'class': 'shortish', name: 'fax', placeholder: '555-555-5555 (optional)', value: data.fax || '' })
+          ),
+
+          fieldset(
+            label({ 'for': 'address-input' }, 'Address:'),
+            text({ id: 'address-input', name: 'address', placeholder: '123 Main St.', value: data.address || '' })
+          ),
+            
+          fieldset({ 'class': 'no-label' },
+            text({ name: 'address2', placeholder: 'Suite 100 (Optional)', value: data.address2 || '' })
+          ),
+
+          fieldset(
+            label({ 'for': 'city-input' }, 'City, state and zip:'),
+            text({ 'class': 'short right-margin', id: 'city-input', name: 'city', placeholder: 'San Francisco', value: data.city || '' }),
+            text({ 'class': 'supershort right-margin', name: 'state', placeholder: 'CA', value: data.state || '' }),
+            text({ 'class': 'supershort', name: 'zip', placeholder: '94104', value: data.zip || '' })
+          ),
+      
+          fieldset(
+            label({ 'for': 'country-input' }, 'Country:'),
+            select({ id: 'country-input', name: 'country' }, option(''), country_options(data.country))
+          ),
+
+          fieldset({ 'class': 'no-label' },
+            input({ 'class': 'myButton', type: 'submit', value: 'Create Contact' })
+          )
+        )        
+      )
+    );
+  });
+
+
+
+
+
+
+
   define('create_or_update_whois', function(contact_id, callback, form_data) {
     start_modal_spin();
 
@@ -82,53 +165,4 @@ with (Hasher('Whois','Application')) {
     );
   });
   
-  define('edit_whois_modal', function(data, callback, custom_message) {
-    data = data || {};
-    show_modal(
-      form({ action: curry(create_or_update_whois, data.id, callback) },
-        h1(data.id ? 'Edit Profile' : 'Create Profile'),
-        div({ style: 'color: green;' }, custom_message),
-        div({ id: 'errors' }),
-
-        p("This information will ", strong('automatically be private'), " unless you install ", i('Public Whois'), " on a domain."),
-      
-        table({ style: 'width: 100%' }, tbody(
-          tr(
-            td({ style: 'width: 50%; vertical-align: top' },
-              h3({ style: 'margin: 0' }, 'Contact Information'),
-              div(
-                input({ style: 'width: 120px', name: 'first_name', placeholder: 'First Name', value: data.first_name || '' }),
-                input({ style: 'width: 120px', name: 'last_name', placeholder: 'Last Name', value: data.last_name || '' })
-              ),
-              div(input({ style: 'width: 250px', name: 'organization', placeholder: 'Organization (optional)', value: data.organization || '' })),
-              div(input({ style: 'width: 250px', name: 'email', placeholder: 'Email', value: data.email || '' })),
-              div(
-                input({ style: 'width: 120px', name: 'phone', placeholder: 'Phone', value: data.phone || '' }),
-                input({ style: 'width: 120px', name: 'fax', placeholder: 'Fax (optional)', value: data.fax || '' })
-              )
-            ),
-            td({ style: 'width: 50%; vertical-align: top' },
-              h3({ style: 'margin: 0' }, 'Mailing Address'),
-              div(
-                input({ style: 'width: 250px', name: 'address', placeholder: 'Address Line 1', value: data.address || '' })
-              ),
-              div(
-                input({ style: 'width: 250px', name: 'address2', placeholder: 'Address Line 2 (Optional)', value: data.address2 || '' })
-              ),
-              div(
-                input({ style: 'width: 118px', name: 'city', placeholder: 'City', value: data.city || '' }),
-                input({ style: 'width: 40px', name: 'state', placeholder: 'State', value: data.state || '' }),
-                input({ style: 'width: 70px', name: 'zip', placeholder: 'Zip', value: data.zip || '' })
-              ),
-              div(
-                select({ style: 'width: 150px', name: 'country' }, option({ disabled: 'disabled' }, 'Country:'), country_options(data.country))
-              )
-            )
-          )
-        )),
-
-        div({ style: 'text-align: center; margin-top: 10px' }, input({ 'class': 'myButton', type: 'submit', value: data.id ? 'Save Profile' : 'Create Profile' }))
-      )
-    );
-  });
 }
