@@ -174,6 +174,10 @@ var Badger = {
       callback(response_data);
     });
   },
+  
+  getDomainsForLinkedAccount: function(linked_account_id, callback) {
+    Badger.api("/domains", { linked_account_id: linked_account_id }, callback);
+  },
 
   getDomain: function(name, params, callback) {
     if (typeof(params) == 'function') {
