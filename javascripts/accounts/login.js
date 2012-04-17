@@ -1,4 +1,5 @@
 with (Hasher('Signup','Application')) {
+  
   route('#account/login', function() {
     render(
       div(
@@ -12,9 +13,9 @@ with (Hasher('Signup','Application')) {
           )
         ),
 
-        form({ 'class': 'fancy has-sidebar', action: curry(process_login,function() { set_route('#'); }) },
+        form({ 'class': 'fancy has-sidebar', action: login },
           div({ id: 'signup-errors' }),
-      
+        
           fieldset(
             label({ 'for': 'email-input' }, 'Email address:'),
             text({ name: 'email', id: 'email-input', placeholder: 'john.doe@badger.com' })
@@ -23,7 +24,7 @@ with (Hasher('Signup','Application')) {
           fieldset(
             label({ 'for': 'password-input' }, 'Password:'),
             password({ name: 'password', id: 'password-input', placeholder: 'abc123', 'class': 'right-margin' }),
-            a({ href: show_forgot_password_modal }, "Forgot?")
+            a({ href: '#account/forgot-password' }, "Forgot?")
           ),
 
           fieldset({ 'class': 'no-label' },
@@ -39,52 +40,113 @@ with (Hasher('Signup','Application')) {
     //}
   });
   
-  route('#account/create', function() {
+  route('#account/forgot-password', function() {
     render(
-      h1('Create Badger Account'),
+			form({ action: process_forgot_password, loading_message: 'Sending email...' },
+				h1("Forgot Password"),
 
-      div({ 'class': 'sidebar' },
-        info_message(
-          h3("Already have an account?"),
-          p("If you already have an account, you're on the wrong page!"),
-          div({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
+        div({ 'class': 'sidebar' },
+          info_message(
+            h3("Know your password?"),
+            p("If you've just remembered your password, you can go back."),
+            div({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
+          )
+        ),
+
+        form({ 'class': 'fancy has-sidebar', action: login },
+				  div({ id: 'forgot-password-messages' }),
+
+          fieldset(
+            label({ 'for': 'email-input' }, 'Email address:'),
+            text({ name: "email", id: 'email-input', placeholder: "john.doe@badger.com" })
+          ),
+
+          div({ style: 'font-size: 18px; margin-left: 220px' }, 'or'),
+        
+          fieldset(
+            label({ 'for': 'domain-input' }, 'Domain:'),
+            text({ name: "email", id: 'domain-input', placeholder: "badger.com" })
+          ),
+
+          fieldset({ 'class': 'no-label' },
+					  input({ 'class': 'myButton', type: 'submit', value: 'Email Reset Code' })
+          )
         )
-      ),
-
-      form({ id: 'signup-box', 'class': 'fancy has-sidebar', action: curry(create_person,false) },
-        div({ id: 'signup-errors' }),
-    
-        fieldset(
-          label({ 'for': 'first_name-input' }, 'First and last name:'),
-          text({ 'class': 'short right-margin', id: 'first_name-input', name: 'first_name', placeholder: 'John' }),
-          text({ 'class': 'short', name: 'last_name', placeholder: 'Doe' })
-        ),
-
-        fieldset(
-          label({ 'for': 'email-input' }, 'Email address:'),
-          div(input({ id: 'email-input', name: 'email', style: 'width: 275px', placeholder: 'john.doe@badger.com' }))
-        ),
-    
-        fieldset(
-          label({ 'for': 'email-input' }, 'Password:'),
-					password({ 'class': 'short right-margin', id: 'email-input', name: 'password', placeholder: 'abc123' }),
-					password({ 'class': 'short', name: 'password_confirmation', placeholder: 'abc123 (again)' })
-        ),
-
-        fieldset(
-          label('Legal stuff:'),
-
-          input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
-          label({ 'class': 'normal', 'for': 'agree_to_terms' }, ' I agree to the Badger.com '),
-          a({ href: window.location.href.split('#')[0] + '#terms_of_service', target: '_blank' }, 'Terms of Service')
-        ),
-    
-        fieldset({ 'class': 'no-label' },
-          input({ 'class': 'myButton', type: 'submit', value: 'Continue »' })
-        )
-      )
+			)
     );
-    $('input[name="first_name"]').focus();
   });
-    
+  
+  define('login', function(form) {
+    $('#signup-errors').empty();
+    Badger.login(form.email, form.password, function(response) {
+      if (response.meta.status == 'ok') {
+        if (Badger.back_url != "") {
+          set_route(Badger.back_url);
+          Badger.back_url = "";
+        } else {
+          document.location.href = document.location.pathname;
+        }
+      } else {
+        $('#signup-errors').empty().append(error_message(response));
+      }
+    });
+  });
+
+  define('logout', function() {
+    Badger.logout();
+    document.location.href = document.location.pathname;
+  });
+  
+  define('process_forgot_password', function(callback, form_data) {
+		Badger.sendPasswordResetEmail(form_data, function(response) {
+			if (response.meta.status == 'ok') {
+        $('#forgot-password-messages').empty().append(success_message(response));
+				$('#forgot-password-form').empty();
+			} else {
+				$('#forgot-password-messages').empty().append(error_message(response));
+			}
+		});
+	});
+	
+
+  // define('show_reset_password_modal', function(email, code) {
+  //     show_modal(
+  //    form({ action: curry(reset_password, null) },
+  //      h1("Enter your new password"),
+  //      div({ id: 'reset-password-messages' }),
+  //      div({ id: 'reset-password-form' },
+  //        div({ style: 'margin: 20px 0; text-align: center' },
+  //          input({ name: "email", type: 'hidden', value: email }),
+  //          input({ name: "code", type: 'hidden', value: code  }),
+  //          input({ name: "new_password", type: 'password', placeholder: "New Password" }),
+  //          input({ name: "confirm_password", type: 'password', placeholder: "Confirm New Password" }),
+  //          input({ 'class': 'myButton small', type: 'submit', value: 'Update' })
+  //        )
+  //      )
+  //    )
+  //  );
+  // });
+
+  // define('reset_password', function(callback, form_data) {
+  //  if(form_data.new_password != form_data.confirm_password)
+  //    return $('#reset-password-messages').empty().append( error_message({ data: { message: "Passwords do not match" } }) );
+  // 
+  //  Badger.resetPasswordWithCode(form_data, function(response) {
+  //    if (response.meta.status == 'ok')
+  //    {
+  //         setTimeout(function() {
+  //           show_modal(
+  //             h1("Reset Password"),
+  //             success_message(response),
+  //             a({ href: hide_modal, 'class': 'myButton', value: "submit" }, "Close")
+  //           );
+  //         }, 250);
+  //    }
+  //    else
+  //    {
+  //      $('#reset-password-messages').empty().append(error_message(response));
+  //    }
+  //  });
+  // });
+
 }

@@ -48,14 +48,11 @@ with (Hasher('DnsApp','DomainApps')) {
           );
         }
 
-        if (domain_obj.badger_registration && !badger_dns && domain_obj.using_previous_registrar_nameservers) {
-          render({ into: message_div }, div({ 'class': 'error-message' }, "You are still using the name servers provided by ", domain_obj.current_registrar , ", ",
-            a({ href: curry(change_name_servers_modal, domain_obj) }, "switch to Badger.com?") )
+        // switch to badger dns message
+        if (!modify_dns && !badger_dns && change_nameservers) {
+          render({ into: message_div }, div({ 'class': 'error-message' }, "NOTE: These records are read-only because you are not using Badger nameservers. ",
+            a({ href: curry(change_name_servers_modal, domain_obj) }, "Switch to Badger DNS?") )
           );
-        } else if (!badger_dns && modify_dns) {
-          render({ into: message_div }, div({ 'class': 'error-message' }, "NOTE: These records are read-only because you are not using Badger nameservers." ));
-        } else if (!modify_dns) {
-          render({ into: message_div }, div({ 'class': 'error-message' }, "NOTE: These records are read-only because you are not authorized to modify DNS for this domain" ));
         }
         
         render_records({ into: content_div, read_only: !modify_dns }, domain_obj);

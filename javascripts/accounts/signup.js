@@ -1,12 +1,117 @@
 with (Hasher('Signup','Application')) {
+
+  route('#account/create', function() {
+    render(
+      div(
+        h1('Create Badger Account'),
+
+        div({ 'class': 'sidebar' },
+          info_message(
+            h3("Already have an account?"),
+            p("If you've already done this, you're on the wrong page!"),
+            div({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
+          )
+        ),
+
+        form({ 'class': 'fancy has-sidebar', action: create_person },
+          div({ id: 'signup-errors' }),
+      
+          fieldset(
+            label({ 'for': 'first_name-input' }, 'First and last name:'),
+            text({ 'class': 'short right-margin', id: 'first_name-input', name: 'first_name', placeholder: 'John' }),
+            text({ 'class': 'short', name: 'last_name', placeholder: 'Doe' })
+          ),
+
+          fieldset(
+            label({ 'for': 'email-input' }, 'Email address:'),
+            div(input({ id: 'email-input', name: 'email', style: 'width: 275px', placeholder: 'john.doe@badger.com' }))
+          ),
+      
+          fieldset(
+            label({ 'for': 'email-input' }, 'Password:'),
+  					password({ 'class': 'short right-margin', id: 'email-input', name: 'password', placeholder: 'abc123' }),
+  					password({ 'class': 'short', name: 'password_confirmation', placeholder: 'abc123 (again)' })
+          ),
+
+          fieldset(
+            label('Legal stuff:'),
+
+            input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
+            label({ 'class': 'normal', 'for': 'agree_to_terms' }, ' I agree to the Badger.com '),
+            a({ href: window.location.href.split('#')[0] + '#terms_of_service', target: '_blank' }, 'Terms of Service')
+          ),
+      
+          fieldset({ 'class': 'no-label' },
+            input({ 'class': 'myButton', type: 'submit', value: 'Create Account' })
+          )
+        )        
+      )
+    );
+    $('input[name="first_name"]').focus();
+  });
+
+  define('create_person', function(data) {
+    $('#signup-errors').empty();
+    
+    if (Badger.register_code) data.invite_code = Badger.register_code;
+
+    Badger.createAccount(data, function(response) {
+      if (response.meta.status == 'ok') {
+        set_route('#account/profiles/new', { reload_page: true });
+      } else {
+        $('#signup-errors').empty().append(error_message(response));
+      }
+    });
+  });
+
+
+
+
+
+  // input({ type: 'hidden', name: 'invite_code' }),
+  // 
+  // table({ style: 'width: 100%' }, tbody(
+  //   tr(
+  //     td({ style: 'width: 50%; vertical-align: top' },
+  //       h3({ style: 'margin: 0' }, 'Contact Information'),
+  //       div(
+  //       ),
+  //       div(input({ style: 'width: 275px', name: 'organization', placeholder: 'Organization (optional)' })),
+  //       div(
+  //         input({ style: 'width: 130px', name: 'phone', placeholder: 'Phone' }),
+  //         input({ style: 'width: 130px', name: 'fax', placeholder: 'Fax (optional)' })
+  //       )
+  //     ),
+  //     td({ style: 'width: 50%; vertical-align: top' },
+  //       h3({ style: 'margin: 0' }, 'Mailing Address'),
+  //       div(
+  //         input({ style: 'width: 260px', name: 'address', placeholder: 'Address Line 1' })
+  //       ),
+  //       div(
+  //         input({ style: 'width: 260px', name: 'address2', placeholder: 'Address Line 2 (Optional)' })
+  //       ),
+  //       div(
+  //         input({ style: 'width: 118px', name: 'city', placeholder: 'City' }),
+  //         input({ style: 'width: 40px', name: 'state', placeholder: 'State' }),
+  //         input({ style: 'width: 70px', name: 'zip', placeholder: 'Zip' })
+  //       ),
+  //       div(
+  //         select({ style: 'width: 150px', name: 'country' }, option({ disabled: 'disabled' }, 'Country:'), country_options())
+  //       )
+  //     )
+  //   )
+  // ))
+
+
+
+
  
   route('#register/:code', function(code) {
     if (Badger.getAccessToken()) {
       set_route('#');
     } else {
       Badger.register_code = code;
-      set_route('#');
-      show_register_modal();
+      set_route('#account/create');
     }
   });
 
@@ -37,272 +142,6 @@ with (Hasher('Signup','Application')) {
     // var callback_with_args = function() { callback.apply(that, args); }
     // Badger.getAccessToken() ? callback_with_args() : show_register_modal(callback_with_args);
   });
-
-  define('show_login_modal', function(callback) {
-    show_modal(
-      div({ id: 'signup-box' },
-        h1('Login'),
-        div({ id: 'signup-errors' }),
-        form({ action: curry(process_login, callback) },
-          input({ name: 'email', placeholder: 'Email Address' }),
-
-          input({ name: 'password', type: 'password', placeholder: 'Password' }),
-
-          input({ 'class': 'myButton', type: 'submit', value: 'Login' })
-        ),
-        div({ style: 'margin-top: 20px' },
-            a({ href: curry(show_forgot_password_modal, callback) }, "Forgot your password?"), br(),
-            a({ href: curry(show_register_modal, callback) }, "Don't have an account?")
-        )
-      )
-    );
-    if (!/MSIE (\d+\.\d+);/.test(navigator.userAgent)) {
-      $('input[name="email"]').focus();
-    }
-  });
-
-  define('process_login', function(callback, form) {
-    $('#signup-errors').empty();
-    Badger.login(form.email, form.password, spin_modal_until(function(response) {
-      if (response.meta.status == 'ok') {
-        if (callback) {
-          callback();
-        } else if (Badger.back_url != "") {
-          set_route(Badger.back_url);
-          Badger.back_url = "";
-        }
-      } else if (response.meta.status == 'locked') {
-        $('#signup-errors').empty().append(error_message("Your account has not yet been activated.  We will email you when it's ready!"));
-      } else {
-        $('#signup-errors').empty().append(error_message(response));
-      }
-    }));
-  });
-
-  define('show_register_modal', function(callback) {
-    show_modal(
-      div({ id: 'signup-box' },
-        h1('Create Your Badger.com Account'),
-        div({ id: 'signup-errors' }),
-        form({ action: curry(create_person, callback) },
-          input({ type: 'hidden', name: 'invite_code' }),
-  
-          table({ style: 'width: 100%' }, tbody(
-            tr(
-              td({ style: 'width: 50%; vertical-align: top' },
-                h3({ style: 'margin: 0' }, 'Contact Information'),
-                div(
-                  input({ style: 'width: 130px', name: 'first_name', placeholder: 'First Name' }),
-                  input({ style: 'width: 130px', name: 'last_name', placeholder: 'Last Name' })
-                ),
-                div(input({ style: 'width: 275px', name: 'organization', placeholder: 'Organization (optional)' })),
-                div(input({ name: 'email', style: 'width: 275px', placeholder: 'Email Address' })),
-                div(
-                  input({ style: 'width: 130px', name: 'phone', placeholder: 'Phone' }),
-                  input({ style: 'width: 130px', name: 'fax', placeholder: 'Fax (optional)' })
-                )
-              ),
-              td({ style: 'width: 50%; vertical-align: top' },
-                h3({ style: 'margin: 0' }, 'Mailing Address'),
-                div(
-                  input({ style: 'width: 260px', name: 'address', placeholder: 'Address Line 1' })
-                ),
-                div(
-                  input({ style: 'width: 260px', name: 'address2', placeholder: 'Address Line 2 (Optional)' })
-                ),
-                div(
-                  input({ style: 'width: 118px', name: 'city', placeholder: 'City' }),
-                  input({ style: 'width: 40px', name: 'state', placeholder: 'State' }),
-                  input({ style: 'width: 70px', name: 'zip', placeholder: 'Zip' })
-                ),
-                div(
-                  select({ style: 'width: 150px', name: 'country' }, option({ disabled: 'disabled' }, 'Country:'), country_options())
-                )
-              )
-            )
-          )),
-  
-          h3({ style: 'margin: 15px 0 0 0' }, 'Password for Badger.com'),
-         div(
-           input({ name: 'password', style: 'width: 200px', placeholder: 'Desired Password', type: 'password' }),
-           input({ name: 'confirm_password', style: 'width: 200px', placeholder: 'Confirm Password', type: 'password' })
-         ),
-  
-  
-          div({ style: 'margin: 10px 0' },
-            input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
-            label({ 'for': 'agree_to_terms' }, ' I agree to the Badger.com '),
-            a({ href: window.location.href.split('#')[0] + '#terms_of_service', target: '_blank' }, 'Terms of Service')
-          ),
-  
-          div(
-            input({ 'class': 'myButton', type: 'submit', value: 'Create Account' })
-          ),
-          
-          div({ style: 'margin-top: 20px' }, 
-            a({ href: curry(show_login_modal, callback) }, "Already have an account?")
-          )
-        )        
-      )
-    );
-  });
-
-  define('create_person', function(callback, data) {
-		if (data.confirm_password) {
-		  data.password_confirmation = data.confirm_password;
-		  delete data.confirm_password;
-		}
-    
-    if (Badger.register_code) data.invite_code = Badger.register_code;
-
-    Badger.createAccount(data, spin_modal_until(function(response) {
-      if (response.meta.status == 'ok') {
-        if (response.data.access_token) {
-          if (callback) {
-            callback();
-          } else {
-            set_route('#');
-            setTimeout(SiteTour.site_tour_0, 250);
-          }
-        } else {
-          render({ into: 'signup-box' },
-            success_message(
-              p(
-                b("The good news:"),
-                " Your account has been created", 
-                (response.data.domain_credits > 0 ? span(' and has ', b(response.data.domain_credits + ' domain credit')) : ''), 
-                '.'
-              ),
-              p(
-                b("The bad news:"),
-                " We're limiting how many accounts we activate per day and are unable to activate your account at this time.  It may take a few days, but we'll email you as soon as your account has been activated."
-              )
-            )
-          );
-        }
-      } else {
-        $('#signup-errors').empty().append(error_message(response));
-      }
-    }));
-  });
-  
-  
-  
-  define('request_invite', function(form_data) {
-    if (form_data.password != form_data.confirm_password) {
-			$('#signup-errors').empty().append(error_message({ data: { message: "Passwords do not match" } }));
-      return;
-		}
-		
-		console.log(form_data);
-		
-    if (form_data.require_invite_code && !form_data.invite_code) {
-      $('#signup-errors').empty().append(error_message({ data: { message: "Missing invite code!" } }));
-      return;
-    }
-		
-		// old invite code stuff
-    // if (Badger.register_code) form_data.invite_code = Badger.register_code;
-		
-    Badger.requestInviteAndCreatePerson(form_data, function(response) {
-      console.log(response);
-      
-      if (response.meta.status == 'ok') {
-        if (callback) {
-          callback();
-        } else {
-          show_invite_sent_modal(response.data);
-        }
-      } else {
-        $('#request-invite-errors').empty().append(error_message(response));
-      }
-    });
-  });
-  
-  define('show_invite_sent_modal', function(request_invite_data) {
-    set_route("#");
-    
-    return show_modal(
-      h1("Invite Request Sent"),
-      p("We will be ready to accept your invite soon, sorry to make you wait! When your invite is approved, we will email you."),
-      
-      (request_invite_data.invite_code) ? [
-        p("Your free domain code has been applied, and the ", request_invite_data.invite_code.domain_credits, " domain credit(s) will be applied to your account when we approve the invite.")
-      ] : [
-        div()
-      ]
-    );
-  });
-  
-  
-
-	define('show_reset_password_modal', function(email, code) {
-    show_modal(
-			form({ action: curry(reset_password, null) },
-				h1("Enter your new password"),
-				div({ id: 'reset-password-messages' }),
-				div({ id: 'reset-password-form' },
-					div({ style: 'margin: 20px 0; text-align: center' },
-					  input({ name: "email", type: 'hidden', value: email }),
-						input({ name: "code", type: 'hidden', value: code  }),
-						input({ name: "new_password", type: 'password', placeholder: "New Password" }),
-						input({ name: "confirm_password", type: 'password', placeholder: "Confirm New Password" }),
-						input({ 'class': 'myButton small', type: 'submit', value: 'Update' })
-					)
-				)
-			)
-		);
-	});
-
-	define('show_forgot_password_modal', function(callback) {
-    show_modal(
-			form({ action: curry(send_password_reset_email, callback) },
-				h1("Forgot Password"),
-				div({ id: 'forgot-password-messages' }),
-				div({ id: 'forgot-password-form', style: 'margin: 20px 0; text-align: center' },
-					input({ name: "email", type: "text", 'class': 'fancy', size: 30, placeholder: "Email", id: 'forgot-password-email' }),
-					input({ 'class': 'myButton', type: 'submit', value: 'Send Reset Code' })
-				),
-        div({ style: 'margin-top: 20px' },
-  				a({ href: curry(show_login_modal, callback) }, "Remember your password?"), br(),
-          a({ href: curry(show_register_modal, callback) }, "Don't have an account?")
-        )
-			)
-		);
-	});
-
-	define('send_password_reset_email', function(callback, form_data) {
-		Badger.sendPasswordResetEmail(form_data, function(response) {
-			if (response.meta.status == 'ok') {
-        $('#forgot-password-messages').empty().append(success_message(response));
-				$('#forgot-password-form').empty();
-			} else {
-				$('#forgot-password-messages').empty().append(error_message(response));
-			}
-		});
-	});
-
-	define('reset_password', function(callback, form_data) {
-		if(form_data.new_password != form_data.confirm_password)
-			return $('#reset-password-messages').empty().append( error_message({ data: { message: "Passwords do not match" } }) );
-
-		Badger.resetPasswordWithCode(form_data, function(response) {
-			if (response.meta.status == 'ok')
-			{
-        setTimeout(function() {
-          show_modal(
-            h1("Reset Password"),
-            success_message(response),
-            a({ href: hide_modal, 'class': 'myButton', value: "submit" }, "Close")
-          );
-        }, 250);
-			}
-			else
-			{
-				$('#reset-password-messages').empty().append(error_message(response));
-			}
-		});
-	});
 
   define('show_confirm_email_notification_modal', function(data, status) {
     show_modal(

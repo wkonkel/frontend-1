@@ -16,6 +16,7 @@ h4 { font-size: 18px; border-bottom: 0; }
 h1 a, h2 a, h3 a, h4 a, h5 a { color: #333; }
 
 /* page background */
+/*html { background: transparent url(../images/v2/groovepaper.png) repeat top center; }*/
 html { background: transparent url(../images/v2/white_plaster.png) repeat top center; }
 
 /* header position */
@@ -33,7 +34,7 @@ html { background: transparent url(../images/v2/white_plaster.png) repeat top ce
 #user-nav a { color: #eee }
 
 #form-search { position: absolute; left: 120px; top: 10px; }
-#form-search input { background: #fff url(../images/v2/search.png) no-repeat 13px 10px; border-radius: 5px; width:200px; height: 22px; border:0; color:#333; padding:5px 9px 6px 34px; margin:0 0 0 0; font-size: 20px; line-height: 25px; }
+#form-search input { background: #fff url(../images/v2/search.png) no-repeat 13px 10px; border-radius: 5px; width:200px; height: 22px; border:0; color:#333; padding:5px 9px 6px 34px; margin:0 0 0 0; font-size: 18px; line-height: 25px; }
 
 /* content area (fixed width centered) */
 html, body, #wrapper, #footer { min-width: 970px; }
