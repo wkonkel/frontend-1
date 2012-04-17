@@ -2,49 +2,47 @@ with (Hasher('Signup','Application')) {
 
   route('#account/create', function() {
     render(
-      div(
-        h1('Create Badger Account'),
+      h1('Create Badger Account'),
 
-        div({ 'class': 'sidebar' },
-          info_message(
-            h3("Already have an account?"),
-            p("If you've already done this, you're on the wrong page!"),
-            div({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
-          )
+      div({ 'class': 'sidebar' },
+        info_message(
+          h3("Already have an account?"),
+          p("If you've already done this, you're on the wrong page!"),
+          div({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
+        )
+      ),
+
+      form({ 'class': 'fancy has-sidebar', action: create_person },
+        div({ id: 'signup-errors' }),
+    
+        fieldset(
+          label({ 'for': 'first_name-input' }, 'First and last name:'),
+          text({ 'class': 'short right-margin', id: 'first_name-input', name: 'first_name', placeholder: 'John' }),
+          text({ 'class': 'short', name: 'last_name', placeholder: 'Doe' })
         ),
 
-        form({ 'class': 'fancy has-sidebar', action: create_person },
-          div({ id: 'signup-errors' }),
-      
-          fieldset(
-            label({ 'for': 'first_name-input' }, 'First and last name:'),
-            text({ 'class': 'short right-margin', id: 'first_name-input', name: 'first_name', placeholder: 'John' }),
-            text({ 'class': 'short', name: 'last_name', placeholder: 'Doe' })
-          ),
+        fieldset(
+          label({ 'for': 'email-input' }, 'Email address:'),
+          div(input({ id: 'email-input', name: 'email', style: 'width: 275px', placeholder: 'john.doe@badger.com' }))
+        ),
+    
+        fieldset(
+          label({ 'for': 'email-input' }, 'Password:'),
+					password({ 'class': 'short right-margin', id: 'email-input', name: 'password', placeholder: 'abc123' }),
+					password({ 'class': 'short', name: 'password_confirmation', placeholder: 'abc123 (again)' })
+        ),
 
-          fieldset(
-            label({ 'for': 'email-input' }, 'Email address:'),
-            div(input({ id: 'email-input', name: 'email', style: 'width: 275px', placeholder: 'john.doe@badger.com' }))
-          ),
-      
-          fieldset(
-            label({ 'for': 'email-input' }, 'Password:'),
-  					password({ 'class': 'short right-margin', id: 'email-input', name: 'password', placeholder: 'abc123' }),
-  					password({ 'class': 'short', name: 'password_confirmation', placeholder: 'abc123 (again)' })
-          ),
+        fieldset(
+          label('Legal stuff:'),
 
-          fieldset(
-            label('Legal stuff:'),
-
-            input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
-            label({ 'class': 'normal', 'for': 'agree_to_terms' }, ' I agree to the Badger.com '),
-            a({ href: window.location.href.split('#')[0] + '#terms_of_service', target: '_blank' }, 'Terms of Service')
-          ),
-      
-          fieldset({ 'class': 'no-label' },
-            input({ 'class': 'myButton', type: 'submit', value: 'Create Account' })
-          )
-        )        
+          input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
+          label({ 'class': 'normal', 'for': 'agree_to_terms' }, ' I agree to the Badger.com '),
+          a({ href: window.location.href.split('#')[0] + '#terms_of_service', target: '_blank' }, 'Terms of Service')
+        ),
+    
+        fieldset({ 'class': 'no-label' },
+          input({ 'class': 'myButton', type: 'submit', value: 'Continue »' })
+        )
       )
     );
     $('input[name="first_name"]').focus();
@@ -57,7 +55,7 @@ with (Hasher('Signup','Application')) {
 
     Badger.createAccount(data, function(response) {
       if (response.meta.status == 'ok') {
-        set_route('#account/profiles/new', { reload_page: true });
+        set_route('#account/create/contact', { reload_page: true });
       } else {
         $('#signup-errors').empty().append(error_message(response));
       }
@@ -143,6 +141,8 @@ with (Hasher('Signup','Application')) {
     // Badger.getAccessToken() ? callback_with_args() : show_register_modal(callback_with_args);
   });
 
+  define('show_register_modal', function(callback) {});
+    
   define('show_confirm_email_notification_modal', function(data, status) {
     show_modal(
       h1("Confirm Email Message"),

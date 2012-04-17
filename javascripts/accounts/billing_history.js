@@ -6,10 +6,7 @@ with (Hasher('Billing','Application')) {
     render(
       h1('My Account » Credits & Billing History'),
       div({ style: 'float: right; margin-top: -44px' },
-        a({ 'class': 'myButton small', href: curry(purchase_modal, function() { 
-          set_route('#account/billing');
-          hide_modal();
-        }) }, 'Purchase Credits')
+        a({ 'class': 'myButton small', href: '#account/billing/credits' }, 'Purchase Credits')
       ),
       
       Account.account_nav_table(target_div)
