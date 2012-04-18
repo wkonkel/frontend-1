@@ -6,7 +6,7 @@ with (Hasher('Billing','Application')) {
     var saved_or_new_card_div = div(
       fieldset(
         label({ 'for': 'payment_method_id' }, 'Saved cards:'),
-        'Loading...'
+        select(option('Loading...'))
       )
     );
     

@@ -43,24 +43,11 @@ with (Hasher('Signup','Application')) {
   define('login', function(form) {
     $('#signup-errors').empty();
     Badger.login(form.email, form.password, function(response) {
-      if (response.meta.status == 'ok') {
-        if (Badger.back_url != "") {
-          set_route(Badger.back_url);
-          Badger.back_url = "";
-        } else {
-          document.location.href = document.location.pathname;
-        }
-      } else {
+      if (response.meta.status != 'ok') {
         $('#signup-errors').empty().append(error_message(response));
       }
     });
   });
-
-  define('logout', function() {
-    Badger.logout();
-    document.location.href = document.location.pathname;
-  });
-
 
   route('#account/forgot-password', function() {
     render(

@@ -20,9 +20,17 @@ with (Hasher('DomainShow','DomainApps')) {
     if (response.meta.status == 'ok') {
       if (!domain_obj.current_registrar) {
         if (domain_obj.can_register) {
-          render({ into: content_div },
-            "This domain is not currently registered!",br(),br(),
-            a({ 'class': 'myButton small', href: curry(Register.show, domain_obj.name) }, 'Register ', domain_obj.name)
+          render({ into: content_div }, 
+            div({ 'class': 'sidebar' },
+              success_message(
+                h3("This domain is available!"),
+                p("Quick, register it before somebody else does!")
+              )
+            ),
+
+            div({ 'class': 'has-sidebar' },
+              Register.full_form(domain_obj.name)
+            )
           );
         } else {
           render({ into: content_div },
