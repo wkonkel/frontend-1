@@ -1,7 +1,7 @@
 with (Hasher('Domains','Application')) {
   route('#filter_domains/:filter/:view_type', function(filter, view_type) {
     render(
-      h1('MY DOMAINS'),
+      h1('My Domains'),
       p('Loading...')
     );
 				
@@ -101,7 +101,7 @@ with (Hasher('Domains','Application')) {
 
   define('index_view', function(domains, filter, view_type) {
     var empty_domain_message = [];
-    var title = "MY DOMAINS";
+    var title = "My Domains";
     switch (filter) {
       case 'transfers':
         empty_domain_message = [div("It looks like you don't have any domains in pending transfer.")];

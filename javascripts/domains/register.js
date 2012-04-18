@@ -1,4 +1,104 @@
+// - show full reg details below
+// - add expiry (+ X year)
+
 with (Hasher('Register','Application')) {
+  define('full_form', function(domain) {
+    return form({ 'class': 'fancy', action: curry(buy_domain, domain) },
+      div({ id: 'errors' }),
+
+      input({ type: 'hidden', name: 'name', value: domain }),
+      input({ type: 'hidden', name: 'auto_renew', value: 'true'}),
+      input({ type: 'hidden', name: 'privacy', value: 'true'}),
+      input({ type: 'hidden', name: 'name_servers', value: 'ns1.badger.com,ns2.badger.com'}),
+
+      fieldset(
+        label({ 'for': 'registrant_contact_id' }, 'Registrant:'),
+        select({ id: 'registrant_contact_id', name: 'registrant_contact_id', style: "max-width: 400px" }, Registration.profile_options_for_select())
+      ),
+      
+      fieldset(
+        label({ 'for': 'years' }, 'Duration:'),
+        select({ name: 'years', id: 'years' },
+          option({ value: 1 }, '1 Year'),
+          option({ value: 2 }, '2 Years'),
+          option({ value: 3 }, '3 Years'),
+          option({ value: 4 }, '4 Years'),
+          option({ value: 5 }, '5 Years'),
+          option({ value: 10 }, '10 Years')
+        ),
+        ' @ 1 credit per year'
+      ),
+      
+      fieldset(
+        label({ 'for': 'years' }, 'Expiration:'),
+        'April 4, 2013'
+      ),
+
+      fieldset(
+        label({ 'for': 'first_name-input' }, 'Also Register:'),
+        div({ style: 'padding: 14px 0' }, similar_domain_list(domain))
+      ),
+  
+      fieldset({ 'class': 'no-label' },
+        submit({ id: 'register-button', value: 'Register ' + Domains.truncate_domain_name(domain) + ' for 1 credit' })
+      )
+    );
+    
+    // // show a message after person buys credits
+    // if (form_data && form_data.credits_added) {
+    //   BadgerCache.getAccountInfo(function(response) {
+    //     $("div#errors").html(
+    //       div({ 'class': "info-message" }, "Success! You now have " + response.data.domain_credits + " domain " + (response.data.domain_credits > 1 ? "credits" : "credit") + ".")
+    //     );
+    //   });
+    // }
+    // 
+    // $('select[name=years]').change(function(e) {
+    //   var years = parseInt($('#years').val());
+    //   var num_domains = 1 + $('.extensions:checked').length;
+    //   var credits = num_domains * years;
+    //   
+    //   $('#register-button').val('Register ' + (num_domains > 1 ? (num_domains + ' domains') : domain) + ' for ' + credits + (credits == 1 ? ' credit' : ' credits'))
+    // })
+    // 
+    // if (form_data) {
+    //   $("select[name=years] option[value=" + form_data.years + "]").attr('selected','selected');
+    //   $("select[name=registrant_contact_id] option[value=" + form_data.registrant_contact_id + "]").attr('selected','selected');
+    //   
+    //   $("select[name=years]").trigger('change');
+    // }
+
+  });
+
+  define('similar_domain_list', function(domain) {
+    var similar_domain_div = div({ id: 'similar_domain_span' },  'Loading...');
+
+    Badger.domainSearch(domain.split('.')[0], true, function(response) {
+      var similar_domains = [];//'something.com', 'something2.com'];
+      for (var i=0; i < response.data.domains.length; i++) {
+        if (response.data.domains[i][1] && (response.data.domains[i][0] != domain)) {
+          similar_domains.push(response.data.domains[i][0]);
+        }
+      }
+
+      render({ into: similar_domain_div}, 
+        similar_domains.map(function(domain) {
+          var sanitized_id = "similar_" + domain.replace(/[^a-z0-9]/,'_');
+          return div({ style: 'line-height: 22px;' },
+            checkbox({ name: "additional_domains[]", value: domain, id: sanitized_id }),
+            label({ 'class': 'normal right-margin', 'for': sanitized_id }, domain)
+          );
+        })
+      );
+    });
+
+    return similar_domain_div;
+  });
+
+
+
+
+
 
   define('show', function(domain, available_extensions) {
     if (!available_extensions) available_extensions = [];
@@ -101,86 +201,6 @@ with (Hasher('Register','Application')) {
         $('#errors').empty().append(error_message(response));
       }
     })
-  });
-
-
-  define('buy_domain_modal', function(domain, available_extensions, form_data) {
-    show_modal(
-      h1({ 'class': 'long-domain-name'}, 'Register ', domain),
-      div({ id: 'errors' }),
-      p({ style: "margin-bottom: 15px" }, "You'll be able to configure ", strong(Domains.truncate_domain_name(domain, 50)), " on the next screen."),
-      form({ action: curry(buy_domain, domain, available_extensions) },
-        input({ type: 'hidden', name: 'name', value: domain }),
-        input({ type: 'hidden', name: 'auto_renew', value: 'true'}),
-        input({ type: 'hidden', name: 'privacy', value: 'true'}),
-        input({ type: 'hidden', name: 'name_servers', value: 'ns1.badger.com,ns2.badger.com'}),
-
-        table({ style: 'width: 100%' }, tbody(
-          tr(
-            td({ style: "width: 50%; vertical-align: top" },
-              h3({ style: 'margin-top: 0; margin-bottom: 3px' }, 'Registrant:'),
-              div(
-                select({ name: 'registrant_contact_id', style: 'width: 150px' },
-                  Registration.profile_options_for_select()
-                )
-              ),
-              
-              h3({ style: 'margin-top: 5px; margin-bottom: 3px' }, 'Length:'),
-              div(
-                select({ name: 'years', id: 'years' },
-                  option({ value: 1 }, '1 Year'),
-                  option({ value: 2 }, '2 Years'),
-                  option({ value: 3 }, '3 Years'),
-                  option({ value: 4 }, '4 Years'),
-                  option({ value: 5 }, '5 Years'),
-                  option({ value: 10 }, '10 Years')
-                ),
-                ' @ 1 credit per year'
-              )
-            ),
-            td({ style: "width: 50%; vertical-align: top" },
-  						available_extensions.length > 0 ?
-  	            tr(
-  	              td({ style: "width: 50%" },
-  	                h3({ style: 'margin-top: 0; margin-bottom: 3px' }, 'Also Register:'),
-  	                available_extensions.map(function(ext) {
-  	                  return div(checkbox({ name: "extension_" + ext[0].split('.')[1], value: ext[0], id: ext[0].split('.')[1], 'class': 'extensions' }),
-  	                             label({ 'for': ext[0].split('.')[1] }, ' ' + ext[0]))
-  	                })
-  	              )
-  	            )
-  	        	: ''
-            )
-          )
-        )),
-        
-        div({ style: "text-align: center; margin-top: 30px" }, input({ 'class': 'myButton', id: 'register-button', type: 'submit', value: 'Register ' + Domains.truncate_domain_name(domain) + ' for 1 credit' }))
-      )
-    );
-    
-    // show a message after person buys credits
-    if (form_data && form_data.credits_added) {
-      BadgerCache.getAccountInfo(function(response) {
-        $("div#errors").html(
-          div({ 'class': "info-message" }, "Success! You now have " + response.data.domain_credits + " domain " + (response.data.domain_credits > 1 ? "credits" : "credit") + ".")
-        );
-      });
-    }
-    
-    $('select[name=years]').change(function(e) {
-      var years = parseInt($('#years').val());
-      var num_domains = 1 + $('.extensions:checked').length;
-      var credits = num_domains * years;
-      
-      $('#register-button').val('Register ' + (num_domains > 1 ? (num_domains + ' domains') : domain) + ' for ' + credits + (credits == 1 ? ' credit' : ' credits'))
-    })
-    
-    if (form_data) {
-      $("select[name=years] option[value=" + form_data.years + "]").attr('selected','selected');
-      $("select[name=registrant_contact_id] option[value=" + form_data.registrant_contact_id + "]").attr('selected','selected');
-      
-      $("select[name=years]").trigger('change');
-    }
   });
 
 	define('renew_domain_modal', function(domain, form_data) {

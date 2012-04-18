@@ -39,7 +39,16 @@ with (Hasher('Signup','Application')) {
     //  $('input[name="email"]').focus();
     //}
   });
-  
+
+  define('login', function(form) {
+    $('#signup-errors').empty();
+    Badger.login(form.email, form.password, function(response) {
+      if (response.meta.status != 'ok') {
+        $('#signup-errors').empty().append(error_message(response));
+      }
+    });
+  });
+
   route('#account/forgot-password', function() {
     render(
 			form({ action: process_forgot_password, loading_message: 'Sending email...' },

@@ -51,7 +51,8 @@ var Badger = {
       head.removeChild(script);
 
       if (response && response.meta && response.meta.status == 'unauthorized') {
-        Badger.logout();
+        // if we passed in an access token that isn't valid, probably best to log them out all the way
+        Badger.getAccessToken() ? Badger.logout() : Badger.requireAuth();
       } else {
         callback.call(null,response);
       }
@@ -62,23 +63,41 @@ var Badger = {
   },
   jsonp_callbacks: {},
   
-  // reads from "badger_access_token" cookie
-  getAccessToken: function() {
+  
+  setCookie: function(name,value) {
+    if (value) {
+      document.cookie = name+"="+value+"; path=/";
+    } else {
+      document.cookie = name+"=; path=/; expires=Thu, 01-Jan-1970 00:00:01 GMT";
+    }
+  },
+  
+  getCookie: function(name) {
     var ca = document.cookie.split(';');
     for (var i=0; i < ca.length; i++) {
       while (ca[i].charAt(0)==' ') ca[i] = ca[i].substring(1,ca[i].length);
       if (ca[i].length > 0) {
         var kv = ca[i].split('=');
-        if (kv[0] == 'badger_access_token') return kv[1];
+        if (kv[0] == name) return kv[1];
       }
     }
   },
   
+  // reads from "badger_access_token" cookie
+  getAccessToken: function() {
+    Badger.getCookie('badger_access_token');
+  },
+  
   // writes to "badger_access_token" cookie
   setAccessToken: function(token) {
-    document.cookie = token ? "badger_access_token="+token+"; path=/" : "badger_access_token=; path=/; expires=Thu, 01-Jan-1970 00:00:01 GMT";
+    Badger.setCookie('badger_access_token', token);
   },
 
+  onRequireAuth: function(callback) {
+    Badger.require_auth_callbacks.push(callback);
+  },
+  require_auth_callbacks: [],
+  
   onLogin: function(callback) {
     Badger.login_callbacks.push(callback);
   },
@@ -95,10 +114,6 @@ var Badger = {
       if ((response.meta.status == 'ok') && response.data.access_token) {
         Badger.setAccessToken(response.data.access_token);
         for (var i=0; i < Badger.login_callbacks.length; i++) Badger.login_callbacks[i].call(null);
-        if (/MSIE (\d+\.\d+);/.test(navigator.userAgent) && (new Number(RegExp.$1) <= 8)) {
-          // reload page for msie
-          window.location.reload();
-        }
       }
       if (callback) callback(response);
     });
@@ -106,14 +121,13 @@ var Badger = {
   
   // erases local cookie
   logout: function(callback) {
-    if (!Badger.getAccessToken()) return;
-    Badger.setAccessToken(null);
-    for (var i=0; i < Badger.logout_callbacks.length; i++) Badger.logout_callbacks[i].call(null);
     if (callback) callback();
-    if (/MSIE (\d+\.\d+);/.test(navigator.userAgent) && (new Number(RegExp.$1) <= 8)) {
-      // reload page for msie
-      window.location.reload();
-    }
+    for (var i=0; i < Badger.logout_callbacks.length; i++) Badger.logout_callbacks[i].call(null);
+    if (Badger.getAccessToken()) Badger.setAccessToken(null);
+  },
+
+  requireAuth: function() {
+    for (var i=0; i < Badger.require_auth_callbacks.length; i++) Badger.require_auth_callbacks[i].call(null);
   },
   
   accountInfo: function(callback) {
