@@ -55,7 +55,7 @@ with (Hasher('Signup','Application')) {
 
     Badger.createAccount(data, function(response) {
       if (response.meta.status == 'ok') {
-        set_route('#account/create/contact', { reload_page: true });
+        set_route('#', { reload_page: true });
       } else {
         $('#signup-errors').empty().append(error_message(response));
       }
@@ -64,46 +64,37 @@ with (Hasher('Signup','Application')) {
 
 
 
+  route('#confirm_email/:code', function(code) {
+    if (!Badger.getAccessToken()) {
+      Badger.setCookie('badger_url_after_auth', get_route());
+      set_route('#account/login');
+    } else {
+      render(
+        h1('Confirm Email'),
 
+        div({ 'class': 'sidebar' },
+          info_message(
+            h3("Thanks for your help!"),
+            p("This helps us separate the good folk from the bad.")
+          )
+        ),
 
-  // input({ type: 'hidden', name: 'invite_code' }),
-  // 
-  // table({ style: 'width: 100%' }, tbody(
-  //   tr(
-  //     td({ style: 'width: 50%; vertical-align: top' },
-  //       h3({ style: 'margin: 0' }, 'Contact Information'),
-  //       div(
-  //       ),
-  //       div(input({ style: 'width: 275px', name: 'organization', placeholder: 'Organization (optional)' })),
-  //       div(
-  //         input({ style: 'width: 130px', name: 'phone', placeholder: 'Phone' }),
-  //         input({ style: 'width: 130px', name: 'fax', placeholder: 'Fax (optional)' })
-  //       )
-  //     ),
-  //     td({ style: 'width: 50%; vertical-align: top' },
-  //       h3({ style: 'margin: 0' }, 'Mailing Address'),
-  //       div(
-  //         input({ style: 'width: 260px', name: 'address', placeholder: 'Address Line 1' })
-  //       ),
-  //       div(
-  //         input({ style: 'width: 260px', name: 'address2', placeholder: 'Address Line 2 (Optional)' })
-  //       ),
-  //       div(
-  //         input({ style: 'width: 118px', name: 'city', placeholder: 'City' }),
-  //         input({ style: 'width: 40px', name: 'state', placeholder: 'State' }),
-  //         input({ style: 'width: 70px', name: 'zip', placeholder: 'Zip' })
-  //       ),
-  //       div(
-  //         select({ style: 'width: 150px', name: 'country' }, option({ disabled: 'disabled' }, 'Country:'), country_options())
-  //       )
-  //     )
-  //   )
-  // ))
+        div({ 'class': 'fancy has-sidebar' },
+          div({ id: 'confirm-email-box' }, p('Confirming email... please wait.'))
+        )
+      );
 
+      Badger.confirmEmail(code, function(response) {
+        console.log(response);
+        if (response.meta.status == 'ok') {
+          $('#confirm-email-box').html(success_message(response.data.message));
+        } else {
+          $('#confirm-email-box').html(error_message(response.data.message));
+        }
+      });
+    }
+  });
 
-
-
- 
   route('#register/:code', function(code) {
     if (Badger.getAccessToken()) {
       set_route('#');
@@ -112,43 +103,5 @@ with (Hasher('Signup','Application')) {
       set_route('#account/create');
     }
   });
-
-  route('#reset_password/:email/:code', function(email, code) {
-    set_route('#');
-    show_reset_password_modal(email, code);
-  });
-
-  route('#confirm_email/:code', function(code) {
-    set_route('#');
-    if (Badger.getAccessToken()) {
-      Badger.confirmEmail(code, function(response) {
-        show_confirm_email_notification_modal(response.data, response.meta.status);
-      });
-    } else {
-      show_login_modal(function(){
-        Badger.confirmEmail(code, function(response) {
-        show_confirm_email_notification_modal(response.data, response.meta.status);
-      });
-    });
-    }
-  });
-
-  define('require_user_modal', function(callback) {
-    Badger.getAccessToken() ? callback_with_args() : set_route('#account/create');
-    // var args = Array.prototype.slice.call(arguments, 1);
-    // var that = this;
-    // var callback_with_args = function() { callback.apply(that, args); }
-    // Badger.getAccessToken() ? callback_with_args() : show_register_modal(callback_with_args);
-  });
-
-  define('show_register_modal', function(callback) {});
-    
-  define('show_confirm_email_notification_modal', function(data, status) {
-    show_modal(
-      h1("Confirm Email Message"),
-      status == 'ok' ? p(data.message + ". You can close this window now.") : p({ 'class':  'error-message'}, data.message),
-      a({ href: hide_modal, 'class': 'myButton', value: "submit" }, "Close")
-    );
-	});
 
 }

@@ -11,15 +11,14 @@ with (Hasher('Welcome','Application')) {
         ),
         img({ src: 'images/badger-6.png', 'class': 'badger', style: 'margin-top: 50px' }),
 
-        h3({ style: "margin-bottom: 0" }, 'Automatic transfers with no downtime:'),
+        h3({ style: "margin-bottom: 0" }, 'Automatic transfers with no downtime.'),
         div({ style: 'height: 120px' },
-          app_icon('images/apps/godaddy.png', 'GoDaddy', curry(set_route,registrar_app_icon_url)),
-          app_icon('images/apps/enom.png', 'eNom', curry(set_route,registrar_app_icon_url)),
-          app_icon('images/apps/namecheap.png', 'Namecheap', curry(set_route,registrar_app_icon_url)),
-          app_icon('images/apps/ns.png', 'Network Solutions', curry(set_route,registrar_app_icon_url)),
-          app_icon('images/apps/1and1.png', '1&1', curry(set_route,registrar_app_icon_url))
+          app_icon('images/apps/godaddy.png', 'GoDaddy'),
+          app_icon('images/apps/ns.png', 'Network Solutions'),
+          app_icon('images/apps/enom.png', 'eNom'),
+          app_icon('images/apps/namecheap.png', 'Namecheap'),
+          app_icon('images/apps/1and1.png', '1&1')
         ),
-        
         //h3({ style: "margin-bottom: 0" }, 'Free WHOIS privacy and DNS hosting.'),
         h3('Shortcuts for easy setup:'),
         div({ style: 'height: 120px' },

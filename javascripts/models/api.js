@@ -1,6 +1,5 @@
 var Badger = {
   api_host: 'https://api.badger.com/',
-  back_url: "",
 
   api: function() {
     // parse arguments: url, [http_method], [params], [callback]
@@ -232,7 +231,7 @@ var Badger = {
 
   registerDomain: function(data, callback) {
     var name = data.name;
-    delete data.name;
+    //delete data.name; // bad to modify the passed in object... should clone first
     Badger.api("/domains/" + name + "/register", 'POST', data, callback);
   },
 
@@ -242,7 +241,7 @@ var Badger = {
 
   transferDomain: function(data, callback) {
     var name = data.name;
-    delete data.name;
+    //delete data.name; // bad to modify the passed in object... should clone first
     Badger.api("/domains/" + name + "/transfer", 'POST', data, callback);
   },
   
