@@ -132,7 +132,7 @@ with (Hasher('LinkedAccounts','Application')) {
         if (account.site == "twitter")
           var link_action = curry(TwitterAccount.show_link_accounts_modal, response.data.id);
         else if (account.site == "facebook")
-          var link_action = curry(Facebook.show_link_accounts_modal, response.data.id);
+          var link_action = curry(FacebookAccount.show_link_accounts_modal, response.data.id);
 
 				$("#" + account.site + "-" + account.id).html(
 				  div({ style: "margin: 15px 15px 15px auto; float: right" },span({ 'class': "error" }, "Account unlinked. ", a({ href: link_action }, "Link again?")))

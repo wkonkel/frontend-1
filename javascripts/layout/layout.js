@@ -295,6 +295,14 @@ with (Hasher('Application')) {
 			div( response.data ? response.data.message : arguments )
     )
   });
+  
+  define('spinner', function(text) {
+    return div({ style: "text-align:center" },
+      img({ src: "images/spinner.gif" }),
+      br(),
+      span({ style: "font-style: italic" }, text)
+    );
+  });
 
 
   //////////////

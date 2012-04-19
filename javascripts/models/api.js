@@ -176,7 +176,19 @@ var Badger = {
   },
   
   getDomainsForLinkedAccount: function(linked_account_id, callback) {
-    Badger.api("/domains", { linked_account_id: linked_account_id }, callback);
+    Badger.api("/domains", { linked_account_id: linked_account_id }, function (response) {
+      var response_data = (response.data || []).map(function(domain_obj) {
+        // quick and dirty replacement of registrar names with RhinoNames
+        if (domain_obj.legacy_rhinonames_domain && (domain_obj.current_registrar || "").match(/wild\s*west/i)) domain_obj.current_registrar   = "RhinoNames"
+        if (domain_obj.legacy_rhinonames_domain && (domain_obj.previous_registrar || "").match(/wild\s*west/i)) domain_obj.previous_registrar = "RhinoNames"
+        if (domain_obj.legacy_rhinonames_domain && (domain_obj.created_registrar || "").match(/wild\s*west/i)) domain_obj.created_registrar   = "RhinoNames"
+        if (domain_obj.legacy_rhinonames_domain && (domain_obj.updated_registrar || "").match(/wild\s*west/i)) domain_obj.updated_registrar   = "RhinoNames"
+        
+        return domain_obj;
+      });
+      
+      callback(response_data);
+    });
   },
 
   getDomain: function(name, params, callback) {
@@ -218,13 +230,17 @@ var Badger = {
   },
 
   transferOutDomain: function(domain, operation, callback) {
-    Badger.api("/domains/" + name + "/transfer_out", 'POST', { operation: operation }, callback);
+    Badger.api("/domains/" + domain + "/transfer_out", 'POST', { operation: operation }, callback);
   },
 
   transferDomain: function(data, callback) {
     var name = data.name;
     delete data.name;
     Badger.api("/domains/" + name + "/transfer", 'POST', data, callback);
+  },
+  
+  bulkTransferDomains: function(registrant_contact_id, domain_names, callback) {
+    Badger.api("/domains/bulk_transfer", 'POST', { registrant_contact_id: registrant_contact_id, domain_names: domain_names }, callback);
   },
   
   cancelDomainTransfer: function(domain_name, callback) {
