@@ -112,22 +112,33 @@ with (Hasher()) {
         var elems = this.getElementsByTagName('*');
         for (var i=0; i < elems.length; i++) {
           if ((elems[i].tagName != 'FORM') && elems[i].name) {
+            var value = null;
             if (elems[i].tagName == 'SELECT') {
               // TODO: support multiple select
-              serialized_form[elems[i].name] = elems[i].options[elems[i].selectedIndex].value;
+              value = elems[i].options[elems[i].selectedIndex].value;
             } else if ((['radio', 'checkbox'].indexOf(elems[i].getAttribute('type')) == -1) || elems[i].checked) {
-              if (elems[i].name.substring(elems[i].name.length - 2) == '[]') {
-                var name = elems[i].name.substring(0,elems[i].name.length - 2);
+              value = elems[i].value;
+            }
+
+            var name = elems[i].name;
+            if (name && (value != null)) {
+              // TODO: currently only supports foo[] and foo[bar]. make recursive so nested works.
+              if (name.substring(name.length - 2) == '[]') {
+                name = name.substring(0,name.length - 2);
                 if (!serialized_form[name]) serialized_form[name] = [];
-                serialized_form[name].push(elems[i].value);
+                serialized_form[name].push(value);
+              } else if (name.indexOf('[') >= 0) {
+                var parts = name.split(/[[\]]/);
+                if (!serialized_form[parts[0]]) serialized_form[parts[0]] = {};
+                serialized_form[parts[0]][parts[1]] = value;
               } else {
-                if (elems[i].getAttribute('placeholder') && (elems[i].value == elems[i].getAttribute('placeholder'))) {
-                  serialized_form[elems[i].name] = '';
+                if (elems[i].getAttribute('placeholder') && (value == elems[i].getAttribute('placeholder'))) {
+                  serialized_form[name] = '';
                 } else {
-                  serialized_form[elems[i].name] = elems[i].value;
+                  serialized_form[name] = value;
                 }
               }
-            } 
+            }
           }
         }
 

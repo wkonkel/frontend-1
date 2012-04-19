@@ -3,14 +3,21 @@ with (Hasher('Welcome','Application')) {
     render(
     
       div({ id: 'homepage-welcome' },
-        h2("Domains for ", span("$15"), " a year."),
+        h2("Domains for ", span("$10"), " a year."),
         div({ 'class': 'get-started-wrapper', style: "float: right; margin-top: -85px" },
           a({ href: get_started, 'class': 'myButton', style: 'font-size: 30px; padding: 15px 30px' }, 'Get Started')
         ),
         img({ src: 'images/badger-6.png', 'class': 'badger', style: 'margin-top: 50px' }),
 
         h3({ style: "margin-bottom: 0" }, 'Automatic transfers with no downtime.'),
-        h3({ style: "margin-bottom: 0" }, 'Free WHOIS privacy and DNS hosting.'),
+        div({ style: 'height: 120px' },
+          app_icon('images/apps/godaddy.png', 'GoDaddy'),
+          app_icon('images/apps/ns.png', 'Network Solutions'),
+          app_icon('images/apps/enom.png', 'eNom'),
+          app_icon('images/apps/namecheap.png', 'Namecheap'),
+          app_icon('images/apps/1and1.png', '1&1')
+        ),
+        //h3({ style: "margin-bottom: 0" }, 'Free WHOIS privacy and DNS hosting.'),
         h3('Shortcuts for easy setup:'),
         div({ style: 'height: 120px' },
           app_icon('images/apps/gmail2.png', 'Gmail'),

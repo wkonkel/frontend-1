@@ -267,7 +267,7 @@ with (Hasher('Application')) {
       })
     ];
   });
-
+  
   define('error_message', function(response) {
     return div({ 'class': 'error-message' },
 			div(
