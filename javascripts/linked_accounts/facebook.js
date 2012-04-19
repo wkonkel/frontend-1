@@ -10,7 +10,7 @@ with (Hasher('FacebookAccount','Application')) {
   		show_modal(
   			h1("Link Your Facebook Account"),
   			div({ style: "margin: 15px 10px 15px 10px; text-align: center" },
-  				"By linking your Twitter account with Badger.com, you will be able to share your domain registrations and transfers with your friends."
+  				"By linking your Facebook account with Badger.com, you will be able to share your domain registrations and transfers with your friends."
   			),
   			div({ align: "center" },
           a({ onclick: function() { auth_window = window.open(auth_url, "facebook-authorization", "width=600,height=600") } },
