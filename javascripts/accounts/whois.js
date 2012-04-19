@@ -44,16 +44,29 @@ with (Hasher('Whois','Application')) {
     });
   });
   
+  // // used during signup flow
+  // route('#account/create/contact', function() {
+  //   render(
+  //     div(
+  //       h1('Contact Information'),
+  // 
+  //       div({ 'class': 'sidebar' },
+  //         info_message(
+  //           h3("Will this data be private?"),
+  //           p("All Badger.com domains come with free WHOIS privacy.  If you disable this feature on a domain, then this contact information will become public.")
+  //         )
+  //       ),
+  //       
+  //       div({ 'class': 'has-sidebar' },
+  //         create_or_edit_whois_form({ data: {}, button_text: 'Continue »', redirect_to: '#' })
+  //       )
+  //     )
+  //   );
+  //   
+  //   $('input[name="first_name"]').focus();
+  // });
 
   route('#account/profiles/new', function() {
-    render_create_or_edit_whois_page({});
-  });
-
-  route('#account/profiles/edit/:id', function() {
-    render_create_or_edit_whois_page({});
-  });
-
-  define('render_create_or_edit_whois_page', function(data) {
     render(
       div(
         h1('Create Contact'),
@@ -62,96 +75,30 @@ with (Hasher('Whois','Application')) {
           Account.account_nav_table()
         ),
         
-        form({ 'class': 'fancy', style: 'margin-left: 220px', action: create_or_update_whois },
-          // info_message(
-          //   h3("Will this data be private?"),
-          //   p("All Badger.com domains come with WHOIS privacy.  If you disable this feature on a domain, then your contact information will become public.")
-          // )
-          //form({ action: curry(create_or_update_whois, data.id, callback) },
-          div({ id: 'signup-errors' }),
-      
-          fieldset(
-            label({ 'for': 'first_name-input' }, 'First and last name:'),
-            text({ 'class': 'short right-margin', id: 'first_name-input', name: 'first_name', placeholder: 'John', value: data.first_name || '' }),
-            text({ 'class': 'short', name: 'last_name', placeholder: 'Doe', value: data.last_name || '' })
-          ),
+        div({ style: 'margin-left: 220px' },
+          create_or_edit_whois_form({})
+        )
+      )
+    );
+  });
 
-          fieldset(
-            label({ 'for': 'organization-input' }, 'Organization:'),
-            text({ id: 'organization-input', name: 'organization', placeholder: 'Badger Inc (optional)', value: data.organization || '' })
-          ),
+  route('#account/profiles/edit/:id', function() {
+    render(
+      div(
+        h1('Edit Contact'),
 
-          fieldset(
-            label({ 'for': 'email-input' }, 'Email address:'),
-            text({ id: 'email-input', name: 'email', placeholder: 'john.doe@badger.com' })
-          ),
-
-          fieldset(
-            label({ 'for': 'phone-input' }, 'Phone and fax:'),
-            text({ 'class': 'shortish right-margin', id: 'phone-input', name: 'phone', placeholder: '555-555-5555', value: data.phone || '' }),
-            text({ 'class': 'shortish', name: 'fax', placeholder: '555-555-5555 (optional)', value: data.fax || '' })
-          ),
-
-          fieldset(
-            label({ 'for': 'address-input' }, 'Address:'),
-            text({ id: 'address-input', name: 'address', placeholder: '123 Main St.', value: data.address || '' })
-          ),
-            
-          fieldset({ 'class': 'no-label' },
-            text({ name: 'address2', placeholder: 'Suite 100 (Optional)', value: data.address2 || '' })
-          ),
-
-          fieldset(
-            label({ 'for': 'city-input' }, 'City, state and zip:'),
-            text({ 'class': 'short right-margin', id: 'city-input', name: 'city', placeholder: 'San Francisco', value: data.city || '' }),
-            text({ 'class': 'supershort right-margin', name: 'state', placeholder: 'CA', value: data.state || '' }),
-            text({ 'class': 'supershort', name: 'zip', placeholder: '94104', value: data.zip || '' })
-          ),
-      
-          fieldset(
-            label({ 'for': 'country-input' }, 'Country:'),
-            select({ id: 'country-input', name: 'country' }, option(''), country_options(data.country))
-          ),
-
-          fieldset({ 'class': 'no-label' },
-            input({ 'class': 'myButton', type: 'submit', value: 'Create Contact' })
-          )
-        )        
+        div({ style: 'float: left; width: 200px'},
+          Account.account_nav_table()
+        ),
+        
+        div({ style: 'margin-left: 220px' },
+          create_or_edit_whois_form({})
+        )
       )
     );
   });
 
 
-
-
-
-
-
-  define('create_or_update_whois', function(contact_id, callback, form_data) {
-    start_modal_spin();
-
-    $('#errors').empty();
-    
-    var tmp_callback = function(response) {
-      if (response.meta.status == 'ok') {
-        BadgerCache.flush('contacts');
-        BadgerCache.getContacts(function() {
-          hide_modal();
-          if (callback) callback();
-        });
-      } else {
-        $('#errors').empty().append(error_message(response));
-        stop_modal_spin();
-      }
-    }
-
-    if (contact_id) {
-      Badger.updateContact(contact_id, form_data, tmp_callback);
-    } else {
-      Badger.createContact(form_data, tmp_callback);
-    }
-  });
-  
   define('whois_contact', function(whois) {
     return div(
       div(whois.first_name, ' ', whois.last_name),

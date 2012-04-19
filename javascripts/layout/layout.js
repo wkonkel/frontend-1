@@ -1,10 +1,5 @@
 with (Hasher('Application')) {
 
-  route('#', function() {
-    if (Badger.getAccessToken()) set_route('#filter_domains/all/list');
-    else set_route('#welcome');
-  });
-
   // define('update_sidebar', function() {
   //   if ($('#sidebar')) {
   //     var request_uri = get_route();
@@ -189,7 +184,7 @@ with (Hasher('Application')) {
 
   define('user_nav', function() {
     var user_nav = div({ id: 'user-nav' },
-      a({ href: Signup.logout }, 'Logout')
+      a({ href: Badger.logout }, 'Logout')
     );
     
     BadgerCache.getAccountInfo(function(response) {
@@ -272,7 +267,7 @@ with (Hasher('Application')) {
       })
     ];
   });
-
+  
   define('error_message', function(response) {
     return div({ 'class': 'error-message' },
 			div(

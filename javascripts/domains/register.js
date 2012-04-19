@@ -1,4 +1,102 @@
+// - show full reg details below
+// - add expiry (+ X year)
+
 with (Hasher('Register','Application')) {
+  define('full_form', function(domain) {
+    return form({ 'class': 'fancy', action: process_full_form },
+      div({ id: 'errors' }),
+
+      input({ type: 'hidden', name: 'name', value: domain }),
+      input({ type: 'hidden', name: 'auto_renew', value: 'true'}),
+      input({ type: 'hidden', name: 'privacy', value: 'true'}),
+      input({ type: 'hidden', name: 'name_servers', value: 'ns1.badger.com,ns2.badger.com'}),
+
+      fieldset(
+        label({ 'for': 'years' }, 'Duration:'),
+        select({ name: 'years', id: 'years' },
+          option({ value: 1 }, '1 Year'),
+          option({ value: 2 }, '2 Years'),
+          option({ value: 3 }, '3 Years'),
+          option({ value: 4 }, '4 Years'),
+          option({ value: 5 }, '5 Years'),
+          option({ value: 10 }, '10 Years')
+        ),
+        span({ 'class': 'big-text' }, ' @ 1 credit per year')
+      ),
+      
+      fieldset(
+        label({ 'for': 'years' }, 'Expiration:'),
+        div({ 'class': 'big-text' }, 'April 4, 2013')
+      ),
+
+      // fieldset(
+      //   label({ 'for': 'first_name-input' }, 'Also Register:'),
+      //   div(similar_domain_list(domain))
+      // ),
+  
+      Contact.selector_with_all_form_fields({ name: 'registrant_contact_id' }),
+
+      fieldset({ 'class': 'no-label' },
+        submit({ id: 'register-button', value: 'Register ' + Domains.truncate_domain_name(domain) + ' for 1 credit' })
+      )
+      
+    );
+    
+    // // show a message after person buys credits
+    // if (form_data && form_data.credits_added) {
+    //   BadgerCache.getAccountInfo(function(response) {
+    //     $("div#errors").html(
+    //       div({ 'class': "info-message" }, "Success! You now have " + response.data.domain_credits + " domain " + (response.data.domain_credits > 1 ? "credits" : "credit") + ".")
+    //     );
+    //   });
+    // }
+    // 
+    // $('select[name=years]').change(function(e) {
+    //   var years = parseInt($('#years').val());
+    //   var num_domains = 1 + $('.extensions:checked').length;
+    //   var credits = num_domains * years;
+    //   
+    //   $('#register-button').val('Register ' + (num_domains > 1 ? (num_domains + ' domains') : domain) + ' for ' + credits + (credits == 1 ? ' credit' : ' credits'))
+    // })
+    // 
+    // if (form_data) {
+    //   $("select[name=years] option[value=" + form_data.years + "]").attr('selected','selected');
+    //   $("select[name=registrant_contact_id] option[value=" + form_data.registrant_contact_id + "]").attr('selected','selected');
+    //   
+    //   $("select[name=years]").trigger('change');
+    // }
+
+  });
+
+  define('similar_domain_list', function(domain) {
+    var similar_domain_div = div({ id: 'similar_domain_span' },  'Loading...');
+
+    Badger.domainSearch(domain.split('.')[0], true, function(response) {
+      var similar_domains = [];//'something.com', 'something2.com'];
+      for (var i=0; i < response.data.domains.length; i++) {
+        if (response.data.domains[i][1] && (response.data.domains[i][0] != domain)) {
+          similar_domains.push(response.data.domains[i][0]);
+        }
+      }
+
+      render({ into: similar_domain_div}, 
+        similar_domains.map(function(domain) {
+          var sanitized_id = "similar_" + domain.replace(/[^a-z0-9]/,'_');
+          return div({ style: 'line-height: 22px;' },
+            checkbox({ name: "additional_domains[]", value: domain, id: sanitized_id }),
+            label({ 'class': 'normal right-margin', 'for': sanitized_id }, domain)
+          );
+        })
+      );
+    });
+
+    return similar_domain_div;
+  });
+
+
+
+
+
 
   define('show', function(domain, available_extensions) {
     if (!available_extensions) available_extensions = [];
@@ -17,31 +115,76 @@ with (Hasher('Register','Application')) {
     });
   });
 
-  define('buy_domain', function(domain, available_extensions, form_data) {
-    var checked_extensions = $.grep(available_extensions, function(ext) {
-      return form_data["extension_" + ext[0].split('.')[1]] != null;
-    })
-    checked_extensions = [domain].concat(checked_extensions.map(function(ext) { return ext[0]; }));
-
+  define('process_full_form', function(form_data) {
     $('#errors').empty();
-    start_modal_spin('Checking available credits...');
-
-    BadgerCache.getAccountInfo(function(results) {
-      var needed_credits = checked_extensions.length * form_data.years;
-      var current_credits = results.data.domain_credits;
-      
-      if (current_credits >= needed_credits) {
-        if (checked_extensions.length > 1) {
-          form_data.new_domains = checked_extensions;
-          Transfer.register_or_transfer_all_domains(form_data);
+    
+    Contact.create_contact_if_necessary_form_data({
+      field_name: 'registrant_contact_id',
+      form_data: form_data,
+      message_area: $('#errors').first(),
+      callback: curry(Badger.registerDomain, form_data, function(response) {
+        if (response.meta.status == 'created') {
+          update_credits(true);
+          BadgerCache.flush('domains');
+          BadgerCache.getDomains(update_my_domains_count);
+          set_route('#domains/' + form_data.name);
         } else {
-          register_domain(domain, available_extensions, form_data);
+          // TODO: wire in credit screen if not enough
+          $('#errors').html(error_message(response))
         }
-      } else {
-        // Billing.purchase_modal(curry(buy_domain, domain, available_extensions, form_data), needed_credits - current_credits);
-        Billing.purchase_modal(curry(buy_domain_modal, domain, available_extensions, $.extend(form_data, { credits_added: true })), needed_credits - current_credits); // after successfully buying credits, go back to the initial register modal --- CAB
-      }
+        
+        // if (response.meta.status == 'created') {
+        //   console.log("")
+        //   start_modal_spin('Configuring ' + domain + '...');
+        //   update_credits(true);
+        //       
+        //   load_domain(response.data.name, function(domain_object) {
+        //     // this now happens server side
+        //     // DomainApps.install_app_on_domain(Hasher.domain_apps["badger_web_forward"], domain_object);
+        //     BadgerCache.flush('domains');
+        //     BadgerCache.getDomains(function() { 
+        //       update_my_domains_count(); 
+        //       
+        //       set_route('#domains/' + domain);
+        //       // hide_modal();
+        //        LinkedAccounts.show_share_registration_modal(domain);
+        //     });
+        //   });
+        // } else {
+        //   // if the registration failed, we actually need to re-render the registration modal because if the user
+        //   // had to buy credits in the previous step, the underlying modal is the purcahse modal and not the
+        //   // registration modal.
+        //   buy_domain_modal(domain, available_extensions);
+        //   $('#errors').empty().append(error_message(response));
+        // }
+      })
     });
+    
+    
+    // var checked_extensions = $.grep(available_extensions, function(ext) {
+    //   return form_data["extension_" + ext[0].split('.')[1]] != null;
+    // })
+    // checked_extensions = [domain].concat(checked_extensions.map(function(ext) { return ext[0]; }));
+    // 
+    // $('#errors').empty();
+    // start_modal_spin('Checking available credits...');
+    // 
+    // BadgerCache.getAccountInfo(function(results) {
+    //   var needed_credits = checked_extensions.length * form_data.years;
+    //   var current_credits = results.data.domain_credits;
+    //   
+    //   if (current_credits >= needed_credits) {
+    //     if (checked_extensions.length > 1) {
+    //       form_data.new_domains = checked_extensions;
+    //       Transfer.register_or_transfer_all_domains(form_data);
+    //     } else {
+    //       register_domain(domain, available_extensions, form_data);
+    //     }
+    //   } else {
+    //     // Billing.purchase_modal(curry(buy_domain, domain, available_extensions, form_data), needed_credits - current_credits);
+    //     Billing.purchase_modal(curry(buy_domain_modal, domain, available_extensions, $.extend(form_data, { credits_added: true })), needed_credits - current_credits); // after successfully buying credits, go back to the initial register modal --- CAB
+    //   }
+    // });
   });
 
 	define('renew_domain', function(form_data) {
@@ -74,114 +217,34 @@ with (Hasher('Register','Application')) {
   // NOTE: this function has a few race conditions...
   //  - "install_app_on_domain" isn't chained so the getDomains() could finish first
   //    and redirect you to the domain page before the dns entries are installed.
-  define('register_domain', function(domain, available_extensions, form_data) {
-    start_modal_spin('Registering ' + domain + '...');
-    Badger.registerDomain(form_data, function(response) {
-      if (response.meta.status == 'created') {
-        start_modal_spin('Configuring ' + domain + '...');
-        update_credits(true);
-
-        load_domain(response.data.name, function(domain_object) {
-          // this now happens server side
-          // DomainApps.install_app_on_domain(Hasher.domain_apps["badger_web_forward"], domain_object);
-          BadgerCache.flush('domains');
-          BadgerCache.getDomains(function() { 
-            update_my_domains_count(); 
-            
-            set_route('#domains/' + domain);
-            // hide_modal();
-						LinkedAccounts.show_share_registration_modal(domain);
-          });
-        });
-      } else {
-        // if the registration failed, we actually need to re-render the registration modal because if the user
-        // had to buy credits in the previous step, the underlying modal is the purcahse modal and not the
-        // registration modal.
-        buy_domain_modal(domain, available_extensions);
-        $('#errors').empty().append(error_message(response));
-      }
-    })
-  });
-
-
-  define('buy_domain_modal', function(domain, available_extensions, form_data) {
-    show_modal(
-      h1({ 'class': 'long-domain-name'}, 'Register ', domain),
-      div({ id: 'errors' }),
-      p({ style: "margin-bottom: 15px" }, "You'll be able to configure ", strong(Domains.truncate_domain_name(domain, 50)), " on the next screen."),
-      form({ action: curry(buy_domain, domain, available_extensions) },
-        input({ type: 'hidden', name: 'name', value: domain }),
-        input({ type: 'hidden', name: 'auto_renew', value: 'true'}),
-        input({ type: 'hidden', name: 'privacy', value: 'true'}),
-        input({ type: 'hidden', name: 'name_servers', value: 'ns1.badger.com,ns2.badger.com'}),
-
-        table({ style: 'width: 100%' }, tbody(
-          tr(
-            td({ style: "width: 50%; vertical-align: top" },
-              h3({ style: 'margin-top: 0; margin-bottom: 3px' }, 'Registrant:'),
-              div(
-                select({ name: 'registrant_contact_id', style: 'width: 150px' },
-                  Registration.profile_options_for_select()
-                )
-              ),
-              
-              h3({ style: 'margin-top: 5px; margin-bottom: 3px' }, 'Length:'),
-              div(
-                select({ name: 'years', id: 'years' },
-                  option({ value: 1 }, '1 Year'),
-                  option({ value: 2 }, '2 Years'),
-                  option({ value: 3 }, '3 Years'),
-                  option({ value: 4 }, '4 Years'),
-                  option({ value: 5 }, '5 Years'),
-                  option({ value: 10 }, '10 Years')
-                ),
-                ' @ 1 credit per year'
-              )
-            ),
-            td({ style: "width: 50%; vertical-align: top" },
-  						available_extensions.length > 0 ?
-  	            tr(
-  	              td({ style: "width: 50%" },
-  	                h3({ style: 'margin-top: 0; margin-bottom: 3px' }, 'Also Register:'),
-  	                available_extensions.map(function(ext) {
-  	                  return div(checkbox({ name: "extension_" + ext[0].split('.')[1], value: ext[0], id: ext[0].split('.')[1], 'class': 'extensions' }),
-  	                             label({ 'for': ext[0].split('.')[1] }, ' ' + ext[0]))
-  	                })
-  	              )
-  	            )
-  	        	: ''
-            )
-          )
-        )),
-        
-        div({ style: "text-align: center; margin-top: 30px" }, input({ 'class': 'myButton', id: 'register-button', type: 'submit', value: 'Register ' + Domains.truncate_domain_name(domain) + ' for 1 credit' }))
-      )
-    );
-    
-    // show a message after person buys credits
-    if (form_data && form_data.credits_added) {
-      BadgerCache.getAccountInfo(function(response) {
-        $("div#errors").html(
-          div({ 'class': "info-message" }, "Success! You now have " + response.data.domain_credits + " domain " + (response.data.domain_credits > 1 ? "credits" : "credit") + ".")
-        );
-      });
-    }
-    
-    $('select[name=years]').change(function(e) {
-      var years = parseInt($('#years').val());
-      var num_domains = 1 + $('.extensions:checked').length;
-      var credits = num_domains * years;
-      
-      $('#register-button').val('Register ' + (num_domains > 1 ? (num_domains + ' domains') : domain) + ' for ' + credits + (credits == 1 ? ' credit' : ' credits'))
-    })
-    
-    if (form_data) {
-      $("select[name=years] option[value=" + form_data.years + "]").attr('selected','selected');
-      $("select[name=registrant_contact_id] option[value=" + form_data.registrant_contact_id + "]").attr('selected','selected');
-      
-      $("select[name=years]").trigger('change');
-    }
-  });
+  // define('register_domain', function(domain, available_extensions, form_data) {
+  //   start_modal_spin('Registering ' + domain + '...');
+  //   Badger.registerDomain(form_data, function(response) {
+  //     if (response.meta.status == 'created') {
+  //       start_modal_spin('Configuring ' + domain + '...');
+  //       update_credits(true);
+  // 
+  //       load_domain(response.data.name, function(domain_object) {
+  //         // this now happens server side
+  //         // DomainApps.install_app_on_domain(Hasher.domain_apps["badger_web_forward"], domain_object);
+  //         BadgerCache.flush('domains');
+  //         BadgerCache.getDomains(function() { 
+  //           update_my_domains_count(); 
+  //           
+  //           set_route('#domains/' + domain);
+  //           // hide_modal();
+  //            LinkedAccounts.show_share_registration_modal(domain);
+  //         });
+  //       });
+  //     } else {
+  //       // if the registration failed, we actually need to re-render the registration modal because if the user
+  //       // had to buy credits in the previous step, the underlying modal is the purcahse modal and not the
+  //       // registration modal.
+  //       buy_domain_modal(domain, available_extensions);
+  //       $('#errors').empty().append(error_message(response));
+  //     }
+  //   })
+  // });
 
 	define('renew_domain_modal', function(domain, form_data) {
 		show_modal(
