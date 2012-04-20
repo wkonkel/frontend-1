@@ -29,7 +29,7 @@ with (Hasher('Contact','Application')) {
 
       fieldset(
         label({ 'for': 'email-input' }, 'Email address:'),
-        text({ id: 'email-input', name: 'contact[email]', placeholder: 'john.doe@badger.com' })
+        text({ id: 'email-input', name: 'contact[email]', placeholder: 'john.doe@badger.com', value: data.email || '' })
       ),
 
       fieldset(
@@ -119,31 +119,6 @@ with (Hasher('Contact','Application')) {
 
  
 
-  // 
-  // define('create_or_update_whois', function(options, form_data) {
-  //   $('#signup-errors').empty();
-  //   
-  //   var tmp_callback = function(response) {
-  //     if (response.meta.status == 'ok') {
-  //       BadgerCache.flush('contacts');
-  //       BadgerCache.getContacts(function() {
-  //         if (options.callback) options.callback();
-  //         else if (options.redirect_to) set_route(options.redirect_to);
-  //       });
-  //     } else {
-  //       $('#signup-errors').empty().append(error_message(response));
-  //     }
-  //   }
-  // 
-  //   if (form_data.id) {
-  //     Badger.updateContact(form_data.id, form_data, tmp_callback);
-  //   } else {
-  //     Badger.createContact(form_data, tmp_callback);
-  //   }
-  // });
-  // 
-
- 
   // define('create_or_edit_whois_form', function(options) {
   //   ;
   //   return form({ 'class': 'fancy', action: curry(create_or_update_whois, options) },
