@@ -140,8 +140,7 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
         });
       } else {
         render({ into: target_div },
-          p("We were unable to read any domains from your account at " + registrar_name + ". Do you have any domains registered there?"),
-          p("If you have domains registered at " + registrar_name + " that did not show up, you should ", a({ href: null }, "sync"), " your account and try again")
+          p("We were unable to read any domains from your account at " + registrar_name + ". Do you have any domains registered there?")
         );
       }
     });
@@ -161,7 +160,7 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
         ),
         
         (domains || []).map(function(domain) {
-          var old_expires_at = new Date(domain.expires_at)
+          var old_expires_at = new Date(domain.expires_at);
           var new_expires_at = new Date(old_expires_at.getFullYear() + 1, old_expires_at.getMonth(), old_expires_at.getDay());
           
           // if the domain is registered with us already, render it as successful row. otherwise, make it selectable
@@ -182,8 +181,8 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
                 input({ name: ("select_domain_" + domain.name), value: "", type: "checkbox" })
               ),
               td(domain.name),
-              td({ style: "text-align: center" }, old_expires_at.toDateString()),
-              td({ style: "text-align: center" }, new_expires_at.toDateString()),
+              td({ style: "text-align: center" }, old_expires_at.toDateString().split(" ").slice(1).join(" ")), // cut off the abbreviation for day of week
+              td({ style: "text-align: center" }, new_expires_at.toDateString().split(" ").slice(1).join(" ")),
               td({ style: "text-align: center" }, get_name_servers_text(domain))
             );
           }
