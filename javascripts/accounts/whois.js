@@ -33,7 +33,7 @@ with (Hasher('Whois','Application')) {
                   div(contact.country)
                 ),
                 td({ style: "text-align: right" },
-                  a({ 'class': 'myButton small', href: curry(Whois.edit_whois_modal, contact, curry(set_route, '#account/profiles')) }, 'Edit')
+                  a({ 'class': 'myButton small', href: ('#account/profiles/edit/'+contact.id) }, 'Edit')
                 )
               );
             })
@@ -44,28 +44,6 @@ with (Hasher('Whois','Application')) {
     });
   });
   
-  // // used during signup flow
-  // route('#account/create/contact', function() {
-  //   render(
-  //     div(
-  //       h1('Contact Information'),
-  // 
-  //       div({ 'class': 'sidebar' },
-  //         info_message(
-  //           h3("Will this data be private?"),
-  //           p("All Badger.com domains come with free WHOIS privacy.  If you disable this feature on a domain, then this contact information will become public.")
-  //         )
-  //       ),
-  //       
-  //       div({ 'class': 'has-sidebar' },
-  //         create_or_edit_whois_form({ data: {}, button_text: 'Continue »', redirect_to: '#' })
-  //       )
-  //     )
-  //   );
-  //   
-  //   $('input[name="first_name"]').focus();
-  // });
-
   route('#account/profiles/new', function() {
     render(
       div(
@@ -82,7 +60,9 @@ with (Hasher('Whois','Application')) {
     );
   });
 
-  route('#account/profiles/edit/:id', function() {
+  route('#account/profiles/edit/:id', function(contact_id) {
+    var loader_div = div('Loading...');
+
     render(
       div(
         h1('Edit Contact'),
@@ -92,24 +72,70 @@ with (Hasher('Whois','Application')) {
         ),
         
         div({ style: 'margin-left: 220px' },
-          create_or_edit_whois_form({})
+          loader_div
         )
       )
     );
+    
+    BadgerCache.getContacts(function(response) {
+      var contacts = response.data;
+      for (var i=0; i < contacts.length; i++) {
+        if (parseInt(contacts[i].id) == parseInt(contact_id)) {
+          render({ into: loader_div }, create_or_edit_whois_form(contacts[i]));
+          return;
+        }
+      }
+    });
+  });
+
+  define('create_or_edit_whois_form', function(data) {
+    return form({ 'class': 'fancy', action: process_whois_form },
+      div({ id: 'errors' }),
+      
+      hidden({ name: 'contact_id', value: data.id }),
+      
+      Contact.all_form_fields(data),
+
+      fieldset({ 'class': 'no-label' },
+        submit({ id: 'register-button', value: 'Create' })
+      )
+    )
   });
 
 
-  define('whois_contact', function(whois) {
-    return div(
-      div(whois.first_name, ' ', whois.last_name),
-      (whois.organization && div(whois.organization)),
-      (whois.address && div(whois.address)),
-      (whois.address2 && div(whois.address2)),
-      div(whois.city, ', ', whois.state, ', ', whois.zip, ', ', whois.country),
-      div('Email: ', whois.email),
-      div('Phone: ', whois.phone),
-      (whois.phone && div('Fax: ', whois.phone))
-    );
+  define('process_whois_form', function(form_data) {
+    $('#errors').empty();
+
+    var callback = function(response) {
+      if (response.meta.status == 'ok') {
+        BadgerCache.flush('contacts');
+        BadgerCache.getContacts(function() {
+          set_route('#account/profiles');
+        });
+      } else {
+        $('#errors').append(error_message(response));
+      }
+    }
+
+    if (form_data.contact_id) {
+      Badger.updateContact(form_data.contact_id, form_data.contact, callback);
+    } else {
+      Badger.createContact(form_data.contact, callback);
+    }
   });
+
+
+  // define('whois_contact', function(whois) {
+  //   return div(
+  //     div(whois.first_name, ' ', whois.last_name),
+  //     (whois.organization && div(whois.organization)),
+  //     (whois.address && div(whois.address)),
+  //     (whois.address2 && div(whois.address2)),
+  //     div(whois.city, ', ', whois.state, ', ', whois.zip, ', ', whois.country),
+  //     div('Email: ', whois.email),
+  //     div('Phone: ', whois.phone),
+  //     (whois.phone && div('Fax: ', whois.phone))
+  //   );
+  // });
   
 }
