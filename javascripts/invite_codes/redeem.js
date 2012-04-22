@@ -1,11 +1,40 @@
 with (Hasher('Redeem','Application')) {
   
   route('#free', function() {
-    set_route("#");
-    Signup.show_request_invite_modal("free_domain_card");
+    render(
+      div(
+        h1('Create Badger Account'),
+
+        div({ 'class': 'sidebar' },
+          info_message(
+            h3("Already have an account?"),
+            p("If you already have an account, you're on the wrong page!"),
+            div({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
+          )
+        ),
+
+        form({ 'class': 'fancy has-sidebar', action: submit_promotional_code },
+          div({ id: 'signup-errors' }),
+      
+          fieldset(
+            label({ 'for': 'code-input' }, 'Promotional Code:'),
+            text({ name: 'code', id: 'code-input', placeholder: 'abc123' })
+          ),
+
+          fieldset({ 'class': 'no-label' },
+            submit({ value: 'Continue »' })
+          )
+        )
+      )
+    );
+
+    $('input[name="code"]').focus();
   });
-  
-  
+
+  define('submit_promotional_code', function(form_data) {
+    Badger.register_code = form_data.code;
+    set_route('#account/create');
+  });
   
 };
 

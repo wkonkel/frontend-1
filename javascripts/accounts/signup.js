@@ -31,10 +31,11 @@ with (Hasher('Signup','Application')) {
   });
 
   define('require_user_modal', function(callback) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    var that = this;
-    var callback_with_args = function() { callback.apply(that, args); }
-    Badger.getAccessToken() ? callback_with_args() : show_register_modal(callback_with_args);
+    Badger.getAccessToken() ? callback_with_args() : set_route('#account/create');
+    // var args = Array.prototype.slice.call(arguments, 1);
+    // var that = this;
+    // var callback_with_args = function() { callback.apply(that, args); }
+    // Badger.getAccessToken() ? callback_with_args() : show_register_modal(callback_with_args);
   });
 
   define('show_login_modal', function(callback) {
@@ -150,87 +151,39 @@ with (Hasher('Signup','Application')) {
       )
     );
   });
-  
-  define('show_request_invite_modal', function(arrival_method) {
-    if (arrival_method == "free_domain_card") {
-      var description = div({ 'class': "info-message" },
-        "Thanks for checking us out! We aren't exactly ready to let you in quite yet, but fill out the form below, including your promotional code, send it to us, and we will let you know when you can login."
-      );
-    }
-    
-    var require_invite_code = !(typeof(description) == "undefined")
-    
-    show_modal(
-      div({ id: "signup-box" },
-        h1("Request Invite to Badger"),
-        
-        description,
-        
-        div({ id: 'request-invite-errors' }),
-        
-        form({ action: curry(request_invite) },
-          h3({ style: 'margin: 0' }, 'Contact Information'),
-          div(
-            input({ style: 'width: 130px', name: 'first_name', placeholder: 'First Name' }),
-            input({ style: 'width: 130px', name: 'last_name', placeholder: 'Last Name' })
-          ),
-          div(input({ name: 'email', style: 'width: 275px', placeholder: 'Email Address' })),
-          
-          h3({ style: 'margin: 15px 0 0 0' }, 'Password for Badger'),
-          div(
-            input({ name: 'password', style: 'width: 200px', placeholder: 'Desired Password', type: 'password' }),
-            input({ name: 'confirm_password', style: 'width: 200px', placeholder: 'Confirm Password', type: 'password' })
-          ),
-          
-          require_invite_code ? [
-            h3({ style: 'margin: 15px 0 0 0' }, 'Invite Code'),
-            input({ type: "hidden", name: "require_invite_code", value: true })
-          ] : [
-            h3({ style: 'margin: 15px 0 0 0' }, 'Invite Code (Optional)')
-          ],
-          div(
-            input({ name: 'invite_code', placeholder: "abc123" })
-          ),
-          
-          div({ style: 'margin: 10px 0' },
-            input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
-            label({ 'for': 'agree_to_terms' }, ' I agree to the Badger.com '),
-            a({ href: window.location.href.split('#')[0] + '#terms_of_service', target: '_blank' }, 'Terms of Service')
-          ),
-          
-          div({ style: "margin-top: 10px" },
-            input({ 'class': 'myButton', type: 'submit', value: 'Request Invite' })
-          ),
-          
-          div({ style: 'margin-top: 20px' }, 
-            a({ href: curry(show_login_modal) }, "Already have an account?")
-          )
-          
-        )
-      )
-    );
-  });
 
   define('create_person', function(callback, data) {
-		if(data.password != data.confirm_password) {
-			$('#signup-errors').empty().append(error_message({ data: { message: "Passwords do not match" } }));
-      return;
+		if (data.confirm_password) {
+		  data.password_confirmation = data.confirm_password;
+		  delete data.confirm_password;
 		}
-		
-    // if (!data.agree_to_terms) {
-    //   $('#signup-errors').empty().append(error_message({ data: { message: "You must accept terms of service to use our site" } }));
-    //   return;
-    // }
     
     if (Badger.register_code) data.invite_code = Badger.register_code;
 
     Badger.createAccount(data, spin_modal_until(function(response) {
       if (response.meta.status == 'ok') {
-        if (callback) {
-          callback();
+        if (response.data.access_token) {
+          if (callback) {
+            callback();
+          } else {
+            set_route('#');
+            setTimeout(SiteTour.site_tour_0, 250);
+          }
         } else {
-          set_route('#');
-          setTimeout(SiteTour.site_tour_0, 250);
+          render({ into: 'signup-box' },
+            success_message(
+              p(
+                b("The good news:"),
+                " Your account has been created", 
+                (response.data.domain_credits > 0 ? span(' and has ', b(response.data.domain_credits + ' domain credit')) : ''), 
+                '.'
+              ),
+              p(
+                b("The bad news:"),
+                " We're limiting how many accounts we activate per day and are unable to activate your account at this time.  It may take a few days, but we'll email you as soon as your account has been activated, so hold tight!"
+              )
+            )
+          );
         }
       } else {
         $('#signup-errors').empty().append(error_message(response));

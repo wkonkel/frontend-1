@@ -92,7 +92,7 @@ var Badger = {
   // given email+password, returns an access token
   login: function(email, password, callback) {
     Badger.api("/account/access_token", { email: email, password: password }, function(response) {
-      if (response.meta.status == 'ok') {
+      if ((response.meta.status == 'ok') && response.data.access_token) {
         Badger.setAccessToken(response.data.access_token);
         for (var i=0; i < Badger.login_callbacks.length; i++) Badger.login_callbacks[i].call(null);
         if (/MSIE (\d+\.\d+);/.test(navigator.userAgent) && (new Number(RegExp.$1) <= 8)) {
@@ -137,7 +137,7 @@ var Badger = {
 
   createAccount: function(data, callback) {
     Badger.api("/account", 'POST', data, function(response) {
-      if (response.meta.status == 'ok') {
+      if ((response.meta.status == 'ok') && response.data.access_token) {
         Badger.setAccessToken(response.data.access_token);
         for (var i=0; i < Badger.login_callbacks.length; i++) Badger.login_callbacks[i].call(null);
       }

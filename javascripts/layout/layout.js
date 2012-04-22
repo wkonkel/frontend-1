@@ -132,11 +132,8 @@ with (Hasher('Application')) {
         Badger.getAccessToken() ? 
           user_nav()
         : div({ id: 'user-nav' },
-          span(a({ href: curry(Signup.show_login_modal, curry(set_route, '#filter_domains/all/list') ) }, 'Login')),
-          
-          // a({ href: Signup.show_register_modal }, 'Create Account')
-          a({ href: Signup.show_request_invite_modal }, 'Request Invite')
-          
+          span(a({ href: '#account/login' }, 'Login')),
+          a({ href: '#account/create' }, 'Create Account')
         )
       )
     );
@@ -289,7 +286,13 @@ with (Hasher('Application')) {
 
   define('success_message', function(response) {
     return div({ 'class': 'success-message' },
-			div( response.data.message || "Success!" )
+			div( response.data ? response.data.message : arguments )
+    )
+  });
+
+  define('info_message', function(response) {
+    return div({ 'class': 'info-message' },
+			div( response.data ? response.data.message : arguments )
     )
   });
 

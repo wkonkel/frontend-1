@@ -127,3 +127,15 @@ html, body, #wrapper, #footer { min-width: 970px; }
 #domains-left-nav a { display: block; height: 30px; background: #eee; line-height: 30px; margin-right: 30px; padding-left: 10px; font-weight: bold; color: #333; }
 #domains-left-nav a:hover { color: #333; }
 #domains-left-nav a.active { margin-right: 0; background: #bbb url(../images/v2/domains-left-nav-bg.png) no-repeat right center; margin-right: 10px; border: 0;  }
+
+
+
+.sidebar { float: right; width: 240px; }
+.has-sidebar { margin-right: 260px; }
+.sidebar h3 { font-size: 16px; font-weight: normal; margin: 0; }
+.sidebar p { margin: 5px 0 0 0; }
+.sidebar .info-message, .sidebar .error-message, .sidebar .success-message { padding: 15px }
+.sidebar .centered-button { text-align: center; margin-top: 8px }
+
+.sidebar.left { float: left; }
+.has-sidebar.left { margin-right: 0; margin-left: 260px; }
