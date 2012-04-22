@@ -9,7 +9,7 @@ Feature: Forgot Password
   Scenario: I will see an error message when email empty
     And I mock sendPasswordResetEmail
     When I follow "Login"
-    And I follow "Forgot your password?"
+    And I follow "Forgot?"
     Then I should see "Forgot Password"
     When I press "Send Reset Code"
     Then I should see "Email missing" within ".error-message"
@@ -17,18 +17,18 @@ Feature: Forgot Password
   Scenario: I will see an error message if have no account with the email
     And I mock sendPasswordResetEmail
     When I follow "Login"
-    And I follow "Forgot your password?"
+    And I follow "Forgot?"
     Then I should see "Forgot Password"
-    And I fill in "email" with "non-user@example.com"
+    And I fill in "forgot-password-email" with "non-user@example.com"
     When I press "Send Reset Code"
     Then I should see "No account registered with this email" within ".error-message"
 
   Scenario: I want to receive an email with reset pasword code when i input correct email
     And I mock sendPasswordResetEmail
     When I follow "Login"
-    And I follow "Forgot your password?"
+    And I follow "Forgot?"
     Then I should see "Forgot Password"
-    And I fill in "email" with "eastagile@example.com"
+    And I fill in "forgot-password-email" with "eastagile@example.com"
     When I press "Send Reset Code"
     Then I should see "An email has been sent to eastagile@example.com with a password reset code." within ".success-message"
 

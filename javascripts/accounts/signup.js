@@ -72,12 +72,7 @@ with (Hasher('Signup','Application')) {
           Badger.back_url = "";
         }
       } else if (response.meta.status == 'locked') {
-        // we turned invite only mode on, and this person requested an invite, had a person model created, but cannot login yet
-        $('#signup-errors').html(
-          div({ 'class': "info-message" },
-            p("Thanks for requesting an invite to Badger! We aren't quite ready to let you in yet, but once we are, we will notify you via email.")
-          )
-        );
+        $('#signup-errors').empty().append(error_message("Your account has not yet been activated.  We will email you when it's ready!"));
       } else {
         $('#signup-errors').empty().append(error_message(response));
       }
@@ -180,7 +175,7 @@ with (Hasher('Signup','Application')) {
               ),
               p(
                 b("The bad news:"),
-                " We're limiting how many accounts we activate per day and are unable to activate your account at this time.  It may take a few days, but we'll email you as soon as your account has been activated, so hold tight!"
+                " We're limiting how many accounts we activate per day and are unable to activate your account at this time.  It may take a few days, but we'll email you as soon as your account has been activated."
               )
             )
           );
@@ -265,7 +260,7 @@ with (Hasher('Signup','Application')) {
 				h1("Forgot Password"),
 				div({ id: 'forgot-password-messages' }),
 				div({ id: 'forgot-password-form', style: 'margin: 20px 0; text-align: center' },
-					input({ name: "email", type: "text", 'class': 'fancy', size: 30, placeholder: "Email" }),
+					input({ name: "email", type: "text", 'class': 'fancy', size: 30, placeholder: "Email", id: 'forgot-password-email' }),
 					input({ 'class': 'myButton', type: 'submit', value: 'Send Reset Code' })
 				),
         div({ style: 'margin-top: 20px' },

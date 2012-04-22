@@ -6,7 +6,7 @@ Feature: Bulk Register
   Scenario: I should be able to bulk-register domains when I have at least one contact and enough credits
     Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
     And I click on "form-search-input"
-    Then I should see "If you would like to register many domains at once, try our Bulk Register Tool."
+    Then I should see "Register many domains at once with our Bulk Register Tool"
     And I follow "Bulk Register Tool"
     Then I should see "REGISTER DOMAINS WITH BADGER.COM"
     And I should see "Enter the domain(s) that you'd like to register, one per line:"
@@ -33,7 +33,7 @@ Feature: Bulk Register
   Scenario: I should be able to bulk-register my domains when I have at least one contact but not enough credits
     Given I logged in with mock data for domains and user info with 1 domain credits and 5 invites available
     And I click on "form-search-input"
-    Then I should see "If you would like to register many domains at once, try our Bulk Register Tool."
+    Then I should see "Register many domains at once with our Bulk Register Tool"
     And I follow "Bulk Register Tool"
     Then I should see "REGISTER DOMAINS WITH BADGER.COM"
     And I should see "Enter the domain(s) that you'd like to register, one per line:"
@@ -70,7 +70,7 @@ Feature: Bulk Register
     Given I logged in with mock data for domains and user info with 10 domain credits and 5 invites available
     And I mock getContacts returns 0 contacts
     And I click on "form-search-input"
-    Then I should see "If you would like to register many domains at once, try our Bulk Register Tool."
+    Then I should see "Register many domains at once with our Bulk Register Tool"
     And I follow "Bulk Register Tool"
     Then I should see "Create Profile"
     And I should see "You must have at least one contact profile to register domain."
@@ -110,7 +110,7 @@ Feature: Bulk Register
     Given I logged in with mock data for domains and user info with 1 domain credits and 5 invites available
     And I mock getContacts returns 0 contacts
     And I click on "form-search-input"
-    Then I should see "If you would like to register many domains at once, try our Bulk Register Tool."
+    Then I should see "Register many domains at once with our Bulk Register Tool"
     And I follow "Bulk Register Tool"
     Then I should see "Create Profile"
     And I should see "You must have at least one contact profile to register domain."

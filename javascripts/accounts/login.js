@@ -12,7 +12,7 @@ with (Hasher('Signup','Application')) {
           )
         ),
 
-        form({ 'class': 'fancy has-sidebar', action: curry(process_login,false) },
+        form({ 'class': 'fancy has-sidebar', action: curry(process_login,function() { set_route('#'); }) },
           div({ id: 'signup-errors' }),
       
           fieldset(
