@@ -70,6 +70,13 @@ with (Hasher('Signup','Application')) {
           set_route(Badger.back_url);
           Badger.back_url = "";
         }
+      } else if (response.meta.status == 'locked') {
+        // we turned invite only mode on, and this person requested an invite, had a person model created, but cannot login yet
+        $('#signup-errors').html(
+          div({ 'class': "info-message" },
+            p("Thanks for requesting an invite to Badger! We aren't quite ready to let you in yet, but once we are, we will notify you via email.")
+          )
+        );
       } else {
         $('#signup-errors').empty().append(error_message(response));
       }
@@ -83,7 +90,7 @@ with (Hasher('Signup','Application')) {
         div({ id: 'signup-errors' }),
         form({ action: curry(create_person, callback) },
           input({ type: 'hidden', name: 'invite_code' }),
-
+  
           table({ style: 'width: 100%' }, tbody(
             tr(
               td({ style: 'width: 50%; vertical-align: top' },
@@ -118,20 +125,20 @@ with (Hasher('Signup','Application')) {
               )
             )
           )),
-
+  
           h3({ style: 'margin: 15px 0 0 0' }, 'Password for Badger.com'),
-  				div(
-  					input({ name: 'password', style: 'width: 200px', placeholder: 'Desired Password', type: 'password' }),
-  					input({ name: 'confirm_password', style: 'width: 200px', placeholder: 'Confirm Password', type: 'password' })
-  				),
-
-
+         div(
+           input({ name: 'password', style: 'width: 200px', placeholder: 'Desired Password', type: 'password' }),
+           input({ name: 'confirm_password', style: 'width: 200px', placeholder: 'Confirm Password', type: 'password' })
+         ),
+  
+  
           div({ style: 'margin: 10px 0' },
             input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
             label({ 'for': 'agree_to_terms' }, ' I agree to the Badger.com '),
             a({ href: window.location.href.split('#')[0] + '#terms_of_service', target: '_blank' }, 'Terms of Service')
           ),
-
+  
           div(
             input({ 'class': 'myButton', type: 'submit', value: 'Create Account' })
           ),
@@ -143,12 +150,73 @@ with (Hasher('Signup','Application')) {
       )
     );
   });
+  
+  define('show_request_invite_modal', function(arrival_method) {
+    if (arrival_method == "free_domain_card") {
+      var description = div({ 'class': "info-message" },
+        "Thanks for checking us out! We aren't exactly ready to let you in quite yet, but fill out the form below, including your promotional code, send it to us, and we will let you know when you can login."
+      );
+    }
+    
+    var require_invite_code = !(typeof(description) == "undefined")
+    
+    show_modal(
+      div({ id: "signup-box" },
+        h1("Request Invite to Badger"),
+        
+        description,
+        
+        div({ id: 'request-invite-errors' }),
+        
+        form({ action: curry(request_invite) },
+          h3({ style: 'margin: 0' }, 'Contact Information'),
+          div(
+            input({ style: 'width: 130px', name: 'first_name', placeholder: 'First Name' }),
+            input({ style: 'width: 130px', name: 'last_name', placeholder: 'Last Name' })
+          ),
+          div(input({ name: 'email', style: 'width: 275px', placeholder: 'Email Address' })),
+          
+          h3({ style: 'margin: 15px 0 0 0' }, 'Password for Badger'),
+          div(
+            input({ name: 'password', style: 'width: 200px', placeholder: 'Desired Password', type: 'password' }),
+            input({ name: 'confirm_password', style: 'width: 200px', placeholder: 'Confirm Password', type: 'password' })
+          ),
+          
+          require_invite_code ? [
+            h3({ style: 'margin: 15px 0 0 0' }, 'Invite Code'),
+            input({ type: "hidden", name: "require_invite_code", value: true })
+          ] : [
+            h3({ style: 'margin: 15px 0 0 0' }, 'Invite Code (Optional)')
+          ],
+          div(
+            input({ name: 'invite_code', placeholder: "abc123" })
+          ),
+          
+          div({ style: 'margin: 10px 0' },
+            input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
+            label({ 'for': 'agree_to_terms' }, ' I agree to the Badger.com '),
+            a({ href: window.location.href.split('#')[0] + '#terms_of_service', target: '_blank' }, 'Terms of Service')
+          ),
+          
+          div({ style: "margin-top: 10px" },
+            input({ 'class': 'myButton', type: 'submit', value: 'Request Invite' })
+          ),
+          
+          div({ style: 'margin-top: 20px' }, 
+            a({ href: curry(show_login_modal) }, "Already have an account?")
+          )
+          
+        )
+      )
+    );
+  });
 
   define('create_person', function(callback, data) {
 		if(data.password != data.confirm_password) {
 			$('#signup-errors').empty().append(error_message({ data: { message: "Passwords do not match" } }));
       return;
 		}
+		
     // if (!data.agree_to_terms) {
     //   $('#signup-errors').empty().append(error_message({ data: { message: "You must accept terms of service to use our site" } }));
     //   return;
@@ -169,6 +237,56 @@ with (Hasher('Signup','Application')) {
       }
     }));
   });
+  
+  
+  
+  define('request_invite', function(form_data) {
+    if (form_data.password != form_data.confirm_password) {
+			$('#signup-errors').empty().append(error_message({ data: { message: "Passwords do not match" } }));
+      return;
+		}
+		
+		console.log(form_data);
+		
+    if (form_data.require_invite_code && !form_data.invite_code) {
+      $('#signup-errors').empty().append(error_message({ data: { message: "Missing invite code!" } }));
+      return;
+    }
+		
+		// old invite code stuff
+    // if (Badger.register_code) form_data.invite_code = Badger.register_code;
+		
+    Badger.requestInviteAndCreatePerson(form_data, function(response) {
+      console.log(response);
+      
+      if (response.meta.status == 'ok') {
+        if (callback) {
+          callback();
+        } else {
+          show_invite_sent_modal(response.data);
+        }
+      } else {
+        $('#request-invite-errors').empty().append(error_message(response));
+      }
+    });
+  });
+  
+  define('show_invite_sent_modal', function(request_invite_data) {
+    set_route("#");
+    
+    return show_modal(
+      h1("Invite Request Sent"),
+      p("We will be ready to accept your invite soon, sorry to make you wait! When your invite is approved, we will email you."),
+      
+      (request_invite_data.invite_code) ? [
+        p("Your free domain code has been applied, and the ", request_invite_data.invite_code.domain_credits, " domain credit(s) will be applied to your account when we approve the invite.")
+      ] : [
+        div()
+      ]
+    );
+  });
+  
+  
 
 	define('show_reset_password_modal', function(email, code) {
     show_modal(

@@ -119,9 +119,14 @@ var Badger = {
   accountInfo: function(callback) {
     Badger.api("/account/info", callback);
   },
-  
+
   requestInvite: function(email, callback) {
     Badger.api("/account/request_invite", 'POST', { email: email }, callback);
+  },
+  
+  // new invite request redemption
+  requestInviteAndCreatePerson: function(form_data, callback) {
+    Badger.api("/account/request_invite_and_create_person", 'POST', form_data, callback);
   },
 
   requestInviteExtraInfo: function(data, callback) {
