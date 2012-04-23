@@ -318,3 +318,7 @@ label { cursor: pointer; }
 
 .tld img { display: block; margin: 0 auto; }
 
+
+
+.iphone #header { position: absolute; }
+.iphone #chatbar  { display: none; }

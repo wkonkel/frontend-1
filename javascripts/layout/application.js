@@ -18,6 +18,8 @@ with (Hasher('Application')) {
       reset_layout('default_layout');
       if (get_route() != '#welcome') set_route('#welcome');
     });
+    
+    if (navigator.userAgent.match(/iPhone/i)) $('body').addClass('iphone');
   });
 }
 
