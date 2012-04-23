@@ -16,8 +16,6 @@ h4 { font-size: 18px; border-bottom: 0; }
 h1 a, h2 a, h3 a, h4 a, h5 a { color: #333; }
 
 /* page background */
-/*html { background: transparent url(../images/v2/groovepaper.png) repeat top center; }*/
-/*html { background: transparent url(../images/v2/bright_squares.png) repeat top center; }*/
 html { background: transparent url(../images/v2/white_plaster.png) repeat top center; }
 
 /* header position */
