@@ -19,7 +19,7 @@ with (Hasher('Application')) {
       if (get_route() != '#welcome') set_route('#welcome');
     });
     
-    if (navigator.userAgent.match(/iPhone/i)) $('body').addClass('iphone');
+    if (navigator.userAgent.match(/iphone/i) || navigator.userAgent.match(/android/i)) $('body').addClass('iphone');
   });
 }
 
