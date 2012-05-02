@@ -19,6 +19,11 @@ with (Hasher('Account','Application')) {
       )
     });
   });
+  
+  // helper method to check and see if the user has the permission for the given domain
+  define('has_permission', function(which, permissions) {
+    return (permissions || []).indexOf(which) >= 0;
+  });
 
   define('account_nav_table', function() {
     var active_url = get_route();

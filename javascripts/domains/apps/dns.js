@@ -126,7 +126,7 @@ with (Hasher('DnsApp','DomainApps')) {
           auto_dns.length == 0 ? [] : auto_dns_record_rows(sort_auto_dns_records(auto_dns), domain_obj.name),
 
           app_dns.map(function(app_item) {
-            return app_dns_rows(app_item.name, app_item.id, sort_dns_records(app_item.requires.dns), domain_obj.name);
+            return app_dns_rows(app_item.name, app_item.id, sort_dns_records(app_item.requires.dns), domain_obj);
           })
         )
       )
@@ -243,16 +243,19 @@ with (Hasher('DnsApp','DomainApps')) {
   //   );
   // });
 
-  define('app_dns_rows', function(app_name, app_id, records, domain) {
+  define('app_dns_rows', function(app_name, app_id, records, domain_obj) {
     return [
       tr({ 'class': 'table-header' },
-        td({ colSpan: 5, 'class': 'app_dns_header' }, h2({ style: "border-bottom: 1px solid #888; padding-bottom: 5px; margin-bottom: 0" }, app_name),
-        div({ style: 'float: right; margin-top: -30px' },
-          a({ 'class': 'myButton small', href: curry(show_settings_modal_for_app, app_id, domain) }, 'Settings')
-        ))
+        td({ colSpan: 5, 'class': 'app_dns_header' }, h2({ style: "border-bottom: 1px solid #888; padding-bottom: 5px; margin-bottom: 0" }, app_name)),
+
+        (Account.has_permission('modify_dns', domain_obj.permissions_for_person)) ? [
+          div({ style: 'float: right; margin-top: -30px' },
+            a({ 'class': 'myButton small', href: curry(show_settings_modal_for_app, app_id, domain_obj.name) }, 'Settings')
+          )
+        ] : []
       ),
       records.map(function(record) {
-        return record_row(record, domain, false)
+        return record_row(record, domain_obj.name, false)
       })
     ];
   });
