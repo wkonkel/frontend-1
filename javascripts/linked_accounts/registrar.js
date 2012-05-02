@@ -104,7 +104,7 @@ with (Hasher('Registrar','Application')) {
 			}
 			if (response.meta.status == 'ok') {
         // start_modal_spin('Logging in to ' + data.registrar_name + '...');
-				setTimeout(curry(Registrar.poll_link, 70000, data), 1500);
+				setTimeout(curry(Registrar.poll_link, 180000, data), 1500);
       } else {
         $('#link-form-error').html(error_message(response)).show();
 				$('#modal-dialog a.close-button').show();
