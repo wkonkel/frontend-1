@@ -27,9 +27,9 @@ with (Hasher('Signup','Application')) {
         ),
     
         fieldset(
-          label({ 'for': 'email-input' }, 'Password:'),
-					password({ 'class': 'short right-margin', id: 'email-input', name: 'password', placeholder: 'abc123' }),
-					password({ 'class': 'short', name: 'password_confirmation', placeholder: 'abc123 (again)' })
+          label({ 'for': 'password-input' }, 'Password:'),
+					password({ 'class': 'short right-margin', id: 'email-input', name: 'password', placeholder: 'abc123' })
+          // password({ 'class': 'short', name: 'password_confirmation', placeholder: 'abc123 (again)' }) --- No more password confirmation. Woot woot!
         ),
 
         fieldset(
