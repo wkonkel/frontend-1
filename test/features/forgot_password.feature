@@ -9,7 +9,7 @@ Feature: Forgot Password
   Scenario: I will see an error message when email empty
     And I mock sendPasswordResetEmail
     When I follow "Login"
-    And I follow "Forgot your password?"
+    And I follow "Forgot?"
     Then I should see "Forgot Password"
     When I press "Send Reset Code"
     Then I should see "Email missing" within ".error-message"
@@ -17,7 +17,7 @@ Feature: Forgot Password
   Scenario: I will see an error message if have no account with the email
     And I mock sendPasswordResetEmail
     When I follow "Login"
-    And I follow "Forgot your password?"
+    And I follow "Forgot?"
     Then I should see "Forgot Password"
     And I fill in "email" with "non-user@example.com"
     When I press "Send Reset Code"
@@ -26,7 +26,7 @@ Feature: Forgot Password
   Scenario: I want to receive an email with reset pasword code when i input correct email
     And I mock sendPasswordResetEmail
     When I follow "Login"
-    And I follow "Forgot your password?"
+    And I follow "Forgot?"
     Then I should see "Forgot Password"
     And I fill in "email" with "eastagile@example.com"
     When I press "Send Reset Code"
@@ -36,7 +36,7 @@ Feature: Forgot Password
     And I follow the reset password link for email "eastagile@example.com" with code "invalid"
     Then I should see "Enter your new password"
     And I fill in "new_password" with "myNEWpass"
-    And I fill in "confirm_password" with "myNEWpass"
+    And I fill in "password_confirmation" with "myNEWpass"
     And I mock resetPasswordWithCode
     When I press "Update"
     Then I should see "Invalid Code" within ".error-message"
@@ -45,7 +45,7 @@ Feature: Forgot Password
     And I follow the reset password link for email "eastagile@example.com" with code "AcX3cd7678"
     Then I should see "Enter your new password"
     And I fill in "new_password" with "myNEWpass"
-    And I fill in "confirm_password" with "myNEWpass1"
+    And I fill in "password_confirmation" with "myNEWpass1"
     When I press "Update"
     Then I should see "Passwords do not match" within ".error-message"
 
@@ -53,7 +53,7 @@ Feature: Forgot Password
     And I follow the reset password link for email "eastagile@example.com" with code "invalid_code"
     Then I should see "Enter your new password"
     And I fill in "new_password" with "myNEWpass"
-    And I fill in "confirm_password" with "myNEWpass"
+    And I fill in "password_confirmation" with "myNEWpass"
     And I mock resetPasswordWithCode
     When I press "Update"
     Then I should see "Password reset" within ".success-message"

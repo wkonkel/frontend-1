@@ -7,7 +7,7 @@ with (Hasher('Signup','Application')) {
       div({ 'class': 'sidebar' },
         info_message(
           h3("Already have an account?"),
-          p("If you've already done this, you're on the wrong page!"),
+          p("If you've already have an account, you're on the wrong page!"),
           div({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
         )
       ),

@@ -9,7 +9,7 @@ Feature: Confirm Email
     And I mock confirmEmail with status "ok"
     When I visit the confirm email path
     Then I should see "Login"
-    And I should see "Forgot your password?"
+    And I should see "Forgot?"
     And I fill in "email" with "tester@example.com"
     And I fill in "password" with "12345678"
     And I press "Login"
@@ -24,7 +24,7 @@ Feature: Confirm Email
     And I mock confirmEmail with status "bad_request"
     When I visit the confirm email path
     Then I should see "Login"
-    And I should see "Forgot your password?"
+    And I should see "Forgot?"
     And I fill in "email" with "tester@example.com"
     And I fill in "password" with "12345678"
     And I press "Login"

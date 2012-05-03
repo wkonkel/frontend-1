@@ -8,12 +8,12 @@ Feature: Register
     And I am not logged in
     And I mock createAccount
     And I follow "Create Account"
-    Then I should see "Create Your Badger.com Account"
+    Then I should see "Create Badger Account"
     And I fill in "first_name" with "John"
     And I fill in "last_name" with "Doe"
     And I fill in "email" with "tester1@eastagile.com"
     And I fill in "password" with "pwd123"
-    And I fill in "confirm_password" with "pwd123"
+    And I fill in "password_confirmation" with "pwd123"
     And I fill in "organization" with "East Agile"
     And I fill in "phone" with "123456789"
     And I fill in "fax" with "123456789"
@@ -33,7 +33,7 @@ Feature: Register
     And I am not logged in
     And I mock createAccount
     And I follow "Create Account"
-    Then I should see "Create Your Badger.com Account"
+    Then I should see "Create Badger Account"
     And I should see "I agree to the Badger.com Terms of Service"
 
   Scenario: I should be able to see terms of service even if I am not logged in
@@ -53,7 +53,7 @@ Feature: Register
   #   And I fill in "last_name" with "Company"
   #   And I fill in "email" with "tester1@eastagile.com"
   #   And I fill in "password" with "pwd123"
-  #   And I fill in "confirm_password" with "pwd123"
+  #   And I fill in "password_confirmation" with "pwd123"
   #   And I uncheck "agree_to_terms"
   #   Then I press "Submit"
   #   Then I should see "You must accept terms of service to use our site"
