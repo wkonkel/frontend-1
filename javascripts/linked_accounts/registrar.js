@@ -6,7 +6,7 @@ with (Hasher('Registrar','Application')) {
         h1('Confirm Account Unlinking?'),
         div({ 'class': 'hidden', id: 'link-form-error' }),
         
-        p({ style: "font-weight: bold" }, "Unlinking this account will remove the associated domains from your Badger.com account."),
+        p({ style: "font-weight: bold" }, "Unlinking this account will remove any associated domains from your Badger.com account."),
         p("If you transferred any of these domains to your Badger.com account, don't worry, those won't be removed."),
         
         div({ style: 'text-align: right' }, a({ 'class': 'myButton red', href: curry(Registrar.do_remove_link, data) }, 'Unlink Account')),
