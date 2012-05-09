@@ -1,7 +1,7 @@
 with (Hasher('Faqs', 'Application')) {
 
   route('#faqs', function() {
-    var target_div = div('Loading...');
+    var target_div = div(spinner('Loading...'));
 
     render(
       h1('FREQUENTLY ASKED QUESTIONS'),

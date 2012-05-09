@@ -1,7 +1,9 @@
 with (Hasher('Billing','Application')) {
 
   route('#account/billing', function() {
-    var target_div = div('Loading...');
+    var target_div = div(
+      spinner("Loading...")
+    );
 
     render(
       h1('My Account » Credits & Billing History'),

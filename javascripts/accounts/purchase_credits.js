@@ -1,7 +1,7 @@
 with (Hasher('Billing','Application')) {
 
   route('#account/billing/credits', function() {
-    var necessary_credits = 0;
+    var necessary_credits = Badger.Session.read('necessary_credits') || 0;
     
     var saved_or_new_card_div = div(
       fieldset(
@@ -30,7 +30,7 @@ with (Hasher('Billing','Application')) {
         )
       ),
 
-      form({ 'class': 'fancy has-sidebar', id: 'credits-form', action: purchase_credits },
+      form_with_loader({ 'class': 'fancy has-sidebar', id: 'credits-form', action: purchase_credits, loading_message: "Processing purchase..." },
         div({ id: 'modal-errors' },
           (necessary_credits ?
             div({ 'class': 'error-message' }, "You need at least ", necessary_credits, " Credits to continue.")
@@ -166,6 +166,26 @@ with (Hasher('Billing','Application')) {
       hide_or_show_new_card_fields();
     });
   });
+  
+  
+  // reads from Badger.Session to get the number of credits just added to the account,
+  // and renders and info message into the div
+  define('render_num_credits_added', function() {
+    var arguments = flatten_to_array(arguments);
+    var options = shift_options_from_args(arguments);
+    
+    if (credits_added = (options.delete_var) ? Badger.Session.delete('credits_added') : Badger.Session.read('credits_added')) {
+      var message = info_message("You have added ", credits_added, " ", credits_added <= 1 ? "credit" : "credits", " to your account.");
+
+      // if an into is passed, render into it. otherwise, just return a div of the message in place.
+      if (options.into) {
+        render(options, message)
+      } else {
+        return div(options, message);
+      }
+    }
+  });
+  
 
   define('hide_or_show_new_card_fields', function() {
     if ($('#payment_method_id').val() == '0') {
@@ -190,15 +210,26 @@ with (Hasher('Billing','Application')) {
       if (response.meta.status == 'ok') {
         BadgerCache.reload('account_info');
         BadgerCache.reload('payment_methods');
-
+        
+        // save the number of credits that were just purchased to show a customized message
+        Badger.Session.write({
+          credits_added: Badger.Session.delete('necessary_credits')
+        });
+        
         BadgerCache.getAccountInfo(function(response) {
           update_credits();
-          set_route('#account/billing');
-          //if (callback) callback();
+          
+          // if a redirect url was explicitly set to null, don't perform the default redirect
+          if (Badger.Session.read('redirect_url') != null) {
+            set_route(Badger.Session.delete('redirect_url') || '#account/billing');
+          }
+          
+          // if a callback was provided, pull that off and execute it
+          if (callback = Badger.Session.delete('callback')) callback();
         });
       } else {
-        stop_modal_spin();
         $('#modal-errors').empty().append(error_message(response));
+        hide_form_submit_loader();
       }
     });
   });

@@ -2,9 +2,9 @@ with (Hasher('Domains','Application')) {
   route('#filter_domains/:filter/:view_type', function(filter, view_type) {
     render(
       h1('My Domains'),
-      p('Loading...')
+      domain_index_nav_table()
     );
-				
+    
     BadgerCache.getDomains(function(domains) {
       var results = [];
       if (view_type == null)
@@ -92,7 +92,7 @@ with (Hasher('Domains','Application')) {
         ),
         
         td({ style: 'vertical-align: top'},
-          arguments
+          (arguments.length < 1) ? spinner('Loading domains...') : arguments
         )
       )
     ));
@@ -136,8 +136,8 @@ with (Hasher('Domains','Application')) {
       ),
       
       domain_index_nav_table(
-        (typeof domains == 'undefined') ? [
-          div('Loading domains...')
+        (typeof(domains) == 'undefined') ? [
+          spinner('Loading domains...')
         ]:((domains.length == 0) ? 
   				empty_domain_message
         : [ 

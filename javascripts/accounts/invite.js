@@ -1,7 +1,7 @@
 with (Hasher('Invite','Application')) {
   route('#invites', function() {
     var target_h1 = h1('SENT INVITES');
-    var target_div = div('Loading...');
+    var target_div = div(spinner('Loading...'));
     var target_button_area = div({ style: 'float: right; margin-top: -44px' });
     
     render(

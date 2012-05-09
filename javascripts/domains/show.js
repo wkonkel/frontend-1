@@ -4,7 +4,8 @@ with (Hasher('DomainShow','DomainApps')) {
   var retry_transfer_timeout;
 
   route('#domains/:domain', function(domain) {
-    var content_div = div('Loading...');
+    var content_div = div(spinner('Loading...'));
+    
     render(
       h1_for_domain(domain),
       div({ id: 'error-message', 'class': 'error-message hidden' }),
@@ -32,6 +33,21 @@ with (Hasher('DomainShow','DomainApps')) {
               Register.full_form(domain_obj.name)
             )
           );
+          
+          // if the number of years was already set, pick it off from session variables
+          if (years = Badger.Session.read('years')) {
+            $("select[name=years] option[value=" + years + "]").attr('selected', true);
+          }
+          
+          // update the register domains button
+          $("select[name=years]").change(function(e) {
+            $('#register-button').val('Register ' + domain + ' for ' + this.value + (this.value == 1 ? ' credit' : ' credits'));
+            $('#expiration-date').html(
+              (parseInt(this.value)).years().fromNow().toString("MMMM dd yyyy")
+            );
+          });
+          
+          $("select[name=years]").trigger('change');
         } else {
           render({ into: content_div },
             div("This domain is not currently registered! Unfortunately, we do not support this top level domain quite yet. Check back later!")
@@ -426,7 +442,7 @@ with (Hasher('DomainShow','DomainApps')) {
       update_progress_bar(new_percentage);
       
       // if it completed, set a timeout to reload page, after which the apps should be displayed
-      if (new_percentage == 100) setTimeout(curry(set_route, '#domains/' + domain_name), 1500);
+      if (new_percentage == 100) setTimeout(curry(on_transfer_complete, domain_name), 1500);
       
       // remove and replace with updated rows
       $("#transfer-steps tr").remove();
@@ -436,6 +452,15 @@ with (Hasher('DomainShow','DomainApps')) {
       // update the cancel button with the latest domain info
       update_cancel_transfer_button_href(domain_obj);
     });
+  });
+  
+  define('on_transfer_complete', function(domain_name) {
+    set_route('#domains/' + domain_name);
+    
+    // show a share transfer modal.
+    // the argument 1 is provided to make it a single domain share.
+    // this will all be reworked at some point, leaving it as is for now --- CAB
+    Share.show_share_transfer_modal(1);
   });
   
   define('update_cancel_transfer_button_href', function(domain_obj) {

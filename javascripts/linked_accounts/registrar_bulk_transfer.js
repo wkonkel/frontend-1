@@ -14,9 +14,7 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
     }
       
     var domains_div = div(
-      div({ id: "spinner-div", style: "margin-top: 160px" },
-        spinner("Loading your " + REGISTRAR_NAME + " domains...")
-      )
+      spinner("Loading your " + REGISTRAR_NAME + " domains...")
     );
     
     render(
@@ -84,8 +82,8 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
   
   define('render_domains_for_linked_account', function(target_div, registrar_name, linked_account_id) {
     Badger.getDomainsForLinkedAccount(parseInt(linked_account_id), function(domains) {
+      // filter out domains whose current registrar does not match that of the request
       domains = domains.filter(function(domain) {
-        // filter out domains whose current registrar does not match that of the request
         if ((domain.current_registrar || "").match(/godaddy/i)) {
           return (!!registrar_name.match(/godaddy/i));
         } else if ((domain.current_registrar || "").match(/network\s*solutions/i)) {
@@ -181,9 +179,9 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
                 input({ name: ("select_domain_" + domain.name), value: "", type: "checkbox" })
               ),
               td(domain.name),
-              td({ style: "text-align: center" }, old_expires_at.toDateString().split(" ").slice(1).join(" ")), // cut off the abbreviation for day of week
-              td({ style: "text-align: center" }, new_expires_at.toDateString().split(" ").slice(1).join(" ")),
-              td({ style: "text-align: center" }, get_name_servers_text(domain))
+              td({ style: "text-align: center" }, old_expires_at.toString("MMMM dd yyyy")),
+              td({ style: "text-align: center" }, new_expires_at.toString("MMMM dd yyyy")),
+              td({ style: "text-align: center" }, get_name_servers_text_and_set_new_nameservs(domain))
             );
           }
         })
@@ -196,23 +194,19 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
     var checked_domain_names = $("input[name^=select_domain_]:checked").map(function() {
       return this.name.split("_").slice(-1);
     });
-
+    
     // filter out domains that were not checked
     domains = domains.filter(function(domain) {
       return ($.inArray(domain.name, checked_domain_names) >= 0);
     });
     
-    
     // // save the domains so that they can be loaded on the next page
-    // magical_method(domains);
+    Badger.Session.write({ domains: domains });
     
     set_route("#linked_accounts/" + registrar_name.toLowerCase() + "/" + linked_account_id + "/confirm_bulk_transfer");
   });
   
-  
-  
-  
-  
+  // TODO: add to this as registrars are supported/recognized
   const PREVIOUS_REGISTRAR_NAME_SERVER_REGEXES = [
     /^ns\d+\.badger\.com$/i,
     /^ns\d+\.domaincontrol\.com$/i,
@@ -230,17 +224,20 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
   // return an array of the new name servers based on the old ones.
   // for instance, if no name servers, or using previous registrars name servers,
   // return the Badger name servers.
-  define('get_name_servers_text', function(domain) {
+  define('get_name_servers_text_and_set_new_nameservs', function(domain) {
     var using_previous_registrar_name_servers = false;
     
     PREVIOUS_REGISTRAR_NAME_SERVER_REGEXES.forEach(function(regex) {
       if (domain.name_servers && domain.name_servers[0].match(regex)) using_previous_registrar_name_servers = true;
     });
     
-    if (!domain.name_servers || domain.name_servers.length < 1 || using_previous_registrar_name_servers)
+    if (!domain.name_servers || domain.name_servers.length < 1 || using_previous_registrar_name_servers) {
+      // overwrite name servers, since they need to be Badger anyway if this is true
+      domain.name_servers = ['ns1.badger.com', 'ns2.badger.com'];
       return "Migrate to Badger";
-    else
+    } else {
       return domain.name_servers[0].split(".").slice(-2).join(".");
+    }
   });
     
 };

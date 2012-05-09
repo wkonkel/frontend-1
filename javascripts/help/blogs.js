@@ -3,7 +3,7 @@ with (Hasher('Blogs', 'Application')) {
   route('#blogs', function() {
     render(
       h1('BADGER BLOG'),
-      div({ id: 'blog-loader' }, 'Loading...')
+      div({ id: 'blog-loader' }, spinner('Loading...'))
     );
 
     Badger.getBlogs(function(response) {

@@ -18,7 +18,7 @@ with (Hasher('DnsApp','DomainApps')) {
   // 6. remote registration. no/remote nameservers.  no linked account.  // dns_viewer
 
   route('#domains/:domain/dns', function(domain) {
-    var content_div = div('Loading DNS records...');
+    var content_div = div(spinner('Loading DNS records...'));
     var message_div = div();
     var button_div = div({ style: 'float: right; margin-top: -44px' });
     
@@ -228,7 +228,7 @@ with (Hasher('DnsApp','DomainApps')) {
         )
       );
     });
-    render('Loading...');
+    render(spinner('Loading...'));
   });
 
   // define('manager_view', function(domain_info, records, app_dns) {

@@ -89,7 +89,7 @@ When /^(?:|I )choose "([^"]*)"$/ do |field|
   choose(field)
 end
 
-When /^I wait ([^"]*) seconds$/ do |second|
+Then /^I wait ([^"]*) seconds$/ do |second|
   sleep(second.to_i)
 end
 

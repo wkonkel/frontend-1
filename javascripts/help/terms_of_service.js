@@ -1,7 +1,7 @@
 with (Hasher('TermsOfService','Application')) {
 
   route('#terms_of_service', function() {
-    var terms_list = div(p('Loading...'))
+    var terms_list = div(spinner('Loading...'))
     render(
       h1('Terms Of Service'),
       terms_list
@@ -22,7 +22,7 @@ with (Hasher('TermsOfService','Application')) {
   });
 
   route('#terms_of_service/:id', function(id) {
-    var content = div(p('Loading...'))
+    var content = div(spinner('Loading...'))
     render(
       content
     )

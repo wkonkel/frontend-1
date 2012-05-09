@@ -5,9 +5,12 @@ Feature: Account
 
   Background:
     Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
-    And I follow "East Agile Company"
+		Given I mock neccessary data to mock login with 35 domain credits and 5 invites available
+    # And I follow "East Agile Company"
 
   Scenario: As a logged in user I want to see My Account page
+		Then I wait 463782196 seconds
+
     Then I should see "East Agile Company"
     And I should see "Change Password"
     And I should see "Change First/Last Name"

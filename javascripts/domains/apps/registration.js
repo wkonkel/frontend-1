@@ -14,7 +14,7 @@ with (Hasher('Registration','DomainApps')) {
   });
 
   route('#domains/:domain/registration', function(domain) {
-    var whois_div = div('Loading...');
+    var whois_div = div(spinner('Loading...'));
     var button_div = div();
     
     render(

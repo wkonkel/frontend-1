@@ -178,8 +178,29 @@ with (Hasher('Transfer','Application')) {
     // close if they clicked "Cancel" button before domains finished loading
     if (domain_count == 0) return close_transfer_modal();
     
+    // if the user just added credits to continue, show that message here
+    var credits_added_message = div();
+    
+    
+    
+    // if (credits_added = Badger.Session.read('credits_added')) {
+    //   render({ into: credits_added_div },
+    //     info_message("You have added ", credits_added, " ", credits_added <= 1 ? "credit" : "credits", " to your account.")
+    //   )
+    // }
+    
+    
+    
+    if (credits_added = Badger.Session.read('credits_added')) {
+      render({ into: credits_added_message },
+        info_message("You have added ", credits_added, " ", credits_added <= 1 ? "credit" : "credits", " to your account.")
+      );
+    }
+    
     show_modal(
       h1('CONFIRMATION: ' + domain_count + ' DOMAIN' + (domain_count == 1 ? '' : 'S')),
+      
+      Billing.render_num_credits_added({ delete_var: true }),
 
       form({ action: register_or_transfer_all_domains },
         transfer_domains.map(function(domain) { return input({ type: "hidden", name: "transfer_domains[]", value: domain }); }),
@@ -239,7 +260,16 @@ with (Hasher('Transfer','Application')) {
     BadgerCache.getAccountInfo(function(account_info) {
       if (account_info.data.domain_credits < domain_count) {
         // Billing.purchase_modal(curry(register_or_transfer_all_domains, form_data), domain_count - account_info.data.domain_credits);
-        Billing.purchase_modal(curry(confirm_transfers, form_data), domain_count - account_info.data.domain_credits);
+        // Billing.purchase_modal(curry(confirm_transfers, form_data), domain_count - account_info.data.domain_credits);
+        
+        Badger.Session.write({ 
+          necessary_credits: domain_count - account_info.data.domain_credits,
+          callback: curry(confirm_transfers, form_data),
+          redirect_url: '#domain-transfers'
+        });
+        
+        set_route('#account/billing/credits');
+        hide_modal();
       } else {
         show_modal(
           h1('REGISTRATION STATUS'),
@@ -502,7 +532,7 @@ with (Hasher('Transfer','Application')) {
   //         );
   //       } else {
   //         $("#close-transfer-button").html(
-  //           a({ href: curry(LinkedAccounts.show_share_transfer_modal, domains_list.length), 'class': 'myButton', value: "submit" }, "Continue")
+  //           a({ href: curry(Share.show_share_transfer_modal, domains_list.length), 'class': 'myButton', value: "submit" }, "Continue")
   //         );
   //       }
   //     }

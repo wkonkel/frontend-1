@@ -1,7 +1,7 @@
 with (Hasher('Whois','Application')) {
 
   route('#account/profiles', function() {
-    var target_div = div('Loading...');
+    var target_div = div(spinner('Loading...'));
     
     render(
       h1('My Account » Profiles'),
@@ -89,7 +89,9 @@ with (Hasher('Whois','Application')) {
   });
 
   define('create_or_edit_whois_form', function(data) {
-    return form({ 'class': 'fancy', action: process_whois_form },
+    var already_exists = (Object.keys(data).length > 0);
+    
+    return form_with_loader({ 'class': 'fancy', action: process_whois_form, loading_message: already_exists ? "Updating contact..." : "Creating contact..." },
       div({ id: 'errors' }),
       
       hidden({ name: 'contact_id', value: data.id }),
@@ -97,7 +99,7 @@ with (Hasher('Whois','Application')) {
       Contact.all_form_fields(data),
 
       fieldset({ 'class': 'no-label' },
-        submit({ id: 'register-button', value: 'Create' })
+        submit({ id: 'register-button', value: already_exists ? 'Save' : 'Create' })
       )
     )
   });
@@ -114,6 +116,7 @@ with (Hasher('Whois','Application')) {
         });
       } else {
         $('#errors').append(error_message(response));
+        hide_form_submit_loader();
       }
     }
 

@@ -1,6 +1,6 @@
 with (Hasher('Domains','Application')) {
   route('#domain-transfers', function(filter, view_type) {
-    var target_div = div('Loading...');
+    var target_div = div(spinner('Loading...'));
     
     render(
       h1("MY DOMAINS » TRANSFERS"),

@@ -1,6 +1,73 @@
 var Badger = {
   api_host: 'https://api.badger.com/',
 
+  // Temporarily store data in session.
+  // Uses the Session object defined in session.js.
+  // Stores stringified data in window.name
+  Session: {
+    // show everything that is currently saved to the session.
+    // only really useful for debugging.
+    inspect: function() {
+      var sessionVars = {};
+      var keys = Object.keys(Session).slice(1);      
+      
+      for (i in keys) {
+        if (key = keys[i]) sessionVars[key] = Session[key];
+      }
+      
+      return sessionVars;
+    },
+    
+    // write the variable to session variables.
+    write: function(sessvars) {
+      for (k in sessvars) {
+        Session[k] = sessvars[k];
+      }
+      return true;
+    },
+    
+    read: function() {
+      if (arguments.length <= 1) return Session[arguments[0]];
+      var sessionVars = {};
+      for (i in arguments) {
+        var key = arguments[i];
+        var value = Session[key];
+        // automatically convert simple stringified variables
+        // to their respective types
+        if (value == 'true') {
+          value = true;
+        } else if (value == 'false') {
+          value = false;
+        } else if (value == 'null') {
+          value = null;
+        } else if (value == 'undefined') {
+          value = undefined;
+        } else if (!isNaN(parseFloat(value))) {
+          value = isNaN(parseFloat(value));
+        }
+        sessionVars[key] = value;
+      }
+      return (Object.keys(sessionVars).length == 1) ? sessionVars[Object.keys(sessionVars)[0]] : sessionVars;
+    },
+    
+    delete: function() {
+      if (arguments.length == 0) {
+        var keys = Object.keys(Session).slice(1);
+        for (i in keys) {
+          delete Session[keys[i]];
+        }
+      } else {
+        var sessionVars = {};
+        for (i in arguments) {
+          var key = arguments[i];
+          sessionVars[key] = Session[key];
+          delete Session[key]; // delete the variable from session
+        }
+        return (Object.keys(sessionVars).length == 1) ? sessionVars[Object.keys(sessionVars)[0]] : sessionVars;
+      }
+    }
+  },
+
   api: function() {
     // parse arguments: url, [http_method], [params], [callback]
     var args = Array.prototype.slice.call(arguments, 0);
@@ -27,6 +94,7 @@ var Badger = {
 
       url += key + '=' + encodeURIComponent(params[key]||'');
     }
+    
     
     // TODO: alert if url is too long
 
@@ -60,8 +128,8 @@ var Badger = {
     var head = document.getElementsByTagName('head')[0];
     head.appendChild(script);
   },
-  jsonp_callbacks: {},
   
+  jsonp_callbacks: {},
   
   setCookie: function(name,value) {
     if (value) {
@@ -81,6 +149,8 @@ var Badger = {
       }
     }
   },
+  
+  
   
   // reads from "badger_access_token" cookie
   getAccessToken: function() {
@@ -257,9 +327,9 @@ var Badger = {
     Badger.api("/domains/" + name + "/transfer", 'POST', data, callback);
   },
   
-  bulkTransferDomains: function(registrant_contact_id, domain_names, callback) {
-    Badger.api("/domains/bulk_transfer", 'POST', { registrant_contact_id: registrant_contact_id, domain_names: domain_names }, callback);
-  },
+  // bulkTransferDomains: function(registrant_contact_id, domain_names, callback) {
+  //   Badger.api("/domains/bulk_transfer", 'POST', { registrant_contact_id: registrant_contact_id, domain_names: domain_names }, callback);
+  // },
   
   cancelDomainTransfer: function(domain_name, callback) {
     Badger.api("/domains/" + domain_name + "/transfer", 'POST', { cancel: true }, callback);
@@ -585,3 +655,16 @@ var Badger = {
   // },
   
 };
+
+/**
+I am sick of using indexOf() of everywhere.
+returns null if no arguments provided.
+returns true if all arguments are included in the array.
+returns false if any of the arguments are not in the array.
+*/
+Array.prototype.includes = function() {
+  if (arguments.length < 1) return null; 
+  for (i in arguments) { if (this.indexOf(arguments[i]) < 0) return false; }
+  return true;
+};
+

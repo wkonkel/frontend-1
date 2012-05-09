@@ -8,7 +8,7 @@ with (Hasher('Ticket','Application')) {
         a({ 'class': 'myButton small', href: ticket_form }, 'Create a New Ticket')
       ),
 
-      Account.account_nav_table(div({ id: 'tickets' }, p('Loading...')))
+      Account.account_nav_table(div({ id: 'tickets' }, spinner('Loading...')))
     );
 
     Badger.getTickets(function(response) {
@@ -33,7 +33,7 @@ with (Hasher('Ticket','Application')) {
   });
 
   define('render_ticket_info', function(id, response_id) {
-    var ticket_info = div(p('Loading...'))
+    var ticket_info = div(spinner('Loading...'))
     render(
       h1('My Account » ', a({ href: '#tickets' }, 'Support Tickets'), ' » Ticket Information'),
       div({ id: 'success-message', 'class': 'success-message hidden' }),

@@ -1,3 +1,27 @@
+Given /^I mock getLinkedAccounts(?: with ([^"]*) linked account[s]?)?$/ do |num_linked_accounts|
+  linked_accounts = []
+  
+  num_linked_accounts.to_i.times do |i|
+    linked_accounts << ("{
+      id: #{i},
+      domain_count: 0,
+      last_synced_at: '#{Time.now.to_s}',
+      login: 'example-login',
+      site: 'example-site',
+      status: 'synced'
+    }")
+  end
+  
+  page.execute_script("Badger.getLinkedAccounts = function(callback) {
+    setTimeout(function() { callback({ data: [#{linked_accounts.join(',')}] }) }, 250);
+  }")
+  page.execute_script("BadgerCache.flush('linked_accounts');")
+end
+
+Given /^I mock Session$/ do
+  page.execute_script("Session = {};")
+end
+
 Given /^I mock domain search result for keys:$/ do |table|
   search_results = []
   table.hashes.each do |attributes|
@@ -60,7 +84,7 @@ Given /^I mock login$/ do
     for (var i=0; i < Badger.login_callbacks.length; i++) Badger.login_callbacks[i].call(null);
   };")
 
-  # NOTE: THIS KILLS ALL REAL API CALLS
+  # NOTE: THIS KILLS ALL REAL API CALLS.
   page.execute_script("Badger.api = function(url){};")
 end
 
@@ -89,7 +113,7 @@ Given /^I mock accountInfo with name "([^"]*)" and ([^"]*) domain credits and ([
   page.execute_script("Badger.accountInfo = function(callback) {
     callback({data : {domain_credits: #{domain_credits}, name: '#{name}', invites_available: #{invites_available}}, meta : {status: 'ok'}});
   };")
-   page.execute_script("BadgerCache.flush('account_info');");
+  page.execute_script("BadgerCache.flush('account_info');");
 end
 
 Given /^I mock getContacts returns ([^"]*) contacts$/ do |n|

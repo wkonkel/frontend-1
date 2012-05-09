@@ -12,7 +12,7 @@ with (Hasher('Signup','Application')) {
         )
       ),
 
-      form({ 'class': 'fancy has-sidebar', action: create_person },
+      form_with_loader({ 'class': 'fancy has-sidebar', action: create_person, loading_message: "Creating account..." },
         div({ id: 'signup-errors' }),
     
         fieldset(
@@ -58,6 +58,7 @@ with (Hasher('Signup','Application')) {
         set_route('#', { reload_page: true });
       } else {
         $('#signup-errors').empty().append(error_message(response));
+        hide_form_submit_loader();
       }
     });
   });
@@ -94,13 +95,18 @@ with (Hasher('Signup','Application')) {
       });
     }
   });
-
-  route('#register/:code', function(code) {
-    if (Badger.getAccessToken()) {
-      set_route('#');
-    } else {
-      Badger.register_code = code;
-      set_route('#account/create');
+  
+  define('request_invite', function(form_data) {
+    if (form_data.password != form_data.confirm_password) {
+			$('#signup-errors').empty().append(error_message({ data: { message: "Passwords do not match" } }));
+      return;
+		}
+		
+    // console.log(form_data);
+		
+    if (form_data.require_invite_code && !form_data.invite_code) {
+      $('#signup-errors').empty().append(error_message({ data: { message: "Missing invite code!" } }));
+      return;
     }
   });
 

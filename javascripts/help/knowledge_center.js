@@ -3,7 +3,7 @@ with (Hasher('KnowledgeCenter', 'Application')) {
   route('#knowledge_center', function() {
     render(
       h1('KNOWLEDGE CENTER'),
-      div({ id: 'knowledge-center-loader' }, 'Loading...')
+      div({ id: 'knowledge-center-loader' }, spinner('Loading...'))
     );
     Badger.getKnowledgeCenterArticles(function(response) {
       articles = (response.data || {})

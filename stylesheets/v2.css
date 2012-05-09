@@ -68,8 +68,8 @@ html, body, #wrapper, #footer { min-width: 970px; }
 /* modal */
 .modal-dialog { position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 3 }
 #modal-content { margin: 100px auto 0 auto; width: 600px; padding: 20px; border-radius: 5px; background: white; position: relative; }
-.modal-dialog h1 { font: 28px "Oswald", Arial, sans-serif; margin: 0 0 7px; padding: 0; border-bottom: 1px solid #333; text-transform: uppercase; }
-.modal-dialog h2, .modal-dialog h3 { font: 18px "Oswald", Arial, sans-serif; margin: 0 0 5px; padding: 0; border-bottom: 0; }
+.modal-dialog h1 { margin: 0 0 7px; padding: 0; border-bottom: 1px solid #333; }
+.modal-dialog h2, .modal-dialog h3 { margin: 0 0 5px; padding: 0; border-bottom: 0; }
 #modal-content.spinner { background: white url(../images/spinner.gif) no-repeat center center; }
 #modal-content.spinner #modal-wrapper { visibility: hidden; }
 #modal-content #modal-message { display: none; position: absolute; top: 50%; left: 0; width: 100%; text-align: center; margin-top: 11px; color: #888; font-style: italic; }

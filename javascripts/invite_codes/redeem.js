@@ -15,6 +15,10 @@ with (Hasher('Redeem','Application')) {
 
         form({ 'class': 'fancy has-sidebar', action: submit_promotional_code },
           div({ id: 'signup-errors' }),
+          
+          div({ style: "text-align: center" },
+            img({ src: 'images/v2/happybadger.png' })
+          ),
       
           fieldset(
             label({ 'for': 'code-input' }, 'Promotional Code:'),

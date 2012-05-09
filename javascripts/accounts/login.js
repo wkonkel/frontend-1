@@ -13,7 +13,7 @@ with (Hasher('Signup','Application')) {
           )
         ),
 
-        form({ 'class': 'fancy has-sidebar', action: process_login },
+        form_with_loader({ 'class': 'fancy has-sidebar', action: process_login, loading_message: "Logging in..." },
           div({ id: 'signup-errors' }),
         
           fieldset(
@@ -45,6 +45,7 @@ with (Hasher('Signup','Application')) {
     Badger.login(form.email, form.password, function(response) {
       if (response.meta.status != 'ok') {
         $('#signup-errors').empty().append(error_message(response));
+        hide_form_submit_loader();
       }
     });
   });
@@ -61,7 +62,7 @@ with (Hasher('Signup','Application')) {
         )
       ),
 
-      form({ 'class': 'fancy has-sidebar', action: process_forgot_password },
+      form_with_loader({ 'class': 'fancy has-sidebar', action: process_forgot_password, loading_message: 'Sending password reset email...' },
 		    div({ id: 'forgot-password-messages' }),
 
         div({ id: 'forgot-password-form' },
@@ -109,6 +110,8 @@ with (Hasher('Signup','Application')) {
 			} else {
 				$('#forgot-password-messages').html(error_message(response));
 			}
+			
+			hide_form_submit_loader();
 		});
 	});
   route('#reset_password/:email/:code', function(email, code) {

@@ -184,6 +184,7 @@ input.fancy[type=text], input.fancy[type=password] { margin-top: 4px; padding: 5
 .ie-browser .close-button { background: transparent url(../images/close.png); display: block; width: 32px; height: 32px; position: absolute; right:-10px; top: -10px; border: none; }
 
 .app_store_container { float: left; width: 90px; padding: 10px 10px 20px 10px; border: 1px solid white; }
+.app_store_container_small { float: left; width: 0px; padding: 5px 5px 5px 5px; }
 .app_store_container:hover { text-decoration: none; border: 1px solid #e2c822; background: #fff9d7; border-radius: 10px; cursor: pointer; }
 .app_store_container span { display: block; color: #000; }
 .app_store_icon {

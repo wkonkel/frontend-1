@@ -243,9 +243,7 @@ with (Hasher('Application')) {
       }})
     );
   });
-
-
-
+  
 
   ////////////////
   // dom helpers
@@ -291,14 +289,97 @@ with (Hasher('Application')) {
     )
   });
   
-  define('spinner', function(text) {
-    return div({ style: "text-align:center" },
-      img({ src: "images/spinner.gif" }),
+  define('spinner', function() {
+    var arguments = flatten_to_array(arguments);
+    var options = shift_options_from_args(arguments);
+    
+    // override the styling, but allow other attributes to be set
+    options.style = 'left: 0px; top: 160px; position: relative; text-align: center;';
+        
+    return div(options,
+      img({ src: 'images/spinner.gif' }),
       br(),
-      span({ style: "font-style: italic" }, text)
+      span({ style: 'font-style: italic' }, arguments)
     );
   });
+  
+  // this will return a form, and when the submit button is clicked, it will hide the form content,
+  // and display a loader div
+  define('form_with_loader', function() {
+    var arguments = flatten_to_array(arguments);
+    var options = shift_options_from_args(arguments);
 
+    // pick off whether or not this form has a sidebar. hacky.
+    var has_sidebar = !!((options['class'] || '').match(/has-sidebar/));
+    
+    // save the original form action now
+    var original_form_action = options.action;
+    var wrapper_div = div(
+      div({ id: '_form-loader', style: "display: none;" },
+        spinner({ has_sidebar: has_sidebar }, options.loading_message || 'Loading...')
+      ),
+      div({ id: '_form-internals' },
+        arguments
+      )
+    );
+    
+    // override the form action
+    options.action = (function(form_data) {
+      show_form_submit_loader();
+      
+      // if it's a long page, the user likely clicked a submit button at the bottom.
+      // scroll the page to the top to show any errors that might show up
+      (function() { $.smoothScroll(0); })();
+      
+      // execute the original form aciton
+      original_form_action(form_data);
+    });
+    
+    return form(options, wrapper_div);
+  });
+  
+  define('hide_form_submit_loader', function() {
+    make_visible('#_form-loader', false);
+    make_visible('#_form-internals', true);
+  });
+  
+  define('show_form_submit_loader', function() {
+    make_visible('#_form-loader', true);
+    make_visible('#_form-internals', false);
+  });
+
+  // helper function to intuitively toggle either visibility or display.
+  define('make_visible', function(id, visible) {
+    if (visible) {
+      if ($(id).css('display') == 'none') $(id).css('display', '');
+      if ($(id).css('visibility') == 'hidden') $(id).css('visibility', 'visible');
+    } else {
+      if ($(id).css('display') != 'none') $(id).css('display', 'none');
+      if ($(id).css('visibility') != 'hidden') $(id).css('visibility', 'hidden');
+    }
+  });
+  
+  // easily define pretty looking icons to throw in tables, etc.
+  define('app_store_icon', function() {
+    var arguments = flatten_to_array(arguments);
+    var options = shift_options_from_args(arguments);
+    
+    // override the class of the anchor
+    options['class'] = 'app_store_container';
+    
+    return a(options,
+      span({ 'class': 'app_store_icon', style: 'background-image: url(' + (options.image_src || 'images/apps/badger.png') + ')' } ),
+      span({ style: 'text-align: center; font-weight: bold; min-height: 36px' }, options.name || "")
+    );
+  });
+  
+  // just show the ajax loader gif
+  define('ajax_loader', function() {
+    var arguments = flatten_to_array(arguments);
+    var options = shift_options_from_args(arguments);
+    return div(options, img({ src: 'images/ajax-loader.gif' }));
+  });
+  
 
   //////////////
   // left nav

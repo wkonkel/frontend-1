@@ -44,7 +44,7 @@ with (Hasher()) {
       window.location.reload();
       return;
     }
-
+    
     for (var i=0; i < Hasher.routes.length; i++) {
       var route = Hasher.routes[i];
       var matches = path.match(route.regex);

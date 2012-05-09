@@ -3,44 +3,53 @@
 
 with (Hasher('Register','Application')) {
   define('full_form', function(domain) {
-    return form({ 'class': 'fancy', action: process_full_form },
-      div({ id: 'errors' }),
+    var target_div = div();
+    
+    render({ into: target_div },
+      form_with_loader({ 'class': 'fancy', action: process_full_form, loading_message: "Registering " + domain + "..." },
+        div({ id: 'errors' }),
 
-      input({ type: 'hidden', name: 'name', value: domain }),
-      input({ type: 'hidden', name: 'auto_renew', value: 'true'}),
-      input({ type: 'hidden', name: 'privacy', value: 'true'}),
-      input({ type: 'hidden', name: 'name_servers', value: 'ns1.badger.com,ns2.badger.com'}),
+        // render an info message into this div if credits were just added to the account in order
+        // to proceed with the registration.
+        Billing.render_num_credits_added(),
 
-      fieldset(
-        label({ 'for': 'years' }, 'Duration:'),
-        select({ name: 'years', id: 'years' },
-          option({ value: 1 }, '1 Year'),
-          option({ value: 2 }, '2 Years'),
-          option({ value: 3 }, '3 Years'),
-          option({ value: 4 }, '4 Years'),
-          option({ value: 5 }, '5 Years'),
-          option({ value: 10 }, '10 Years')
+        input({ type: 'hidden', name: 'name', value: domain }),
+        input({ type: 'hidden', name: 'auto_renew', value: 'true'}),
+        input({ type: 'hidden', name: 'privacy', value: 'true'}),
+        input({ type: 'hidden', name: 'name_servers', value: 'ns1.badger.com,ns2.badger.com'}),
+
+        fieldset(
+          label({ 'for': 'years' }, 'Duration:'),
+          select({ name: 'years', id: 'years' },
+            option({ value: 1 }, '1 Year'),
+            option({ value: 2 }, '2 Years'),
+            option({ value: 3 }, '3 Years'),
+            option({ value: 4 }, '4 Years'),
+            option({ value: 5 }, '5 Years'),
+            option({ value: 10 }, '10 Years')
+          ),
+          span({ 'class': 'big-text' }, ' @ 1 credit per year')
         ),
-        span({ 'class': 'big-text' }, ' @ 1 credit per year')
-      ),
-      
-      fieldset(
-        label({ 'for': 'years' }, 'Expiration:'),
-        div({ 'class': 'big-text' }, 'April 4, 2013')
-      ),
 
-      // fieldset(
-      //   label({ 'for': 'first_name-input' }, 'Also Register:'),
-      //   div(similar_domain_list(domain))
-      // ),
-  
-      Contact.selector_with_all_form_fields({ name: 'registrant_contact_id' }),
+        fieldset(
+          label({ 'for': 'years' }, 'Expiration:'),
+          div({ 'class': 'big-text', id: 'expiration-date' })
+        ),
 
-      fieldset({ 'class': 'no-label' },
-        submit({ id: 'register-button', value: 'Register ' + Domains.truncate_domain_name(domain) + ' for 1 credit' })
+        // fieldset(
+        //   label({ 'for': 'first_name-input' }, 'Also Register:'),
+        //   div(similar_domain_list(domain))
+        // ),
+
+        Contact.selector_with_all_form_fields({ name: 'registrant_contact_id' }),
+
+        fieldset({ 'class': 'no-label' },
+          submit({ id: 'register-button', value: 'Register ' + Domains.truncate_domain_name(domain) + ' for 1 credit' })
+        )
       )
-      
     );
+    
+    return target_div;
     
     // // show a message after person buys credits
     // if (form_data && form_data.credits_added) {
@@ -67,9 +76,9 @@ with (Hasher('Register','Application')) {
     // }
 
   });
-
+  
   define('similar_domain_list', function(domain) {
-    var similar_domain_div = div({ id: 'similar_domain_span' },  'Loading...');
+    var similar_domain_div = div({ id: 'similar_domain_span' },  spinner('Loading...'));
 
     Badger.domainSearch(domain.split('.')[0], true, function(response) {
       var similar_domains = [];//'something.com', 'something2.com'];
@@ -115,7 +124,7 @@ with (Hasher('Register','Application')) {
     });
   });
 
-  define('process_full_form', function(form_data) {
+  define('process_full_form', function(form_data, callback) {
     $('#errors').empty();
     
     Contact.create_contact_if_necessary_form_data({
@@ -127,11 +136,30 @@ with (Hasher('Register','Application')) {
           update_credits(true);
           BadgerCache.flush('domains');
           BadgerCache.getDomains(update_my_domains_count);
+          
+          // cleanup session variables
+          Badger.Session.delete('credits_added', 'years');
+          
           set_route('#domains/' + form_data.name);
+          
+          Share.show_share_registration_modal(form_data.name);
         } else {
           // TODO: wire in credit screen if not enough
           $('#errors').html(error_message(response))
+          
+          if (response.data && response.data.extra && response.data.extra) {
+            
+            Badger.Session.write({
+              years: form_data.years,
+              necessary_credits: response.data.extra.necessary_credits,
+              redirect_url: get_route()
+            });
+            
+            set_route("#account/billing/credits");
+          }
         }
+        
+        hide_form_submit_loader();
         
         // if (response.meta.status == 'created') {
         //   console.log("")
@@ -147,7 +175,7 @@ with (Hasher('Register','Application')) {
         //       
         //       set_route('#domains/' + domain);
         //       // hide_modal();
-        //        LinkedAccounts.show_share_registration_modal(domain);
+        //        Share.show_share_registration_modal(domain);
         //     });
         //   });
         // } else {
@@ -233,7 +261,7 @@ with (Hasher('Register','Application')) {
   //           
   //           set_route('#domains/' + domain);
   //           // hide_modal();
-  //            LinkedAccounts.show_share_registration_modal(domain);
+  //            Share.show_share_registration_modal(domain);
   //         });
   //       });
   //     } else {
