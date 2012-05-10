@@ -16,7 +16,7 @@ sanitizer added to toObject-method & includeFunctions flag now defaults to false
 
 */
 
-Session = function(){
+Session = (function(){
 	var x={};
 	
 	x.$={
@@ -209,4 +209,4 @@ Session = function(){
 	
 	x.$.init();
 	return x;
-}();
+})();
