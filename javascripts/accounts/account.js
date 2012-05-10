@@ -82,12 +82,31 @@ with (Hasher('Account','Application')) {
     Badger.updateAccount(form_data, function(response) {
       if (response.meta.status == 'ok') {
         $('#messages').html(success_message('Your account has been updated.'));
+        update_account_info();
       } else {
         $('#messages').html(error_message(response));
       }
       
       hide_form_submit_loader()
     });
+  });
+  
+  // Update the account info shown in the top right nav
+  define('update_account_info', function() {
+    BadgerCache.reload('account_info');
+    BadgerCache.getAccountInfo(function(response) {
+      if (response.meta.status == 'ok') {
+        // update the form if still on that page
+        var first, last;
+        first = response.data.name.split(' ')[0];
+        last = response.data.name.split(' ')[1];
+        $('input[name=first_name]').each(function() { this.placeholder = first });
+        $('input[name=last_name]').each(function() { this.placeholder = last });
+        
+        // update the nav
+        $('span#use_nav_name a').html(response.data.name);
+      }
+    })
   });
 
 }
