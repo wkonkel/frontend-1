@@ -139,7 +139,7 @@ var Badger = {
   
   // reads from "badger_access_token" cookie
   getAccessToken: function() {
-    Badger.getCookie('badger_access_token');
+    return Badger.getCookie('badger_access_token');
   },
   
   // writes to "badger_access_token" cookie
