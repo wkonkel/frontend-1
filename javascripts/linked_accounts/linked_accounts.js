@@ -194,7 +194,8 @@ with (Hasher('LinkedAccounts','Application')) {
 			render({ into: link_button_div },
 			  div({ align: "center" },
           a({ onclick: function() { auth_window = window.open(auth_url, "twitter-authorization", "width=600,height=600") } },
-            img({ src: "images/linked_accounts/" + site + ".png" })
+            ((site == 'facebook') && img({ src: "images/linked_accounts/facebook.png" })) || 
+            ((site == 'twitter') && img({ src: "images/linked_accounts/twitter.png" }))
           )
   			)
 			);
