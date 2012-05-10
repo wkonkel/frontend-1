@@ -114,6 +114,7 @@ with (Hasher('Signup','Application')) {
 			hide_form_submit_loader();
 		});
 	});
+	
   route('#reset_password/:email/:code', function(email, code) {
     render(
 			h1("Forgot Password"),

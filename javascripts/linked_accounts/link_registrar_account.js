@@ -89,7 +89,7 @@ with (Hasher('LinkRegistrarAccount','Application')) {
       if (response.meta.status == 'ok') {
         
         // TODO where to go when successfully linked an account
-        set_route("#linked_accounts/" + registrar + "/" + response.data.linked_account_id + "/bulk_transfer");
+        set_route("#linked_accounts/" + registrar + "/" + response.data.id + "/bulk_transfer");
         
       } else {
         // hide the spinner and show the form
