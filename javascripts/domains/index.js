@@ -20,11 +20,14 @@ with (Hasher('Domains','Application')) {
         //   break;
         case 'expiringsoon':
           for (i = 0; i < domains.length; i ++) {
-            var current_date = new Date();
-            var expire_date = new Date(Date.parse(domains[i].expires_at));
-            var days = parseInt(expire_date - current_date)/(24*3600*1000);
-            if (days <= 90)
-              results.push(domains[i]);
+            if (domains[i].expires_at) {
+              var current_date = new Date();
+              var expire_date = new Date(Date.parse(domains[i].expires_at));
+
+              var days = parseInt(expire_date - current_date)/(24*3600*1000);
+              if (days <= 90)
+                results.push(domains[i]);
+            }
           }
           break;
         default:
@@ -161,7 +164,7 @@ with (Hasher('Domains','Application')) {
             return tr(
               td(a({ href: '#domains/' + domain.name }, Domains.truncate_domain_name(domain.name))),
               td(domain.current_registrar),
-              td(new Date(Date.parse(domain.expires_at)).toDateString())
+              td(domain.expires_at ? new Date(Date.parse(domain.expires_at)).toString('MMMM dd yyyy') : '')
               
               // td(
               //   // img({ src: 'images/apps/facebook-icon.png'}),
