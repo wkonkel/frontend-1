@@ -44,3 +44,15 @@ String.prototype.capitalize_all = function() {
 String.prototype.capitalize_first = function() {
 	return this.charAt(0).toUpperCase() + this.slice(1);
 }
+
+/**
+I am sick of using indexOf() of everywhere.
+returns null if no arguments provided.
+returns true if all arguments are included in the array.
+returns false if any of the arguments are not in the array.
+*/
+Array.prototype.includes = function() {
+  if (arguments.length < 1) return null; 
+  for (i in arguments) { if (this.indexOf(arguments[i]) < 0) return false; }
+  return true;
+};

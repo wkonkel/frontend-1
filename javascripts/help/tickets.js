@@ -5,7 +5,7 @@ with (Hasher('Ticket','Application')) {
 			h1('My Account » Support Tickets'),
 
       div({ style: 'float: right; margin-top: -44px' },
-        a({ 'class': 'myButton small', href: ticket_form }, 'Create a New Ticket')
+        a({ 'class': 'myButton small', href: '#tickets/create' }, 'Create a New Ticket')
       ),
 
       Account.account_nav_table(div({ id: 'tickets' }, spinner('Loading...')))
@@ -23,6 +23,49 @@ with (Hasher('Ticket','Application')) {
       );
     });
   });
+  
+  route('#tickets/create', function() {
+    render(
+      h1('My Account » Support Tickets » Create Ticket'),
+      
+      Account.account_nav_table(
+        div({ id: 'send-ticket-form-errors' }),
+        
+        form_with_loader({ 'class': 'fancy', style: 'margin-left: -65px', action: submit_ticket, loading_message: 'Submitting ticket...' },
+          fieldset(
+            label({ 'for': 'category' }, 'Category'),
+            select({ name: 'category' },
+              option({ disabled: "disabled" }, "Select A Field"),
+              option({ value: "Website Bug" }, "Website Bug"),
+              option({ value: "Feature Request" }, "Feature Request"),
+              option({ value: "Billing Inquiry" }, "Billing Inquiry")
+            )
+          ),
+
+          fieldset(
+            label({ 'for': 'subject' }, 'Subject'),
+            text({ style: 'width: 75%', name: 'subject', placeholder: 'Hello, Badger!' })
+          ),
+          
+          fieldset(
+            label({ 'for': 'content' }, 'Content'),
+            textarea({ name: 'content', placeholder: 'Detailed description', style: 'font-size: 14px; height: 165px; width: 75%' })
+          ),
+          
+          // fieldset({ style: 'margin-top: 10px; line-height: 15px' },
+          //   label({ 'class': 'no-label' }),
+          //   div({ id: 'file-uploader' }, 'fdsa')
+          // ),
+
+          fieldset({ 'class': 'no-label' },
+            input({ 'class': 'myButton', type: 'submit', value: 'Submit' })
+          )
+        )
+      )
+    );
+    
+    // attachment_field('file-uploader');
+  });
 
   route('#tickets/:id', function(id) {
     render_ticket_info(id);
@@ -31,7 +74,7 @@ with (Hasher('Ticket','Application')) {
   route('#tickets/:id/response/:response_id', function(id, response_id) {
     render_ticket_info(id, response_id);
   });
-
+  
   define('render_ticket_info', function(id, response_id) {
     var ticket_info = div(spinner('Loading...'))
     render(
@@ -113,48 +156,6 @@ with (Hasher('Ticket','Application')) {
     : p(strong('Attachments: '), attachments.map(function (attachment) {
       return [a({ href: attachment.url }, attachment.filename), " "]
     }))
-  })
-
-  define('ticket_form', function() {
-    show_modal(
-      h1({ id: 'ticket-form-header' }, 'Create A New Ticket'),
-      div({ id: 'send-ticket-form-errors' }),
-
-      div({ id: 'send-ticket-form' },
-        form({ action: submit_ticket },
-          table({ style: 'width: 100%' }, tbody(
-            tr(
-              td(strong('Category:')),
-              td(select({ id: "category", name: 'category' },
-                option({ disabled: "disabled" }, "Select A Field"),
-                option({ value: "Website Bug" }, "Website Bug"),
-                option({ value: "Feature Request" }, "Feature Request"),
-                option({ value: "Billing Inquiry" }, "Billing Inquiry")
-              ))
-            ),
-
-            tr(
-              td(strong('Subject:')),
-              td(input({ type: 'text', name: 'subject', placeholder: 'Brief description', style: 'width: 98%' }))
-            ),
-
-            tr(
-              td({ style: 'vertical-align: top' }, strong('Content:')),
-              td(textarea({ name: 'content', placeholder: 'Detailed description', style: 'height: 100px; width: 98%' }))
-            ),
-            tr(
-              td(),
-              td(div({ id: "file-uploader" }))
-            )
-          )),
-          br(),
-          div({ style: 'text-align: right' },
-            input({ type: 'submit', value: 'Submit', 'class': "myButton" })
-          )
-        )
-      )
-    )
-    attachment_field('file-uploader');
   });
 
   define('response_form', function(id) {
@@ -175,17 +176,20 @@ with (Hasher('Ticket','Application')) {
 
     Badger.createTicket(form_data, function(response) {
       if (response.meta.status == 'ok') {
-        set_route(get_route());
-        render({ target: 'ticket-form-header' }, 'Support Ticket Created')
-        render({ target: 'send-ticket-form' },
-          div('You have created a support ticket: "',
-              strong(form_data.subject),
-              '". We will review your ticket and respond to you as quickly as we can. Thank you!'
-          ),
-          div({ style: 'text-align: right; margin-top: 10px;' }, a({ href: hide_modal, 'class': 'myButton', value: "submit" }, "Close"))
-        );
+        set_route("#tickets");
+        
+        // set_route(get_route());
+        // render({ target: 'ticket-form-header' }, 'Support Ticket Created')
+        // render({ target: 'send-ticket-form' },
+        //   div('You have created a support ticket: "',
+        //       strong(form_data.subject),
+        //       '". We will review your ticket and respond to you as quickly as we can. Thank you!'
+        //   ),
+        //   div({ style: 'text-align: right; margin-top: 10px;' }, a({ href: hide_modal, 'class': 'myButton', value: "submit" }, "Close"))
+        // );[
       } else {
         render({ target: 'send-ticket-form-errors' }, error_message(response));
+        hide_form_submit_loader();
       }
     });
   });

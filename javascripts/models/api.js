@@ -30,22 +30,7 @@ var Badger = {
       if (arguments.length <= 1) return Session[arguments[0]];
       var sessionVars = {};
       for (i in arguments) {
-        var key = arguments[i];
-        var value = Session[key];
-        // automatically convert simple stringified variables
-        // to their respective types
-        if (value == 'true') {
-          value = true;
-        } else if (value == 'false') {
-          value = false;
-        } else if (value == 'null') {
-          value = null;
-        } else if (value == 'undefined') {
-          value = undefined;
-        } else if (!isNaN(parseFloat(value))) {
-          value = isNaN(parseFloat(value));
-        }
-        sessionVars[key] = value;
+        sessionVars[arguments[i]] = Session[key];
       }
       return (Object.keys(sessionVars).length == 1) ? sessionVars[Object.keys(sessionVars)[0]] : sessionVars;
     },
@@ -226,6 +211,10 @@ var Badger = {
       }
       if (callback) callback(response);
     });
+  },
+  
+  updateAccount: function(data, callback) {
+    Badger.api("/account/update_authorized_account", 'PUT', data, callback);
   },
   
   domainSearch: function(query, use_serial, callback) {
@@ -655,16 +644,3 @@ var Badger = {
   // },
   
 };
-
-/**
-I am sick of using indexOf() of everywhere.
-returns null if no arguments provided.
-returns true if all arguments are included in the array.
-returns false if any of the arguments are not in the array.
-*/
-Array.prototype.includes = function() {
-  if (arguments.length < 1) return null; 
-  for (i in arguments) { if (this.indexOf(arguments[i]) < 0) return false; }
-  return true;
-};
-
