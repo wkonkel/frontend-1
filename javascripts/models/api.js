@@ -35,7 +35,7 @@ var Badger = {
       return (Object.keys(sessionVars).length == 1) ? sessionVars[Object.keys(sessionVars)[0]] : sessionVars;
     },
     
-    delete: function() {
+    remove: function() {
       if (arguments.length == 0) {
         var keys = Object.keys(Session).slice(1);
         for (i in keys) {

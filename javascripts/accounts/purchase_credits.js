@@ -174,7 +174,7 @@ with (Hasher('Billing','Application')) {
     var arguments = flatten_to_array(arguments);
     var options = shift_options_from_args(arguments);
     
-    if (credits_added = (options.delete_var) ? Badger.Session.delete('credits_added') : Badger.Session.read('credits_added')) {
+    if (credits_added = (options.delete_var) ? Badger.Session.remove('credits_added') : Badger.Session.read('credits_added')) {
       var message = info_message("You have added ", credits_added, " ", credits_added <= 1 ? "credit" : "credits", " to your account.");
 
       // if an into is passed, render into it. otherwise, just return a div of the message in place.
@@ -213,7 +213,7 @@ with (Hasher('Billing','Application')) {
         
         // save the number of credits that were just purchased to show a customized message
         Badger.Session.write({
-          credits_added: Badger.Session.delete('necessary_credits')
+          credits_added: Badger.Session.remove('necessary_credits')
         });
         
         BadgerCache.getAccountInfo(function(response) {
@@ -221,11 +221,11 @@ with (Hasher('Billing','Application')) {
           
           // if a redirect url was explicitly set to null, don't perform the default redirect
           if (Badger.Session.read('redirect_url') != null) {
-            set_route(Badger.Session.delete('redirect_url') || '#account/billing');
+            set_route(Badger.Session.remove('redirect_url') || '#account/billing');
           }
           
           // if a callback was provided, pull that off and execute it
-          if (callback = Badger.Session.delete('callback')) callback();
+          if (callback = Badger.Session.remove('callback')) callback();
         });
       } else {
         $('#modal-errors').empty().append(error_message(response));
