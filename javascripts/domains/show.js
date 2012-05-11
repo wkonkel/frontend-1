@@ -58,9 +58,20 @@ with (Hasher('DomainShow','DomainApps')) {
         // if it's "unknown", it was probably just added and we're still loading info for it... try again in 1 second
         var timeout = setTimeout(function() {
           Badger.getDomain(domain_obj.name, curry(handle_get_domain_response, content_div, domain));
-        }, 1000);
+        }, 3000);
       } else {
         render({ into: content_div },
+          
+          div({ style: 'float: right; margin-top: -50px' },
+            a({ href: '#linked_accounts/share/' + domain },
+              img({ src: 'images/apps/facebook.png', style: 'height: 25px; width: 25px; border-radius: 3px; margin-right: 5px' })
+            ),
+            
+            a({ href: '#linked_accounts/share/' + domain },
+              img({ src: 'images/apps/twitter.png', style: 'height: 25px; width: 25px; border-radius: 3px' })
+            )
+          ),
+          
           domain_status_description(domain_obj),
           render_all_application_icons(domain_obj)
         );

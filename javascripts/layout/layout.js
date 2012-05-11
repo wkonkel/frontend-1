@@ -338,6 +338,39 @@ with (Hasher('Application')) {
     return form(options, wrapper_div);
   });
   
+  define('table_with_selectable_rows', function() {
+    var arguments = flatten_to_array(arguments);
+    var options = shift_options_from_args(arguments);
+
+    // arguments.map(function(tr) {
+    //   console.log(tr);
+    // });
+    
+    return table(options, tbody(arguments));
+  });
+  
+  define('table_row_checkbox', function() {
+    var arguments = flatten_to_array(arguments);
+    var options = shift_options_from_args(arguments);
+    
+    options.type = 'checkbox';
+    
+    return td(
+      input(options, arguments)
+    );
+  });
+  
+  define('table_header_checkbox', function() {
+    var arguments = flatten_to_array(arguments);
+    var options = shift_options_from_args(arguments);
+    
+    options.type = 'checkbox';
+    
+    return th({ style: 'width: 5%' },
+      input(options, arguments)
+    );
+  });
+    
   define('hide_form_submit_loader', function() {
     make_visible('#_form-loader', false);
     make_visible('#_form-internals', true);

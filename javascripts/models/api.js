@@ -507,21 +507,22 @@ var Badger = {
 		Badger.api("/linked_accounts/" + site + "/auth_url", callback);
 	},
 	
-	// shareMessageWithLinkedAccount: function(linked_account_id, message, callback) {
-	// 	Badger.api("linked_accounts/" + linked_account_id + "/share_message", "POST", { message: message }, callback);
-	// },
+  shareMessage: function(linked_account_ids, message, callback) {
+    if (typeof(linked_account_ids) == 'number') { linked_account_ids = [linked_account_ids] }
+    Badger.api("linked_accounts/share_message", "POST", { message: message, linked_account_ids: linked_account_ids }, callback);
+  },
 	
-	shareDomainRegistration: function(linked_account_id, domain_name, hide_share_messages, callback) {
-		Badger.api("/linked_accounts/" + linked_account_id + "/share_registration", "POST", { domain_name: domain_name, hide_share_messages: hide_share_messages }, callback);
-	},
-	
-	shareDomainBulkRegistration: function(linked_account_id, domain_name, num_domains, hide_share_messages, callback) {
-		Badger.api("/linked_accounts/" + linked_account_id + "/share_bulk_registration", "POST", { domain_name: domain_name, num_domains: num_domains, hide_share_messages: hide_share_messages }, callback);
-	},
-	
-	shareDomainTransfer: function(linked_account_id, num_domains, hide_share_messages, callback) {
-		Badger.api("/linked_accounts/" + linked_account_id + "/share_transfer", "POST", { num_domains: num_domains, hide_share_messages: hide_share_messages }, callback);
-	},
+  // shareDomainRegistration: function(linked_account_id, domain_name, hide_share_messages, callback) {
+  //  Badger.api("/linked_accounts/" + linked_account_id + "/share_registration", "POST", { domain_name: domain_name, hide_share_messages: hide_share_messages }, callback);
+  // },
+  // 
+  // shareDomainBulkRegistration: function(linked_account_id, domain_name, num_domains, hide_share_messages, callback) {
+  //  Badger.api("/linked_accounts/" + linked_account_id + "/share_bulk_registration", "POST", { domain_name: domain_name, num_domains: num_domains, hide_share_messages: hide_share_messages }, callback);
+  // },
+  // 
+  // shareDomainTransfer: function(linked_account_id, num_domains, hide_share_messages, callback) {
+  //  Badger.api("/linked_accounts/" + linked_account_id + "/share_transfer", "POST", { num_domains: num_domains, hide_share_messages: hide_share_messages }, callback);
+  // },
 	
   getBlogs: function(callback) {
     Badger.api("/blogs", callback);

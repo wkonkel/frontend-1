@@ -142,7 +142,7 @@ with (Hasher('Register','Application')) {
           
           set_route('#domains/' + form_data.name);
           
-          Share.show_share_registration_modal(form_data.name);
+          // Share.show_share_registration_modal(form_data.name);
         } else {
           // TODO: wire in credit screen if not enough
           $('#errors').html(error_message(response))
@@ -175,7 +175,7 @@ with (Hasher('Register','Application')) {
         //       
         //       set_route('#domains/' + domain);
         //       // hide_modal();
-        //        Share.show_share_registration_modal(domain);
+        //        // Share.show_share_registration_modal(domain);
         //     });
         //   });
         // } else {
@@ -261,7 +261,7 @@ with (Hasher('Register','Application')) {
   //           
   //           set_route('#domains/' + domain);
   //           // hide_modal();
-  //            Share.show_share_registration_modal(domain);
+  //            // Share.show_share_registration_modal(domain);
   //         });
   //       });
   //     } else {
