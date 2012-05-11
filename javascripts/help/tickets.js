@@ -128,7 +128,7 @@ with (Hasher('Ticket','Application')) {
       }
 
       if (ticket.status != 'closed') {
-        attachment_field('response-file-uploader');
+        // attachment_field('response-file-uploader');
       }
 
       if (response_id != null) {
@@ -137,19 +137,19 @@ with (Hasher('Ticket','Application')) {
     });
   });
 
-  define('attachment_field', function(id) {
-    document.domain = (document.location.host.split('.').slice(-2).join('.') || 'localhost');
-    var response_attachment_uploader = new qq.FileUploader({
-      // pass the dom node (ex. $(selector)[0] for jQuery users)
-      element: $('#' + id)[0],
-      // path to server-side upload script
-      action: Badger.api_host + 'attachments',
-      params: {
-        access_token: Badger.getAccessToken(),
-        upload_inside_iframe: document.domain
-      }
-    });
-  })
+  // define('attachment_field', function(id) {
+  //   document.domain = (document.location.host.split('.').slice(-2).join('.') || 'localhost');
+  //   var response_attachment_uploader = new qq.FileUploader({
+  //     // pass the dom node (ex. $(selector)[0] for jQuery users)
+  //     element: $('#' + id)[0],
+  //     // path to server-side upload script
+  //     action: Badger.api_host + 'attachments',
+  //     params: {
+  //       access_token: Badger.getAccessToken(),
+  //       upload_inside_iframe: document.domain
+  //     }
+  //   });
+  // })
 
   define('display_attachments', function(attachments) {
     return attachments.length == 0 ? ''
