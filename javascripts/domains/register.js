@@ -11,7 +11,7 @@ with (Hasher('Register','Application')) {
 
         // render an info message into this div if credits were just added to the account in order
         // to proceed with the registration.
-        Billing.render_num_credits_added(),
+        Billing.show_num_credits_added(),
 
         input({ type: 'hidden', name: 'name', value: domain }),
         input({ type: 'hidden', name: 'auto_renew', value: 'true'}),
@@ -138,7 +138,7 @@ with (Hasher('Register','Application')) {
           BadgerCache.getDomains(update_my_domains_count);
           
           // cleanup session variables
-          Badger.Session.remove('credits_added', 'years');
+          Badger.Session.delete('credits_added', 'years');
           
           set_route('#domains/' + form_data.name);
           

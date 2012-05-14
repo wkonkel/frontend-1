@@ -119,7 +119,7 @@ with (Hasher('Domains','Application')) {
         div("It looks like you don't have any domains registered with us yet. You should probably:"),
         ul(
           li(a({ href: function() { $('#form-search-input').focus(); } }, "Search for a new domain")),
-          li(a({ href: Transfer.show }, "Transfer a domain from another registrar"))
+          li(a({ href: '#domain-transfers/add_domains' }, "Transfer a domain from another registrar"))
         ),
         div("Then this page will be a lot more fun.")
       ];
@@ -135,7 +135,7 @@ with (Hasher('Domains','Application')) {
 				)
 			),
       div({ style: 'float: right; margin-top: -44px' },
-        a({ 'class': 'myButton small', href: Transfer.show }, 'Transfer in a Domain')
+        a({ 'class': 'myButton small', href: '#domain-transfers/add_domains' }, 'Transfer in a Domain')
       ),
       
       domain_index_nav_table(

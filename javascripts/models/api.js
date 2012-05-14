@@ -26,16 +26,22 @@ var Badger = {
       return true;
     },
     
+    // returns a hash of key/value pairs
     read: function() {
-      if (arguments.length <= 1) return Session[arguments[0]];
       var sessionVars = {};
       for (i in arguments) {
-        sessionVars[arguments[i]] = Session[key];
+        sessionVars[arguments[i]] = Session[arguments[i]];
       }
-      return (Object.keys(sessionVars).length == 1) ? sessionVars[Object.keys(sessionVars)[0]] : sessionVars;
+      
+      return sessionVars;
     },
     
-    remove: function() {
+    // returns a single value for the given key
+    get: function(key) {
+      return this.read(key)[key];
+    },
+    
+    delete: function() {
       if (arguments.length == 0) {
         var keys = Object.keys(Session).slice(1);
         for (i in keys) {
@@ -48,7 +54,7 @@ var Badger = {
           sessionVars[key] = Session[key];
           delete Session[key]; // delete the variable from session
         }
-        return (Object.keys(sessionVars).length == 1) ? sessionVars[Object.keys(sessionVars)[0]] : sessionVars;
+        return sessionVars;
       }
     }
   },

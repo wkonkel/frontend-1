@@ -1,7 +1,7 @@
 with (Hasher('Billing','Application')) {
 
   route('#account/billing/credits', function() {
-    var necessary_credits = Badger.Session.read('necessary_credits') || 0;
+    var necessary_credits = Badger.Session.get('necessary_credits') || 0;
     
     var saved_or_new_card_div = div(
       fieldset(
@@ -170,19 +170,17 @@ with (Hasher('Billing','Application')) {
   
   // reads from Badger.Session to get the number of credits just added to the account,
   // and renders and info message into the div
-  define('render_num_credits_added', function() {
+  define('show_num_credits_added', function() {
+    if (!Badger.Session.get('credits_added')) return div();
+    
     var arguments = flatten_to_array(arguments);
     var options = shift_options_from_args(arguments);
     
-    if (credits_added = (options.delete_var) ? Badger.Session.remove('credits_added') : Badger.Session.read('credits_added')) {
+    with (Badger.Session.read('credits_added')) {
+      if (options.delete_var) Badger.Session.delete('credits_added');
+      
       var message = info_message("You have added ", credits_added, " ", credits_added <= 1 ? "credit" : "credits", " to your account.");
-
-      // if an into is passed, render into it. otherwise, just return a div of the message in place.
-      if (options.into) {
-        render(options, message)
-      } else {
-        return div(options, message);
-      }
+      return div(options, message);
     }
   });
   
@@ -213,19 +211,25 @@ with (Hasher('Billing','Application')) {
         
         // save the number of credits that were just purchased to show a customized message
         Badger.Session.write({
-          credits_added: Badger.Session.remove('necessary_credits')
+          credits_added: Badger.Session.get('necessary_credits')
         });
+        Badger.Session.delete('necessary_credits');
         
         BadgerCache.getAccountInfo(function(response) {
           update_credits();
           
-          // if a redirect url was explicitly set to null, don't perform the default redirect
-          if (Badger.Session.read('redirect_url') != null) {
-            set_route(Badger.Session.remove('redirect_url') || '#account/billing');
+          if (redirect_url = Badger.Session.get('redirect_url')) {
+            Badger.Session.delete('redirect_url');
+            set_route(redirect_url);
+          } else {
+            set_route('#account/billing');
           }
           
           // if a callback was provided, pull that off and execute it
-          if (callback = Badger.Session.remove('callback')) callback();
+          // if (callback = Badger.Session.get('callback')) {
+          //   Badger.Session.delete('callback');
+          //   callback();
+          // }
         });
       } else {
         $('#modal-errors').empty().append(error_message(response));
