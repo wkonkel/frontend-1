@@ -30,24 +30,6 @@ with (Hasher('LinkedAccounts','Application')) {
         
       );
     });
-
-
-				
-    // BadgerCache.getLinkedAccounts(function(response) {
-    //       render({ target: target_div },
-    //        (response.data || []).length == 0 ? [
-    //          div({ 'class': 'info-message', style: "margin: 25px 0" },
-    //            h2({ style: 'margin: 0 0 15px'}, "You have not linked any accounts yet, why not add one now?"), 
-    //            a({ 'class': "myButton large", href: curry(add_linked_accounts_modal, response.data) }, "Add A Linked Account")
-    //                 ),
-    //        ] : [
-    //                 div({ style: "float: right; margin-top: -44px" },
-    //                   a({ 'class': "myButton small", href: curry(add_linked_accounts_modal, response.data) }, "Add Linked Account")
-    //                 ),
-    //          linked_accounts_table(response.data)
-    //        ]
-    //       );
-    // });
 	});
 	
 	define('add_linked_account_icons', function() {

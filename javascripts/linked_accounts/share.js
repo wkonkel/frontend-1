@@ -9,7 +9,7 @@ with (Hasher('Share','Application')) {
       div({ 'class': 'sidebar' },
         info_message(
           h3('Spread the Word!'),
-          p('Let your friends know about the awesome domain you now control at Badger.com.')
+          p('Let your friends know about the great domain you now control at Badger.com.')
         )
       ),
       
@@ -24,8 +24,6 @@ with (Hasher('Share','Application')) {
   });
   
   define('linked_accounts_form', function(domain_name, linked_accounts) {
-    var select_linked_accounts = div();
-    
     var linked_accounts_form = form_with_loader({ 'class': 'fancy', action: share_message, loading_message: 'Submitting message...' },
       div({ id: 'response-messages' }),
     
@@ -34,8 +32,14 @@ with (Hasher('Share','Application')) {
         textarea({ id: 'message-content', name: 'content', style: 'height: 75px; width: 350px' }, 'I registered ', domain_name, ' with Badger.com!')
       ),
       
-      fieldset({ 'class': 'no-label', style: 'line-height: 20px' },
-        my_linked_accounts_table(linked_accounts)
+      fieldset({ style: 'line-height: 20px; margin-top: 10px' },
+        label('Share to'),
+        
+        (linked_accounts || []).length > 0 ? [
+          my_linked_accounts_table(linked_accounts)
+        ] : [
+          p("You have not linked a Facebook or Twitter account. ", a({ href: '#linked_accounts' }, "Add one now!")),
+        ]
       ),
       
       fieldset({ 'class': 'no-label' },
@@ -53,7 +57,7 @@ with (Hasher('Share','Application')) {
         th({ style: 'width: 20%' }),
         th({ style: 'width: 75%' })
       ),
-      
+
       (linked_accounts || []).map(function(linked_account) {
         if (linked_account.site.match(/facebook/i)) {
           return linked_account_row(linked_account);
@@ -61,7 +65,7 @@ with (Hasher('Share','Application')) {
           return linked_account_row(linked_account);
         }
       })
-    ))
+    ));
   });
   
   define('linked_account_row', function(linked_account) {
