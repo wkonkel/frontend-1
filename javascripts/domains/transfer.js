@@ -180,9 +180,13 @@ with (Hasher('Transfer','Application')) {
   
   define('continue_to_confirm_page', function(form_data) {
     // store the list of domains to retrieve on the next page
+    
+    var domains = $.unique(form_data.domains.split(/\s+/)).filter(function(domain) { return domain.length > 0; });
     Badger.Session.write({
-      domains: $.unique(form_data.domains.split(/\s+/))
+      domains: domains
     });
+    
+    console.log(form_data);
     
     set_route('#domain-transfers/confirm_domains');
   });
