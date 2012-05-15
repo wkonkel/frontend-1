@@ -60,17 +60,22 @@ with (Hasher('DomainShow','DomainApps')) {
           Badger.getDomain(domain_obj.name, curry(handle_get_domain_response, content_div, domain));
         }, 3000);
       } else {
+        
+        
+        console.log(domain_obj);
+                
+        
         render({ into: content_div },
-          
-          div({ style: 'float: right; margin-top: -50px' },
-            a({ href: '#linked_accounts/share/' + domain },
-              img({ src: 'images/apps/facebook.png', style: 'height: 25px; width: 25px; border-radius: 3px; margin-right: 5px' })
-            ),
-            
-            a({ href: '#linked_accounts/share/' + domain },
-              img({ src: 'images/apps/twitter.png', style: 'height: 25px; width: 25px; border-radius: 3px' })
+          ((domain_obj.permissions_for_person || []).includes('linked_account') || (domain_obj.permissions_for_person || []).includes('modify_dns')) ? [
+            div({ style: 'float: right; margin-top: -50px' },
+              a({ href: '#linked_accounts/share/' + domain },
+                img({ src: 'images/apps/facebook.png', style: 'height: 25px; width: 25px; border-radius: 3px; margin-right: 5px' })
+              ),
+              a({ href: '#linked_accounts/share/' + domain },
+                img({ src: 'images/apps/twitter.png', style: 'height: 25px; width: 25px; border-radius: 3px' })
+              )
             )
-          ),
+          ] : [],
           
           domain_status_description(domain_obj),
           render_all_application_icons(domain_obj)
@@ -471,7 +476,7 @@ with (Hasher('DomainShow','DomainApps')) {
     // show a share transfer modal.
     // the argument 1 is provided to make it a single domain share.
     // this will all be reworked at some point, leaving it as is for now --- CAB
-    Share.show_share_transfer_modal(1);
+    // Share.show_share_transfer_modal(1);
   });
   
   define('update_cancel_transfer_button_href', function(domain_obj) {

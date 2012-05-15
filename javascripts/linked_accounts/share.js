@@ -28,12 +28,16 @@ with (Hasher('Share','Application')) {
   });
   
   define('linked_accounts_form', function(domain_name, linked_accounts) {
+    // with (Badger.Session.read('share_message_type')) {
+    //   console.log('share_message_type', share_message_type);
+    // }
+    
     var linked_accounts_form = form_with_loader({ 'class': 'fancy', action: share_message, loading_message: 'Submitting message...' },
       div({ id: 'response-messages' }),
-    
+      
       fieldset({ 'for': 'content' },
         label({ 'for': 'content' }, 'Message:'),
-        textarea({ id: 'message-content', name: 'content', style: 'height: 75px; width: 350px' }, 'I registered ', domain_name, ' with Badger.com!')
+        textarea({ id: 'message-content', name: 'content', style: 'height: 75px; width: 350px' }, 'I now manage ', domain_name, ' on Badger.com!')
       ),
       
       fieldset({ style: 'line-height: 20px; margin-top: 10px' },

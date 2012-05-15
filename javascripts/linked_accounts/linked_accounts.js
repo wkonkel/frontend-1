@@ -143,7 +143,7 @@ with (Hasher('LinkedAccounts','Application')) {
 	  return tr(
       td({ align: 'center' }, img({ 'class': 'app_store_icon', src: icon_src, style: 'width: 50px; height: 50px; margin: 5px auto auto auto' })),
       td(linked_account_name),
-      td(linked_account.status == 'linked' ? linked_account.login : span({ style: 'font-style: italic; font-weight: bold; color: red' }, 'Account Unlinked')),
+      td(!['error_auth', 'unlinked', 'error'].includes(linked_account.status) ? linked_account.login : span({ style: 'font-style: italic; font-weight: bold; color: red' }, 'Account Unlinked')),
       td(delete_linked_account_button(linked_account))
     );
 	});

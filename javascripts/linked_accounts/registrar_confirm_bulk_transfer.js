@@ -78,7 +78,7 @@ with (Hasher('ConfirmRegistrarBulkTransfer', 'Application')) {
         registrant_contact_id: form_data.registrant_contact_id,
         privacy: form_data.privacy,
         auto_renew: form_data.auto_renew
-      }, function(response) { console.log(response) });
+      }, function(response) { /* console.log(response) */ });
     }
     
     set_route("#domain-transfers");
