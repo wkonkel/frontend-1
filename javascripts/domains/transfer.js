@@ -306,7 +306,7 @@ with (Hasher('Transfer','Application')) {
 
   define('confirm_transfers', function(form_data) {
     if ((form_data.cancel || '').match(/cancel/i)) {
-      Badger.Session.delete('transfer_domains', 'new_domains', 'domains', 'domain_count', 'form_data');
+      Badger.Session.remove('transfer_domains', 'new_domains', 'domains', 'domain_count', 'form_data');
       return set_route("#domain-transfers");
     }
     
@@ -340,7 +340,7 @@ with (Hasher('Transfer','Application')) {
       );
       
       // also, remove the session variables that were set during the transfer process --- CAB
-      Badger.Session.delete('transfer_domains', 'new_domains', 'domains', 'domain_count', 'form_data');
+      Badger.Session.remove('transfer_domains', 'new_domains', 'domains', 'domain_count', 'form_data');
     }
   });
 

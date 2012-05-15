@@ -138,7 +138,7 @@ with (Hasher('Register','Application')) {
           BadgerCache.getDomains(update_my_domains_count);
           
           // cleanup session variables
-          Badger.Session.delete('credits_added', 'years');
+          Badger.Session.remove('credits_added', 'years');
           
           set_route('#domains/' + form_data.name);
           

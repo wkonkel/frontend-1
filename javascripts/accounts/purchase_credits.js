@@ -177,7 +177,7 @@ with (Hasher('Billing','Application')) {
     var options = shift_options_from_args(arguments);
     
     with (Badger.Session.read('credits_added')) {
-      if (options.delete_var) Badger.Session.delete('credits_added');
+      if (options.delete_var) Badger.Session.remove('credits_added');
       
       var message = info_message("You have added ", credits_added, " ", credits_added <= 1 ? "credit" : "credits", " to your account.");
       return div(options, message);
@@ -213,13 +213,13 @@ with (Hasher('Billing','Application')) {
         Badger.Session.write({
           credits_added: Badger.Session.get('necessary_credits')
         });
-        Badger.Session.delete('necessary_credits');
+        Badger.Session.remove('necessary_credits');
         
         BadgerCache.getAccountInfo(function(response) {
           update_credits();
           
           if (redirect_url = Badger.Session.get('redirect_url')) {
-            Badger.Session.delete('redirect_url');
+            Badger.Session.remove('redirect_url');
             set_route(redirect_url);
           } else {
             set_route('#account/billing');
@@ -227,7 +227,7 @@ with (Hasher('Billing','Application')) {
           
           // if a callback was provided, pull that off and execute it
           // if (callback = Badger.Session.get('callback')) {
-          //   Badger.Session.delete('callback');
+          //   Badger.Session.remove('callback');
           //   callback();
           // }
         });

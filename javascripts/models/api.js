@@ -41,7 +41,7 @@ var Badger = {
       return this.read(key)[key];
     },
     
-    delete: function() {
+    remove: function() {
       if (arguments.length == 0) {
         var keys = Object.keys(Session).slice(1);
         for (i in keys) {
