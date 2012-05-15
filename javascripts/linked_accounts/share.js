@@ -17,7 +17,11 @@ with (Hasher('Share','Application')) {
     );
     
     BadgerCache.getLinkedAccounts(function(response) {
-      render({ into: target_div }, linked_accounts_form(domain_name, response.data));
+      var linked_accounts = (response.data||[]).filter(function(linked_account) {
+        return linked_account.status && linked_account.status == 'linked';
+      });
+      
+      render({ into: target_div }, linked_accounts_form(domain_name, linked_accounts));
       
       hide_form_submit_loader();
     });
@@ -59,6 +63,7 @@ with (Hasher('Share','Application')) {
       ),
 
       (linked_accounts || []).map(function(linked_account) {
+        if (!linked_account.status || linked_account.status != 'linked') return;
         if (linked_account.site.match(/facebook/i)) {
           return linked_account_row(linked_account);
         } else if (linked_account.site.match(/twitter/i)) {
