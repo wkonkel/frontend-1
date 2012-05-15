@@ -118,7 +118,7 @@ with (Hasher('Domains','Application')) {
         empty_domain_message = [
         div("It looks like you don't have any domains registered with us yet. You should probably:"),
         ul(
-          li(a({ href: function() { $('#form-search-input').focus(); } }, "Search for a new domain")),
+          li(a({ href: function() { set_route('#search'); $('#form-search-input').focus(); } }, "Search for a new domain")), // --- This is really confusing without a redirect to #search CAB
           li(a({ href: '#domain-transfers/add_domains' }, "Transfer a domain from another registrar"))
         ),
         div("Then this page will be a lot more fun.")
