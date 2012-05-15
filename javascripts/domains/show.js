@@ -60,11 +60,6 @@ with (Hasher('DomainShow','DomainApps')) {
           Badger.getDomain(domain_obj.name, curry(handle_get_domain_response, content_div, domain));
         }, 3000);
       } else {
-        
-        
-        console.log(domain_obj);
-                
-        
         render({ into: content_div },
           ((domain_obj.permissions_for_person || []).includes('linked_account') || (domain_obj.permissions_for_person || []).includes('modify_dns')) ? [
             div({ style: 'float: right; margin-top: -50px' },
@@ -121,11 +116,22 @@ with (Hasher('DomainShow','DomainApps')) {
         p('This domain is currently registered at ', domain_obj.current_registrar,
           ' and will expire on ', new Date(Date.parse(domain_obj.expires_at)).toDateString(), '.',
           ' If this is your domain, you can ',
-          a({ href: curry(Transfer.transfer_domains_form, domain_obj.name) }, 'transfer to Badger'), '.'
+          a({ href: curry(redirect_to_transfer_for_domain, domain_obj.name) }, 'transfer to Badger'), '.'
         )
       ];
     }
   });
+  
+  
+  define('redirect_to_transfer_for_domain', function(domain_name) {
+    // prepopulate the domains array with this one
+    Badger.Session.write({
+      domains: [domain_name]
+    });
+    
+    set_route('#domain-transfers/confirm_domains');
+  });
+  
   
   define('set_retry_transfer_timeout_if_necessary', function(domain_obj, seconds) {
     if (!domain_obj.transfer_steps || !domain_obj.transfer_steps.pending || domain_obj.transfer_steps.pending.length == 0) return;

@@ -1,5 +1,14 @@
 with (Hasher('Transfer','Application')) {
   route('#domain-transfers/add_domains', function() {
+    
+    // if there are already domains present, put them into the text box automatically
+    var prefilled_domains;
+    if (domains = Badger.Session.get('domains')) {
+      prefilled_domains = domains.join("\n");
+    }
+    
+    console.log(prefilled_domains);
+    
     render(
       h1('Transfer Domains Into Badger'),
       
@@ -17,7 +26,8 @@ with (Hasher('Transfer','Application')) {
           
           fieldset({ 'for': 'domains' },
             label('Domains'),
-            textarea({ name: 'domains', placeholder: "badger.com" })
+            
+            textarea({ name: 'domains', placeholder: "badger.com" }, prefilled_domains || null)
           ),
 
           fieldset({ 'class': 'no-label' },
