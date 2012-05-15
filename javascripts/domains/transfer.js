@@ -60,7 +60,7 @@ with (Hasher('Transfer','Application')) {
 
           div({ style: "margin-top: 20px; text-align: right "},
             input({ type: 'hidden', name: 'hidden_tag_anchor', id: 'hidden_tag_anchor', value: '' }),
-            submit({ 'id': 'continue-transfer-btn', 'class': 'myButton', name: 'cancel', value: "Cancel" })
+            submit({ id: 'continue-transfer-btn', 'class': 'myButton', name: 'cancel', value: "Cancel" })
           )
         )
         
@@ -104,6 +104,7 @@ with (Hasher('Transfer','Application')) {
   
   route('#domain-transfers/processing_transfer', function() {
     with (Badger.Session.read('transfer_domains', 'new_domains', 'domain_count', 'domains', 'credits_added', 'form_data')) {
+      
       render(
         h1('Processing Transfer of ' + domain_count + ' Domain(s)'),
         
@@ -180,13 +181,10 @@ with (Hasher('Transfer','Application')) {
   
   define('continue_to_confirm_page', function(form_data) {
     // store the list of domains to retrieve on the next page
-    
     var domains = $.unique(form_data.domains.split(/\s+/)).filter(function(domain) { return domain.length > 0; });
     Badger.Session.write({
       domains: domains
     });
-    
-    console.log(form_data);
     
     set_route('#domain-transfers/confirm_domains');
   });
@@ -264,8 +262,10 @@ with (Hasher('Transfer','Application')) {
 
       if (response.meta.status == 'not_found') {
        show_error_for_domain(domain, 'Invalid domain format');
+       remove_domain_from_session_var(domain);
       } else if (response.meta.status != 'ok') {
        show_error_for_domain(domain, response.data.message || 'Error: Internal server error');
+       remove_domain_from_session_var(domain);
       } else if (domain_info.available) {
         //show_error_for_domain(domain, 'Domain not currently registered.');
         set_background_color_if_valid(domain, true);
@@ -274,6 +274,7 @@ with (Hasher('Transfer','Application')) {
         $(item_id + ' .expires_domain').html('<i>Available!</i>');
       } else if (!domain_info.supported_tld) {
         show_error_for_domain(domain, "Extension ." + domain.split('.').pop() + " is not currently supported.");
+        remove_domain_from_session_var(domain);
       } else if (domain_info.current_registrar == 'Unknown') {
         // not done loading, try again in a few seconds if the dialog is still open
         if ($('#transfer-domains-table')) setTimeout(curry(update_domain_info, domain), 2000);
@@ -285,6 +286,14 @@ with (Hasher('Transfer','Application')) {
       }
       update_continue_button_count();
     });
+  });
+  
+  // remove the domain from the stored domains list in session store
+  define('remove_domain_from_session_var', function(domain_to_remove) {
+    if (current_domains = Badger.Session.get('domains')) {
+      var new_domains = current_domains.filter(function(domain) { return domain != domain_to_remove; });
+      Badger.Session.write({ domains: new_domains });
+    }
   });
 
   define('add_hidden_field_for_domain', function(domain, is_a_transfer) {
@@ -301,7 +310,17 @@ with (Hasher('Transfer','Application')) {
       return set_route("#domain-transfers");
     }
     
+    // update domains to remove those that were errors
+    // var new_domains = Badger.Session.get('domains').filter(function(domain) {
+    //   // console.log($('#' + row_id_for_domain(domain)))
+    //   
+    //   // $("tr[id$=-domain].error-row td").map
+    //   
+    //   return false;
+    // });
+    
     Badger.Session.write({
+      // domains:
       transfer_domains: form_data.transfer_domains||[],
       new_domains: form_data.new_domains||[],
       domain_count: (form_data.transfer_domains||[]).length + (form_data.new_domains||[]).length
