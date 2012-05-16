@@ -43,7 +43,7 @@ with (Hasher('Registration','DomainApps')) {
         render({ target: button_div }, 
           div({ style: "float: right; margin-top: -44px" }, 
             (domain_obj.badger_registration && $.inArray("renew", (domain_obj.permissions_for_person || [])) >= 0) ? [
-              a({ 'class': "myButton small", href: curry(Register.renew_domain_modal, domain) }, "Extend Registration (Renew)")
+              a({ 'class': "myButton small", href: '#domains/' + domain + '/registration/extend' }, "Extend Registration (Renew)")
             ] : [
               a({ 'class': "myButton small", href: curry(Transfer.show_domain_status_table, { domains: domain }) }, "Transfer To Badger.com")
             ]
@@ -53,6 +53,108 @@ with (Hasher('Registration','DomainApps')) {
       });
     });
   });
+  
+  route('#domains/:domain/registration/extend', function(domain) {
+    render(
+      chained_header_with_links(
+        { href: '#filter_domains/all/list', text: 'My Domains' },
+        { href: '#domains/' + domain, text: domain.toLowerCase() },
+        { href: '#domains/' + domain + '/registration', text: 'Registration' },
+        { text: 'Extend' }
+      ),
+      
+      div({ 'class': 'sidebar' },
+        
+        info_message(
+          h3('Registration Renewal'),
+          p("The domain, " + domain +", will automatically renew on its expiration date.  If you'd prefer, you can extend this registration immediately by using the form below.")
+        )
+      ),
+      
+      div({ 'class': 'fancy has-sidebar' },
+        div({ id: 'errors' }),
+
+        Billing.show_num_credits_added(),
+
+        form_with_loader({ 'class': 'fancy', action: renew_domain, loading_message: 'Extending registration...' },
+          input({ type: "hidden", value: domain, name: "domain" }),
+
+          fieldset(
+            label({ 'for': 'years' }, 'Years:'),
+            select({ name: 'years' },
+              option({ value: 1 }, "1"),
+  						option({ value: 2 }, "2"),
+  						option({ value: 3 }, "3"),
+  						option({ value: 4 }, "4"),
+  						option({ value: 5 }, "5"),
+              option({ value: 6 }, "6"),
+              option({ value: 7 }, "7"),
+              option({ value: 8 }, "8"),
+              option({ value: 9 }, "9"),
+  						option({ value: 10 }, "10")
+            )
+          ),
+
+          fieldset({ 'class': 'no-label' },
+            submit({ name: 'Submit', value: 'Renew Domain' })
+          )
+        )
+      )
+    );
+    
+    if (years = Badger.Session.get('years')) {
+      $("select option[value=" + years + "]").attr('selected','selected');
+    }
+  });
+  
+  define('renew_domain', function(form_data) {
+    Badger.renewDomain(form_data.domain, form_data.years, function(response) {
+      console.log(response);
+      
+			if (response.meta.status == "ok") {
+				set_route("#domains/" + form_data.domain + "/registration");
+				update_credits(true);
+			} else {
+			  if (response.data && response.data.extra) {
+          
+          Badger.Session.write({
+            years: form_data.years,
+            necessary_credits: response.data.extra.necessary_credits,
+            redirect_url: get_route()
+          });
+          
+          set_route("#account/billing/credits");
+        }
+			  
+				hide_form_submit_loader();
+				$("#errors").html(error_message(response));
+			}
+		});
+		
+    // BadgerCache.getAccountInfo(function(results) {
+    //   var needed_credits = form_data.years
+    //   var current_credits = results.data.domain_credits;
+    //   
+    //   if (current_credits >= needed_credits) {
+    //        start_modal_spin('Renewing domain...');
+    //        Badger.renewDomain(form_data.domain, form_data.years, function(response) {
+    //          if (response.meta.status == "ok") {
+    //            hide_modal();
+    //            set_route("#domains/" + form_data.domain + "/registration");
+    //            update_credits(true);
+    //          } else {
+    //            stop_modal_spin();
+    //            $("#errors").append(div({ 'class': "error-message" }, response.data.message));
+    //          }
+    //        });
+    //   } else {
+    //     // Billing.purchase_modal(curry(renew_domain, form_data), needed_credits - current_credits);
+    //     Billing.purchase_modal(curry(renew_domain_modal, form_data.domain, $.extend(form_data, { credits_added: true })), needed_credits - current_credits); // after successfully buying credits, go back to the initial renewal modal --- CAB
+    //   }
+    // });
+	});
+	
+	
   
   define('logo_url_for_registrar', function(name) {
     var src;
