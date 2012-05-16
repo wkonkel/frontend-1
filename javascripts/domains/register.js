@@ -43,17 +43,27 @@ with (Hasher('Register','Application')) {
 
         Contact.selector_with_all_form_fields({ name: 'registrant_contact_id' }),
         
-        fieldset(
-          label({ 'for': 'privacy' }, "Privacy:"),
-          checkbox({ name: 'privacy', checked: 'checked' }),
-          span({ style: 'margin-left: 15px' }, "Enable whois privacy.")
-        ),
+        // fieldset(
+        //   label({ 'for': 'privacy' }, "Privacy:"),
+        //   checkbox({ name: 'privacy', checked: 'checked' }),
+        //   span({ style: 'margin-left: 15px' }, "Enable whois privacy.")
+        // ),
+        // 
+        // fieldset(
+        //   label({ 'for': 'auto_renew' }, "Auto Renew:"),
+        //   checkbox({ name: 'auto_renew', checked: 'checked' }),
+        //   span({ style: 'margin-left: 15px' }, "Automatically renew registration.")
+        // ),        
         
-        fieldset(
-          label({ 'for': 'auto_renew' }, "Auto Renew:"),
-          checkbox({ name: 'auto_renew', checked: 'checked' }),
-          span({ style: 'margin-left: 15px' }, "Automatically renew registration.")
-        ),        
+        fieldset({ style: 'line-height: 25px' },
+          label('Free Options'),
+          div({ 'class': 'big-text' },
+            checkbox({ name: 'privacy', value: 'yes', checked: 'checked' }), 'Enable whois privacy'
+          ),
+          div({ 'class': 'big-text' },
+            checkbox({ name: 'auto_renew', value: 'yes', checked: 'checked' }), 'Auto-renew on expiration date'
+          )
+        ),
 
         fieldset({ 'class': 'no-label' },
           submit({ id: 'register-button', value: 'Register ' + Domains.truncate_domain_name(domain) + ' for 1 credit' })
