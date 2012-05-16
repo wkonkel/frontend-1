@@ -3,7 +3,7 @@ with (Hasher('Domains','Application')) {
     var target_div = div(spinner('Loading...'));
     
     render(
-      h1("MY DOMAINS » TRANSFERS"),
+      h1("My Domains » Transfers"),
       div({ style: 'float: right; margin-top: -44px' },
         a({ 'class': 'myButton small', href: '#domain-transfers/add_domains' }, 'Transfer in a Domain')
       ),

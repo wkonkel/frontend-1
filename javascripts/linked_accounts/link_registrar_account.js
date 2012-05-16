@@ -15,7 +15,12 @@ with (Hasher('LinkRegistrarAccount','Application')) {
     }
     
     render(
-      h1("Link " + ACCOUNT_NAME + " Account"),
+      // h1("Link " + ACCOUNT_NAME + " Account"),
+      chained_header_with_links(
+        { href: '#account', text: 'My Account' },
+        { href: '#linked_accounts', text: 'Linked Accounts' },
+        { text: ACCOUNT_NAME || 'Registrar' }
+      ),
       
       div({ 'class': 'sidebar' },
         info_message(

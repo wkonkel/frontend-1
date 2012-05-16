@@ -8,7 +8,7 @@ with (Hasher('Signup','Application')) {
         div({ 'class': 'sidebar' },
           info_message(
             h3("Don't have an account?"),
-            p("It only takes a minute to create a Badger account and is free!"),
+            p("It only takes a minute to create a Badger account and it's free!"),
             div({ 'class': 'centered-button' } , a({ href: '#account/create', 'class': 'myButton small' }, "Create Account"))
           )
         ),

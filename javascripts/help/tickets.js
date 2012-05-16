@@ -2,7 +2,11 @@ with (Hasher('Ticket','Application')) {
 
   route('#tickets', function() {
     render(
-			h1('My Account » Support Tickets'),
+      // h1('My Account » Support Tickets'),
+      chained_header_with_links(
+        { href: '#account', text: 'My Account' },
+        { text: 'Support Tickets' }
+      ),
 
       div({ style: 'float: right; margin-top: -44px' },
         a({ 'class': 'myButton small', href: '#tickets/create' }, 'Create a New Ticket')
@@ -26,7 +30,13 @@ with (Hasher('Ticket','Application')) {
   
   route('#tickets/create', function() {
     render(
-      h1('My Account » Support Tickets » Create Ticket'),
+      // h1('My Account » Support Tickets » Create Ticket'),
+      chained_header_with_links(
+        { href: '#account', text: 'My Account' },
+        { href: '#tickets', text: 'Support Tickets' },
+        { text: 'Create' }
+      ),
+      
       
       Account.account_nav_table(
         div({ id: 'send-ticket-form-errors' }),

@@ -338,39 +338,21 @@ with (Hasher('Application')) {
     return form(options, wrapper_div);
   });
   
-  define('table_with_selectable_rows', function() {
+  // render a header with links
+  define('chained_header_with_links', function() {
     var arguments = flatten_to_array(arguments);
-    var options = shift_options_from_args(arguments);
-
-    // arguments.map(function(tr) {
-    //   console.log(tr);
-    // });
-    
-    return table(options, tbody(arguments));
-  });
-  
-  define('table_row_checkbox', function() {
-    var arguments = flatten_to_array(arguments);
-    var options = shift_options_from_args(arguments);
-    
-    options.type = 'checkbox';
-    
-    return td(
-      input(options, arguments)
-    );
-  });
-  
-  define('table_header_checkbox', function() {
-    var arguments = flatten_to_array(arguments);
-    var options = shift_options_from_args(arguments);
-    
-    options.type = 'checkbox';
-    
-    return th({ style: 'width: 5%' },
-      input(options, arguments)
-    );
-  });
-    
+    var header_arguments = [];
+    for (i = 0; i < arguments.length; i++) {
+      if (!arguments[i].href) {
+        header_arguments.push(arguments[i].text);
+      } else {
+        header_arguments.push(a({ href: arguments[i].href || '#' }, arguments[i].text));
+      }
+      if ((i + 1) != arguments.length) header_arguments.push(" » ");
+    }
+    return h1(header_arguments);
+  })
+      
   define('hide_form_submit_loader', function() {
     make_visible('#_form-loader', false);
     make_visible('#_form-internals', true);

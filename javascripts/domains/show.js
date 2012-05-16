@@ -7,7 +7,11 @@ with (Hasher('DomainShow','DomainApps')) {
     var content_div = div(spinner('Loading...'));
     
     render(
-      h1_for_domain(domain),
+      chained_header_with_links(
+        { href: '#filter_domains/all/list', text: 'My Domains' },
+        { text: domain }
+      ),
+      
       div({ id: 'error-message', 'class': 'error-message hidden' }),
       domain_nav_table(content_div)
     );

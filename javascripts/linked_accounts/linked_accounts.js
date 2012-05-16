@@ -7,7 +7,12 @@ with (Hasher('LinkedAccounts','Application')) {
 		
 		render(
 			div(
-				h1('Linked Accounts'),
+        // h1('Linked Accounts'),
+        chained_header_with_links(
+          { text: 'My Account' },
+          { text: 'Linked Accounts' }
+        ),
+        
         Account.account_nav_table(target_div)
 			)
 		);

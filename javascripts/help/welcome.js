@@ -13,8 +13,8 @@ with (Hasher('Welcome','Application')) {
 
         h3({ style: "margin-bottom: 0" }, 'Automatic transfers with no downtime:'),
         div({ style: 'height: 120px' },
-          app_icon('images/apps/godaddy.png', 'GoDaddy'),
-          app_icon('images/apps/ns.png', 'Network Solutions'),
+          app_icon('images/apps/godaddy.png', 'GoDaddy', curry(registrar_link_page, 'godaddy')),
+          app_icon('images/apps/ns.png', 'Network Solutions', curry(registrar_link_page, 'networksolutions')),
           img({ src: 'images/v2/comingsoon.png', style: 'padding: 9px' })
           // app_icon('images/apps/enom.png', 'eNom'),
           // app_icon('images/apps/namecheap.png', 'Namecheap'),
@@ -48,7 +48,14 @@ with (Hasher('Welcome','Application')) {
       img({ 'class': 'app_store_icon', src: img_src } ),
       span({ style: 'text-align: center; font-weight: bold' }, name)
     );
-  })
+  });
+  
+  define('registrar_link_page', function(registrar) {
+    if (registrar == 'godaddy')
+      set_route('#linked_accounts/godaddy/link');
+    else if (registrar == 'networksolutions')
+      set_route('#linked_accounts/networksolutions/link');
+  });
 
   define('get_started', function() {
     set_route('#search'); 

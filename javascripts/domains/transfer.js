@@ -1,22 +1,28 @@
 with (Hasher('Transfer','Application')) {
+  
+  var current_action = 'transfer';
+  
   route('#domain-transfers/add_domains', function() {
-    
     // if there are already domains present, put them into the text box automatically
     var prefilled_domains;
     if (domains = Badger.Session.get('domains')) {
       prefilled_domains = domains.join("\n");
     }
     
-    console.log(prefilled_domains);
-    
     render(
-      h1('Transfer Domains Into Badger'),
+      (current_action == 'transfer') ? h1('Transfer Domains Into Badger') : h1('Register Domains with Badger'),
       
       div({ 'class': 'sidebar' },
-        info_message(
-          h3('Transferring Domains'),
-          p('Enter the domain(s) that you would like to transfer to Badger, one per line.')
-        )
+        (current_action == 'transfer') ?
+          info_message(
+            h3('Transferring Domains'),
+            p('Enter the domain(s) that you would like to transfer to Badger, one per line.')
+          )
+        :
+          info_message(
+            h3('Register Domains'),
+            p('Enter the domain(s) that you would like to register eith Badger, one per line.')
+          )
       ),
             
       div({ 'class': 'fancy has-sidebar' },

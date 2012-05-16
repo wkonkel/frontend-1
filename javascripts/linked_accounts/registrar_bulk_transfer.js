@@ -18,7 +18,14 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
     );
     
     render(
-      h1("Transfer Domains from " + REGISTRAR_NAME + " to Badger.com"),
+      // h1("Transfer Domains from " + REGISTRAR_NAME + " to Badger.com"),
+      chained_header_with_links(
+        { href: '#account', text: 'My Account' },
+        { href: '#linked_accounts', text: 'Linked Accounts' },
+        { text: REGISTRAR_NAME || 'Registrar' },
+        { text: 'Transfer' }
+      ),
+      
       
       div({ 'class': "sidebar" },
         info_message(
@@ -36,8 +43,8 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
       div({ 'class': "fancy has-sidebar" },
         div({ id: "bulk-transfer-error", style: "display: none" },
           error_message("There was a problem syncing your account, please try again."),
-          p("We were unable to read any domains from your account at " + REGISTRAR_NAME + ". Do you have any domains registered there?"),
-          p("If you have domains registered at " + REGISTRAR_NAME + " that did not show up, you should ", a({ href: null }, "sync"), " your account and try again later.")
+          p("We were unable to read any domains from your account at " + REGISTRAR_NAME + ". Do you have any domains registered there?")
+          // p("If you have domains registered at " + REGISTRAR_NAME + " that did not show up, you should ", a({ href: null }, "sync"), " your account and try again later.")
         ),
         
         domains_div
