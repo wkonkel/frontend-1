@@ -10,12 +10,9 @@ with (Hasher('LinkRegistrarAccount','Application')) {
     } else if (registrar == "enom") {
       var ACCOUNT_NAME         = "Enom";
       var ACCOUNT_ICON_SRC     = "images/apps/enom.png";
-    } else {
-      render()
     }
     
     render(
-      // h1("Link " + ACCOUNT_NAME + " Account"),
       chained_header_with_links(
         { href: '#account', text: 'My Account' },
         { href: '#linked_accounts', text: 'Linked Accounts' },
@@ -29,7 +26,8 @@ with (Hasher('LinkRegistrarAccount','Application')) {
         )
       ),
       
-      div({ id: "link-registrar-form" },
+      form_with_loader({ 'class': 'fancy', action: curry(link_account, registrar), loading_message: 'Verifying your login credentials...' },
+        // h1("Link " + ACCOUNT_NAME + " Account"),
         div({ 'class': "fancy has-sidebar" },
           div({ style: "margin-left: 60px" },
             div({ style: "float: left; margin: auto 20px 20px auto" },
@@ -42,32 +40,28 @@ with (Hasher('LinkRegistrarAccount','Application')) {
             div({ id: 'account-link-errors' })
           )
         ),
+        
+        fieldset(
+          label({ 'for': 'username-input' }, 'Username:'),
+          div(input({ id: 'username-input', name: 'login', placeholder: 'username' }))
+        ),
 
-        form({ 'class': 'fancy has-sidebar', action: curry(link_account, registrar) },
-          fieldset(
-            label({ 'for': 'username-input' }, 'Username:'),
-            div(input({ id: 'username-input', name: 'login', placeholder: 'username' }))
-          ),
+        fieldset(
+          label({ 'for': 'password-input' }, 'Password:'),
+          div(input({ id: 'password-input', type: 'password', name: 'password', placeholder: 'password' }))
+        ),
 
-          fieldset(
-            label({ 'for': 'password-input' }, 'Password:'),
-            div(input({ id: 'password-input', type: 'password', name: 'password', placeholder: 'password' }))
-          ),
+        div({ style: "margin: 20px auto 20px 112px; width: 380px" },
+          input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
+          span(" I hereby authorize Badger to act as my agent and to access my " + ACCOUNT_NAME + " account pursuant to the ", a({ href: '#terms_of_service' }, "Registration Agreement"))
+        ),
 
-          div({ style: "margin: 20px auto 20px 112px; width: 380px" },
-            input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
-            span(" I hereby authorize Badger to act as my agent and to access my " + ACCOUNT_NAME + " account pursuant to the ", a({ href: '#terms_of_service' }, "Registration Agreement"))
-          ),
-
-          fieldset({ 'class': 'no-label' },
-            div({ id: "button-div" },
-              input({ 'class': 'myButton large', type: 'submit', value: 'Link Account' })
-            )
+        fieldset({ 'class': 'no-label' },
+          div({ id: "button-div" },
+            input({ 'class': 'myButton large', type: 'submit', value: 'Link Account' })
           )
         )
-      ),
-      
-      spinner("Verifying your login credentials...")
+      )
     );
     
     $("input[name=login]").focus();
@@ -78,33 +72,26 @@ with (Hasher('LinkRegistrarAccount','Application')) {
   // reading domains from the registrar.
   define('link_account', function(registrar, form_data) {
     if (!form_data.agree_to_terms) {
-      return $("#account-link-errors").html(
+      $("#account-link-errors").html(
         error_message("You must allow Badger.com to act as your agent to proceed.")
       );
+      hide_form_submit_loader();
+      return;
     }
     
     // add registrar to form data
     form_data.site = registrar;
     
-    // hide the form and show spinner
-    $("#link-registrar-form").hide();
-    $("#linking-registrar-spinner").show();
-    
     Badger.createLinkedAccount(form_data, function(response) {
       if (response.meta.status == 'ok') {
-        
-        // TODO where to go when successfully linked an account
         set_route("#linked_accounts/" + registrar + "/" + response.data.id + "/bulk_transfer");
-        
       } else {
-        // hide the spinner and show the form
-        $("#link-registrar-form").show();
-        $("#linking-registrar-spinner").hide();
-        
         // render the error message
         $("#account-link-errors").html(
           error_message(response.data.message)
         );
+        
+        hide_form_submit_loader();
       }
     });
   });
