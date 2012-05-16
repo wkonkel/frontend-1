@@ -26,7 +26,13 @@ with (Hasher('EmailForwards', 'DomainApps')) {
   route('#domains/:domain/email_forwards', function(domain) {
     render(
       div({ id: 'email-forwards-wrapper' },
-      h1_for_domain(domain, 'Email Forwards'),
+      // h1_for_domain(domain, 'Email Forwards'),
+      chained_header_with_links(
+        { href: '#filter_domains/all/list', text: 'My Domains' },
+        { href: '#domains/' + domain, text: domain.toLowerCase() },
+        { text: 'Email Forwards' }
+      ),
+      
         domain_app_settings_button('badger_email_forward', domain),
       
         div({ id: 'email-forwards-errors' }),

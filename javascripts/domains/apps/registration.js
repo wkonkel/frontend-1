@@ -18,7 +18,13 @@ with (Hasher('Registration','DomainApps')) {
     var button_div = div();
     
     render(
-      h1_for_domain(domain, 'Registration'),
+      // h1_for_domain(domain, 'Registration'),
+      chained_header_with_links(
+        { href: '#filter_domains/all/list', text: 'My Domains' },
+        { href: '#domains/' + domain, text: domain.toLowerCase() },
+        { text: 'Registration' }
+      ),
+      
       button_div,
       div({ 'class': 'error-message hidden', id: 'error-message' }),
       div({ 'class': 'success-message hidden', id: 'success-message' }),

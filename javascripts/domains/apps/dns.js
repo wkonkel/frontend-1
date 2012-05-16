@@ -23,7 +23,13 @@ with (Hasher('DnsApp','DomainApps')) {
     var button_div = div({ style: 'float: right; margin-top: -44px' });
     
     render(
-      h1_for_domain(domain, 'DNS'),
+      // h1_for_domain(domain, 'DNS'),
+      chained_header_with_links(
+        { href: '#filter_domains/all/list', text: 'My Domains' },
+        { href: '#domains/' + domain, text: domain.toLowerCase() },
+        { text: 'DNS' }
+      ),
+      
       button_div,
       domain_nav_table(
         message_div,
