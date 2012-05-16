@@ -21,8 +21,7 @@ with (Hasher('ConfirmRegistrarBulkTransfer', 'Application')) {
       chained_header_with_links(
         { href: '#account', text: 'My Account' },
         { href: '#linked_accounts', text: 'Linked Accounts' },
-        { text: REGISTRAR_NAME || 'Registrar' },
-        { text: 'Transfer' }
+        { text: REGISTRAR_NAME || 'Registrar' }
       ),
       
       

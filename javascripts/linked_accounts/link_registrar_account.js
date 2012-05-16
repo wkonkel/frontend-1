@@ -26,7 +26,7 @@ with (Hasher('LinkRegistrarAccount','Application')) {
         )
       ),
       
-      form_with_loader({ 'class': 'fancy', action: curry(link_account, registrar), loading_message: 'Verifying your login credentials...' },
+      form_with_loader({ 'class': 'fancy', action: curry(create_linked_account_and_verify_login, registrar), loading_message: 'Verifying your login credentials...' },
         // h1("Link " + ACCOUNT_NAME + " Account"),
         div({ 'class': "fancy has-sidebar" },
           div({ style: "margin-left: 60px" },
@@ -67,10 +67,37 @@ with (Hasher('LinkRegistrarAccount','Application')) {
     $("input[name=login]").focus();
   });
 
-  // POST to Badger.com API, render errors if returned
-  // if successful, should drop a queue message to sync the account,
-  // reading domains from the registrar.
-  define('link_account', function(registrar, form_data) {
+  // // POST to Badger.com API, render errors if returned
+  // // if successful, should drop a queue message to sync the account,
+  // // reading domains from the registrar.
+  // define('link_account', function(registrar, form_data) {
+  //   if (!form_data.agree_to_terms) {
+  //     $("#account-link-errors").html(
+  //       error_message("You must allow Badger.com to act as your agent to proceed.")
+  //     );
+  //     hide_form_submit_loader();
+  //     return;
+  //   }
+  //   
+  //   // add registrar to form data
+  //   form_data.site = registrar;
+  //   
+  //   Badger.createLinkedAccount(form_data, function(response) {
+  //     if (response.meta.status == 'ok') {
+  //       set_route("#linked_accounts/" + registrar + "/" + response.data.id + "/bulk_transfer");
+  //     } else {
+  //       // render the error message
+  //       $("#account-link-errors").html(
+  //         error_message(response.data.message)
+  //       );
+  //       
+  //       hide_form_submit_loader();
+  //     }
+  //   });
+  // });
+  
+  
+  define('create_linked_account_and_verify_login', function(registrar, form_data) {
     if (!form_data.agree_to_terms) {
       $("#account-link-errors").html(
         error_message("You must allow Badger.com to act as your agent to proceed.")
@@ -84,16 +111,45 @@ with (Hasher('LinkRegistrarAccount','Application')) {
     
     Badger.createLinkedAccount(form_data, function(response) {
       if (response.meta.status == 'ok') {
-        set_route("#linked_accounts/" + registrar + "/" + response.data.id + "/bulk_transfer");
+        // if the account was created, poll until the login is validated
+        poll_until_login_verified(registrar, response.data.id);
       } else {
-        // render the error message
-        $("#account-link-errors").html(
-          error_message(response.data.message)
-        );
-        
         hide_form_submit_loader();
+        $('#account-link-errors').html(error_message(response));
       }
     });
+  });
+  
+  define('poll_until_login_verified', function(registrar, id) {
+    Badger.getLinkedAccount(id, function(response) {
+      // console.log(response);
+      
+      if (response.meta.status == 'ok') {
+        if (response.data.status == 'login_invalid') {
+          hide_form_submit_loader();
+          
+          $('#account-link-errors').html(
+            error_message("Username and/or password not correct.")
+          );
+        } else if (['validating_login', 'pending_sync'].includes(response.data.status)) {
+          setTimeout(curry(poll_until_login_verified, registrar, id), 2500);
+        } else if (['validating_login', 'syncing', 'pending_sync'].includes(response.data.status)) {
+          set_route("#linked_accounts/" + registrar + "/" + response.data.id + "/bulk_transfer");
+        }
+      } else {
+        hide_form_submit_loader();
+        $('#account-link-errors').html(error_message(response));
+      }
+    });
+  });
+  
+  // options are:
+  // timeout: number of ms to wait
+  // action: the action to be called on the timeout. if returns true, stops polling
+  define('poll_with_until', function(options, until) {
+    with (options) {
+      if (until()) setTimeout(action, interval);
+    }
   });
   
 }
