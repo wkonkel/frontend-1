@@ -35,13 +35,25 @@ with (Hasher('Register','Application')) {
           label({ 'for': 'years' }, 'Expiration:'),
           div({ 'class': 'big-text', id: 'expiration-date' })
         ),
-
+        
         // fieldset(
         //   label({ 'for': 'first_name-input' }, 'Also Register:'),
         //   div(similar_domain_list(domain))
         // ),
 
         Contact.selector_with_all_form_fields({ name: 'registrant_contact_id' }),
+        
+        fieldset(
+          label({ 'for': 'privacy' }, "Privacy:"),
+          checkbox({ name: 'privacy', checked: 'checked' }),
+          span({ style: 'margin-left: 15px' }, "Enable whois privacy.")
+        ),
+        
+        fieldset(
+          label({ 'for': 'auto_renew' }, "Auto Renew:"),
+          checkbox({ name: 'auto_renew', checked: 'checked' }),
+          span({ style: 'margin-left: 15px' }, "Automatically renew registration.")
+        ),        
 
         fieldset({ 'class': 'no-label' },
           submit({ id: 'register-button', value: 'Register ' + Domains.truncate_domain_name(domain) + ' for 1 credit' })
@@ -147,7 +159,7 @@ with (Hasher('Register','Application')) {
           // TODO: wire in credit screen if not enough
           $('#errors').html(error_message(response))
           
-          if (response.data && response.data.extra && response.data.extra) {
+          if (response.data && response.data.extra) {
             
             Badger.Session.write({
               years: form_data.years,
