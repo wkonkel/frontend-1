@@ -28,9 +28,9 @@ with (Hasher('Account','Application')) {
       tr(
         td({ style: 'width: 200px; vertical-align: top' },
           ul({ id: 'domains-left-nav' },
-            li(a({ href: '#tickets', 'class': (active_url.match(/^#tickets$/) || active_url.match(/^#tickets\/create$/) ? 'active' : '') }, 'Support Tickets')),
+            li(a({ href: '#tickets', 'class': (active_url.match(/^#tickets.*$/) ? 'active' : '') }, 'Support Tickets')),
             li(a({ href: '#account', 'class': (active_url.match(/^#account$/) ? 'active' : '') }, 'Settings')),
-            li(a({ href: '#account/profiles', 'class': (active_url.match(/^#account\/profiles$/) ? 'active' : '') }, 'Whois Profiles')),
+            li(a({ href: '#account/profiles', 'class': (active_url.match(/^#account\/profiles.*$/) ? 'active' : '') }, 'Whois Profiles')),
             li(a({ href: '#account/billing', 'class': (active_url.match(/^#account\/billing$/) ? 'active' : '') }, 'Credits & Billing')),
             li(a({ href: '#linked_accounts', 'class': (active_url.match(/^#linked_accounts$/) ? 'active' : '') }, 'Linked Accounts'))
             //li(a({ href: '#invites', 'class': (active_url.match(/^#invites/) ? 'active' : '') }, 'Sent Invites'))

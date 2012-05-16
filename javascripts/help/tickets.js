@@ -4,7 +4,7 @@ with (Hasher('Ticket','Application')) {
     render(
       // h1('My Account » Support Tickets'),
       chained_header_with_links(
-        { href: '#account', text: 'My Account' },
+        { text: 'My Account' },
         { text: 'Support Tickets' }
       ),
 

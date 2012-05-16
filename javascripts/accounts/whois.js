@@ -47,7 +47,12 @@ with (Hasher('Whois','Application')) {
   route('#account/profiles/new', function() {
     render(
       div(
-        h1('Create Contact'),
+        // h1('Create Contact'),
+        chained_header_with_links(
+          { text: 'My Account' },
+          { href: '#account/profiles', text: 'Profiles' },
+          { text: 'Create' }
+        ),
 
         div({ style: 'float: left; width: 200px'},
           Account.account_nav_table()
