@@ -2,7 +2,7 @@ with (Hasher('Blogs', 'Application')) {
  
   route('#blogs', function() {
     render(
-      h1('BADGER BLOG'),
+      h1('Badger Blog'),
       div({ id: 'blog-loader' }, spinner('Loading...'))
     );
 

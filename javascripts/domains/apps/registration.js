@@ -55,6 +55,8 @@ with (Hasher('Registration','DomainApps')) {
   });
   
   route('#domains/:domain/registration/extend', function(domain) {
+    var target_div = div(spinner('Loading...'));
+    
     render(
       chained_header_with_links(
         { href: '#filter_domains/all/list', text: 'My Domains' },
@@ -63,54 +65,66 @@ with (Hasher('Registration','DomainApps')) {
         { text: 'Extend' }
       ),
       
-      div({ 'class': 'sidebar' },
-        
-        info_message(
-          h3('Registration Renewal'),
-          p("The domain, " + domain +", will automatically renew on its expiration date.  If you'd prefer, you can extend this registration immediately by using the form below.")
-        )
-      ),
-      
-      div({ 'class': 'fancy has-sidebar' },
-        div({ id: 'errors' }),
-
-        Billing.show_num_credits_added(),
-
-        form_with_loader({ 'class': 'fancy', action: renew_domain, loading_message: 'Extending registration...' },
-          input({ type: "hidden", value: domain, name: "domain" }),
-
-          fieldset(
-            label({ 'for': 'years' }, 'Years:'),
-            select({ name: 'years' },
-              option({ value: 1 }, "1"),
-  						option({ value: 2 }, "2"),
-  						option({ value: 3 }, "3"),
-  						option({ value: 4 }, "4"),
-  						option({ value: 5 }, "5"),
-              option({ value: 6 }, "6"),
-              option({ value: 7 }, "7"),
-              option({ value: 8 }, "8"),
-              option({ value: 9 }, "9"),
-  						option({ value: 10 }, "10")
-            )
-          ),
-
-          fieldset({ 'class': 'no-label' },
-            submit({ name: 'Submit', value: 'Renew Domain' })
-          )
-        )
-      )
+      target_div
     );
     
-    if (years = Badger.Session.get('years')) {
-      $("select option[value=" + years + "]").attr('selected','selected');
-    }
+    Badger.getDomain(domain, function(response) {
+      if (response.meta.status == 'ok') {
+        render({ into: target_div },
+          div({ 'class': 'sidebar' },
+            info_message(
+              h3('Registration Renewal'),
+              p("Your domain will automatically renew on its expiration date. If you'd prefer, you can extend the registration now by using this form.")
+            )
+          ),
+          
+          div({ 'class': 'fancy has-sidebar' },
+            div({ id: 'errors' }),
+        
+            Billing.show_num_credits_added(),
+        
+            form_with_loader({ 'class': 'fancy', action: renew_domain, loading_message: 'Extending registration...' },
+              input({ type: "hidden", value: domain, name: "domain" }),
+        
+              fieldset(
+                label({ 'for': 'years' }, 'Years:'),
+                select({ name: 'years' },
+                  option({ value: 1 }, "1"),
+                     option({ value: 2 }, "2"),
+                     option({ value: 3 }, "3"),
+                     option({ value: 4 }, "4"),
+                     option({ value: 5 }, "5"),
+                  option({ value: 6 }, "6"),
+                  option({ value: 7 }, "7"),
+                  option({ value: 8 }, "8"),
+                  option({ value: 9 }, "9"),
+                     option({ value: 10 }, "10")
+                )
+              ),
+              
+              fieldset(
+                label('Expiration Date:'),
+                span({ id: 'expiration-date', 'class': 'big-text' }, new Date(response.data.expires_at).toString("MMMM dd, yyyy"))
+              ),
+        
+              fieldset({ 'class': 'no-label' },
+                submit({ name: 'Submit', value: 'Renew Domain' })
+              )
+            )
+          )
+        );
+        
+        $('select').change(function() {
+          var new_expiration_date = new Date(response.data.expires_at).add(parseInt(this.value)).years();
+          $("#expiration-date").html(new_expiration_date.toString("MMMM dd, yyyy"));
+        });
+      }
+    });
+    
   });
   
   define('renew_domain', function(form_data) {
     Badger.renewDomain(form_data.domain, form_data.years, function(response) {
-      console.log(response);
-      
 			if (response.meta.status == "ok") {
 				set_route("#domains/" + form_data.domain + "/registration");
 				update_credits(true);
