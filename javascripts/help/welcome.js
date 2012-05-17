@@ -42,11 +42,11 @@ with (Hasher('Welcome','Application')) {
               h3('Manage all your domains in one place.'),
               p('Link existing accounts to manage all of your domains in one place.'),
             
-              h3('Automatic transfers with no downtime.'),
-              p('We handle all the hard parts like auth codes and DNS migration.'),
-
               h3('DNS shortcuts for easy configuration.'),
-              p('Install popular apps quickly without touching DNS.')
+              p('Install popular apps quickly without touching DNS.'),
+
+              h3('Automatic transfers with no downtime.'),
+              p('We handle all the hard parts like auth codes and DNS migration.')
             ),
             td({ style: 'width: 50%; padding-left: 10px; vertical-align: top' },
               h3('Pricing starts at $10 a year.'),
