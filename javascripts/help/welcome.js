@@ -2,51 +2,126 @@ with (Hasher('Welcome','Application')) {
   route('#welcome', function() {
     var registrar_app_icon_url = Badger.getAccessToken() ? '#linked_accounts' : "#account/create";
     
-    render(
-    
-      div({ id: 'homepage-welcome' },
-        h2("Domains for ", span("$10"), " a year."),
-        div({ 'class': 'get-started-wrapper', style: "float: right; margin-top: -85px" },
-          a({ href: get_started, 'class': 'myButton', style: 'font-size: 30px; padding: 15px 30px' }, 'Get Started')
-        ),
-        img({ src: 'images/badger-6.png', 'class': 'badger', style: 'margin-top: 50px' }),
+    render({ layout: no_bg_layout },
 
-        h3({ style: "margin-bottom: 0" }, 'Automatic transfers with no downtime:'),
-        div({ style: 'height: 120px' },
-          app_icon('images/apps/godaddy.png', 'GoDaddy', curry(registrar_link_page, 'godaddy')),
-          app_icon('images/apps/ns.png', 'Network Solutions', curry(registrar_link_page, 'networksolutions')),
-          img({ src: 'images/v2/comingsoon.png', style: 'padding: 9px' })
-          // app_icon('images/apps/enom.png', 'eNom'),
-          // app_icon('images/apps/namecheap.png', 'Namecheap'),
-          // app_icon('images/apps/1and1.png', '1&1')
-        ),
-        //h3({ style: "margin-bottom: 0" }, 'Free WHOIS privacy and DNS hosting.'),
-        h3('Shortcuts for easy setup:'),
-        div({ style: 'height: 120px' },
-          app_icon('images/apps/gmail2.png', 'Gmail'),
-          app_icon('images/apps/wordpress.png', 'Wordpress'),
-          app_icon('images/apps/shopify.png', 'Shopify'),
-          app_icon('images/apps/heroku.png', 'Heroku'),
-          app_icon('images/apps/blogger.png', 'Blogger')
-        ),
+      div({ id: 'main' },
 
-        div({ style: "clear: both" })
+        div({ 'id': 'content-top' }, 
+          img({ src: 'images/badger-6.png', style: 'float: right; width: 150px; margin: 20px 50px 20px 20px' }),
+          h2("Domain management done ", span({ style: 'letter-spacing: 2px' }, "r"), "ight."),
+          //h3("Badger makes managing your domains easy, wherever they are."),
+
+          h3("Link an existing account:"),
+          div({ 'class': 'registrars', style: 'padding-left: 30px' },
+            a({ href: '#linked_accounts/godaddy/link' }, img({ 'class': 'app_store_icon', src: 'images/apps/godaddy.png' }), span('GoDaddy')),
+            a({ href: '#linked_accounts/networksolutions/link' }, img({ 'class': 'app_store_icon', src: 'images/apps/ns.png' }), span('Network Solutions')),
+            a({ href: '#linked_accounts' }, img({ 'class': 'app_store_icon', src: 'images/apps/enom.png' }), span('eNom')),
+            a({ href: '#linked_accounts' }, img({ 'class': 'app_store_icon', src: 'images/apps/namecheap.png' }), span('Namecheap'))
+          ),
+
+          h3("Search for a new domain:"),
+          div({style: 'padding-left: 30px'}, 
+            //a({ href: get_started, 'class': 'myButton', style: 'font-size: 20px; padding: 9px 30px' }, 'Search for domains')
+            input({ 'class': 'domain-search-box', placeholder: 'i.e. badger.com', onFocus: function() { set_route('#search'); $('#form-search input').focus(); } })
+          )
+        ),
         
-        // ul(
-        //   li('Automatic transfers with no downtime.'),
-        //   //li('Fast search and simple registration process.'),
-        //   li('DNS shortcuts for popular apps.'),
-        //   li('Free privacy, DNS and email/url forwarding.')
+        // div({ 'id': 'content-top-right', style: 'float: left' }, 
+        //   h2({ style: 'font-size: 26px' }, "Or link your account:"),
+        // 
+        //   div(a({ href: '#linked_accounts/godaddy/link' }, img({ 'class': 'app_store_icon mini', src: 'images/apps/godaddy.png' }), span('GoDaddy'))),
+        //   div(a({ href: '#linked_accounts/networksolutions/link' }, img({ 'class': 'app_store_icon mini', src: 'images/apps/ns.png' }), span('Network Solutions'))),
+        //   div(a({ href: '#linked_accounts' }, img({ 'class': 'app_store_icon mini', src: 'images/apps/enom.png' }), span('eNom'))),
+        //   div(a({ href: '#linked_accounts' }, img({ 'class': 'app_store_icon mini', src: 'images/apps/namecheap.png' }), span('Namecheap')))          
         // ),
+        // div({ style: 'clear: both' }),
         
-      )
+        div({ 'id': 'content', style: "margin-top: 0", 'class': 'homepage' }, 
+          table({ style: 'width: 100%' }, tbody(tr(
+            td({ style: 'width: 50%; padding-right: 10px; vertical-align: top'}, 
+              h3('Manage all your domains in one place.'),
+              p('Link existing accounts to manage all of your domains in one place.'),
+            
+              h3('Automatic transfers with no downtime.'),
+              p('We handle all the hard parts like auth codes and DNS migration.'),
+
+              h3('DNS shortcuts for easy configuration.'),
+              p('Install popular apps quickly without touching DNS.')
+            ),
+            td({ style: 'width: 50%; padding-left: 10px; vertical-align: top' },
+              h3('Pricing starts at $10 a year.'),
+              p('Straightforward pricing for registrations, transfers and renewals.'),
+
+              h3('Free WHOIS privacy and forwarding.'),
+              p("Privacy, DNS hosting and email/url forwarding are included."),
+
+              h3("We're developer friendly."),
+              p('We have a RESTful API and an open source frontend.')
+            )
+          )))
+        )
+      )      
     );
+    
+    //   div({ id: 'homepage-welcome' },
+    //     h2("Domains done right."),
+    //     h3("Badger makes it easy to find new domains and manage existing domains.")
+    //     
+    //     
+    // 
+    //     // h3('Link existing accounts for free:'),
+    //     // div({ style: 'height: 120px' },
+    //     //   app_icon('images/apps/godaddy.png', 'GoDaddy'),
+    //     //   app_icon('images/apps/ns.png', 'Network Solutions'),
+    //     //   app_icon('images/apps/enom.png', 'eNom'),
+    //     //   app_icon('images/apps/namecheap.png', 'Namecheap'),
+    //     //   app_icon('images/apps/1and1.png', '1&1')
+    //     // )
+    //     // 
+    //     // h3('Manage existing domains for free'),
+    //     // div({ style: 'height: 120px' },
+    //     //   app_icon('images/apps/godaddy.png', 'GoDaddy'),
+    //     //   app_icon('images/apps/ns.png', 'Network Solutions'),
+    //     //   app_icon('images/apps/enom.png', 'eNom'),
+    //     //   app_icon('images/apps/namecheap.png', 'Namecheap')
+    //     //   //app_icon('images/apps/1and1.png', '1&1')
+    //     // )
+    // 
+    // 
+    //     // h2("Domains for ", span("$10"), " a year."),
+    //     // div({ 'class': 'get-started-wrapper', style: "float: right; margin-top: -85px" },
+    //     //   a({ href: get_started, 'class': 'myButton', style: 'font-size: 30px; padding: 15px 30px' }, 'Get Started')
+    //     // ),
+    //     // img({ src: 'images/badger-6.png', 'class': 'badger', style: 'margin-top: 50px' }),
+    //     // 
+    //     // h3({ style: "margin-bottom: 0" }, 'Automatic transfers with no downtime:'),
+    //     // //h3({ style: "margin-bottom: 0" }, 'Free WHOIS privacy and DNS hosting.'),
+    //     // h3('Shortcuts for easy setup:'),
+    //     // div({ style: 'height: 120px' },
+    //     //   app_icon('images/apps/gmail2.png', 'Gmail'),
+    //     //   app_icon('images/apps/wordpress.png', 'Wordpress'),
+    //     //   app_icon('images/apps/shopify.png', 'Shopify'),
+    //     //   app_icon('images/apps/heroku.png', 'Heroku'),
+    //     //   app_icon('images/apps/blogger.png', 'Blogger')
+    //     // ),
+    //     // 
+    //     // div({ style: "clear: both" })
+    //     
+    //     // ul(
+    //     //   li('Automatic transfers with no downtime.'),
+    //     //   //li('Fast search and simple registration process.'),
+    //     //   li('DNS shortcuts for popular apps.'),
+    //     //   li('Free privacy, DNS and email/url forwarding.')
+    //     // ),
+    //     
+    //   )
+    // );
   });
   
   define('app_icon', function(img_src, name, callback) {
     return a({ 'class': 'app_store_container', href: callback || get_started },
       img({ 'class': 'app_store_icon', src: img_src } ),
-      span({ style: 'text-align: center; font-weight: bold' }, name)
+      span({ style: 'text-align: center; font-weight: bold; color: white' }, name)
     );
   });
   

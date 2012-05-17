@@ -107,6 +107,20 @@ with (Hasher('Application')) {
   });
 
 
+  layout('no_bg_layout', function(yield) {
+    var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
+    return [
+      header(),
+
+      div({ id: 'wrapper' }, yield),
+      
+      footer(),
+      
+      chatbar()
+    ];
+  });
+
+
 
   define('chatbar', function() {
     return div({ 'class': 'closed', id: 'chatbar' },

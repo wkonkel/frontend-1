@@ -34,7 +34,7 @@ html { background: transparent url(../images/v2/white_plaster.png) repeat top ce
 #user-nav a { color: #eee }
 
 #form-search { position: absolute; left: 120px; top: 6px; }
-#form-search input { background: #fff url(../images/v2/search.png) no-repeat 13px 10px; border-radius: 5px; width:200px; height: 22px; border:0; color:#333; padding:5px 9px 5px 34px; margin:0 0 0 0; font-size: 18px; line-height: 25px; }
+#form-search input, .domain-search-box { background: #fff url(../images/v2/search.png) no-repeat 13px 10px; border-radius: 5px; width:200px; height: 22px; border:0; color:#333; padding:5px 9px 5px 34px; margin:0 0 0 0; font-size: 18px; line-height: 25px; }
 
 /* content area (fixed width centered) */
 html, body, #wrapper, #footer { min-width: 970px; }
@@ -81,6 +81,60 @@ html, body, #wrapper, #footer { min-width: 970px; }
 
 /***********************************************/
 /***********************************************/
+
+#main #content-top { 
+  border-radius: 5px; 
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+  padding: 15px 20px 15px 30px; 
+  margin: 20px 0; 
+  color: white;
+  
+  background: rgb(79,133,187); /* Old browsers */
+  background: -moz-linear-gradient(top,  rgba(79,133,187,1) 0%, rgba(90,114,148,1) 0%, rgba(34,65,112,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(79,133,187,1)), color-stop(0%,rgba(90,114,148,1)), color-stop(100%,rgba(34,65,112,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(79,133,187,1) 0%,rgba(90,114,148,1) 0%,rgba(34,65,112,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgba(79,133,187,1) 0%,rgba(90,114,148,1) 0%,rgba(34,65,112,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgba(79,133,187,1) 0%,rgba(90,114,148,1) 0%,rgba(34,65,112,1) 100%); /* IE10+ */
+  background: linear-gradient(top,  rgba(79,133,187,1) 0%,rgba(90,114,148,1) 0%,rgba(34,65,112,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4f85bb', endColorstr='#224170',GradientType=0 ); /* IE6-9 */
+}
+#main #content-top h2 { font-family: Signika; font-size: 44px; text-shadow: 1px 1px #000; font-weight: normal; margin-bottom: 0 }
+#main #content-top h3 { font-family: Signika; font-size: 22px; text-shadow: 1px 1px #000; margin-top: 10px; color: white; margin-bottom: 12px }
+
+#content-top .registrars span { 
+  padding-right: 20px;
+}
+
+#content-top .registrars .app_store_icon {
+	border-radius: 4px;
+	width: 32px;
+	height: 32px;
+ 	margin-bottom: 10px;
+ 	margin-right: 6px;
+	overflow: hidden;
+	vertical-align: middle;
+	box-shadow: 1px 1px 1px #333;
+}
+
+#content-top .registrars a { 
+  color: #fff;
+  font-size: 16px;
+  text-shadow: 1px 1px #000;
+  font-family: Signika; 
+  font-size: 18px;
+}
+
+#main #content.homepage {
+  min-height: 0;
+}
+
+#content.homepage h3 {
+  margin: 0;
+}
+
+#content.homepage p {
+  margin: 4px 0 24px;
+}
 
 
 /* homepage */
