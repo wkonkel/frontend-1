@@ -42,15 +42,15 @@ with (Hasher('Welcome','Application')) {
               h3('Manage all your domains in one place.'),
               p('Link existing accounts to manage all of your domains in one place.'),
             
-              h3('DNS shortcuts for easy configuration.'),
-              p('Install popular apps quickly without touching DNS.'),
-
               h3('Automatic transfers with no downtime.'),
-              p('We handle all the hard parts like auth codes and DNS migration.')
+              p('We handle all the hard parts like auth codes and DNS migration.'),
+
+              h3('DNS shortcuts for easy configuration.'),
+              p('Install popular apps quickly without touching DNS.')
             ),
             td({ style: 'width: 50%; padding-left: 10px; vertical-align: top' },
-              h3('Pricing starts at $10 a year.'),
-              p('Straightforward pricing for registrations, transfers and renewals.'),
+              h3('Register domains for $10 a year.'),
+              p('Pricing is the same for registrations, transfers and renewals.'),
 
               h3('Free WHOIS privacy and forwarding.'),
               p("Privacy, DNS hosting and email/url forwarding are included."),
