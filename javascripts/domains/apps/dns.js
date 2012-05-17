@@ -249,13 +249,15 @@ with (Hasher('DnsApp','DomainApps')) {
   define('app_dns_rows', function(app_name, app_id, records, domain_obj) {
     return [
       tr({ 'class': 'table-header' },
-        td({ colSpan: 5, 'class': 'app_dns_header' }, h2({ style: "border-bottom: 1px solid #888; padding-bottom: 5px; margin-bottom: 0" }, app_name)),
+        td({ colSpan: 5, 'class': 'app_dns_header' }, 
+          (Account.has_permission('modify_dns', domain_obj.permissions_for_person)) ? [
+            div({ style: 'float: right; margin-top: 10px' },
+              a({ 'class': 'myButton small', href: curry(show_settings_modal_for_app, app_id, domain_obj.name) }, 'Settings')
+            )
+          ] : [],
 
-        (Account.has_permission('modify_dns', domain_obj.permissions_for_person)) ? [
-          div({ style: 'float: right; margin-top: -30px' },
-            a({ 'class': 'myButton small', href: curry(show_settings_modal_for_app, app_id, domain_obj.name) }, 'Settings')
-          )
-        ] : []
+          h2({ style: "border-bottom: 1px solid #888; padding-bottom: 5px; margin-bottom: 0" }, app_name)
+        )
       ),
       records.map(function(record) {
         return record_row(record, domain_obj.name, false)
