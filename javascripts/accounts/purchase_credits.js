@@ -15,18 +15,18 @@ with (Hasher('Billing','Application')) {
 
       div({ 'class': 'sidebar' },
         info_message(
-          h3("What's a credit include?"),
+          h3("What does a credit include?"),
           ul({ style: "padding-left: 20px" },
             li('1 year of registration'),
-            li('and WHOIS privacy (free)'),
-            li('and DNS hosting (free)')
+            li('WHOIS privacy (free)'),
+            li('DNS hosting (free)')
           ),
-          p("New registrations, transfers and renewals all cost 1 credit.")
+          p("New registrations, transfers, and renewals each cost 1 credit.")
         ),
         
         info_message(
           h3("Why do you use credits?"),
-          p("Credits allow us to give you discounts by purchasing in bulk and make future registrations and renewals faster and easier.")
+          p("Credits allow us to give you discounts, and make domain renewals and registrations faster.")
         )
       ),
 
