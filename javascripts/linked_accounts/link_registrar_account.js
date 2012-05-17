@@ -132,7 +132,9 @@ with (Hasher('LinkRegistrarAccount','Application')) {
             error_message("Username and/or password not correct.")
           );
         } else if (['validating_login', 'pending_sync'].includes(response.data.status)) {
-          setTimeout(curry(poll_until_login_verified, registrar, id), 2500);
+          if (get_route() == '#linked_accounts/' + registrar + '/link') {
+            setTimeout(curry(poll_until_login_verified, registrar, id), 5000);
+          }
         } else if (['validating_login', 'syncing', 'pending_sync'].includes(response.data.status)) {
           set_route("#linked_accounts/" + registrar + "/" + response.data.id + "/bulk_transfer");
         }

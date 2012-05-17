@@ -40,10 +40,10 @@ with (Hasher('Registration','DomainApps')) {
         
         render({ target: whois_div }, whois_view(domain_obj));
 
-        render({ target: button_div }, 
-          div({ style: "float: right; margin-top: -44px" }, 
+        render({ target: button_div },
+          div({ style: "float: right; margin-top: -44px" },
             (domain_obj.badger_registration && $.inArray("renew", (domain_obj.permissions_for_person || [])) >= 0) ? [
-              a({ 'class': "myButton small", href: '#domains/' + domain + '/registration/extend' }, "Extend Registration (Renew)")
+              // a({ 'class': "myButton small", href: '#domains/' + domain + '/registration/extend' }, "Extend Registration (Renew)")
             ] : [
               a({ 'class': "myButton small", href: curry(Transfer.show_domain_status_table, { domains: domain }) }, "Transfer To Badger.com")
             ]
@@ -81,9 +81,9 @@ with (Hasher('Registration','DomainApps')) {
           div({ 'class': 'fancy has-sidebar' },
             div({ id: 'errors' }),
         
-            Billing.show_num_credits_added(),
+            Billing.show_num_credits_added({ delete_var: true }),
         
-            form_with_loader({ 'class': 'fancy', action: renew_domain, loading_message: 'Extending registration...' },
+            form_with_loader({ 'class': 'fancy', action: curry(renew_domain, response.data), loading_message: 'Extending registration...' },
               input({ type: "hidden", value: domain, name: "domain" }),
         
               fieldset(
@@ -123,7 +123,13 @@ with (Hasher('Registration','DomainApps')) {
     
   });
   
-  define('renew_domain', function(form_data) {
+  define('renew_domain', function(domain_obj, form_data) {
+    if (new Date(domain_obj.expires_at).add(parseInt(form_data.years)).years() > new Date(domain_obj.expires_at).add(10).years()) {
+      hide_form_submit_loader();
+			$("#errors").html(error_message("Cannot extend registration by more than 10 years"));
+      return;
+    }
+    
     Badger.renewDomain(form_data.domain, form_data.years, function(response) {
 			if (response.meta.status == "ok") {
 				set_route("#domains/" + form_data.domain + "/registration");
@@ -229,7 +235,7 @@ with (Hasher('Registration','DomainApps')) {
 
       			    // if this is a badger registration and the person can renew the domain, show the extend registration button
       			    // domain_obj.current_registrar.match(/badger/i) && div({ style: 'text-align: left; margin-top: 12px' }, a({ 'class': "myButton small", href: curry(Register.renew_domain_modal, domain) }, "Extend Registration")),
-      			    (domain_obj.badger_registration && $.inArray("renew", (domain_obj.permissions_for_person || [])) >= 0) && div({ style: 'text-align: left; margin-top: 12px' }, a({ 'class': "myButton small", href: curry(Register.renew_domain_modal, domain) }, "Extend Registration")),
+      			    (domain_obj.badger_registration && $.inArray("renew", (domain_obj.permissions_for_person || [])) >= 0) && div({ style: 'text-align: left; margin-top: 12px' }, a({ 'class': "myButton small", href: '#domains/' + domain + '/registration/extend' }, "Extend Registration")),
 
         			  div({ style: 'clear: left' })
         			)
