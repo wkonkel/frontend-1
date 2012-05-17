@@ -36,11 +36,11 @@ with (Hasher('Welcome','Application')) {
         // ),
         // div({ style: 'clear: both' }),
         
-        div({ 'id': 'content', style: "margin-top: 0", 'class': 'homepage' }, 
+        div({ 'id': 'content', style: "margin: 0", 'class': 'homepage' }, 
           table({ style: 'width: 100%' }, tbody(tr(
             td({ style: 'width: 50%; padding-right: 10px; vertical-align: top'}, 
-              h3('Manage all your domains in one place.'),
-              p('Link existing accounts to manage all of your domains in one place.'),
+              h3('Manage all of your domains in one place.'),
+              p('Link your existing registrar accounts with your Badger account.'),
             
               h3('Automatic transfers with no downtime.'),
               p('We handle all the hard parts like auth codes and DNS migration.'),
