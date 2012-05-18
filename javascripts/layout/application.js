@@ -34,17 +34,6 @@ with (Hasher('Application')) {
   
   /*
     Poll until response returns true.
-    If times out, runs the on_timeout callback.
-    If the route is changed, will stop polling.
-    
-    This method creates a 'poll' object on the session, with keys
-    matching the routes on which the poll is taking places.
-    The poll object looks like:
-    {
-      elapsed: 1899, // the elapsed time(ms) the poll has been running for
-      timeout: 5000, // the time(ms) after which to timeout
-      previous_route: '#domains/awesome.com' // the previous route, break poll if differs from current route
-    }
     
     Options:
     @max_time:        Number of seconds after which to timeout.
@@ -54,15 +43,29 @@ with (Hasher('Application')) {
                         continue until until the timeout.
                         NOTE: this function must take a callback as it's
                         last paremeter (TODO allow synchronous)
-    @on_timeout:      The function to be called when timeout is reached
+    @on_timeout:      The function to be called when timeout is reached.
+                        data about the poll is passed as an argument.
     @on_finish:       The function to be called when the action is finished
+                        data about the poll is passed as an argument.
     @on_route_change: The function to be called if the route is changed mid-poll
+                        data about the poll is passed as an argument.
     
-    Callbacks are invoked with this JSON object as the argument:
-    {
-      elapsed_time: 1123,
-      max_time: 30000,
-    }
+    For the @action object:
+    @method     The curried Badger API method to use.
+                  note: the method MUST accept a callback
+                  as it's last (or only) argument, AND the
+                  curried method must NOT have the callback.
+    @on_ok      The callback for 'ok' and 'created' resonses to
+                  @method. The API response, as well as data about
+                  the poll are passed to this as arguments.
+    @on_error   The callback for 'ok' and 'created' resonses to
+                  @method. The API response, as well as data about
+                  the poll are passed to this as arguments.
+    
+    The on_ok and on_error callbacks must return false if you
+    don't want to break out of the poll. If they return true,
+    or nothing at all, then when they are executed the poll will
+    stop.
   */
   define('long_poll', function(options) {
     // default options
@@ -76,7 +79,6 @@ with (Hasher('Application')) {
       // used in process_action_and_set_timeout
       action: options.action || {
         method: options.action.method || (function() {}),
-        arguments: options.action.arguments || [],
         on_ok: options.action.on_ok || (function() {}),
         on_error: options.action.on_error || (function() {})
       },
