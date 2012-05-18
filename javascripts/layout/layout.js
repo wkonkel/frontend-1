@@ -289,6 +289,11 @@ with (Hasher('Application')) {
     $.smoothScroll(0);
   });
   
+  
+  define('logged_in', function(route) {
+    return !!Badger.getAccessToken();
+  });
+  
   define('error_message', function(response) {
     return div({ 'class': 'error-message' },
 			div(

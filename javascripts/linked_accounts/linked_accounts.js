@@ -1,6 +1,10 @@
 with (Hasher('LinkedAccounts','Application')) {
 
 	route('#linked_accounts', function() {
+	  if (!logged_in()) {
+	    return set_route('#account/create');
+	  }
+	  
 		var target_div = div(
 		  spinner("Loading...")
 		);
