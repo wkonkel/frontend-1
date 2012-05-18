@@ -22,6 +22,9 @@ with (Hasher('Search','Application')) {
         )
       )
     );
+    
+    // refocus the search box
+    $('#form-search-input').focus();
   });
 
   define('set_search_route', function() {
