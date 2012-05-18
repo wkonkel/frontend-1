@@ -165,8 +165,10 @@ with (Hasher('Application')) {
             h2('Help and Support'),
             ul(
               li(a({ href: "#contact_us" }, 'Contact Us')),
-              li(a({ href: "#faqs" }, 'Frequently Asked Questions')),
-              li(a({ href: "#knowledge_center" }, 'Knowledge Center')),
+              // li(a({ href: "#faqs" }, 'Frequently Asked Questions')),
+              li(a({ href: "https://getsatisfaction.com/badger/products/badger_faqs" }, 'Frequently Asked Questions')),
+              // li(a({ href: "#knowledge_center" }, 'Knowledge Center')),
+              li(a({ href: "https://getsatisfaction.com/badger/products/badger_knowledge_center" }, 'Knowledge Center')),
               li(a({ href: 'https://github.com/badger/frontend', target: '_blank' }, 'API Docs for Developers'))
             )
           ),
@@ -181,6 +183,9 @@ with (Hasher('Application')) {
                 a({ href: "https://www.facebook.com/BadgerDotCom", target: "_blank" }, 'Facebook'),
                 ' / ',
                 a({ href: "irc://irc.freenode.net/badger", target: "_blank" }, 'IRC')
+              ),
+              li(
+                a({ href: "https://getsatisfaction.com/badger", target: "_blank" }, 'Get Satisfaction')
               )
             )
           ),
@@ -280,6 +285,10 @@ with (Hasher('Application')) {
     ];
   });
   
+  define('scroll_to_top', function() {
+    $.smoothScroll(0);
+  });
+  
   define('error_message', function(response) {
     return div({ 'class': 'error-message' },
 			div(
@@ -343,7 +352,7 @@ with (Hasher('Application')) {
       
       // if it's a long page, the user likely clicked a submit button at the bottom.
       // scroll the page to the top to show any errors that might show up
-      (function() { $.smoothScroll(0); })();
+      scroll_to_top();
       
       // execute the original form aciton
       original_form_action(form_data);
