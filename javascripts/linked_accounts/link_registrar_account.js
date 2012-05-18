@@ -26,34 +26,36 @@ with (Hasher('LinkRegistrarAccount','Application')) {
         )
       ),
       
-      form_with_loader({ 'class': 'fancy', action: curry(create_linked_account_and_verify_login, registrar), loading_message: 'Verifying your login credentials...' },
+      form_with_loader({ 'class': 'fancy has-sidebar', action: curry(create_linked_account_and_verify_login, registrar), loading_message: 'Verifying your login credentials...' },
         // h1("Link " + ACCOUNT_NAME + " Account"),
-        div({ 'class': "fancy has-sidebar" },
-          div({ style: "margin-left: 60px" },
-            div({ style: "float: left; margin: auto 20px 20px auto" },
-              img({ 'class': "app_store_icon", src: ACCOUNT_ICON_SRC })
-            ),
-            p("To link your " + ACCOUNT_NAME + " account with Badger.com, enter your " + ACCOUNT_NAME + " login credentials below."),
-            p("Syncing your account may take up to five minutes.  When transferring domains, temporary changes may be made to your account information."),
+        div({ style: "margin-left: 110px" },
+          div({ style: "float: left; margin: auto 20px 20px auto" },
+            img({ 'class': "app_store_icon", src: ACCOUNT_ICON_SRC })
+          ),
+          p("To link your " + ACCOUNT_NAME + " account with Badger.com, enter your " + ACCOUNT_NAME + " login credentials below."),
+          p("Syncing your account may take up to five minutes.  When transferring domains, temporary changes may be made to your account information."),
 
-            div({ id: 'account-link-errors' })
-          )
+          div({ id: 'account-link-errors' })
         ),
         
         fieldset(
-          label({ 'for': 'username-input' }, 'Username:'),
-          div(input({ id: 'username-input', name: 'login', placeholder: 'username' }))
+          label({ 'for': 'username-input' }, 'Login:'),
+          div(input({ id: 'username-input', name: 'login', placeholder: 'johndoe' }))
         ),
 
         fieldset(
           label({ 'for': 'password-input' }, 'Password:'),
-          div(input({ id: 'password-input', type: 'password', name: 'password', placeholder: 'password' }))
+          div(input({ id: 'password-input', type: 'password', name: 'password', placeholder: 'abc123' }))
         ),
 
-        div({ style: "margin: 20px auto 20px 112px; width: 380px" },
-          input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
-          span(" I hereby authorize Badger to act as my agent and to access my " + ACCOUNT_NAME + " account pursuant to the ", a({ href: '#terms_of_service' }, "Registration Agreement"))
+        fieldset(
+          label({ 'for': 'agree_to_terms' }, 'Legal stuff:'),
+          div({ style: 'line-height: 18px; padding: 15px 0' }, 
+            input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
+            span(" I hereby authorize Badger to act as my agent and to access my " + ACCOUNT_NAME + " account pursuant to the ", a({ href: '#terms_of_service' }, "Registration Agreement"), '.')
+          )
         ),
+
 
         fieldset({ 'class': 'no-label' },
           div({ id: "button-div" },
