@@ -22,7 +22,7 @@ with (Hasher('LinkRegistrarAccount','Application')) {
       div({ 'class': 'sidebar' },
         info_message(
           h3("Why link your " + ACCOUNT_NAME + " account?"),
-          p("It is already easy to transfer domains to Badger.com, but by linking your " + ACCOUNT_NAME + " account, the process will be fully automated.")
+          p("Linking your account automates the transfer process. Let us do the work for you.")
         )
       ),
       
@@ -34,8 +34,7 @@ with (Hasher('LinkRegistrarAccount','Application')) {
               img({ 'class': "app_store_icon", src: ACCOUNT_ICON_SRC })
             ),
             p("To link your " + ACCOUNT_NAME + " account with Badger.com, enter your " + ACCOUNT_NAME + " login credentials below."),
-            p("Syncing your account may take about five minutes once the process is started. If you transfer domains from " + ACCOUNT_NAME + ", we may need to temporarily change some of your " + ACCOUNT_NAME + " account information, such as the email address."),
-            p("Any account information that is changed as part of the automated transfer process will be changed back to normal once the transfer is completed, or if it fails for any reason."),
+            p("Syncing your account may take up to five minutes.  When transferring domains, temporary changes may be made to your account information."),
 
             div({ id: 'account-link-errors' })
           )
@@ -109,49 +108,59 @@ with (Hasher('LinkRegistrarAccount','Application')) {
     // add registrar to form data
     form_data.site = registrar;
     
+    // finds or creates linked account based on site and login
     Badger.createLinkedAccount(form_data, function(response) {
       if (response.meta.status == 'ok') {
         // if the account was created, poll until the login is validated
-        poll_until_login_verified(registrar, response.data.id);
+        poll_until_account_synced(registrar, response.data.id);
+        BadgerCache.reload('linked_accounts');
       } else {
         hide_form_submit_loader();
         $('#account-link-errors').html(error_message(response));
       }
     });
   });
-  
-  define('poll_until_login_verified', function(registrar, id) {
-    Badger.getLinkedAccount(id, function(response) {
-      // console.log(response);
+
+  define('poll_until_account_synced', function(registrar, id) {
+    long_poll({
+      max_time: 60000,
+      interval: 1500,
       
-      if (response.meta.status == 'ok') {
-        if (response.data.status == 'login_invalid') {
-          hide_form_submit_loader();
-          
-          $('#account-link-errors').html(
-            error_message("Username and/or password not correct.")
-          );
-        } else if (['validating_login', 'pending_sync'].includes(response.data.status)) {
-          if (get_route() == '#linked_accounts/' + registrar + '/link') {
-            setTimeout(curry(poll_until_login_verified, registrar, id), 5000);
-          }
-        } else if (['validating_login', 'syncing', 'pending_sync'].includes(response.data.status)) {
-          set_route("#linked_accounts/" + registrar + "/" + response.data.id + "/bulk_transfer");
-        }
-      } else {
+      on_timeout: function(poll_data) {
         hide_form_submit_loader();
-        $('#account-link-errors').html(error_message(response));
+        $('#account-link-errors').html(
+          error_message("Oh no, The request timed out! please try again later.")
+        );
+      },
+      
+      on_finish: function(poll_data) {
+        set_route('#filter_domains/all/list');
+      },
+      
+      action: {
+        method: curry(Badger.getLinkedAccount, id),
+        
+        on_ok: function(response, poll_data) {
+          if (response.data.status == 'login_invalid') {
+            hide_form_submit_loader();
+          
+            $('#account-link-errors').html(
+              error_message("Username and/or password not correct.")
+            );
+          } else if (['validating_login', 'pending_sync', 'syncing'].includes(response.data.status)) {
+            return false; // don't break from poll
+          } else {
+            return true; // break from poll
+          }
+        },
+        
+        on_error: function(response) {
+          hide_form_submit_loader();
+          $('#account-link-errors').html(error_message(response));
+          Badger.deleteLinkedAccount(response.data.id, function(r) { console.log('delete linked account', r) });
+          BadgerCache.reload('linked_accounts');
+        }
       }
     });
   });
-  
-  // options are:
-  // timeout: number of ms to wait
-  // action: the action to be called on the timeout. if returns true, stops polling
-  define('poll_with_until', function(options, until) {
-    with (options) {
-      if (until()) setTimeout(action, interval);
-    }
-  });
-  
 }
