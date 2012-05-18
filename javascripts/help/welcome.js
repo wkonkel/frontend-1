@@ -22,7 +22,7 @@ with (Hasher('Welcome','Application')) {
           h3("Search for a new domain:"),
           div({style: 'padding-left: 30px'}, 
             //a({ href: get_started, 'class': 'myButton', style: 'font-size: 20px; padding: 9px 30px' }, 'Search for domains')
-            input({ 'class': 'domain-search-box', placeholder: 'i.e. badger.com', onFocus: function() { set_route('#search'); $('#form-search input').focus(); } })
+            input({ 'class': 'domain-search-box', placeholder: 'e.g. badger.com', onFocus: function() { set_route('#search'); $('#form-search input').focus(); } })
           )
         ),
         
