@@ -27,14 +27,13 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
       
       div({ 'class': "sidebar" },
         info_message(
-          h3("Registration Extention"),
-          p("Note, that when you transfer a domain to Badger.com, the registration will be extended by 1 year.")
+          h3("Registration Extension"),
+          p("When you transfer a domain to Badger.com, the registration will be extended by 1 year.")
         ),
         
         info_message(
           h3("Pricing"),
-          p("Transferring 1 domain to Badger.com requires 1 domain credit."),
-          p("If you don't have enough domain credits, you will be able to purchase them on the next screen.")
+          p("Transferring a domain to Badger.com requires 1 domain credit.")
         )
       ),
       
