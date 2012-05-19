@@ -37,6 +37,7 @@ with (Hasher('Application')) {
     
     Options:
     @max_time:        Number of seconds after which to timeout.
+                        if -1, then poll forever.
     @interval:        The amount of time to wait between requests
     @action:          The API request to be made every step.
                         if returns true, breaks poll, otherwise it will
@@ -61,6 +62,15 @@ with (Hasher('Application')) {
     @on_error   The callback for 'ok' and 'created' resonses to
                   @method. The API response, as well as data about
                   the poll are passed to this as arguments.
+    
+    The poll is broken based on the return value of the on_ok and
+    on_error callbacks.
+    - If true is returned, then the poll is broken,
+    and the on_finish callback is executed.
+    - If nothing is returned
+    (undefined), then the poll is broken and the on_finish callback
+    is not called.
+    - If false is returned, then the poll marches onward.
     
     The on_ok and on_error callbacks must return false if you
     don't want to break out of the poll. If they return true,
@@ -90,9 +100,12 @@ with (Hasher('Application')) {
         previous_route: get_route()
       }
     };
+    
+    // pretty self-explanatory
+    var poll_forever = options.max_time == -1;
         
     // if timed out, run break callback.
-    if ((new Date().getTime() - options._poll_obj.start_time.getTime()) >= options.max_time) {
+    if (!poll_forever && (new Date().getTime() - options._poll_obj.start_time.getTime()) >= options.max_time) {
       options.on_timeout({
         start_time: options._poll_obj.start_time,
         max_time: options._poll_obj.max_time,
@@ -133,21 +146,22 @@ with (Hasher('Application')) {
         var break_from_poll = action_options.on_ok(response, {
           start_time: options._poll_obj.start_time,
           max_time: options._poll_obj.max_time
-        }) || false;
+        });
       } else {
         // error. break from poll defaults to true
         var break_from_poll = options.on_error(response, {
           start_time: options._poll_obj.start_time,
           max_time: options._poll_obj.max_time
-        }) || true;
+        });
       }
       
-      if (break_from_poll) {
+      if (break_from_poll == true) {
+        // break out of the poll, call the on_finish_callback
         options.on_finish(response, {
           start_time: options._poll_obj.start_time,
           max_time: options._poll_obj.max_time
         });
-      } else {
+      } else if (break_from_poll == false) {
         setTimeout(curry(long_poll, options), options.interval);
       }
     })
