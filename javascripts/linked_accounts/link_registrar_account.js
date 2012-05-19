@@ -33,10 +33,10 @@ with (Hasher('LinkRegistrarAccount','Application')) {
             img({ 'class': "app_store_icon", src: ACCOUNT_ICON_SRC })
           ),
           p("To link your " + ACCOUNT_NAME + " account with Badger.com, enter your " + ACCOUNT_NAME + " login credentials below."),
-          p("Syncing your account may take up to five minutes.  When transferring domains, temporary changes may be made to your account information."),
-
-          div({ id: 'account-link-errors' })
+          p("Syncing your account may take up to five minutes.  When transferring domains, temporary changes may be made to your account information.")
         ),
+
+        div({ id: 'account-link-errors' }),
         
         fieldset(
           label({ 'for': 'username-input' }, 'Login:'),
@@ -52,7 +52,7 @@ with (Hasher('LinkRegistrarAccount','Application')) {
           label({ 'for': 'agree_to_terms' }, 'Legal stuff:'),
           div({ style: 'line-height: 18px; padding: 15px 0' }, 
             input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
-            span(" I hereby authorize Badger to act as my agent and to access my " + ACCOUNT_NAME + " account pursuant to the ", a({ href: '#terms_of_service' }, "Registration Agreement"), '.')
+            label({ 'class': 'normal', 'for': 'agree_to_terms' }, " I hereby authorize Badger to act as my agent and to access my " + ACCOUNT_NAME + " account pursuant to the ", a({ href: '#terms_of_service' }, "Registration Agreement"), '.')
           )
         ),
 
@@ -143,16 +143,18 @@ with (Hasher('LinkRegistrarAccount','Application')) {
         method: curry(Badger.getLinkedAccount, id),
         
         on_ok: function(response, poll_data) {
-          if (response.data.status == 'login_invalid') {
-            hide_form_submit_loader();
-          
-            $('#account-link-errors').html(
-              error_message("Username and/or password not correct.")
-            );
-          } else if (['validating_login', 'pending_sync', 'syncing'].includes(response.data.status)) {
-            return false; // don't break from poll
-          } else {
-            return true; // break from poll
+          console.log(response.data.status);
+          switch (response.data.status) {
+            case 'error_auth':
+              hide_form_submit_loader();
+              $('#account-link-errors').html(error_message("Username and/or password not correct."));
+              break;
+            case 'syncing':
+              $('#_form-loader span').html('Reading list of domains...');
+              break;
+            case 'synced':
+              BadgerCache.reload('domains');
+              return true;
           }
         },
         
