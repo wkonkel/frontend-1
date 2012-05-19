@@ -143,18 +143,19 @@ with (Hasher('LinkRegistrarAccount','Application')) {
         method: curry(Badger.getLinkedAccount, id),
         
         on_ok: function(response, poll_data) {
-          console.log(response.data.status);
           switch (response.data.status) {
             case 'error_auth':
               hide_form_submit_loader();
               $('#account-link-errors').html(error_message("Username and/or password not correct."));
-              break;
+              return; //no value meaning stop timer
             case 'syncing':
               $('#_form-loader span').html('Reading list of domains...');
-              break;
+              return false; // keep timer going
             case 'synced':
               BadgerCache.reload('domains');
-              return true;
+              return true;  // trigger on_finish
+            default:
+              return false; // keep timer going
           }
         },
         
