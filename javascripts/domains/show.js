@@ -120,21 +120,13 @@ with (Hasher('DomainShow','DomainApps')) {
         p('This domain is currently registered at ', domain_obj.current_registrar,
           ' and will expire on ', new Date(Date.parse(domain_obj.expires_at)).toDateString(), '.',
           ' If this is your domain, you can ',
-          a({ href: curry(redirect_to_transfer_for_domain, domain_obj.name) }, 'transfer to Badger'), '.'
+          a({ href: curry(Transfer.redirect_to_transfer_for_domain, domain_obj.name) }, 'transfer to Badger'), '.'
         )
       ];
     }
   });
   
   
-  define('redirect_to_transfer_for_domain', function(domain_name) {
-    // prepopulate the domains array with this one
-    Badger.Session.write({
-      domains: [domain_name]
-    });
-    
-    set_route('#domain-transfers/confirm_domains');
-  });
   
   
   define('set_retry_transfer_timeout_if_necessary', function(domain_obj, seconds) {
