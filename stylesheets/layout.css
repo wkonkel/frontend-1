@@ -1,13 +1,3 @@
-
-
-
-
-
-
-
-
-
-
 /*
 #main.homepage_blurb #homepage-logo-rotater { width: 200px; height: 100px; vertical-align: middle; }
 #main.homepage_blurb #homepage-logo-rotater.godaddy { background: url() no-repeat 0 5px ; }
@@ -142,13 +132,43 @@ input.fancy[type=text], input.fancy[type=password] { margin-top: 4px; padding: 5
 
 .h1-action { float: right; margin-top: -40px; font-size: 50px; color: green; font-weight: bold; }
 
-.info-message { border: 1px solid #e2c822; background: #fff9d7; padding: 14px 20px; border-radius: 10px; margin-bottom: 10px; }
+.info-message {
+  border: 1px solid #e2c822;
+  background: #fff9d7;
+  padding: 14px 20px;
+  margin-bottom: 10px;
+  
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+}
 .info-message .fancy-table tr:hover { background: #FFFEF8; }
 .info-message .fancy-table tr.table-header:hover { background: none; }
-.error-message { border: 1px solid #dd3c10; background: #ffebe8; padding: 14px 20px; border-radius: 10px; margin-bottom: 10px; }
+
+.error-message {
+  border: 1px solid #dd3c10;
+  background: #ffebe8;
+  padding: 14px 20px;
+  margin-bottom: 10px;
+  
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+}
 .error-red { color: #c00; }
-.success-message { border: 1px solid #619934; background: #E6F8D8; padding: 14px 20px; border-radius: 10px; margin-bottom: 10px; }
+
+.success-message {
+  border: 1px solid #619934;
+  background: #E6F8D8;
+  padding: 14px 20px;
+  margin-bottom: 10px;
+  
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+}
 .status-message { border: 1px solid #e2c8c2; background: #fff9f7; padding: 14px 20px; border-radius: 10px; margin-bottom: 10px; }
+
 .info-message ul, .success-message ul, .status-message ul, .error-message ul { margin: 10px 0 0 0; }
 
 .invite-extra-info { margin: 5px 10px; width: 450px; }
@@ -185,17 +205,34 @@ input.fancy[type=text], input.fancy[type=password] { margin-top: 4px; padding: 5
 
 .app_store_container { float: left; width: 90px; padding: 10px 10px 20px 10px; border: 1px solid transparent; }
 .app_store_container_small { float: left; width: 0px; padding: 5px 5px 5px 5px; }
-.app_store_container:hover { text-decoration: none; border: 1px solid #e2c822; background: #fff9d7; border-radius: 10px; cursor: pointer; }
+
+.app_store_container:hover {
+  text-decoration: none;
+  border: 1px solid #e2c822;
+  background: #fff9d7;
+  cursor: pointer;
+
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+}
+
 .app_store_container span { display: block; color: #000; }
+
 .app_store_icon {
 	box-shadow: 1px 1px 5px #666;
+	-moz-box-shadow: 1px 1px 5px #666;
+	
 	background-repeat: no-repeat;
 	background-size: 100%;
-	border-radius: 12px;
 	width: 90px;
 	height: 90px;
  	margin-bottom: 10px;
 	overflow: hidden;
+	
+	border-radius: 12px;
+  -moz-border-radius: 12px;
+  -webkit-border-radius: 12px;
 }
 
 #accounts-table h1, #accounts-table h2, #accounts-table h3 { margin: 0; padding: 0; }
@@ -204,7 +241,6 @@ input.fancy[type=text], input.fancy[type=password] { margin-top: 4px; padding: 5
   width: 100%;
   overflow: auto;
 }
-
 
 .some_selected { opacity: 0.5; filter: alpha(opacity=50); }
 .select_one { cursor: pointer; } 

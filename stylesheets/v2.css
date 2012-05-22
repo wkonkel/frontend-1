@@ -41,17 +41,57 @@ html { background: transparent url(../images/v2/white_plaster.png) repeat top ce
 #logo a { font: 30px Arial, sans-serif; color: #fff; text-indent: -1000px; float: left; height: 30px; width: 90px; background: url(../images/v2/logo.png); margin-top: 8px; }
 #logo a:hover { text-decoration: none; }
 #logo img { vertical-align: bottom; padding-right: 10px; }
-#user-nav { position: absolute; top: 9px; right: 0px; background: #444; padding: 3px 13px; border-radius: 4px 4px; color: #ccc; }
+
+#user-nav { 
+  position: absolute;
+  top: 9px;
+  right: 0px;
+  background: #444;
+  padding: 3px 13px;
+  color: #ccc;
+  
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+
 #user-nav span { padding-right: 10px; border-right: 1px solid #999; margin-right: 10px; }
 #user-nav a { color: #eee }
 
 #form-search { position: absolute; left: 120px; top: 6px; }
-#form-search input, .domain-search-box { background: #fff url(../images/v2/search.png) no-repeat 13px 10px; border-radius: 5px; width:200px; height: 22px; border:0; color:#333; padding:5px 9px 5px 34px; margin:0 0 0 0; font-size: 18px; line-height: 25px; }
+#form-search input, .domain-search-box { 
+  background: #fff url(../images/v2/search.png) no-repeat 13px 10px;
+  
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  
+  width:200px;
+  height: 22px;
+  border:0;
+  color:#333;
+  padding:5px 9px 5px 34px;
+  margin:0 0 0 0;
+  font-size: 18px;
+  line-height: 25px;
+}
 
 /* content area (fixed width centered) */
 html, body, #wrapper, #footer { min-width: 970px; }
 #header .inner, #footer .inner { width: 970px; padding: 0; margin: 0 auto 50px auto; position: relative; }
-#main #content { padding: 20px; margin: 20px auto; min-height: 400px; background: white; border-radius: 5px; box-shadow: 0 0 5px rgba(0,0,0,0.2); }
+#main #content { 
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  
+  padding: 20px;
+  margin: 20px auto;
+  min-height: 400px;
+  background: white;
+  
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+	-moz-box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
 
 /* footer styling */
 #footer { background: #333; color: #eee; overflow: hidden; }
@@ -95,8 +135,13 @@ html, body, #wrapper, #footer { min-width: 970px; }
 /***********************************************/
 
 #main #content-top { 
-  border-radius: 5px; 
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+   
   box-shadow: 0 0 5px rgba(0,0,0,0.3);
+	-moz-box-shadow: 0 0 5px rgba(0,0,0,0.3);
+  
   padding: 15px 20px 15px 30px; 
   margin: 20px 0; 
   color: white;
@@ -112,15 +157,16 @@ html, body, #wrapper, #footer { min-width: 970px; }
 }
 
 #main #content-top h2 { 
-  font-family: Signika;
+/*  font-family: Signika;*/
+  font-family: AdelleBold;
   font-size: 44px;
   text-shadow: 1px 1px 1px #000;
   font-weight: normal;
-  margin-bottom: 0
+  margin-bottom: 0;
 }
 
 #main #content-top h3 {
-  font-family: Signika;
+  font-family: AdelleBold;
   font-size: 22px;
   text-shadow: 1px 1px 1px #000;
   margin-top: 10px;
@@ -134,13 +180,18 @@ html, body, #wrapper, #footer { min-width: 970px; }
 
 #content-top .registrars .app_store_icon {
 	border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  
+  box-shadow: 1px 1px 1px #333;
+	-moz-box-shadow: 1px 1px 1px #333;
+  
 	width: 32px;
 	height: 32px;
  	margin-bottom: 10px;
  	margin-right: 6px;
 	overflow: hidden;
 	vertical-align: middle;
-	box-shadow: 1px 1px 1px #333;
 }
 
 #content-top .registrars a { 
