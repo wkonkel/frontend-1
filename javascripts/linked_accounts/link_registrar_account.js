@@ -1,20 +1,20 @@
 with (Hasher('LinkRegistrarAccount','Application')) {
   
-  before_filter('require_person', require_person);
+  before_filter(require_person);
 
   route("#linked_accounts/:registrar/link", function(registrar) {
     if (registrar == "godaddy") {
-      render_registrar_link_form("GoDaddy", "images/apps/godaddy.png");
+      render_registrar_link_form(registrar, "GoDaddy", "images/apps/godaddy.png");
     } else if (registrar == "networksolutions") {
-      render_registrar_link_form("Network Solutions", "images/apps/ns.png");
+      render_registrar_link_form(registrar, "Network Solutions", "images/apps/ns.png");
     } else if (registrar == "enom") {
-      render_coming_soon_page("Enom", "images/apps/enom.png");
+      render_coming_soon_page(registrar, "Enom", "images/apps/enom.png");
     } else {
       render_coming_soon_page(registrar);
     }
   });
   
-  define('render_registrar_link_form', function(registrar_name, registrar_logo) {
+  define('render_registrar_link_form', function(registrar_id, registrar_name, registrar_logo) {
     render(
       chained_header_with_links(
         { href: '#account', text: 'My Account' },
@@ -29,7 +29,7 @@ with (Hasher('LinkRegistrarAccount','Application')) {
         )
       ),
       
-      form_with_loader({ 'class': 'fancy has-sidebar', action: curry(create_linked_account_and_verify_login, registrar), loading_message: 'Verifying your login credentials...' },
+      form_with_loader({ 'class': 'fancy has-sidebar', action: curry(create_linked_account_and_verify_login, registrar_id), loading_message: 'Verifying your login credentials...' },
         // h1("Link " + registrar_name + " Account"),
         div({ style: "margin-left: 110px" },
           div({ style: "float: left; margin: auto 20px 20px auto" },
@@ -70,7 +70,8 @@ with (Hasher('LinkRegistrarAccount','Application')) {
     $("input[name=login]").focus();
   });
 
-  define('render_coming_soon_page', function(registrar_name, registrar_logo) {
+  define('render_coming_soon_page', function(registrar_id, registrar_name, registrar_logo) {
+    if (!registrar_name) registrar_name = registrar_id;
     render(
       chained_header_with_links(
         { href: '#account', text: 'My Account' },
@@ -86,9 +87,9 @@ with (Hasher('LinkRegistrarAccount','Application')) {
       ),
       
       div({ 'class': 'has-sidebar' },
-        div({ style: "float: left; margin: auto 20px 20px auto" },
+        (registrar_logo && div({ style: "float: left; margin: auto 20px 20px auto" },
           img({ 'class': "app_store_icon", src: registrar_logo })
-        ),
+        )),
         div({ style: 'float: left; margin-top: 25px' }, error_message("Sorry, we don't support " + registrar_name + " yet but hope to soon!"))
       )
     );
@@ -173,6 +174,10 @@ with (Hasher('LinkRegistrarAccount','Application')) {
             case 'error_auth':
               hide_form_submit_loader();
               $('#account-link-errors').html(error_message("Username and/or password not correct."));
+              return; //no value meaning stop timer
+            case 'error':
+              hide_form_submit_loader();
+              $('#account-link-errors').html(error_message("An unknown error occured.  Please try again."));
               return; //no value meaning stop timer
             case 'syncing':
               $('#_form-loader span').html('Reading list of domains...');
