@@ -192,8 +192,17 @@ with (Hasher('Transfer','Application')) {
       
     };
   });
-  
-  
+
+  // when you want to transfer a domain from somewhere else on the site,
+  // invoke this method to make it happen
+  define('redirect_to_transfer_for_domain', function(domain_name) {
+    // prepopulate the domains array with this one
+    Badger.Session.write({
+      domains: [domain_name]
+    });
+    
+    set_route('#domain-transfers/confirm_domains');
+  });
   
   define('continue_to_confirm_page', function(form_data) {
     // store the list of domains to retrieve on the next page

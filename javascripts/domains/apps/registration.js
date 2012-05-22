@@ -45,7 +45,7 @@ with (Hasher('Registration','DomainApps')) {
             (domain_obj.badger_registration && $.inArray("renew", (domain_obj.permissions_for_person || [])) >= 0) ? [
               // a({ 'class': "myButton small", href: '#domains/' + domain + '/registration/extend' }, "Extend Registration (Renew)")
             ] : [
-              a({ 'class': "myButton small", href: curry(Transfer.show_domain_status_table, { domains: domain }) }, "Transfer To Badger.com")
+              a({ 'class': "myButton small", href: curry(Transfer.redirect_to_transfer_for_domain, domain) }, "Transfer to Badger")
             ]
           )
         );
