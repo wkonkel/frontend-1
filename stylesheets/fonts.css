@@ -7,9 +7,11 @@
 
 @font-face {
   font-family: 'AdelleBold';
+  src: url('../fonts/AdelleBasic-Bold-webfont.eot');
+  src: url('../fonts/AdelleBasic_Bold-webfont.eot?#iefix') format('embedded-opentype'),
+       url('../fonts/AdelleBasic_Bold-webfont.otf');
   font-style: normal;
   font-weight: normal;
-  src: local('AdelleBold'), url('../fonts/AdelleBasic_Bold.otf');
 }
 
 @font-face {
@@ -18,3 +20,13 @@
   font-weight: 400;
   src: local('Signika'), local('Signika-Regular'), url('../fonts/Signika.woff');
 }
+
+@font-face {
+    font-family: 'Titillium';
+    src: url('../fonts/Titillium-webfont.eot');
+    src: url('../fonts/Titillium-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Titillium-webfont.otf');
+    font-weight: normal;
+    font-style: normal;
+}
+

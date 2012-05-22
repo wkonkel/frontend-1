@@ -16,7 +16,7 @@ body, input, textarea, select, td, th {
 a { color: #1E31F5; }
 
 h1, h2, h3, h4 { 
-  font: 28px "AdelleBold", Arial, sans-serif;
+  font: 28px AdelleBold, Titillium, Arial, sans-serif;
   margin: 5px 0 7px;
   padding: 0;
   border-bottom: 1px solid #333;
@@ -188,8 +188,7 @@ html, body, #wrapper, #footer { min-width: 970px; }
 }
 
 #main #content-top h2 { 
-/*  font-family: Signika;*/
-  font-family: AdelleBold;
+  font-family: AdelleBold, Titillium;
   font-size: 44px;
   text-shadow: 1px 1px 1px #000;
   font-weight: normal;
@@ -197,7 +196,7 @@ html, body, #wrapper, #footer { min-width: 970px; }
 }
 
 #main #content-top h3 {
-  font-family: AdelleBold;
+  font-family: AdelleBold, Titillium;
   font-size: 22px;
   text-shadow: 1px 1px 1px #000;
   margin-top: 10px;
@@ -207,7 +206,7 @@ html, body, #wrapper, #footer { min-width: 970px; }
 
 #content-top .registrars span { 
   padding-right: 20px;
-  font-family: AdelleBold;
+  font-family: AdelleBold, Titillium;
   font-size: 18px;
 }
 
@@ -251,8 +250,8 @@ html, body, #wrapper, #footer { min-width: 970px; }
 /* homepage */
 #homepage-welcome { margin-left: 20px; }
 #homepage-welcome ul { margin: 20px 0 0 0; padding: 0; }
-#homepage-welcome ul li { list-style: none; margin: 0; padding: 0; font-size: 26px; line-height: 25px; font-family: 'AdelleBold'; background: transparent url(../images/check.png) no-repeat left top; padding: 0 0 40px 25px; }
-#homepage-welcome h2 { font-size: 52px; font-family: 'AdelleBold'; border-bottom: 0; margin-top: 20px; margin-bottom: 20px }
+#homepage-welcome ul li { list-style: none; margin: 0; padding: 0; font-size: 26px; line-height: 25px; font-family: AdelleBold, Titillium; background: transparent url(../images/check.png) no-repeat left top; padding: 0 0 40px 25px; }
+#homepage-welcome h2 { font-size: 52px; font-family: AdelleBold, Titillium; border-bottom: 0; margin-top: 20px; margin-bottom: 20px }
 #homepage-welcome h2 span { font-size: 65px; padding: 0 3px }
 #homepage-welcome h3 { font-size: 26px; border-bottom: 0; margin-top: 35px; margin-bottom: 9px }
 #homepage-welcome img.badger { padding: 20px 30px; float: right; }
@@ -263,8 +262,8 @@ html, body, #wrapper, #footer { min-width: 970px; }
 /*#homepage .rotater { height: 400px; padding-top: 100px; }
 #homepage .rotater div { display: none; }
 #homepage .rotater div img { float: left; width: 300px; height: 250px; box-shadow: 0 0 5px 0px #aaa; margin-right: 65px; border: 1px solid #888 }
-#homepage .rotater div h2 { font: 52px "AdelleBold", Arial, sans-serif; text-transform: none; border-bottom: 0; }
-#homepage .rotater div h3 { font: 80px "AdelleBold", Arial, sans-serif; text-transform: none; border-bottom: 0; margin-top: 30px; text-align: right; }
+#homepage .rotater div h2 { font: 52px AdelleBold, Titillium, Arial, sans-serif; text-transform: none; border-bottom: 0; }
+#homepage .rotater div h3 { font: 80px AdelleBold, Titillium, Arial, sans-serif; text-transform: none; border-bottom: 0; margin-top: 30px; text-align: right; }
 #homepage .rotater div p { display: none; }
 #homepage .rotater div p { font-size: 17px; line-height: 30px; margin-top: 20px; font-weight: normal; color: #444 }
 */
@@ -281,7 +280,7 @@ html, body, #wrapper, #footer { min-width: 970px; }
 
 
 /*
-#main.homepage_blurb #content h1 { font: 48px "AdelleBold", Arial, sans-serif; text-transform: none; border-bottom: none; height: 100px; line-height: 100px; margin: 0; text-align: center; }
+#main.homepage_blurb #content h1 { font: 48px AdelleBold, Titillium, Arial, sans-serif; text-transform: none; border-bottom: none; height: 100px; line-height: 100px; margin: 0; text-align: center; }
 #main.homepage_blurb h1 img { vertical-align: middle; margin: 0 10px; display: none }
 */
 

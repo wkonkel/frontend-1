@@ -186,7 +186,7 @@ with (Hasher('DomainShow','DomainApps')) {
       div({ id: "progress-bar", style: "margin: -10px auto 15px auto" },
         table( tbody(
           tr(
-            td({ style: "width: 25%" }, p({ style: "font: 25px 'AdelleBold', Arial, sans-serif" }, "Transfer Progress")),
+            td({ style: "width: 25%" }, p({ style: "font: 25px AdelleBold, Titillium, Arial, sans-serif" }, "Transfer Progress")),
             td({ style: "width: 10%; text-align: center; font-weight: bold; font-size: 20px", id: "progress-bar-percentage" }, step_percentage + "%"),
             td({ style: "width: 50%" }, div({ 'class': "meter green nostripes" }, span({ style: "width: " + step_percentage + "%" })))
           ),
