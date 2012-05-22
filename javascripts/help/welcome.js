@@ -13,10 +13,10 @@ with (Hasher('Welcome','Application')) {
 
           h3("Link an existing account:"),
           div({ 'class': 'registrars', style: 'padding-left: 30px' },
-            a({ href: '#linked_accounts' }, img({ 'class': 'app_store_icon', src: 'images/apps/godaddy.png' }), span('GoDaddy')),
-            a({ href: '#linked_accounts' }, img({ 'class': 'app_store_icon', src: 'images/apps/ns.png' }), span('Network Solutions')),
-            a({ href: '#linked_accounts' }, img({ 'class': 'app_store_icon', src: 'images/apps/enom.png' }), span('eNom')),
-            a({ href: '#linked_accounts' }, img({ 'class': 'app_store_icon', src: 'images/apps/namecheap.png' }), span('Namecheap'))
+            a({ href: '#linked_accounts/godaddy/link' }, img({ 'class': 'app_store_icon', src: 'images/apps/godaddy.png' }), span('GoDaddy')),
+            a({ href: '#linked_accounts/networksolutions/link' }, img({ 'class': 'app_store_icon', src: 'images/apps/ns.png' }), span('Network Solutions')),
+            a({ href: '#linked_accounts/enom/link' }, img({ 'class': 'app_store_icon', src: 'images/apps/enom.png' }), span('eNom')),
+            a({ href: '#linked_accounts/namecheap/link' }, img({ 'class': 'app_store_icon', src: 'images/apps/namecheap.png' }), span('Namecheap'))
           ),
 
           h3("Search for a new domain:"),
