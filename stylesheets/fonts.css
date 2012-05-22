@@ -16,5 +16,5 @@
   font-family: 'Signika';
   font-style: normal;
   font-weight: 400;
-  src: local('Signika'), local('Signika-Regular'), url('../fonts/Signika.woff') format('woff');
+  src: local('Signika'), local('Signika-Regular'), url('../fonts/Signika.woff');
 }

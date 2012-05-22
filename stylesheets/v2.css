@@ -118,14 +118,45 @@ html, body, #wrapper, #footer { min-width: 970px; }
 
 /* modal */
 .modal-dialog { position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 3 }
-#modal-content { margin: 100px auto 0 auto; width: 600px; padding: 20px; border-radius: 5px; background: white; position: relative; }
+#modal-content { 
+  margin: 100px auto 0 auto;
+  width: 600px;
+  padding: 20px;
+  background: white;
+  position: relative;
+  
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
 .modal-dialog h1 { margin: 0 0 7px; padding: 0; border-bottom: 1px solid #333; }
 .modal-dialog h2, .modal-dialog h3 { margin: 0 0 5px; padding: 0; border-bottom: 0; }
 #modal-content.spinner { background: white url(../images/spinner.gif) no-repeat center center; }
 #modal-content.spinner #modal-wrapper { visibility: hidden; }
 #modal-content #modal-message { display: none; position: absolute; top: 50%; left: 0; width: 100%; text-align: center; margin-top: 11px; color: #888; font-style: italic; }
 #modal-content.spinner #modal-message { display: block; }
-.close-button { background: black; border: 3px solid white; display: block; width: 20px; height: 20px; border-radius: 16px; position: absolute; right:-10px; top: -10px; text-align: center; font-weight: bold; line-height: 20px; color: white; font-size: 14px; box-shadow: 0 0 5px black; }
+.close-button {
+  background: black;
+  border: 3px solid white;
+  display: block; width: 20px;
+  height: 20px;
+  position: absolute;
+  right:-10px;
+  top: -10px;
+  text-align: center;
+  font-weight: bold;
+  line-height: 20px;
+  color: white;
+  font-size: 14px;
+
+  border-radius: 16px;
+  -moz-border-radius: 16px;
+  -webkit-border-radius: 16px;
+  
+  box-shadow: 0 0 5px black;
+  -moz-box-shadow: 0 0 5px black;
+  -webkit-box-shadow: 0 0 5px black;
+}
 .close-button:hover { text-decoration: none; }
 
 
@@ -176,6 +207,8 @@ html, body, #wrapper, #footer { min-width: 970px; }
 
 #content-top .registrars span { 
   padding-right: 20px;
+  font-family: AdelleBold;
+  font-size: 18px;
 }
 
 #content-top .registrars .app_store_icon {
