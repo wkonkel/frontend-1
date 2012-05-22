@@ -11,7 +11,12 @@ with (Hasher('Billing','Application')) {
     );
     
     render(
-      h1('Purchase Credits'),
+      // h1('Purchase Credits'),
+      chained_header_with_links(
+        { text: 'My Account' },
+        { href: '#account/billing', text: 'Credits & Billing History' },
+        { text: 'Purchase Credits' }
+      ),
 
       div({ 'class': 'sidebar' },
         info_message(
