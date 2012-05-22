@@ -1,11 +1,19 @@
 with (Hasher()) {
 
   define('before_filter', function(name, callback) {
+    if (!callback) {
+      callback = name;
+      name = null;
+    }
   	if (!this.hasOwnProperty('before_filters')) this.before_filters = [];
     this.before_filters.push({ name: name, callback: callback, context: this });
   });
 
   define('after_filter', function(name, callback) {
+    if (!callback) {
+      callback = name;
+      name = null;
+    }
   	if (!this.hasOwnProperty('after_filters')) this.after_filters = [];
     this.after_filters.push({ name: name, callback: callback, context: this });
   });

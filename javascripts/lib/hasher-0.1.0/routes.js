@@ -37,7 +37,13 @@ with (Hasher()) {
   define('set_route', function(path, options) {
     if (!options) options = {};
 
-    if (!options.skip_updating_browser_bar) window.location.href = window.location.href.split('#')[0] + path;
+    if (!options.skip_updating_browser_bar) {
+      if (options.replace) {
+        window.location.replace(window.location.href.split('#')[0] + path);
+      } else {
+        window.location.href = window.location.href.split('#')[0] + path;
+      }
+    }
     Hasher.current_route = path;
 
     if (options.reload_page) {
