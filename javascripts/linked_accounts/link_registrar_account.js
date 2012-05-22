@@ -162,7 +162,6 @@ with (Hasher('LinkRegistrarAccount','Application')) {
         on_error: function(response) {
           hide_form_submit_loader();
           $('#account-link-errors').html(error_message(response));
-          Badger.deleteLinkedAccount(response.data.id, function(r) { console.log('delete linked account', r) });
           BadgerCache.reload('linked_accounts');
         }
       }

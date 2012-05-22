@@ -211,7 +211,7 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
   });
   
   // TODO: add to this as registrars are supported/recognized
-  const PREVIOUS_REGISTRAR_NAME_SERVER_REGEXES = [
+  var PREVIOUS_REGISTRAR_NAME_SERVER_REGEXES = [
     /^ns\d+\.badger\.com$/i,
     /^ns\d+\.domaincontrol\.com$/i,
     /^ns\d+\.worldnic\.com$/i,
