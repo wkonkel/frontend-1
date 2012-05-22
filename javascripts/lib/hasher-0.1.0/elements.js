@@ -20,6 +20,9 @@ with (Hasher()) {
       }
     }
 
+    // special case to set type first for IE because it changes things after type is set
+    if ((tag == 'input') && (options.type == 'submit')) element.setAttribute('type', options.type);
+
     // process attributes
     for (var k in options) {
       if (k.indexOf('on') == 0) {
@@ -36,6 +39,8 @@ with (Hasher()) {
       } else if (k == 'placeholder') {
         //add spaces to the end of placeholder so the serialized_form-hack doesn't match
         element.setAttribute(k, options[k] + '          ');
+      } else if ((tag == 'input') && (options.type == 'submit') && (k == 'type')) {
+        // special case for IE... we already set type above
       } else {
         element.setAttribute(k, options[k]);
       }
