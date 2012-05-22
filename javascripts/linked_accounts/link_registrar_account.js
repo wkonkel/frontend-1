@@ -1,38 +1,41 @@
 with (Hasher('LinkRegistrarAccount','Application')) {
   
+  before_filter('require_person', require_person);
+
   route("#linked_accounts/:registrar/link", function(registrar) {
     if (registrar == "godaddy") {
-      var ACCOUNT_NAME         = "GoDaddy";
-      var ACCOUNT_ICON_SRC     = "images/apps/godaddy.png";
+      render_registrar_link_form("GoDaddy", "images/apps/godaddy.png");
     } else if (registrar == "networksolutions") {
-      var ACCOUNT_NAME         = "Network Solutions";
-      var ACCOUNT_ICON_SRC     = "images/apps/ns.png";
+      render_registrar_link_form("Network Solutions", "images/apps/ns.png");
     } else if (registrar == "enom") {
-      var ACCOUNT_NAME         = "Enom";
-      var ACCOUNT_ICON_SRC     = "images/apps/enom.png";
+      render_coming_soon_page("Enom", "images/apps/enom.png");
+    } else {
+      render_coming_soon_page(registrar);
     }
-    
+  });
+  
+  define('render_registrar_link_form', function(registrar_name, registrar_logo) {
     render(
       chained_header_with_links(
         { href: '#account', text: 'My Account' },
         { href: '#linked_accounts', text: 'Linked Accounts' },
-        { text: ACCOUNT_NAME || 'Registrar' }
+        { text: registrar_name || 'Registrar' }
       ),
       
       div({ 'class': 'sidebar' },
         info_message(
-          h3("Why link your " + ACCOUNT_NAME + " account?"),
+          h3("Why link your " + registrar_name + " account?"),
           p("Linking your account automates the transfer process. Let us do the work for you.")
         )
       ),
       
       form_with_loader({ 'class': 'fancy has-sidebar', action: curry(create_linked_account_and_verify_login, registrar), loading_message: 'Verifying your login credentials...' },
-        // h1("Link " + ACCOUNT_NAME + " Account"),
+        // h1("Link " + registrar_name + " Account"),
         div({ style: "margin-left: 110px" },
           div({ style: "float: left; margin: auto 20px 20px auto" },
-            img({ 'class': "app_store_icon", src: ACCOUNT_ICON_SRC })
+            img({ 'class': "app_store_icon", src: registrar_logo })
           ),
-          p("To link your " + ACCOUNT_NAME + " account with Badger.com, enter your " + ACCOUNT_NAME + " login credentials below."),
+          p("To link your " + registrar_name + " account with Badger.com, enter your " + registrar_name + " login credentials below."),
           p("Syncing your account may take up to five minutes.  When transferring domains, temporary changes may be made to your account information.")
         ),
 
@@ -52,10 +55,9 @@ with (Hasher('LinkRegistrarAccount','Application')) {
           label({ 'for': 'agree_to_terms' }, 'Legal stuff:'),
           div({ style: 'line-height: 18px; padding: 15px 0' }, 
             input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
-            label({ 'class': 'normal', 'for': 'agree_to_terms' }, " I hereby authorize Badger to act as my agent and to access my " + ACCOUNT_NAME + " account pursuant to the ", a({ href: '#terms_of_service' }, "Registration Agreement"), '.')
+            label({ 'class': 'normal', 'for': 'agree_to_terms' }, " I hereby authorize Badger to act as my agent and to access my " + registrar_name + " account pursuant to the ", a({ href: '#terms_of_service' }, "Registration Agreement"), '.')
           )
         ),
-
 
         fieldset({ 'class': 'no-label' },
           div({ id: "button-div" },
@@ -66,6 +68,30 @@ with (Hasher('LinkRegistrarAccount','Application')) {
     );
     
     $("input[name=login]").focus();
+  });
+
+  define('render_coming_soon_page', function(registrar_name, registrar_logo) {
+    render(
+      chained_header_with_links(
+        { href: '#account', text: 'My Account' },
+        { href: '#linked_accounts', text: 'Linked Accounts' },
+        { text: registrar_name || 'Registrar' }
+      ),
+      
+      div({ 'class': 'sidebar' },
+        info_message(
+          h3("Why link your " + registrar_name + " account?"),
+          p("Linking your account automates the transfer process. Let us do the work for you.")
+        )
+      ),
+      
+      div({ 'class': 'has-sidebar' },
+        div({ style: "float: left; margin: auto 20px 20px auto" },
+          img({ 'class': "app_store_icon", src: registrar_logo })
+        ),
+        div({ style: 'float: left; margin-top: 25px' }, error_message("Sorry, we don't support " + registrar_name + " yet but hope to soon!"))
+      )
+    );
   });
 
   // // POST to Badger.com API, render errors if returned

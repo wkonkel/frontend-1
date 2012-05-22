@@ -4,10 +4,7 @@ with (Hasher('Application')) {
     if (Badger.getAccessToken()) BadgerCache.load();
   
     // an API call was made that requires auth
-    Badger.onRequireAuth(function() {
-      Badger.setCookie('badger_url_after_auth', get_route());
-      set_route('#account/create');
-    });
+    Badger.onRequireAuth(require_person);
 
     Badger.onLogin(function() {
       set_route('#', { reload_page: true });
@@ -17,7 +14,14 @@ with (Hasher('Application')) {
       set_route('#', { reload_page: true });
     });
   });
-
+  
+  define('require_person', function() {
+    if (!Badger.getAccessToken()) {
+      Badger.setCookie('badger_url_after_auth', get_route());
+      set_route('#account/create', { replace: true });
+    }
+  });
+  
   route('#', function() {
     if (Badger.getAccessToken()) {
       var next_url = Badger.getCookie('badger_url_after_auth');
