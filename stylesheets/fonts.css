@@ -7,8 +7,8 @@
 
 @font-face {
   font-family: 'AdelleBold';
-  src: url('../fonts/AdelleBasic-Bold-webfont.eot');
-  src: url('../fonts/AdelleBasic_Bold-webfont.eot?#iefix') format('embedded-opentype'),
+  src: local('AdelleBold'), url('../fonts/AdelleBasic-Bold-webfont.eot');
+  src: local('AdelleBold'), url('../fonts/AdelleBasic_Bold-webfont.eot?#iefix') format('embedded-opentype'),
        url('../fonts/AdelleBasic_Bold-webfont.otf');
   font-style: normal;
   font-weight: normal;
@@ -23,8 +23,8 @@
 
 @font-face {
     font-family: 'Titillium';
-    src: url('../fonts/Titillium-webfont.eot');
-    src: url('../fonts/Titillium-webfont.eot?#iefix') format('embedded-opentype'),
+    src: local('Titillium'), url('../fonts/Titillium-webfont.eot');
+    src: local('Titillium'), url('../fonts/Titillium-webfont.eot?#iefix') format('embedded-opentype'),
          url('../fonts/Titillium-webfont.otf');
     font-weight: normal;
     font-style: normal;
