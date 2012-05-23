@@ -155,7 +155,7 @@ with (Hasher('Application')) {
           div({ 'class': "col" },
             h2('Company'),
             ul(
-              li(a({ href: "http://blog.badger.com" }, 'Blog')),
+              li(a({ href: "http://blog.badger.com", target: "_blank" }, 'Blog')),
               li(a({ href: "#terms_of_service" }, 'Terms of Service')),
     					li(a({ href: "http://www.icann.org/en/registrars/registrant-rights-responsibilities-en.htm", target: "_blank" }, 'ICANN Registrant Rights')),
               li(a({ href: "https://whois.badger.com/", target: '_blank' }, 'Whois Lookup'))
@@ -166,9 +166,9 @@ with (Hasher('Application')) {
             ul(
               li(a({ href: "#contact_us" }, 'Contact Us')),
               // li(a({ href: "#faqs" }, 'Frequently Asked Questions')),
-              li(a({ href: "https://getsatisfaction.com/badger/products/badger_faqs" }, 'Frequently Asked Questions')),
+              li(a({ href: "https://getsatisfaction.com/badger/products/badger_faqs", target: "_blank" }, 'Frequently Asked Questions')),
               // li(a({ href: "#knowledge_center" }, 'Knowledge Center')),
-              li(a({ href: "https://getsatisfaction.com/badger/products/badger_knowledge_center" }, 'Knowledge Center')),
+              li(a({ href: "https://getsatisfaction.com/badger/products/badger_knowledge_center", target: "_blank" }, 'Knowledge Center')),
               li(a({ href: 'https://github.com/badger/frontend', target: '_blank' }, 'API Docs for Developers'))
             )
           ),
