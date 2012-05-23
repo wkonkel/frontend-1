@@ -192,7 +192,7 @@ returns true if all arguments are included in the array.
 returns false if any of the arguments are not in the array.
 */
 Array.prototype.includes = function() {
-  if (arguments.length < 1) return null; 
-  for (i in arguments) { if (this.indexOf(arguments[i]) < 0) return false; }
+  if (arguments.length < 1) return null;
+  for (var i = 0; i < arguments.length; i++) { if (this.indexOf(arguments[i]) < 0) return false; }
   return true;
 };
