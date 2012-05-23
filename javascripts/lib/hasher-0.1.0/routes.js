@@ -44,19 +44,8 @@ with (Hasher()) {
         window.location.href = window.location.href.split('#')[0] + path;
       }
     }
-    
-    // This fixes issues with setting the route in IE not rendering all
-    // content on the page. It makes the browser reload anytime the route is changed.
-    if (Hasher.current_route && Hasher.current_route != path) {
-      if ($.browser.msie) {
-        Hasher.current_route = path;
-        window.location.reload();
-        return;
-      }
-    }
-    
     Hasher.current_route = path;
-    
+
     if (options.reload_page) {
       window.location.reload();
       return;
