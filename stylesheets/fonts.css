@@ -9,8 +9,8 @@
   font-family: 'AdelleBold';
   src: local('AdelleBold');
   src: url('../fonts/AdelleBasic-Bold-webfont.eot');
-  src: url('../fonts/AdelleBasic_Bold-webfont.eot?#iefix') format('embedded-opentype'),
-       url('../fonts/AdelleBasic_Bold-webfont.otf');
+  src: url('../fonts/AdelleBasic-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+       url('../fonts/AdelleBasic-Bold-webfont.otf');
   font-style: normal;
   font-weight: normal;
 }
