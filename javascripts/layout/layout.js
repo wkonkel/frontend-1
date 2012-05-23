@@ -88,7 +88,7 @@ with (Hasher('Application')) {
   });
 
   layout('default_layout', function(yield) {
-    var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
+    // var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
     return [
       header(),
 
@@ -108,7 +108,7 @@ with (Hasher('Application')) {
 
 
   layout('no_bg_layout', function(yield) {
-    var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
+    // var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
     return [
       header(),
 
@@ -155,7 +155,7 @@ with (Hasher('Application')) {
           div({ 'class': "col" },
             h2('Company'),
             ul(
-              li(a({ href: "#blogs" }, 'Blog')),
+              li(a({ href: "http://blog.badger.com" }, 'Blog')),
               li(a({ href: "#terms_of_service" }, 'Terms of Service')),
     					li(a({ href: "http://www.icann.org/en/registrars/registrant-rights-responsibilities-en.htm", target: "_blank" }, 'ICANN Registrant Rights')),
               li(a({ href: "https://whois.badger.com/", target: '_blank' }, 'Whois Lookup'))
