@@ -148,7 +148,7 @@ with (Hasher('LinkedAccounts','Application')) {
 	    linked_account_name = "Twitter";
 	    icon_src            = "images/apps/twitter.png";
 	  }
-	  
+	  	  
 	  return tr(
       td({ align: 'center' }, img({ 'class': 'app_store_icon', src: icon_src, style: 'width: 50px; height: 50px; margin: 5px auto auto auto' })),
       td(linked_account_name),
@@ -179,12 +179,13 @@ with (Hasher('LinkedAccounts','Application')) {
     // start_modal_spin("Loading...");
 	  
 	  Badger.getLinkedAccountAuthorizationUrl(site, function(response) {
-      var auth_window,
-          auth_url = response.data;
+      var auth_window;
+      var auth_url = response.data;
   		
 			render({ into: link_button_div },
 			  div({ align: "center" },
-          a({ onclick: function() { auth_window = window.open(auth_url, "twitter-authorization", "width=600,height=600") } },
+			    // IE does not support a name for the window, so leave it empty.
+          a({ onclick: function(e) { auth_window = window.open(auth_url, "" ,"width=600,height=600"); } },
             ((site == 'facebook') && img({ src: "images/linked_accounts/facebook.png" })) || 
             ((site == 'twitter') && img({ src: "images/linked_accounts/twitter.png" }))
           )
