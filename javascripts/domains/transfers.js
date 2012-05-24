@@ -5,7 +5,7 @@ with (Hasher('Domains','Application')) {
     render(
       h1("My Domains » Transfers"),
       div({ style: 'float: right; margin-top: -44px' },
-        a({ 'class': 'myButton small', href: '#domain-transfers/add_domains' }, 'Transfer in a Domain')
+        a({ 'class': 'myButton small', href: '#domains/transfer' }, 'Transfer in a Domain')
       ),
       Domains.domain_index_nav_table(target_div)
     );

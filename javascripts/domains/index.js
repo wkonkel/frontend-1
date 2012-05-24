@@ -101,6 +101,22 @@ with (Hasher('Domains','Application')) {
     ));
   });
 
+  define('transfer_linked_domains_row', function(domains) {
+    var linked_domains = [];
+    for (var i=0; i < domains.length; i++) {
+      if ((domains[i].permissions_for_person.indexOf('linked_account') >= 0) && domains[i].supported_tld) linked_domains.push(domains[i]);
+    }
+    if (linked_domains.length > 0) {
+      return tr({ 'class': 'table-header' },
+        td({ colSpan: 3 }, 
+          info_message(
+            a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: curry(Transfer.redirect_to_transfer_for_domain, linked_domains.map(function(d) { return d.name })) }, 'Begin Transfer'),
+            "You have ", b(linked_domains.length, " domains"), " that can be automatically transferred to Badger!"
+          )
+        )
+      );
+    }
+  });
 
   define('index_view', function(domains, filter, view_type) {
     var empty_domain_message = [];
@@ -119,7 +135,7 @@ with (Hasher('Domains','Application')) {
         div("It looks like you don't have any domains registered with us yet. You should probably:"),
         ul(
           li(a({ href: function() { set_route('#search'); $('#form-search-input').focus(); } }, "Search for a new domain")), // --- This is really confusing without a redirect to #search CAB
-          li(a({ href: '#domain-transfers/add_domains' }, "Transfer a domain from another registrar"))
+          li(a({ href: '#domains/transfer' }, "Transfer a domain from another registrar"))
         ),
         div("Then this page will be a lot more fun.")
       ];
@@ -134,9 +150,9 @@ with (Hasher('Domains','Application')) {
 					a({href: "#filter_domains/" + filter + "/grid"}, img({ src: 'images/icon-grid-view.gif' }))
 				)
 			),
-      div({ style: 'float: right; margin-top: -44px' },
-        a({ 'class': 'myButton small', href: '#domain-transfers/add_domains' }, 'Transfer in a Domain')
-      ),
+      // div({ style: 'float: right; margin-top: -44px' },
+      //   a({ 'class': 'myButton small', href: '#domains/transfer' }, 'Transfer in a Domain')
+      // ),
       
       domain_index_nav_table(
         (typeof(domains) == 'undefined') ? [
@@ -154,12 +170,14 @@ with (Hasher('Domains','Application')) {
     return [
       table({ 'class': 'fancy-table' },
         tbody(
+          transfer_linked_domains_row(domains),
+
           tr({ 'class': 'table-header' },
             th('Name'),
             th('Registrar'),
             th('Expires')
           ),
-
+          
           (domains || []).map(function(domain) {
             return tr(
               td(a({ href: '#domains/' + domain.name }, Domains.truncate_domain_name(domain.name))),

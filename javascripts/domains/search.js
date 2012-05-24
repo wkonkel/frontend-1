@@ -7,12 +7,12 @@ with (Hasher('Search','Application')) {
           info_message(
             h3("Already own a domain?"),
             p('We can automatically transfer your domains to Badger.'),
-            div({ 'class': 'centered-button' }, a({ 'class': 'myButton small', href: '#domain-transfers/add_domains' }, 'Transfer a Domain'))
+            div({ 'class': 'centered-button' }, a({ 'class': 'myButton small', href: '#domains/transfer' }, 'Transfer a Domain'))
           )
           
           // info_message(
           //   h3("Need lots of domains?"),
-          //   p('Register many domains at once with our ', a({ href: function() { Badger.Session.write({ current_transfer_action: 'register' }); set_route('#domain-transfers/add_domains'); } }, 'Bulk Register Tool'), '.')
+          //   p('Register many domains at once with our ', a({ href: function() { Badger.Session.write({ current_transfer_action: 'register' }); set_route('#domains/transfer'); } }, 'Bulk Register Tool'), '.')
           // )
         ),
         

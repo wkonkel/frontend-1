@@ -1,88 +1,78 @@
 with (Hasher('Transfer','Application')) {
   
-  var current_action = 'transfer';
-  
-  route('#domain-transfers/add_domains', function() {
-    // if there are already domains present, put them into the text box automatically
-    var prefilled_domains;
-    if (domains = Badger.Session.get('domains')) {
-      prefilled_domains = domains.join("\n");
-    }
-    
-    render(
-      (current_action == 'transfer') ? h1('Transfer Domains Into Badger') : h1('Register Domains with Badger'),
-      
-      div({ 'class': 'sidebar' },
-        (current_action == 'transfer') ?
-          info_message(
-            h3('Transferring Domains'),
-            p('Enter the domain(s) that you would like to transfer to Badger, one per line.')
-          )
-        :
-          info_message(
-            h3('Register Domains'),
-            p('Enter the domain(s) that you would like to register eith Badger, one per line.')
-          )
-      ),
-            
-      div({ 'class': 'fancy has-sidebar' },
-        div({ id: 'errors' }),
-        
-        form_with_loader({ 'class': 'fancy', action: continue_to_confirm_page, loading_message: 'Reading domain info...' },
-          
-          fieldset({ 'for': 'domains' },
-            label('Domains'),
-            
-            textarea({ name: 'domains', placeholder: "badger.com" }, prefilled_domains || null)
-          ),
+  route('#domains/transfer', function() {
+    var domains = (Badger.Session.get('domains') || []).sort();
 
-          fieldset({ 'class': 'no-label' },
-            submit({ name: 'submit', value: 'Continue' })
+    render(
+      h1('Transfer In Domains'),
+      div({ 'class': 'sidebar' },
+        info_message(
+          h3("How do transfers work?"),
+          p("Transferring your domain into Badger extends its current registration by one year.")
+        )
+      ),
+    
+      form_with_loader({ 'class': 'has-sidebar', action: confirm_transfers, loading_message: 'Processing...' },
+        div({ id: 'errors' }),
+
+        table({ 'class': 'fancy-table', id: 'transfer-domains-table' },
+          tbody(
+            tr({ 'class': 'table-header' },
+              th('Name'),
+              th('Registrar'),
+              th('Expires'),
+              th()
+            ),
+            domains.map(generate_row_for_domain),
+            tr({ id: 'add-domain-to-table-row' },
+              td(
+                textarea({ 
+                  name: 'domains', 
+                  id: 'add_domain_to_table_text', 
+                  placeholder: 'e.g. badger.com',
+                  onKeydown: function(e) { if ((e.charCode || e.keyCode) == 13) { stop_event(e); process_new_domains(); } },
+                  onPaste: function(e) { setTimeout(process_new_domains,0); },
+                  style: 'width: 150px; height: 20px; line-height: 20px; border: 1px solid #bbb; padding: 3px; margin: 3px 5px 3px 0; resize: none;'
+                }),
+                submit({ 
+                  style: 'background: url(images/add.gif); width: 16px; height:16px; border: 0; border: 0; margin: 0; padding: 0; text-indent: -1000px', 
+                  onClick: function(e) { 
+                    stop_event(e); 
+                    process_new_domains();
+                  }
+                })
+              ),
+              td({ colSpan: '3' })
+            )
           )
+        ),
+
+        div({ style: "margin-top: 20px; text-align: right "},
+          input({ type: 'hidden', name: 'hidden_tag_anchor', id: 'hidden_tag_anchor', value: '' }),
+          submit({ id: 'continue-transfer-btn', 'class': 'myButton', name: 'cancel', value: "Cancel" })
         )
       )
+      
     );
   });
   
-  route('#domain-transfers/confirm_domains', function() {
-    with (Badger.Session.read('domains')) {
-      render(
-        h1('Transfer In Domains'),
-        div({ id: 'errors' }),
-        
-        form_with_loader({ action: confirm_transfers, loading_message: 'Processing...' },
-          div({ 'class': 'y-scrollbar-div' },
-            table({ 'class': 'fancy-table', id: 'transfer-domains-table' },
-              tbody(
-                tr({ 'class': 'table-header' },
-                  th('Name'),
-                  th('Registrar'),
-                  th('Expires'),
-                  th()
-                ),
-                domains.map(generate_row_for_domain),
-                tr({ id: 'add-domain-to-table-row' },
-                  td(
-                    form({ action: add_domain_to_table },
-                      text({ name: 'name', id: 'add_domain_to_table_text', placeholder: 'Add another domain...', style: 'width: 150px; border: 1px solid #bbb; padding: 3px; margin: 3px 5px 3px 0' }),
-                      submit({ style: 'background: url(images/add.gif); width: 16px; height:16px; border: 0; border: 0; margin: 0; padding: 0; text-indent: -1000px' })
-                    )
-                  ),
-                  td({ colSpan: '3' })
-                )
-              )
-            )
-          ),
+  define('process_new_domains', function() {
+    var raw_domains = document.getElementById('add_domain_to_table_text').value;
 
-          div({ style: "margin-top: 20px; text-align: right "},
-            input({ type: 'hidden', name: 'hidden_tag_anchor', id: 'hidden_tag_anchor', value: '' }),
-            submit({ id: 'continue-transfer-btn', 'class': 'myButton', name: 'cancel', value: "Cancel" })
-          )
-        )
-        
-      );
+    var domains = [];
+    (typeof(raw_domains) == "string" ? raw_domains.split('\n') : raw_domains).map(function(domain) {
+      if (domain.trim() != '') domains.push(domain.trim().toLowerCase());
+    });
+    $.unique(domains).sort();
+    if (domains.length == 0) {
+      $('#transfer-form-error').html('Invalid Domains Input');
+      $('#transfer-form-error').removeClass('hidden');
+      return;
     }
+    domains.map(function(domain) { add_domain_to_table({ name: domain }); });
+    $('#add_domain_to_table_text').val('');
   });
+  
   
   route('#domain-transfers/confirm_transfer', function() {
     with (Badger.Session.read('transfer_domains', 'new_domains', 'domain_count')) {
@@ -98,14 +88,25 @@ with (Hasher('Transfer','Application')) {
           transfer_domains.map(function(domain) { return input({ type: "hidden", name: "transfer_domains[]", value: domain }); }),
           new_domains.map(function(domain) { return input({ type: "hidden", name: "new_domains[]", value: domain }); }),
 
+          fieldset({ style: 'line-height: 25px' },
+            label('Domains:'),
+            div(
+              ul({ style: 'border: 1px solid #ccc; float: left; margin-top: 0px; padding: 5px 20px 5px 30px; max-height: 60px; overflow: auto; line-height: 18px' },
+                transfer_domains.concat(new_domains).sort().map(function(domain){
+                  return li(domain);
+                })
+              )
+            )
+          ),
+
           Contact.selector_with_all_form_fields({ name: 'registrant_contact_id' }),
 
           fieldset({ style: 'line-height: 25px' },
-            label('Free Options'),
-            div({ 'class': 'big-text' },
+            label('Free options:'),
+            div(
               checkbox({ name: 'privacy', value: 'yes', checked: 'checked' }), 'Enable whois privacy'
             ),
-            div({ 'class': 'big-text' },
+            div(
               checkbox({ name: 'auto_renew', value: 'yes', checked: 'checked' }), 'Auto-renew on expiration date'
             )
           ),
@@ -195,42 +196,12 @@ with (Hasher('Transfer','Application')) {
 
   // when you want to transfer a domain from somewhere else on the site,
   // invoke this method to make it happen
-  define('redirect_to_transfer_for_domain', function(domain_name) {
+  define('redirect_to_transfer_for_domain', function(domains) {
     // prepopulate the domains array with this one
-    Badger.Session.write({
-      domains: [domain_name]
-    });
-    
-    set_route('#domain-transfers/confirm_domains');
+    Badger.Session.write({ domains: typeof(domains) == 'string' ? [domains] : domains });
+    set_route('#domains/transfer');
   });
   
-  define('continue_to_confirm_page', function(form_data) {
-    // store the list of domains to retrieve on the next page
-    var domains = $.unique(form_data.domains.split(/\s+/)).filter(function(domain) { return domain.length > 0; });
-    Badger.Session.write({
-      domains: domains
-    });
-    
-    set_route('#domain-transfers/confirm_domains');
-  });
-    
-  define('transfer_domains_form', function(domain) {
-    show_modal(
-      div(
-        Transfer.current_action == 'transfer' ? h1('TRANSFER DOMAINS INTO BADGER.COM')
-                             : h1('REGISTER DOMAINS WITH BADGER.COM'),
-        div({ 'class': 'error-message hidden', id: 'transfer-form-error' }),
-        form({ action: show_domain_status_table },
-          p("Enter the domain(s) that you'd like to " + Transfer.current_action + ", one per line:"),
-
-          textarea({ name: 'domains', placeholder: 'badger.com', style: 'width: 80%; height: 75px; float: left' }, domain),
-          div({ style: 'margin-top: 60px; text-align: right' }, input({ 'class': 'myButton', id: 'next', type: 'submit', value: 'Next' })),
-          div({ style: 'clear: both' })
-        )
-      )
-   );
-  });
-
   define('row_id_for_domain', function(domain) {
     return domain.replace(/\./g,'-') + '-domain';
   });
@@ -263,7 +234,6 @@ with (Hasher('Transfer','Application')) {
   define('add_domain_to_table', function(form_data) {
     if ($('#' +row_id_for_domain(form_data.name)).length == 0) {
       $('#add-domain-to-table-row').before(generate_row_for_domain(form_data.name));
-      $('#add_domain_to_table_text').val('');
       update_continue_button_count();
     }
   });
@@ -271,6 +241,7 @@ with (Hasher('Transfer','Application')) {
   define('remove_domain_from_table', function(domain) {
     $('#' + row_id_for_domain(domain)).remove();
     remove_hidden_field_for_domain(domain);
+    remove_domain_from_session_var(domain);
     update_continue_button_count();
   });
 
@@ -286,11 +257,11 @@ with (Hasher('Transfer','Application')) {
       var domain_info = response.data;
 
       if (response.meta.status == 'not_found') {
-       show_error_for_domain(domain, 'Invalid domain format');
-       remove_domain_from_session_var(domain);
+        show_error_for_domain(domain, 'Invalid domain format');
+        remove_domain_from_session_var(domain);
       } else if (response.meta.status != 'ok') {
-       show_error_for_domain(domain, response.data.message || 'Error: Internal server error');
-       remove_domain_from_session_var(domain);
+        show_error_for_domain(domain, response.data.message || 'Error: Internal server error');
+        remove_domain_from_session_var(domain);
       } else if (domain_info.available) {
         //show_error_for_domain(domain, 'Domain not currently registered.');
         set_background_color_if_valid(domain, true);
@@ -315,18 +286,25 @@ with (Hasher('Transfer','Application')) {
   
   // remove the domain from the stored domains list in session store
   define('remove_domain_from_session_var', function(domain_to_remove) {
-    if (current_domains = Badger.Session.get('domains')) {
+    var current_domains = Badger.Session.get('domains');
+    if (current_domains) {
       var new_domains = current_domains.filter(function(domain) { return domain != domain_to_remove; });
       Badger.Session.write({ domains: new_domains });
     }
   });
 
+  define('add_domain_to_session_var', function(domain) {
+    Badger.Session.write({ domains: $.unique((Badger.Session.get('domains') || []).concat(domain)) });
+  });
+
   define('add_hidden_field_for_domain', function(domain, is_a_transfer) {
     $('#hidden_tag_anchor').after(input({ type: "hidden", name: is_a_transfer ? "transfer_domains[]" : "new_domains[]", value: domain, id: row_id_for_domain(domain + '-hidden') }));
+    add_domain_to_session_var(domain);
   });
 
   define('remove_hidden_field_for_domain', function(domain) {
     $('#' + row_id_for_domain(domain + '-hidden')).remove();
+    remove_domain_from_session_var(domain);
   });
 
   define('confirm_transfers', function(form_data) {

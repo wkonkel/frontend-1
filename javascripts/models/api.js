@@ -36,6 +36,12 @@ var Badger = {
       return sessionVars;
     },
     
+    set: function(key,value) {
+      var opts = {};
+      opts[key] = value
+      this.write(opts);
+    },
+    
     // returns a single value for the given key
     get: function(key) {
       return this.read(key)[key];
