@@ -166,9 +166,9 @@ with (Hasher('Application')) {
             ul(
               li(a({ href: "#contact_us" }, 'Contact Us')),
               // li(a({ href: "#faqs" }, 'Frequently Asked Questions')),
-              li(a({ href: "https://getsatisfaction.com/badger/products/badger_faqs", target: "_blank" }, 'Frequently Asked Questions')),
               // li(a({ href: "#knowledge_center" }, 'Knowledge Center')),
-              li(a({ href: "https://getsatisfaction.com/badger/products/badger_knowledge_center", target: "_blank" }, 'Knowledge Center')),
+              li(a({ href: "https://community.badger.com/badger/products/badger_faqs", target: "_blank" }, 'Frequently Asked Questions')),
+              li(a({ href: "https://community.badger.com/badger/products/badger_knowledge_center", target: "_blank" }, 'Knowledge Center')),
               li(a({ href: 'https://github.com/badger/frontend', target: '_blank' }, 'API Docs for Developers'))
             )
           ),
@@ -183,10 +183,8 @@ with (Hasher('Application')) {
                 a({ href: "https://www.facebook.com/BadgerDotCom", target: "_blank" }, 'Facebook'),
                 ' / ',
                 a({ href: "irc://irc.freenode.net/badger", target: "_blank" }, 'IRC')
-              ),
-              li(
-                a({ href: "https://getsatisfaction.com/badger", target: "_blank" }, 'Get Satisfaction')
               )
+              //li(a({ href: "https://community.badger.com/badger", target: "_blank" }, 'Get Satisfaction'))
             )
           ),
           div({ 'class': "col" },
