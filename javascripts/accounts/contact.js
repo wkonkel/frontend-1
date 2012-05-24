@@ -107,6 +107,7 @@ with (Hasher('Contact','Application')) {
             delete form_data.contact;
             callback(form_data);
           } else {
+            hide_form_submit_loader();
             $(message_area).html(error_message(response));
           }
         });
