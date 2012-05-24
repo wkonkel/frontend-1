@@ -1,5 +1,25 @@
 with (Hasher('Signup','Application')) {
 
+  /*
+    Load client-side Facebook API
+    for this page only.
+  */
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '175882215854335',
+      status     : true,
+      cookie     : true,
+      xfbml      : true,
+      oauth      : true,
+    });
+  };
+  (function(d){
+    var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
+    js = d.createElement('script'); js.id = id; js.async = true;
+    js.src = "//connect.facebook.net/en_US/all.js";
+    d.getElementsByTagName('head')[0].appendChild(js);
+  }(document));
+
   route('#account/create', function() {
     render(
       h1('Create Badger Account'),
@@ -9,7 +29,9 @@ with (Hasher('Signup','Application')) {
           h3("Already have an account?"),
           p("If you've already done this, you're on the wrong page!"),
           div({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
-        )
+        ),
+        
+        div({ style: 'text-align: center;', 'class': 'fb-login-button' }, 'Login with Facebook')
       ),
 
       form_with_loader({ 'class': 'fancy has-sidebar', action: create_person, loading_message: "Creating account..." },
