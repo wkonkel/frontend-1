@@ -41,7 +41,7 @@ with (Hasher('GoogleMail', 'DomainApps')) {
       h1_for_domain(domain, 'Google Mail'),
       domain_app_settings_button('google_mail', domain),
       p("Before anything else, you will need to ", a({ href: 'https://www.google.com/a/cpanel/domain/new', target: '_blank'}, 'set up Google Apps for your domain'), ' if you haven\'t already.'),
-      p("For more detailed instructions, please see ", a({ href: "https://www.badger.com/#knowledge_center/47-Properly-configuring-Google-Mail-on-your-Badger-domain" }, "this Knowledge Center article"), ".")
+      p("For more detailed instructions, please see ", a({ href: "http://community.badger.com/badger/topics/configuring_google_mail_for_your_domain_on_badger_com" }, "this Knowledge Center article"), ".")
     );
   });
   

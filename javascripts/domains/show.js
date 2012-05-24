@@ -542,55 +542,55 @@ with (Hasher('DomainShow','DomainApps')) {
       case 'needs_unlock':
         switch (registrar) {
           case 'GoDaddy Inc.':
-            return a({ href: 'https://www.badger.com/#knowledge_center/3-Unlocking-Your-GoDaddy-Domain' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/godaddy_domain_transfer_unlocking_your_domain' }, '(?)');
           case 'Network Solutions, LLC':
-            return a({ href: 'https://www.badger.com/#knowledge_center/23-Unlocking-&-Getting-an-Auth-Code-from-Network-Solutions' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/network_solutions_domain_transfer_unlocking_your_domain_getting_an_auth_code' }, '(?)');
           case '1 & 1 INTERNET AG':
-            return a({ href: 'https://www.badger.com/#knowledge_center/15-Unlocking-Your-1&1-Domain' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/1_1_domain_transfer_unlocking_your_domain' }, '(?)');
           case 'Enom, Inc.':
-            return a({ href: 'https://www.badger.com/#knowledge_center/29-Unlocking-Your-Enom-Central-Domain' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/enom_domain_transfer_unlocking_your_domain' }, '(?)');
           case 'Gandi SAS':
-            return a({ href: 'https://www.badger.com/#knowledge_center/37-Unlocking-Your-Gandi-Domain' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/gandi_domain_transfer_unlocking_your_domain' }, '(?)');
           default:
-            return a({ href: 'https://www.badger.com/#knowledge_center' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center' }, '(?)');
         }
       case 'needs_privacy_disabled':
         switch (registrar) {
           case 'GoDaddy Inc.':
-            return a({ href: 'https://www.badger.com/#knowledge_center/5-Disabling-Privacy-on-GoDaddy' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/godaddy_domain_transfer_disabling_privacy' }, '(?)');
           case 'Network Solutions, LLC':
-            return a({ href: 'https://www.badger.com/#knowledge_center/25-Disabling-Privacy-on-Network-Solutions' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/network_solutions_domain_transfer_disabling_privacy' }, '(?)');
           case '1 & 1 INTERNET AG':
-            return a({ href: 'https://www.badger.com/#knowledge_center/17-Disabling-Privacy-on-1&1' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/1_1_domain_transfer_disabling_privacy' }, '(?)');
           case 'Enom, Inc.':
-            return a({ href: 'https://www.badger.com/#knowledge_center/31-Disabling-Privacy-on-Enom-Central' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/enom_domain_transfer_disabling_privacy' }, '(?)');
           default:
-            return a({ href: 'https://www.badger.com/#knowledge_center' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center' }, '(?)');
         }
       case 'needs_auth_code':
         switch (registrar) {
           case 'GoDaddy Inc.':
-            return a({ href: 'https://www.badger.com/#knowledge_center/7-Getting-an-Auth-Code-from-GoDaddy' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/godaddy_domain_transfer_getting_an_auth_code' }, '(?)');
           case 'Network Solutions, LLC':
-            return a({ href: 'https://www.badger.com/#knowledge_center/23-Unlocking-&-Getting-an-Auth-Code-from-Network-Solutions' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/network_solutions_domain_transfer_unlocking_your_domain_getting_an_auth_code' }, '(?)');
           case '1 & 1 INTERNET AG':
-            return a({ href: 'https://www.badger.com/#knowledge_center/19-Getting-an-Auth-Code-from-1&1' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/1_1_domain_transfer_getting_an_auth_code' }, '(?)');
           case 'Enom, Inc.':
-            return a({ href: 'https://www.badger.com/#knowledge_center/33-Getting-an-Auth-Code-from-Enom-Central' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/enom_domain_transfer_getting_an_auth_code' }, '(?)');
           case 'Gandi SAS':
-            return a({ href: 'Getting an Auth Code from Gandi' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/gandi_domain_transfer_getting_an_auth_code' }, '(?)');
           default:
-            return a({ href: 'https://www.badger.com/#knowledge_center' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center' }, '(?)');
         }
       case 'transfer_requested':
         switch (registrar) {
           case 'GoDaddy Inc.':
-            return a({ href: 'https://www.badger.com/#knowledge_center/9-Manually-Approving-a-Transfer-on-GoDaddy' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/godaddy_domain_transfer_manually_approving_a_transfer' }, '(?)');
           default:
-            return a({ href: 'https://www.badger.com/#knowledge_center' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center' }, '(?)');
         }
       default:
-        return a({ href: 'https://www.badger.com/#knowledge_center' }, '(?)');
+        return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center' }, '(?)');
     }
   });
 }

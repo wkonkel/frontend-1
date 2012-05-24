@@ -52,7 +52,7 @@ with (Hasher('GoogleAppsVerification', 'DomainApps')) {
             ". When you are done verifying this URL with Google, you can remove this app."
           ),
           p("For more detailed instructions, you can read ",
-            a({ href: 'https://www.badger.com/#knowledge_center/49-Google-Apps-Verification' }, "this Knowledge Center article"),
+            a({ href: 'http://community.badger.com/badger/topics/using_the_google_apps_verification_widget_on_badger_com' }, "this Knowledge Center article"),
             '.'
           )
         );
