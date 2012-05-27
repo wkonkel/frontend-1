@@ -123,6 +123,7 @@ with (Hasher('LinkedAccounts','Application')) {
    	      th({ style: 'width: 15%; vertical-align: middle' }),
    	      th({ style: 'width: 20%' }, "Site"),
    	      th({ style: 'width: 45%'}, "Username"),
+   	      th({ style: 'width: 45%'}, "Status"),
    	      th({ style: 'width: 5%'}) // delete account button
    	    ),
    	    linked_accounts.map(function(linked_account) {
@@ -152,7 +153,8 @@ with (Hasher('LinkedAccounts','Application')) {
 	  return tr(
       td({ align: 'center' }, img({ 'class': 'app_store_icon', src: icon_src, style: 'width: 50px; height: 50px; margin: 5px auto auto auto' })),
       td(linked_account_name),
-      td(!['error_auth', 'unlinked', 'error'].includes(linked_account.status) ? linked_account.login : span({ style: 'font-style: italic; font-weight: bold; color: red' }, 'Account Unlinked')),
+      td(linked_account.login),
+      td(['error_auth', 'unlinked', 'error'].includes(linked_account.status) ? span({ style: 'font-style: italic; font-weight: bold; color: red' }, linked_account.status) : 'Linked'),
       td(delete_linked_account_button(linked_account))
     );
 	});
