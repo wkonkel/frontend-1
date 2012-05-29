@@ -338,7 +338,7 @@ with (Hasher('Transfer','Application')) {
     if ($('#transfer-domains-table .success-row, #transfer-domains-table .error-row').length == domain_count) {
       $('#transfer-domains-table').after(
         div({ style: 'margin-top: 10px; text-align: right' },
-          a({ href: curry(close_transfer, domain_name), 'class': 'myButton' }, 'Close')
+          a({ href: curry(close_transfer, domain_name), 'class': 'myButton' }, 'View My Domains')
         )
       );
       
