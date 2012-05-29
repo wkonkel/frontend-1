@@ -105,7 +105,6 @@ with (Hasher('Application')) {
       }
     };
     
-    // pretty self-explanatory
     var poll_forever = options.max_time == -1;
         
     // if timed out, run break callback.
@@ -141,6 +140,7 @@ with (Hasher('Application')) {
     @options same as from poll function
   */
   define('process_action_and_set_timeout', function(options) {
+    var poll_forever = options.max_time == -1;
     var action_options = options.action;
     
     // calls the Badger API method
@@ -158,6 +158,8 @@ with (Hasher('Application')) {
           max_time: options._poll_obj.max_time
         });
       }
+      
+      if (poll_forever) return setTimeout(curry(long_poll, options), options.interval);
       
       if (break_from_poll == true) {
         // break out of the poll, call the on_finish_callback
