@@ -178,7 +178,7 @@ with (Hasher('LinkedAccounts','Application')) {
 	  
     // start_modal_spin("Loading...");
 	  
-	  Badger.getLinkedAccountAuthorizationUrl(site, function(response) {
+	  Badger.getLinkedAccountAuthorizationUrl(site, { create_account: true }, function(response) {
       var auth_window;
       var auth_url = response.data;
   		

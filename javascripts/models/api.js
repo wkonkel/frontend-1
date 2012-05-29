@@ -260,7 +260,9 @@ var Badger = {
         return domain_obj;
       });
       
-      callback(response_data);
+      response.data = response_data;
+      
+      callback(response);
     });
   },
   
@@ -515,8 +517,8 @@ var Badger = {
 		Badger.api("/linked_accounts/" + linked_account_id + "/remote_info", callback);
 	},
 	
-	getLinkedAccountAuthorizationUrl: function(site, callback) {
-		Badger.api("/linked_accounts/" + site + "/auth_url", callback);
+	getLinkedAccountAuthorizationUrl: function(site, options, callback) {
+		Badger.api("/linked_accounts/" + site + "/auth_url", options, callback);
 	},
 	
   shareMessage: function(linked_account_ids, message, callback) {

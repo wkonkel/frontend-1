@@ -46,8 +46,8 @@ with (Hasher('Application')) {
     if (!Badger.getAccessToken()) return;
     if (refresh) BadgerCache.flush('domains');
     
-    BadgerCache.getDomains(function(results) {
-      var count = results.length;
+    BadgerCache.getDomains(function(response) {
+      var count = (response.data||[]).length;
       if (count > 0) {
         $('#my-domains-count').html(" (" + count + ")");
         $('#all-my-domains-h1').html(" (" + count + ")");

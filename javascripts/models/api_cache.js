@@ -67,8 +67,8 @@ var BadgerCache = {
     if (BadgerCache.cached_domains) {
       callback(BadgerCache.cached_domains);
     } else {
-      Badger.getDomains(function(results) { 
-        BadgerCache.cached_domains = results;
+      Badger.getDomains(function(response) { 
+        BadgerCache.cached_domains = response;
         callback(BadgerCache.cached_domains);
       });
     }
