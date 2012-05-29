@@ -34,13 +34,14 @@ with (Hasher()) {
       return layout_elem;
     });
   });
-
-  define('reset_layout', function(name) {
-    if (this[name].layout_elem) {
-      if (this[name].layout_elem.parentNode) this[name].layout_elem.parentNode.removeChild(this[name].layout_elem);
-      this[name].layout_elem = null;
-      this[name].yield_parent = null;
-    }
-  });
+  
+  // // this might actually be problematic.. commenting out as it isn't used --- CAB
+  // define('reset_layout', function(name) {
+  //   if (this[name].layout_elem) {
+  //     if (this[name].layout_elem.parentNode) this[name].layout_elem.parentNode.removeChild(this[name].layout_elem);
+  //     this[name].layout_elem = null;
+  //     this[name].yield_parent = null;
+  //   }
+  // });
 
 }
