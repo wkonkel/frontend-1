@@ -167,6 +167,9 @@ with (Hasher('Domains','Application')) {
   });
 
   define('list_view', function(domains) {
+    // changed the getDomains response for compatibility with long_poll --- CAB
+    domains = domains.data;
+    
     return [
       table({ 'class': 'fancy-table' },
         tbody(
