@@ -83,6 +83,9 @@ with (Hasher('Account','Application')) {
       if (response.meta.status == 'ok') {
         $('#messages').html(success_message('Your account has been updated.'));
         update_account_info();
+        
+        // clear all fields from the form
+        $("form input:password, input:text").val('');
       } else {
         $('#messages').html(error_message(response));
       }
