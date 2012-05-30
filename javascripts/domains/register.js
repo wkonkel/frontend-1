@@ -21,14 +21,14 @@ with (Hasher('Register','Application')) {
         fieldset(
           label({ 'for': 'years' }, 'Duration:'),
           select({ name: 'years', id: 'years' },
-            option({ value: 1 }, '1 Year'),
-            option({ value: 2 }, '2 Years'),
-            option({ value: 3 }, '3 Years'),
-            option({ value: 4 }, '4 Years'),
-            option({ value: 5 }, '5 Years'),
-            option({ value: 10 }, '10 Years')
+            option({ value: 1 }, '1 year'),
+            option({ value: 2 }, '2 years'),
+            option({ value: 3 }, '3 years'),
+            option({ value: 4 }, '4 years'),
+            option({ value: 5 }, '5 years'),
+            option({ value: 10 }, '10 years')
           ),
-          span({ 'class': 'big-text' }, ' @ 1 credit per year')
+          span({ 'class': 'big-text' }, ' @ 1 Credit per year')
         ),
 
         fieldset(
@@ -87,7 +87,7 @@ with (Hasher('Register','Application')) {
     //   var num_domains = 1 + $('.extensions:checked').length;
     //   var credits = num_domains * years;
     //   
-    //   $('#register-button').val('Register ' + (num_domains > 1 ? (num_domains + ' domains') : domain) + ' for ' + credits + (credits == 1 ? ' credit' : ' credits'))
+    //   $('#register-button').val('Register ' + (num_domains > 1 ? (num_domains + ' domains') : domain) + ' for ' + credits + (credits == 1 ? ' Credit' : ' Credits'))
     // })
     // 
     // if (form_data) {
@@ -217,7 +217,7 @@ with (Hasher('Register','Application')) {
     // checked_extensions = [domain].concat(checked_extensions.map(function(ext) { return ext[0]; }));
     // 
     // $('#errors').empty();
-    // start_modal_spin('Checking available credits...');
+    // start_modal_spin('Checking available Credits...');
     // 
     // BadgerCache.getAccountInfo(function(results) {
     //   var needed_credits = checked_extensions.length * form_data.years;

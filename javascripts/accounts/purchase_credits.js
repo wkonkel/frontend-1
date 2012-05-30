@@ -20,17 +20,17 @@ with (Hasher('Billing','Application')) {
 
       div({ 'class': 'sidebar' },
         info_message(
-          h3("What does a credit include?"),
+          h3("What does a Credit include?"),
           ul({ style: "padding-left: 20px" },
             li('1 year of registration'),
             li('WHOIS privacy (free)'),
             li('DNS hosting (free)')
           ),
-          p("New registrations, transfers, and renewals each cost 1 credit.")
+          p("New registrations, transfers, and renewals each cost 1 Credit.")
         ),
         
         info_message(
-          h3("Why do you use credits?"),
+          h3("Why do you use Credits?"),
           p("Credits allow us to give you discounts, and make domain renewals and registrations faster.")
         )
       ),
@@ -185,7 +185,7 @@ with (Hasher('Billing','Application')) {
     with (Badger.Session.read('credits_added')) {
       if (options.delete_var) Badger.Session.remove('credits_added');
       
-      var message = info_message("You have added ", credits_added, " ", credits_added <= 1 ? "credit" : "credits", " to your account.");
+      var message = info_message("You have added ", credits_added, " ", credits_added <= 1 ? "Credit" : "Credits", " to your account.");
       return div(options, message);
     }
   });

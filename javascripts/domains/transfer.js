@@ -574,7 +574,7 @@ with (Hasher('Transfer','Application')) {
 //     
 //     // if (credits_added = Badger.Session.get('credits_added')) {
 //     //   render({ into: credits_added_div },
-//     //     info_message("You have added ", credits_added, " ", credits_added <= 1 ? "credit" : "credits", " to your account.")
+//     //     info_message("You have added ", credits_added, " ", credits_added <= 1 ? "Credit" : "Credits", " to your account.")
 //     //   )
 //     // }
 //     
@@ -582,7 +582,7 @@ with (Hasher('Transfer','Application')) {
 //     
 //     if (credits_added = Badger.Session.get('credits_added')) {
 //       render({ into: credits_added_message },
-//         info_message("You have added ", credits_added, " ", credits_added <= 1 ? "credit" : "credits", " to your account.")
+//         info_message("You have added ", credits_added, " ", credits_added <= 1 ? "Credit" : "Credits", " to your account.")
 //       );
 //     }
 //     

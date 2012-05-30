@@ -33,7 +33,7 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
         
         info_message(
           h3("Pricing"),
-          p("Transferring a domain to Badger.com requires 1 domain credit.")
+          p("Transferring a domain to Badger.com requires 1 domain Credit.")
         )
       ),
       

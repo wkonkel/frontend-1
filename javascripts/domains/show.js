@@ -45,7 +45,7 @@ with (Hasher('DomainShow','DomainApps')) {
           
           // update the register domains button
           $("select[name=years]").change(function(e) {
-            $('#register-button').val('Register ' + domain + ' for ' + this.value + (this.value == 1 ? ' credit' : ' credits'));
+            $('#register-button').val('Register ' + domain + ' for ' + this.value + (this.value == 1 ? ' Credit' : ' Credits'));
             $('#expiration-date').html(
               (parseInt(this.value)).years().fromNow().toString("MMMM dd yyyy")
             );
@@ -110,7 +110,7 @@ with (Hasher('DomainShow','DomainApps')) {
       return display_transfer_status(domain_obj);
     } else if ((domain_obj.permissions_for_person || []).indexOf('show_private_data') >= 0) {
       return [
-        p('This domain is active and will auto-renew for 1 Credit on ', new Date(Date.parse(domain_obj.expires_at)).toDateString(), '.'),
+        p('This domain is active and will auto-renew for one Credit on ', new Date(Date.parse(domain_obj.expires_at)).toDateString(), '.'),
         days <= 30 ? a({ 'class': 'myButton myButton-small', href: curry(Register.renew_domain_modal, domain_obj.name) }, 'Renew') : ''
       ];
     } else if ((domain_obj.permissions_for_person || []).indexOf('linked_account') >=0) {

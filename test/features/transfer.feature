@@ -20,7 +20,7 @@ Feature: Transfer
     Then I should see "CONFIRMATION: 1 DOMAIN"
     And I should see "Free Options"
     And I should see "Registrant:"
-    Then I press "Register for 1 Credit"
+    Then I press "Register for one Credit"
     And I should see "REGISTRATION STATUS"
     And I should see "abc.com" within "#transfer-domains-table"
     And I should see "Success" within "#transfer-domains-table"
