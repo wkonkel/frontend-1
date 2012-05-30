@@ -31,7 +31,7 @@ with (Hasher('GoogleAppEngine', 'DomainApps')) {
       h1_for_domain(domain, 'Google App Engine'),
       domain_app_settings_button('badger_google_app_engine', domain),
 
-      div("Google App Engine DNS settings have been installed into Badger DNS.",
+      div("Google App Engine DNS settings have been installed into Badger DNS. ",
           'Also check out ',
           a({ href: 'http://code.google.com/appengine/docs/domain.html', target: '_blank' }, 'Google App Engine Custom Domains'), '.')
     );

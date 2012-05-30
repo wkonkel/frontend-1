@@ -10,7 +10,7 @@ with (Hasher('Posterous', 'DomainApps')) {
         { type: 'a', content: "184.106.20.102" }
       ],
       subdomain_dns: [
-        { type: 'cname', subdomain: /[a-zA-Z0-9_-]+/, content: "posterours.com", subdomain_input: "subdomain" }
+        { type: 'cname', subdomain: /[a-zA-Z0-9_-]+/, content: "posterous.com", subdomain_input: "subdomain" }
       ]
     },
 
