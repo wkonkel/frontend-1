@@ -15,8 +15,25 @@ with (Hasher('DomainShow','DomainApps')) {
       div({ id: 'error-message', 'class': 'error-message hidden' }),
       domain_nav_table(content_div)
     );
+    
+    // wrap get domain in a long_poll. if this is the first contact we have 
+    // had with the domain, we need to wait until it has initially been synced
+    long_poll({
+      max_time: -1, // TODO make this timeout, maybe
+      interval: 3000,
+      
+      action: {
+        method: curry(Badger.getDomain, domain),
+        on_ok: function(response) {
+          if (response.data && (response.data.available || !response.data.current_registrar.match(/unknown/i))) {
+            handle_get_domain_response(content_div, domain, response);
+            return true;
+          }
+        }
+      }
+    });
 
-    Badger.getDomain(domain, curry(handle_get_domain_response, content_div, domain));
+    // Badger.getDomain(domain, curry(handle_get_domain_response, content_div, domain));
   });
 
   define('handle_get_domain_response', function(content_div, domain, response, skip_retry) {
@@ -59,10 +76,11 @@ with (Hasher('DomainShow','DomainApps')) {
           );
         }
       } else if (domain_obj.current_registrar == 'Unknown') {
-        // if it's "unknown", it was probably just added and we're still loading info for it... try again in 1 second
-        var timeout = setTimeout(function() {
-          Badger.getDomain(domain_obj.name, curry(handle_get_domain_response, content_div, domain));
-        }, 3000);
+        // if it's "unknown", it was probably just added and we're still loading info for it... poll until synced
+        
+        // var timeout = setTimeout(function() {
+        //   Badger.getDomain(domain_obj.name, curry(handle_get_domain_response, content_div, domain));
+        // }, 3000);
       } else {
         render({ into: content_div },
           ((domain_obj.permissions_for_person || []).includes('linked_account') || (domain_obj.permissions_for_person || []).includes('modify_dns')) ? [

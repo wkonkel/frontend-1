@@ -70,11 +70,12 @@ with (Hasher('Application')) {
     The poll is broken based on the return value of the on_ok and
     on_error callbacks.
     - If true is returned, then the poll is broken,
-    and the on_finish callback is executed.
+      and the on_finish callback is executed.
     - If nothing is returned
-    (undefined), then the poll is broken and the on_finish callback
-    is not called.
+      (undefined), then the poll is broken and the on_finish callback
+      is not called. If polling forever, then don't break.
     - If false is returned, then the poll marches onward.
+      if polling forever.
     
     The on_ok and on_error callbacks must return false if you
     don't want to break out of the poll. If they return true,
@@ -159,8 +160,6 @@ with (Hasher('Application')) {
         });
       }
       
-      if (poll_forever) return setTimeout(curry(long_poll, options), options.interval);
-      
       if (break_from_poll == true) {
         // break out of the poll, call the on_finish_callback
         options.on_finish(response, {
@@ -169,6 +168,8 @@ with (Hasher('Application')) {
         });
       } else if (break_from_poll == false) {
         setTimeout(curry(long_poll, options), options.interval);
+      } else if (break_from_poll == undefined) {
+        if (poll_forever) return setTimeout(curry(long_poll, options), options.interval);
       }
     })
   });
