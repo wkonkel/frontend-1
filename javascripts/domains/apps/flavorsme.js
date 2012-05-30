@@ -4,7 +4,7 @@ with (Hasher('FlavorsMe', 'DomainApps')) {
     id: 'badger_flavorsme',
     name: 'Flavors.me',
     icon: 'images/apps/flavorsme.png',
-    menu_item: { text: 'FLAVORS ME', href: '#domains/:domain/flavorsme' },
+    menu_item: { text: 'Flavors Me', href: '#domains/:domain/flavorsme' },
     requires: {
       dns: [
         { type: 'a', content: "184.73.237.244" },

@@ -4,7 +4,7 @@ with (Hasher('GoogleMail', 'DomainApps')) {
     id: 'google_mail',
     name: 'Google Mail',
     icon: 'images/apps/gmail.png',
-    menu_item: { text: 'GOOGLE MAIL', href: '#domains/:domain/google_apps/gmail' },
+    menu_item: { text: 'Google Mail', href: '#domains/:domain/google_apps/gmail' },
 
     requires: {
       dns: [

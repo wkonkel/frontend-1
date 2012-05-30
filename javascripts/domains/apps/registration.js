@@ -9,7 +9,7 @@ with (Hasher('Registration','DomainApps')) {
       //return "Registration: " + domain_obj.current_registrar;
       return "Registration";
     },
-    menu_item: { text: 'REGISTRATION', href: '#domains/:domain/registration', css_class: 'registration' },
+    menu_item: { text: 'Registration', href: '#domains/:domain/registration', css_class: 'registration' },
     requires: {}
   });
 

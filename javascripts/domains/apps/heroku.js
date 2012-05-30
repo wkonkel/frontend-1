@@ -4,7 +4,7 @@ with (Hasher('Heroku', 'DomainApps')) {
     id: 'badger_heroku',
     name: 'Heroku',
     icon: 'images/apps/heroku.png',
-    menu_item: { text: 'HEROKU', href: '#domains/:domain/heroku' },
+    menu_item: { text: 'Heroku', href: '#domains/:domain/heroku' },
     requires: {
       dns: [
         { type: 'a', content: "75.101.163.44" },

@@ -4,7 +4,7 @@ with (Hasher('Blogger', 'DomainApps')) {
     id: 'badger_blogger',
     name: 'Blogger',
     icon: 'images/apps/blogger.png',
-    menu_item: { text: 'BLOGGER', href: '#domains/:domain/blogger' },
+    menu_item: { text: 'Blogger', href: '#domains/:domain/blogger' },
     requires: {
       dns: [
         { type: 'a', content: "216.239.32.21" },

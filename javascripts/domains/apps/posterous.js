@@ -4,7 +4,7 @@ with (Hasher('Posterous', 'DomainApps')) {
     id: 'badger_posterous',
     name: 'Posterous',
     icon: 'images/apps/posterous.png',
-    menu_item: { text: 'POSTEROUS', href: '#domains/:domain/posterous' },
+    menu_item: { text: 'Posterous', href: '#domains/:domain/posterous' },
     requires: {
       dns: [
         { type: 'a', content: "184.106.20.102" }

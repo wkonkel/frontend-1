@@ -4,7 +4,7 @@ with (Hasher('GoogleAppsVerification', 'DomainApps')) {
     id: 'badger_google_apps_verification',
     name: 'Google Apps Verification',
     icon: 'images/apps/googleapps.png',
-    menu_item: { text: 'GOOGLE APPS VERIFICATION', href: '#domains/:domain/google_verification' },
+    menu_item: { text: 'Google Apps Verification', href: '#domains/:domain/google_verification' },
     requires: {
       dns: [
         { type: 'txt', content: /^(google-site-verification|google_site_verification).*/, content_input: 'google_app_verification_code' }

@@ -4,7 +4,7 @@ with (Hasher('GoogleAppEngine', 'DomainApps')) {
     id: 'badger_google_app_engine',
     name: 'Google App Engine',
     icon: 'images/apps/appengine.png',
-    menu_item: { text: 'GOOGLE APP ENGINE', href: '#domains/:domain/google_app_engine' },
+    menu_item: { text: 'Google App Engine', href: '#domains/:domain/google_app_engine' },
     requires: {
       dns: [
         { type: 'cname', subdomain: 'www', content: 'ghs.google.com' }

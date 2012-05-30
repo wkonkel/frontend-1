@@ -4,7 +4,7 @@ with (Hasher('Shopify', 'DomainApps')) {
     id: 'badger_shopify',
     name: 'Shopify',
     icon: 'images/apps/shopify.png',
-    menu_item: { text: 'SHOPIFY', href: '#domains/:domain/shopify' },
+    menu_item: { text: 'Shopify', href: '#domains/:domain/shopify' },
     requires: {
       dns: [
         { type: 'a', content: "204.93.213.45" },

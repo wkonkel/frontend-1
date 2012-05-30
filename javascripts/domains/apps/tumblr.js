@@ -4,7 +4,7 @@ with (Hasher('Tumblr', 'DomainApps')) {
     id: 'badger_tumblr',
     name: 'Tumblr',
     icon: 'images/apps/tumblr.png',
-    menu_item: { text: 'TUMBLR', href: '#domains/:domain/tumblr' },
+    menu_item: { text: 'Tumblr', href: '#domains/:domain/tumblr' },
     requires: {
       dns: [
         { type: 'a', content: "66.6.44.4" },

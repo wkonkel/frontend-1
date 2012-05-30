@@ -4,7 +4,7 @@ with (Hasher('GoogleDocs', 'DomainApps')) {
     id: 'google_docs',
     name: 'Google Docs',
     icon: 'images/apps/googledocs.png',
-    menu_item: { text: 'GOOGLE DOCS', href: '#domains/:domain/google_apps/docs' },
+    menu_item: { text: 'Google Docs', href: '#domains/:domain/google_apps/docs' },
 
     requires: {
       dns: [
