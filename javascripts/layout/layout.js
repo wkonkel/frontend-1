@@ -220,7 +220,7 @@ with (Hasher('Application')) {
   define('update_credits', function(refresh) {
     if (refresh) BadgerCache.flush('account_info');
     BadgerCache.getAccountInfo(function(response) {
-      $('#user_nav_credits').html(response.data.domain_credits == 1 ? '1 Credit' : response.data.domain_credits + ' Credits');
+      $('#user_nav_credits').html(response.data.domain_credits == 1 ? 'one Credit' : response.data.domain_credits + ' Credits');
     });
   });
 

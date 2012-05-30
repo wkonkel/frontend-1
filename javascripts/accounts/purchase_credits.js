@@ -38,7 +38,8 @@ with (Hasher('Billing','Application')) {
       form_with_loader({ 'class': 'fancy has-sidebar', id: 'credits-form', action: purchase_credits, loading_message: "Processing purchase..." },
         div({ id: 'modal-errors' },
           (necessary_credits ?
-            div({ 'class': 'error-message' }, "You need at least ", necessary_credits, " Credits to continue.")
+            div({ 'class': 'error-message' }, "You need at least ", necessary_credits,
+                " Credit" + (necessary_credits != 1 ? 's' : '') + " to continue.")
           : [])
         ),
 
