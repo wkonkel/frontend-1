@@ -80,9 +80,16 @@ with (Hasher('Share','Application')) {
   define('linked_account_row', function(linked_account) {
     return tr(
       td(input({ type: 'checkbox', value: linked_account.id })),
-      td(icon_for_account(linked_account)),
-      td(span(linked_account.login))
+      td({ onclick: curry(check_box_for_linked_account, linked_account) }, icon_for_account(linked_account)),
+      td(span({ onclick: curry(check_box_for_linked_account, linked_account) }, linked_account.login))
     );
+  });
+  
+  define('check_box_for_linked_account', function(linked_account) {
+    var checkbox = $("input[value=" + linked_account.id + "]");
+
+    // toggle checkbox
+    checkbox.attr('checked', !checkbox.attr('checked'));
   });
   
   define('icon_for_account', function(linked_account) {
