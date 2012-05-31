@@ -4,7 +4,7 @@ with (Hasher('Share','Application')) {
     var target_div = div({ 'class': 'fancy has-sidebar' }, spinner('Loading...'));
     
     render(
-      h1(a({ href: '#filter_domains/all/list' }, 'My Domains'), ' » ', a({ href: '#domains/' + domain_name }, domain_name.toLowerCase()), ' » Share'),
+      h1(a({ href: '#domains' }, 'My Domains'), ' » ', a({ href: '#domains/' + domain_name }, domain_name.toLowerCase()), ' » Share'),
       
       div({ 'class': 'sidebar' },
         info_message(
@@ -80,8 +80,8 @@ with (Hasher('Share','Application')) {
   define('linked_account_row', function(linked_account) {
     return tr(
       td(input({ type: 'checkbox', value: linked_account.id })),
-      td({ onclick: curry(check_box_for_linked_account, linked_account) }, icon_for_account(linked_account)),
-      td(span({ onclick: curry(check_box_for_linked_account, linked_account) }, linked_account.login))
+      td({ 'class': 'clickable', onclick: curry(check_box_for_linked_account, linked_account) }, icon_for_account(linked_account)),
+      td(span({ 'class': 'clickable', onclick: curry(check_box_for_linked_account, linked_account) }, linked_account.login))
     );
   });
   
