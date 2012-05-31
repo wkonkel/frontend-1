@@ -39,12 +39,13 @@ with (Hasher('ConfirmRegistrarBulkTransfer', 'Application')) {
     );
     
     with (Badger.Session.read('domains')) {
+      var transfer_button_text;
       if (domains.length == 0) {
-        var transfer_button_text = "Continue";
+        transfer_button_text = "Continue";
       } else if (domains.length == 1) {
-        var transfer_button_text = "Transfer " + domains.length + " Domain for " + domains.length + " Credit";
+        transfer_button_text = "Transfer " + domains.length + " Domain for " + domains.length + " Credit";
       } else {
-        var transfer_button_text = "Transfer " + domains.length + " Domains for " + domains.length + " Credits";
+        transfer_button_text = "Transfer " + domains.length + " Domains for " + domains.length + " Credits";
       }
 
       var domains_table = div({ style: 'overflow: auto; min-height: 150px; max-height: 250px; border: 1px #333 solid; border-radius: 5px; padding: 5px' },

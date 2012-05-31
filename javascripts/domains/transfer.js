@@ -77,7 +77,7 @@ with (Hasher('Transfer','Application')) {
   route('#domain-transfers/confirm_transfer', function() {
     with (Badger.Session.read('transfer_domains', 'new_domains', 'domain_count')) {
       // build the appropriate header
-      var confirm_transfer_header = (domain_count && domain_count > 0) ? h1('Confirm Transfer of ', domain_count, ' Domain(s)') : h1('Confirm Transfer');
+      var confirm_transfer_header = (domain_count && domain_count > 0) ? h1('Confirm Transfer of ', domain_count, ' Domain' + (domain_count != 1 ? 's' : '')) : h1('Confirm Transfer');
 
       render(
         confirm_transfer_header,
@@ -112,7 +112,7 @@ with (Hasher('Transfer','Application')) {
           ),
           
           fieldset({ 'class': 'no-label' },
-            submit({ name: 'submit', value: 'Register for ' + domain_count + ' Credit(s)' })
+            submit({ name: 'submit', value: 'Register for ' + domain_count + ' Credit' + (domain_count != 1 ? 's' : '') })
           )
         )
       );

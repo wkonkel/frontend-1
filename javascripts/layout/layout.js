@@ -51,7 +51,7 @@ with (Hasher('Application')) {
       if (count > 0) {
         $('#my-domains-count').html(" (" + count + ")");
         $('#all-my-domains-h1').html(" (" + count + ")");
-        $('#user-nav-domains').html(count + " Domains");
+        $('#user-nav-domains').html(count + " Domain" + (count != 1 ? 's' : ''));
       } else {
         $('#user-nav-domains').html("Domains");
       }
