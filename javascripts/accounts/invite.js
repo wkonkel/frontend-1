@@ -1,6 +1,6 @@
 with (Hasher('Invite','Application')) {
   route('#invites', function() {
-    var target_h1 = h1('SENT INVITES');
+    var target_h1 = h1('Sent Invites');
     var target_div = div(spinner('Loading...'));
     var target_button_area = div({ style: 'float: right; margin-top: -44px' });
     
@@ -16,7 +16,7 @@ with (Hasher('Invite','Application')) {
         var domain_credits = response.data.domain_credits;
         var sent_invites_count = invite_status.data.length;
         
-        if (sent_invites_count > 0) render({ target: target_h1 }, 'SENT INVITES (' + sent_invites_count + ')');
+        if (sent_invites_count > 0) render({ target: target_h1 }, 'Sent invites (' + sent_invites_count + ')');
 
         if (invites_available) {
           render({ target: target_button_area }, 
@@ -89,7 +89,7 @@ with (Hasher('Invite','Application')) {
 
 		show_modal(
   		form({ action: send_invite },
-        h1('SEND INVITE'),
+        h1('Send Invite'),
   			div({ id: 'send-invite-messages' }),
           table({ id: 'invitee-information' },
             tbody(

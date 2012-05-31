@@ -58,7 +58,7 @@ with (Hasher('GoogleAppsVerification', 'DomainApps')) {
         );
       } else {
         render(
-          h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, 'GOOGLE APPS VERIFICATION FOR ' + domain)),
+          h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, 'Google Apps Verification for ' + domain)),
           div({ 'class': 'error-message' }, 'Could not find TXT record for Google Apps Verification.')
         );
       }

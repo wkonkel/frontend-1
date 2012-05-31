@@ -219,7 +219,7 @@ with (Hasher('DnsApp','DomainApps')) {
     load_domain(domain, function(domain_info) {
       render(
         div(
-          h1('NAMESERVERS FOR ' + domain),
+          h1('Nameservers for ' + domain),
           change_name_servers_button(domain_info),
 
           p("You are not currently using Badger DNS."),
@@ -485,7 +485,7 @@ define('get_dns_params', function(id) {
         div({ id: 'errors_modal' }),
       
         div({ style: 'width: 275px; padding-right: 20px; float: left; margin-right: -1px; border-right: 1px solid #ccc' },
-          h2(span({ style: 'cursor: pointer; font-size: 20px', onclick: function() { $('#remote-dns-details').hide(); $('#badger-dns-details').show(); $('#radio-nameservers-badger').click(); } }, radio({ id: 'radio-nameservers-badger', style: 'margin: 0 8px 2px 0', name: 'nameservers' }), 'BADGER DNS'), span({ style: 'padding-left: 10px; font-weight: normal; font-size: 11px'}, '(RECOMMENDED)')),
+          h2(span({ style: 'cursor: pointer; font-size: 20px', onclick: function() { $('#remote-dns-details').hide(); $('#badger-dns-details').show(); $('#radio-nameservers-badger').click(); } }, radio({ id: 'radio-nameservers-badger', style: 'margin: 0 8px 2px 0', name: 'nameservers' }), 'Badger DNS'), span({ style: 'padding-left: 10px; font-weight: normal; font-size: 11px'}, '(Recommended)')),
           div({ id: 'badger-dns-details' },
             ul(
               li("Proven reliability."),
@@ -502,7 +502,7 @@ define('get_dns_params', function(id) {
         ),
 
         div({ style: 'width: 275px; padding-left: 20px; float: left; border-left: 1px solid #ccc' },
-          h2(span({ style: 'cursor: pointer; font-size: 20px', onclick: function() { $('#remote-dns-details').show(); $('#badger-dns-details').hide(); $('#radio-nameservers-remote').click(); } }, radio({ id: 'radio-nameservers-remote', style: 'margin: 0 8px 2px 0', name: 'nameservers' }), 'EXTERNAL'), span({ style: 'padding-left: 10px; font-weight: normal; font-size: 11px'}, '(THE HARD WAY)')),
+          h2(span({ style: 'cursor: pointer; font-size: 20px', onclick: function() { $('#remote-dns-details').show(); $('#badger-dns-details').hide(); $('#radio-nameservers-remote').click(); } }, radio({ id: 'radio-nameservers-remote', style: 'margin: 0 8px 2px 0', name: 'nameservers' }), 'External'), span({ style: 'padding-left: 10px; font-weight: normal; font-size: 11px'}, '(The hard way)')),
           div({ id: 'remote-dns-details', style: "padding-left: 20px" },
             form({ action: function() { save_name_servers(domain_info, $('#name_server_select').val()); } },
               div({ style: 'font-weight: bold' }, 'DNS Provider:'), 

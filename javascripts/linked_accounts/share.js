@@ -41,7 +41,7 @@ with (Hasher('Share','Application')) {
       ),
       
       fieldset({ style: 'line-height: 20px; margin-top: 10px' },
-        label('Share to'),
+        label('Share to:'),
         
         (linked_accounts || []).length > 0 ? [
           my_linked_accounts_table(linked_accounts)

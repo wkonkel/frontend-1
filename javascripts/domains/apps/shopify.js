@@ -34,7 +34,7 @@ with (Hasher('Shopify', 'DomainApps')) {
     if ((shopify_app_url != '') && (patt.test(shopify_app_url))) {
       install_app_button_clicked(app, domain_obj, form_data);
     } else {
-      $('#app-error-message').html('Shopify URL is invalid');
+      $('#app-error-message').html('Shopify URL is invalid.');
       $('#app-error-message').removeClass('hidden');
     }
   });

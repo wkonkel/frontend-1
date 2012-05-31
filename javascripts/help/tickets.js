@@ -20,7 +20,7 @@ with (Hasher('Ticket','Application')) {
       var closed_tickets = response.data.closed_tickets;
 
       render({ target: 'tickets' },
-        (pending_tickets.length + closed_tickets.length) == 0 ? p('You have no tickets')
+        (pending_tickets.length + closed_tickets.length) == 0 ? p('You have no tickets.')
         : [ render_ticket_table('Your Pending Tickets', pending_tickets),
             render_ticket_table('Your Closed Tickets', closed_tickets)
         ]

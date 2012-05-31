@@ -231,7 +231,7 @@ with (Hasher('DomainApps','Application')) {
 
   define('show_needs_badger_nameservers_modal', function(app, domain_obj) {  
     show_modal(
-      h1('FIRST, INSTALL BADGER DNS?'),
+      h1('First, install Badger DNS?'),
       div({ style: 'padding-top: 20px; text-align: right' }, 
         a({ 'class': 'myButton', href: curry(install_app_button_clicked, app, domain_obj) }, 'Install Badger Nameservers')
       )
@@ -241,7 +241,7 @@ with (Hasher('DomainApps','Application')) {
   define('show_settings_modal_for_app', function(app_id, domain) {
     var app = Hasher.domain_apps[app_id];
     show_modal(
-      h1('SETTINGS FOR ', app.name),
+      h1('Settings for ', app.name),
       p("If you'd like to uninstall this application, click the uninstall button below."),
       div({ style: "text-align: right; margin-top: 30px" },
         a({ 
@@ -396,7 +396,7 @@ with (Hasher('DomainApps','Application')) {
                 }
               } else {
                 show_modal(div(
-                  h1('INSTALL DNS RECORDS ERROR'),
+                  h1('Install DNS Records Error'),
                   error_message(response),
                   a({ href: hide_modal, 'class': 'myButton', value: "submit" }, "Close")
                 ));

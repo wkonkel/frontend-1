@@ -49,7 +49,7 @@ with (Hasher('Heroku', 'DomainApps')) {
     if ((heroku_app_url != '') && (patt.test(heroku_app_url))) {
       install_app_button_clicked(app, domain_obj, form_data);
     } else {
-      $('#app-error-message').html('Heroku Application URL is invalid');
+      $('#app-error-message').html('Heroku Application URL is invalid.');
       $('#app-error-message').removeClass('hidden');
     }
   });
