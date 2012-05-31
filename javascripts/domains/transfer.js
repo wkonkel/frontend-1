@@ -123,12 +123,12 @@ with (Hasher('Transfer','Application')) {
     with (Badger.Session.read('transfer_domains', 'new_domains', 'domain_count', 'domains', 'credits_added', 'form_data')) {
       
       render(
-        h1('Processing Transfer of ' + domain_count + ' Domain(s)'),
+        h1('Processing Transfer of ' + domain_count + ' Domain' + (domain_count != 1 ? 's' : '')),
         
         div({ 'class': 'sidebar' },
           info_message(
             h3('Processing Transfers'),
-            p('It will only take a few moments to initiate the domain transfer(s).')
+            p('It will only take a few moments to initiate the domain transfer' + (domain_count != 1 ? 's' : '') + '.')
           )
         ),
         

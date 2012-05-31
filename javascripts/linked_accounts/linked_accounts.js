@@ -270,7 +270,7 @@ with (Hasher('LinkedAccounts','Application')) {
 			  	      div({ 'class': error ? "error-message" : "status-message", style: "position: relative; text-align: right; margin: 5px auto 5px auto; height: 95px; width: 370px; padding: 10px;" },
                   h3("Status: ", status),
                   div("Last Sync: " + (account.last_synced_at ? new Date(Date.parse(account.last_synced_at)).toString() : 'Never')),
-									div("Login: " + account.login + " (" + account.domain_count + " Linked Domain(s))"),
+									div("Login: " + account.login + " (" + account.domain_count + " Linked Domain" + (account.domain_count != 1 ? 's' : '') + ")"),
 									a({ 'class': "myButton small grey", style: 'margin: 10px 0 0;', href: curry(Registrar.remove_link, account) }, "Unlink"),
 									span(' '),
 									error ? a({ 'class': "myButton small red", style: 'margin: 10px 0 0;', href: curry(Registrar.show_link, account)}, "Fix Now")
