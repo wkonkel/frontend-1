@@ -13,6 +13,8 @@ body, input, textarea, select, td, th {
   line-height: 18px;
 }
 
+.clickable { cursor: pointer; }
+
 a { color: #1E31F5; }
 
 h1, h2, h3, h4 { 
