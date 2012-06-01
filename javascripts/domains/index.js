@@ -35,7 +35,14 @@ with (Hasher('Domains','Application')) {
           filter = 'all';
           results = domains
       }
+
+      // filter out domains that are pending transfer
+      results = results.filter(function(domain) {
+        return !domain.permissions_for_person.includes('pending_transfer');
+      })
+      
       render(index_view(results, filter, view_type));
+      
       if (view_type == 'grid')
         create_grid_view(results);
     });
