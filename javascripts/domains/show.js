@@ -25,7 +25,10 @@ with (Hasher('DomainShow','DomainApps')) {
       action: {
         method: curry(Badger.getDomain, domain),
         on_ok: function(response) {
-          if (response.data && (response.data.available || !response.data.current_registrar.match(/unknown/i))) {
+          
+          console.log(response);
+          
+          if (response.data && (response.data.available || !response.data.current_registrar.match(/^unknown$/i))) {
             handle_get_domain_response(content_div, domain, response);
             return true;
           }
