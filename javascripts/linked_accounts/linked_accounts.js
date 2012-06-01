@@ -174,6 +174,17 @@ with (Hasher('LinkedAccounts','Application')) {
 	  else if (site == 'twitter') auth_url = Badger.api_host + "auth/twitter?access_token=" + Badger.getAccessToken();
 
     var auth_window;
+    
+    // show prompt to automatically follow Badger account, 
+    // and have us follow the user.
+    var auto_follow_prompt = div();
+    if (site == 'twitter') {
+      render({ into: auto_follow_prompt },
+        div({ style: 'text-align: center; margin-top: 10px; font-size: 16px;' },
+  			  span(checkbox({ name: 'auto_follow', checked: 'checked' }), span({ 'class': 'big-text' }, " Automatically follow the @Badger Twitter account"))
+  			)
+      )
+    }
 
 	  var content_modal = show_modal(
 	    h1("Link Your " + site.capitalize_first() + " Account"),
@@ -201,9 +212,8 @@ with (Hasher('LinkedAccounts','Application')) {
           ((site == 'twitter') && img({ src: "images/linked_accounts/twitter.png" }))
         )
 			),
-			div({ style: 'text-align: center; margin-top: 10px; font-size: 16px;' },
-			  span(checkbox({ name: 'auto_follow', checked: 'checked' }), span({ 'class': 'big-text' }, " Automatically follow the @Badger Twitter account"))
-			)
+
+			auto_follow_prompt
 	  );
 	})
 	
