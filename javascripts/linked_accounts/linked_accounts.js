@@ -154,7 +154,7 @@ with (Hasher('LinkedAccounts','Application')) {
       td({ align: 'center' }, img({ 'class': 'app_store_icon', src: icon_src, style: 'width: 50px; height: 50px; margin: 5px auto auto auto' })),
       td(linked_account_name),
       td(linked_account.login),
-      td(['error_auth', 'unlinked', 'error'].includes(linked_account.status) ? span({ style: 'font-style: italic; font-weight: bold; color: red' }, linked_account.status) : 'Linked'),
+      td(['error_auth', 'unlinked', 'error'].includes(linked_account.status) ? span({ style: 'font-style: italic; font-weight: bold; color: red' }, linked_account.status) : linked_account.status),
       td(delete_linked_account_button(linked_account))
     );
 	});
@@ -169,50 +169,42 @@ with (Hasher('LinkedAccounts','Application')) {
 	});
 	
 	define('link_social_account', function(site, callback) {
-	  var link_button_div = div(ajax_loader({ style: 'text-align: center' }));
-	  
+	  var auth_url;
+	  if (site == 'facebook') auth_url = Badger.api_host + "auth/facebook?state=" + Badger.getAccessToken();
+	  else if (site == 'twitter') auth_url = Badger.api_host + "auth/twitter?access_token=" + Badger.getAccessToken();
+
+    var auth_window;
+
 	  var content_modal = show_modal(
 	    h1("Link Your " + site.capitalize_first() + " Account"),
 			div({ style: "margin: 15px 10px 15px 10px; text-align: center" },
 				"By linking your " + site.capitalize_first() + " account with Badger.com, you will be able to share your domain registrations and transfers with your followers."
 			),
-			link_button_div
-	  );
-	  
-    // start_modal_spin("Loading...");
-	  
-	  Badger.getLinkedAccountAuthorizationUrl(site, { create_account: true }, function(response) {
-      var auth_window;
-      var auth_url = response.data;
-  		
-			render({ into: link_button_div },
-			  div({ align: "center" },
-			    // IE does not support a name for the window, so leave it empty.
-          a({ onclick: function(e) {
-                // if the 'automatically follow @Badger' box checked, append to auth_url
-                auth_url += "&auto_follow=" + ($(":checked").length > 0).toString();
-                auth_window = window.open(auth_url, "" ,"width=600,height=600");
-              }
-            },
-            ((site == 'facebook') && img({ src: "images/linked_accounts/facebook.png" })) || 
-            ((site == 'twitter') && img({ src: "images/linked_accounts/twitter.png" }))
-          )
-  			),
-  			div({ style: 'text-align: center; margin-top: 10px; font-size: 16px;' },
-  			  span(checkbox({ name: 'auto_follow', checked: 'checked' }), span({ 'class': 'big-text' }, " Automatically follow the @Badger Twitter account"))
-  			)
-			);
+		  div({ align: "center" },
+		    // IE does not support a name for the window, so leave it empty.
+        a({ onclick: function(e) {
+              // if the 'automatically follow @Badger' box checked, append to auth_url
+              auth_url += "&auto_follow=" + ($(":checked").length > 0).toString();
+              auth_window = window.open(auth_url, "" ,"width=600,height=600");
 
-      var watchClose = setInterval(function() {
-        if (auth_window && auth_window.closed) {
-          clearTimeout(watchClose);
-          hide_modal();
-          BadgerCache.reload('linked_accounts');
-          set_route("#linked_accounts");
-        }
-      }, 200);
-    });
-    
+              var watchClose = setInterval(function() {
+                if (auth_window && auth_window.closed) {
+                  clearTimeout(watchClose);
+                  hide_modal();
+                  BadgerCache.reload('linked_accounts');
+                  set_route("#linked_accounts");
+                }
+              }, 200);
+            }
+          },
+          ((site == 'facebook') && img({ src: "images/linked_accounts/facebook.png" })) || 
+          ((site == 'twitter') && img({ src: "images/linked_accounts/twitter.png" }))
+        )
+			),
+			div({ style: 'text-align: center; margin-top: 10px; font-size: 16px;' },
+			  span(checkbox({ name: 'auto_follow', checked: 'checked' }), span({ 'class': 'big-text' }, " Automatically follow the @Badger Twitter account"))
+			)
+	  );
 	})
 	
 	

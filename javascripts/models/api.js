@@ -517,10 +517,6 @@ var Badger = {
 		Badger.api("/linked_accounts/" + linked_account_id + "/remote_info", callback);
 	},
 	
-	getLinkedAccountAuthorizationUrl: function(site, options, callback) {
-		Badger.api("/linked_accounts/" + site + "/auth_url", options, callback);
-	},
-	
   shareMessage: function(linked_account_ids, message, callback) {
     if (typeof(linked_account_ids) == 'number') { linked_account_ids = [linked_account_ids] }
     Badger.api("linked_accounts/share_message", "POST", { message: message, linked_account_ids: linked_account_ids }, callback);
