@@ -169,20 +169,20 @@ with (Hasher('Application')) {
               // li(a({ href: "#knowledge_center" }, 'Knowledge Center')),
               li(a({ href: "http://community.badger.com/badger/products/badger_faqs", target: "_blank" }, 'Frequently Asked Questions')),
               li(a({ href: "http://community.badger.com/badger/products/badger_knowledge_center", target: "_blank" }, 'Knowledge Center')),
-              li(a({ href: 'https://github.com/badger/frontend', target: '_blank' }, 'API Docs for Developers'))
+              li(a({ href: 'https://github.com/badger/frontend', target: '_blank' }, 'Developers'))
             )
           ),
           div({ 'class': "col" },
             h2('Connect With Us'),
             ul(
-              li(a({ href: "mailto:support@badger.com" }, 'support@badger.com')),
+              li(a({ href: "mailto:support@badger.com", target: '_blank' }, 'support@badger.com')),
               li(a({ href: 'tel:+1-415-787-5050' }, '+1-415-787-5050' )),
               li(
                 a({ href: "https://twitter.com/badger", target: "_blank" }, 'Twitter'),
                 ' / ',
                 a({ href: "https://www.facebook.com/BadgerDotCom", target: "_blank" }, 'Facebook'),
                 ' / ',
-                a({ href: "irc://irc.freenode.net/badger", target: "_blank" }, 'IRC')
+                a({ href: "irc://irc.freenode.net/badger" }, 'IRC')
               )
               //li(a({ href: "https://community.badger.com/badger", target: "_blank" }, 'Get Satisfaction'))
             )
