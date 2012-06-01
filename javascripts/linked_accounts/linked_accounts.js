@@ -197,7 +197,7 @@ with (Hasher('LinkedAccounts','Application')) {
           )
   			),
   			div({ style: 'text-align: center; margin-top: 10px; font-size: 16px;' },
-  			  span(checkbox({ name: 'auto_follow', checked: 'checked' }), span({ 'class': 'big-text' }, " Automatically follow the @Badger Twitter account"))
+  			  span(checkbox({ name: 'auto_follow', checked: 'checked' }), span({ 'class': 'big-text' }, " Follow @Badger"))
   			)
 			);
 

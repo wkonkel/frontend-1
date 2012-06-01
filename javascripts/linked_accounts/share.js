@@ -37,7 +37,7 @@ with (Hasher('Share','Application')) {
       
       fieldset({ 'for': 'content' },
         label({ 'for': 'content' }, 'Message:'),
-        textarea({ id: 'message-content', name: 'content', style: 'height: 75px; width: 350px' }, 'I now manage ', domain_name, ' on Badger.com!')
+        textarea({ id: 'message-content', name: 'content', style: 'height: 75px; width: 350px' }, 'I now manage ', domain_name, ' on Badger.com! @Badger')
       ),
       
       fieldset({ style: 'line-height: 20px; margin-top: 10px' },
