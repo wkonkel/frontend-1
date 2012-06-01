@@ -2,3 +2,6 @@ Run locally:
 
 git clone https://github.com/badger/frontend.git
 open frontend/index.html
+
+JSON API Documentation:
+http://badger.github.com

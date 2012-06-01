@@ -5,7 +5,8 @@ with (Hasher('Domains','Application')) {
       domain_index_nav_table()
     );
     
-    BadgerCache.getDomains(function(domains) {
+    BadgerCache.getDomains(function(response) {
+      var domains = response.data;
       var results = [];
       if (view_type == null)
         view_type = "list";
@@ -34,7 +35,14 @@ with (Hasher('Domains','Application')) {
           filter = 'all';
           results = domains
       }
+
+      // filter out domains that are pending transfer
+      results = results.filter(function(domain) {
+        return !domain.permissions_for_person.includes('pending_transfer');
+      })
+      
       render(index_view(results, filter, view_type));
+      
       if (view_type == 'grid')
         create_grid_view(results);
     });
@@ -103,6 +111,9 @@ with (Hasher('Domains','Application')) {
 
   define('transfer_linked_domains_row', function(domains) {
     var linked_domains = [];
+    
+    domains = domains || [];
+    
     for (var i=0; i < domains.length; i++) {
       if ((domains[i].permissions_for_person.indexOf('linked_account') >= 0) && domains[i].supported_tld) linked_domains.push(domains[i]);
     }
@@ -167,14 +178,11 @@ with (Hasher('Domains','Application')) {
   });
 
   define('list_view', function(domains) {
-    // changed the getDomains response for compatibility with long_poll --- CAB
-    domains = domains.data;
-    
     return [
       table({ 'class': 'fancy-table' },
         tbody(
           transfer_linked_domains_row(domains),
-
+  
           tr({ 'class': 'table-header' },
             th('Name'),
             th('Registrar'),

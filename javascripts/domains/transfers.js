@@ -10,7 +10,8 @@ with (Hasher('Domains','Application')) {
       Domains.domain_index_nav_table(target_div)
     );
 
-    BadgerCache.getDomains(function(domains) {
+    BadgerCache.getDomains(function(response) {
+      var domains = response.data;
       var results = [];
       
       for (var i = 0; i < domains.length; i ++) {
