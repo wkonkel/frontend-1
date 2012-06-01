@@ -5,7 +5,8 @@ with (Hasher('Domains','Application')) {
       domain_index_nav_table()
     );
     
-    BadgerCache.getDomains(function(domains) {
+    BadgerCache.getDomains(function(response) {
+      var domains = response.data;
       var results = [];
       if (view_type == null)
         view_type = "list";
