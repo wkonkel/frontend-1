@@ -37,7 +37,7 @@ with (Hasher('Share','Application')) {
       
       fieldset({ 'for': 'content' },
         label({ 'for': 'content' }, 'Message:'),
-        textarea({ id: 'message-content', name: 'content', style: 'height: 75px; width: 350px' }, 'I now manage ', domain_name, ' on Badger.com! @Badger')
+        textarea({ id: 'message-content', name: 'content', style: 'height: 75px; width: 350px' }, 'I now manage ', domain_name, ' with @Badger! https://www.badger.com')
       ),
       
       fieldset({ style: 'line-height: 20px; margin-top: 10px' },
@@ -111,7 +111,7 @@ with (Hasher('Share','Application')) {
     Badger.shareMessage(linked_account_ids, form_data.content, function(response) {
       if (response.meta.status == 'ok') {
         render({ into: 'response-messages' },
-          success_message('Your message has been published!')
+          success_message('Your message has been submitted, and should be published shortly.')
         )
       } else {
         render({ into: 'response-messages' },
