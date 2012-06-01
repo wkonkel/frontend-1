@@ -72,10 +72,10 @@ with (Hasher('DnsApp','DomainApps')) {
     var domain_obj = $.extend(true, {}, domain);
     var app_dns= get_dns_of_installed_apps_list(domain_obj);
     
-    //move NS and SOA records into their own array
+    //move Badger NS and SOA records into their own array
     var auto_dns = [], dns = [];
     domain_obj.dns.forEach(function(r) {
-      ((r.record_type == "soa" || r.record_type == "ns") ? auto_dns : dns).push(r)
+      ((r.record_type == "soa" || (r.record_type == "ns" && r.content.match(/badger\.com$/))) ? auto_dns : dns).push(r)
     });
     
     render({ into: options.into }, 
@@ -97,7 +97,8 @@ with (Hasher('DnsApp','DomainApps')) {
                 option('AAAA'),
                 option('CNAME'),
                 option('MX'),
-                option('TXT')
+                option('TXT'),
+                option('NS')
               )
             ),
             td(input({ id: 'dns-add-subdomain' }), div({ 'class': 'long-domain-name domain-name-label' }, '.' + domain_obj.name)),
@@ -106,7 +107,8 @@ with (Hasher('DnsApp','DomainApps')) {
               input({ id: 'dns-add-content-ipv4', placeholder: 'XXX.XXX.XXX.XXX' }),
               input({ id: 'dns-add-content-ipv6', placeholder: 'XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX' }),
               input({ id: 'dns-add-content-host', placeholder: 'example.com' }),
-              input({ id: 'dns-add-content-text', placeholder: 'SPF, domain keys, etc.' })
+              input({ id: 'dns-add-content-text', placeholder: 'SPF, domain keys, etc.' }),
+              input({ id: 'dns-add-content-ns',   placeholder: 'ns1.example.com' })
             ),
             td(
               select({ id: 'dns-add-ttl' },
@@ -275,10 +277,11 @@ with (Hasher('DnsApp','DomainApps')) {
       })
     ];
   });
-
+  
   define('record_row', function(record, domain, editable) {
-    // manually overide the ability to edit NS and SOA records
-    if (record.record_type == "ns" || record.record_type == "soa") editable = false;
+    // prevent editing SOA & Badger NS records
+    if (record.record_type == "soa") editable = false;
+    if (record.record_type == "ns" && record.content.match(/badger\.com$/)) editable = false;
     
     return tr({ id: 'dns-row-' + record.id },
       td(record.record_type.toUpperCase()),
@@ -304,6 +307,7 @@ with (Hasher('DnsApp','DomainApps')) {
     $('#dns' + type + 'content-host')[['CNAME','MX'].indexOf(record_type) >= 0  ? 'show' : 'hide']();
     $('#dns' + type + 'content-priority')[['MX'].indexOf(record_type) >= 0  ? 'show' : 'hide']();
     $('#dns' + type + 'content-text')[['TXT'].indexOf(record_type) >= 0  ? 'show' : 'hide']();
+    $('#dns' + type + 'content-ns')[['NS'].indexOf(record_type) >= 0  ? 'show' : 'hide']();
   });
 
 define('get_dns_params', function(id) {
@@ -330,6 +334,8 @@ define('get_dns_params', function(id) {
       dns_fields.priority = $('#dns' + type + 'content-priority').val();
     } else if (dns_fields.record_type == 'TXT') {
       dns_fields.content = $('#dns' + type + 'content-text').val();
+    } else if (dns_fields.record_type == 'NS') {
+      dns_fields.content = $('#dns' + type + 'content-ns').val();
     }
 
     return dns_fields;
@@ -385,7 +391,8 @@ define('get_dns_params', function(id) {
           option( record.record_type.toUpperCase() == 'A' ? { selected: 'selected' } : {}, 'A'),
           option( record.record_type.toUpperCase() == 'CNAME' ? { selected: 'selected' } : {}, 'CNAME'),
           option( record.record_type.toUpperCase() == 'MX' ? { selected: 'selected' } : {}, 'MX'),
-          option( record.record_type.toUpperCase() == 'TXT' ? { selected: 'selected' } : {}, 'TXT')
+          option( record.record_type.toUpperCase() == 'TXT' ? { selected: 'selected' } : {}, 'TXT'),
+          option( record.record_type.toUpperCase() == 'NS' ? { selected: 'selected' } : {}, 'NS')
         )
       ),
       td(input({ style: 'width: 60px', id: 'dns-'+record.id+'-edit-subdomain', value: record.subdomain.replace('.'+domain,'') }), span({ style: 'color: #888' }, '.' + domain)),
@@ -400,7 +407,8 @@ define('get_dns_params', function(id) {
         input({ id: 'dns-' + record.id + '-edit-content-ipv4', placeholder: 'XXX.XXX.XXX.XXX', value: record.content }),
         input({ id: 'dns-' + record.id + '-edit-content-ipv6', placeholder: 'XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX', value: record.content }),
         input({ id: 'dns-' + record.id + '-edit-content-host', placeholder: 'example.com', value: record.content }),
-        input({ id: 'dns-' + record.id + '-edit-content-text', placeholder: 'SPF, domain keys, etc.', value: record.content })
+        input({ id: 'dns-' + record.id + '-edit-content-text', placeholder: 'SPF, domain keys, etc.', value: record.content }),
+        input({ id: 'dns-' + record.id + '-edit-content-ns', placeholder: 'ns1.example.com', value: record.content })
       ),
       td(
         select({ id: 'dns-' + record.id + '-edit-ttl' },
