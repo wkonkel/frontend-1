@@ -217,7 +217,7 @@ with (Hasher('Billing','Application')) {
         
         // save the number of credits that were just purchased to show a customized message
         Badger.Session.write({
-          credits_added: Badger.Session.get('necessary_credits')
+          credits_added: response.data.num_credits // Badger.Session.get('necessary_credits')
         });
         Badger.Session.remove('necessary_credits');
         
