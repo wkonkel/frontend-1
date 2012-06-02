@@ -141,7 +141,8 @@ with (Hasher('Register','Application')) {
       if (results.data.length == 0) {
         Whois.edit_whois_modal(null, curry(Register.show, domain, available_extensions));
       } else {
-        buy_domain_modal(domain, available_extensions);
+        // buy_domain_modal(domain, available_extensions);
+        set_route('#domains/' + domain);
       }
     });
   });
