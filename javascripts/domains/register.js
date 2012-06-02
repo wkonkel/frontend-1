@@ -56,7 +56,7 @@ with (Hasher('Register','Application')) {
         // ),        
         
         fieldset({ style: 'line-height: 25px' },
-          label('Free Options'),
+          label('Free options:'),
           div({ 'class': 'big-text' },
             checkbox({ name: 'privacy', value: 'yes', checked: 'checked' }), 'Enable whois privacy'
           ),
