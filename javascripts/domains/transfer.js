@@ -75,16 +75,26 @@ with (Hasher('Transfer','Application')) {
   
   
   route('#domain-transfers/confirm_transfer', function() {
+    
     with (Badger.Session.read('transfer_domains', 'new_domains', 'domain_count')) {
       // build the appropriate header
       var confirm_transfer_header = (domain_count && domain_count > 0) ? h1('Confirm Transfer of ', domain_count, ' Domain' + (domain_count != 1 ? 's' : '')) : h1('Confirm Transfer');
 
       render(
         confirm_transfer_header,
+
+        // div({ 'class': 'sidebar' },
+        //   info_message(
+        //     h3("How do transfers work?"),
+        //     p("Transferring your domain into Badger extends its current registration by one year.")
+        //   )
+        // ),
         
         Billing.show_num_credits_added({ delete_var: true }),
         
-        form_with_loader({ 'class': 'fancy', action: register_or_transfer_all_domains, loading_message: 'Processing...' },
+        form_with_loader({ 'class': 'fancy has-sidebar', action: register_or_transfer_all_domains, loading_message: 'Processing...' },
+          div({ id: 'errors' }),
+          
           transfer_domains.map(function(domain) { return input({ type: "hidden", name: "transfer_domains[]", value: domain }); }),
           new_domains.map(function(domain) { return input({ type: "hidden", name: "new_domains[]", value: domain }); }),
 
