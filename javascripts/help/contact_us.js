@@ -2,33 +2,33 @@ with (Hasher('ContactUs','Application')) {
  
   route('#contact_us', function() {
     render(
-			h1('Contact Us'),
-			
+      h1('Contact Us'),
+      
       div({ 'class': 'sidebar' },
         info_message(
           h3("Want to talk to a person?"),
-          p("Give us a call at ", a({ href: 'tel:+14157875050' }, '+1-415-787-5050' ), ".  If we don't answer, leave a message and we'll get back to you as quickly as possible.")
+          p("Call us at ", a({ href: 'tel:+14157875050' }, '+1-415-787-5050' ), br(), "If we don't answer, leave a message and we'll get back to you as quickly as possible.")
         ),
         
         info_message(
           h3("Want to send us a letter?"),
-    			p(
-    			  "Badger", br(),
-    				"548 Market St. #80135", br(),
-    				"San Francisco, CA 94104-5401"
-    			)
+          p(span({ style: 'font-size: smaller' }, "Postcards are great too!"), br(),
+            "Badger", br(),
+            "548 Market St. #80135", br(),
+            "San Francisco, CA 94104-5401"
+          )
         )
       ),
 
       form({ 'class': 'fancy has-sidebar', action: submit_email, id: 'send-contact-us-form' },
-			  div({ id: 'send-contact-us-form-errors' }),
+        div({ id: 'send-contact-us-form-errors' }),
 
         fieldset(
           label('To:'),
           span({ style: 'font-size: 18px' }, a({ href: 'mailto:support@badger.com' }, 'support@badger.com'))
         ),
         
-				(!Badger.getAccessToken() ? [
+        (!Badger.getAccessToken() ? [
           fieldset(
             label({ 'for': 'name-input' }, 'Your name:'),
             text({ name: 'name', id: 'name-input', placeholder: 'John Doe' })
