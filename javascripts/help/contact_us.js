@@ -7,7 +7,7 @@ with (Hasher('ContactUs','Application')) {
       div({ 'class': 'sidebar' },
         info_message(
           h3("Want to talk to a person?"),
-          p("Give us a call at ", a({ href: 'tel:+14157875050' }, '415-787-5050' ), ".  If we don't answer, leave a message and we'll get back to you as quickly as possible.")
+          p("Give us a call at ", a({ href: 'tel:+14157875050' }, '+1-415-787-5050' ), ".  If we don't answer, leave a message and we'll get back to you as quickly as possible.")
         ),
         
         info_message(
