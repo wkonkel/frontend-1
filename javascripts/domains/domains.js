@@ -27,10 +27,10 @@ with (Hasher('Domains','Application')) {
       // ),
       
       div(
-        span(checkbox({ name: 'filter-state-expiring-soon', checked: 'checked' }), " Expiring Soon")
+        span(checkbox({ name: 'filter-state-expiring', checked: 'checked' }), " Expiring Soon")
       ),
       div(
-        span(checkbox({ name: 'filter-state-inbound-transfer', checked: 'checked' }), " Transfers")
+        span(checkbox({ name: 'filter-state-transfers', checked: 'checked' }), " Transfers")
       )
     );
   });

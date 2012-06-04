@@ -210,6 +210,11 @@ Array.prototype.equal_to = function(array) {
   return array && JSON.stringify(this) == JSON.stringify(array);
 };
 
+// remove null and undefined values from array
+Array.prototype.compact = function() {
+  return this.filter(function(e) { return e != undefined; });
+};
+
 // The sorting algorithm in Chrome is not stable.
 // Define a sorting method to guarantee stable sorts
 // in all browsers.

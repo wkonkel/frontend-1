@@ -45,6 +45,38 @@ with (Hasher('Domains')) {
           return row_value.match(new RegExp(registrar, 'i'));
         });
       }
+      
+      // filter states
+      if (this.name.match(/^filter-state-/i)) {
+        var state_name = this.name.split('-').slice(-1)[0];
+        var is_checked = this.checked;
+
+        // don't need the domain objects to do apply this filter
+        if (state_name == 'expiring') {
+          toggle_show_of_rows_with_column_index_and_values(is_checked, 2, function(row_value) {
+            var current_date = new Date();
+            var expire_date = new Date(Date.parse(row_value));
+            var days = parseInt(expire_date - current_date)/(24*3600*1000);
+            
+            return days <= 90;
+          });
+        }
+        
+        // need the domain objects to get transfer information
+        BadgerCache.getDomains(function(response) {
+          if (state_name == 'transfers') {
+            // get list of all of the domains pending transfer
+            var domains_pending_transfer = (response.data||[]).map(function(d) { if (d.transfer_steps) return d.name; }).compact();
+
+            toggle_show_of_rows_with_column_index_and_values(is_checked, 0, function(row_value) {
+              for (var i = 0; i < domains_pending_transfer.length; i++) {
+                var regex = new RegExp(domains_pending_transfer[i], 'i');
+                return row_value.match(regex);
+              }
+            });
+          }
+        });
+      }
     });
   });
   
@@ -77,12 +109,8 @@ with (Hasher('Domains')) {
     if (arguments.length < 2) return;
     
     $("#domains-table tr[class!=table-header]").each(function() {
-      if (typeof(matcher) == 'function') {
-        var row_value = this.children[column_index].innerHTML;
-        var matched = !!matcher.call(null, row_value);
-      } else {
-        var matched = !!this.children[column_index].innerHTML.match(matcher);
-      }
+      var row_value = this.children[column_index].innerHTML;
+      var matched = !!matcher.call(null, row_value);
       
       if (matched) {
         show ? $(this).show() : $(this).hide();
