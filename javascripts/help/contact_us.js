@@ -13,7 +13,7 @@ with (Hasher('ContactUs','Application')) {
         info_message(
           h3("Want to send us a letter?"),
     			p(
-    			  "Badger.com", br(),
+    			  "Badger", br(),
     				"548 Market St. #80135", br(),
     				"San Francisco, CA 94104-5401"
     			)

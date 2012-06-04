@@ -9,7 +9,7 @@ with (Hasher('Share','Application')) {
       div({ 'class': 'sidebar' },
         info_message(
           h3('Spread the Word!'),
-          p('Let your friends know about the great domain you now control at Badger.com.')
+          p('Let your friends know about the great domain you now control at Badger.')
         )
       ),
       
@@ -278,9 +278,9 @@ with (Hasher('Share','Application')) {
 //  })
 //  
 //  define('show_share_registration_modal', function(domain_name, callback) {
-//    return show_share_modal_base("Share Registration", ("I just registered " + domain_name + " on Badger.com!"),
+//    return show_share_modal_base("Share Registration", ("I just registered " + domain_name + " on Badger!"),
 //      div(
-//        p({ style: "margin-bottom: 10px" }, "Woohoo, you just registered ", b(domain_name), "! Would you like to tell this to your friends, and help spread the word about Badger.com?")
+//        p({ style: "margin-bottom: 10px" }, "Woohoo, you just registered ", b(domain_name), "! Would you like to tell this to your friends, and help spread the word about Badger?")
 //      ),
 //      curry(perform_share_registration, domain_name),
 //      callback
@@ -288,7 +288,7 @@ with (Hasher('Share','Application')) {
 //  });
 //  
 //  define('show_share_bulk_registration_modal', function(domain_name, num_domains, callback) {
-//    return show_share_modal_base("Share Bulk Registration", ("I just registered " + domain_name + ", as well as " + (num_domains - 1) + " other " + (num_domains.length > 1 ? "domains" : "domain") + ", to Badger.com!"),
+//    return show_share_modal_base("Share Bulk Registration", ("I just registered " + domain_name + ", as well as " + (num_domains - 1) + " other " + (num_domains.length > 1 ? "domains" : "domain") + ", to Badger!"),
 //      div(
 //        p("Whoa, you registered quite a few domains there! Would you like to inform your friends of your recent domain conquest?")
 //      ),
@@ -298,9 +298,9 @@ with (Hasher('Share','Application')) {
 //  });
 //  
 //  define('show_share_transfer_modal', function(num_domains, callback) {
-//    return show_share_modal_base("Share Transfer", ("I just transfered " + num_domains + (num_domains.length > 1 ? " domains" : " domain") + " to Badger.com!"),
+//    return show_share_modal_base("Share Transfer", ("I just transfered " + num_domains + (num_domains.length > 1 ? " domains" : " domain") + " to Badger!"),
 //      div(
-//        p("Your domains are now enjoying themselves here at Badger.com! Your friends would think very highly of you knowing that you provide your domains with such a great home, wouldn't you like to tell them?")
+//        p("Your domains are now enjoying themselves here at Badger! Your friends would think very highly of you knowing that you provide your domains with such a great home, wouldn't you like to tell them?")
 //      ),
 //      curry(perform_share_transfer, num_domains),
 //      callback

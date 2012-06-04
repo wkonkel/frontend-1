@@ -276,7 +276,7 @@ with (Hasher('Transfer','Application')) {
         //show_error_for_domain(domain, 'Domain not currently registered.');
         set_background_color_if_valid(domain, true);
         add_hidden_field_for_domain(domain, false);
-        $(item_id + ' .registrar_domain').html('<i>Register at Badger.com</i>');
+        $(item_id + ' .registrar_domain').html('<i>Register at Badger</i>');
         $(item_id + ' .expires_domain').html('<i>Available!</i>');
       } else if (!domain_info.supported_tld) {
         show_error_for_domain(domain, "Extension ." + domain.split('.').pop() + " is not currently supported.");
@@ -544,7 +544,7 @@ with (Hasher('Transfer','Application')) {
 //         //show_error_for_domain(domain, 'Domain not currently registered.');
 //         set_background_color_if_valid(domain, true);
 //         add_hidden_field_for_domain(domain, false);
-//         $(item_id + ' .registrar_domain').html('<i>Register at Badger.com</i>');
+//         $(item_id + ' .registrar_domain').html('<i>Register at Badger</i>');
 //         $(item_id + ' .expires_domain').html('<i>Available!</i>');
 //       } else if (!domain_info.supported_tld) {
 //         show_error_for_domain(domain, "Extension ." + domain.split('.').pop() + " is not currently supported.");
@@ -768,7 +768,7 @@ with (Hasher('Transfer','Application')) {
 // 
 // 
 //   // if ($("input[name$=account_id]:checked").length > 0) {
-//   //  showSharePreview("\"I just transfered " + $("tr[id$=domain]").length + " " + ($("tr[id$=domain]").length > 1 ? "domains" : "domain") + "  " + ($(".registrar_domain").html() ? "from " + $(".registrar_domain").html() : "") + " to Badger.com!\"");
+//   //  showSharePreview("\"I just transfered " + $("tr[id$=domain]").length + " " + ($("tr[id$=domain]").length > 1 ? "domains" : "domain") + "  " + ($(".registrar_domain").html() ? "from " + $(".registrar_domain").html() : "") + " to Badger!\"");
 //   // }
 // 
 //   //

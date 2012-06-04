@@ -138,7 +138,7 @@ Feature: Domains
 
     When I visit domain page for domain "some-domain.com"
 		Then I should see "Transfer Progress"
-		And I should see "Initiate the domain transfer on Badger.com"
+		And I should see "Initiate the domain transfer on Badger"
 		Then I should see "Unlock domain"
 		And I should see "You need to unlock this domain at"
 		Then I should see "Disable privacy"
@@ -147,7 +147,7 @@ Feature: Domains
 		Then I should see "Approve transfer"
 		And I should see "When the other steps are completed, a transfer request will be sent to"
 		Then I should see "Processed"
-		And I should see "Once the transfer request is approved, we can finish setting up the domain on Badger.com"
+		And I should see "Once the transfer request is approved, we can finish setting up the domain on Badger"
 		Then I should see "16%"
 
   Scenario: Domain transfer with other registrar than GoDaddy (without privacy)
@@ -155,7 +155,7 @@ Feature: Domains
 
     When I visit domain page for domain "some-domain.com"
 		Then I should see "Transfer Progress"
-		And I should see "Initiate the domain transfer on Badger.com"
+		And I should see "Initiate the domain transfer on Badger"
 		Then I should see "Unlock domain"
 		And I should see "You need to unlock this domain at"
 		Then I should see "Disable privacy"
@@ -164,7 +164,7 @@ Feature: Domains
 		Then I should see "Approve transfer"
 		And I should see "When the other steps are completed, a transfer request will be sent to"
 		Then I should see "Processed"
-		And I should see "Once the transfer request is approved, we can finish setting up the domain on Badger.com"
+		And I should see "Once the transfer request is approved, we can finish setting up the domain on Badger"
 		Then I should see "50%"
 
   Scenario: Domain transfer with remote unlocking

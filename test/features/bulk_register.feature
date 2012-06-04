@@ -1,5 +1,5 @@
 Feature: Bulk Register
-  In order to transfer many of my current domains to Badger.com
+  In order to transfer many of my current domains to Badger
   As a logged-in user
   I want to bulk-register my domain
 

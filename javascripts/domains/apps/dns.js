@@ -498,7 +498,7 @@ define('get_dns_params', function(id) {
             ul(
               li("Proven reliability."),
               li("Servers around the world."),
-              li("Manage from within Badger.com")
+              li("Manage from within Badger")
             ),
             
             div({ id: 'badger-dns-installed-div', style: 'margin-top: 30px; font-size: 20px; font-weight: bold; text-align: center; font-style: italic; display: none'}, 

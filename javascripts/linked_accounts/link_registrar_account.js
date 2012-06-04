@@ -35,7 +35,7 @@ with (Hasher('LinkRegistrarAccount','Application')) {
           div({ style: "float: left; margin: auto 20px 20px auto" },
             img({ 'class': "app_store_icon", src: registrar_logo })
           ),
-          p("To link your " + registrar_name + " account with Badger.com, enter your " + registrar_name + " login credentials below."),
+          p("To link your " + registrar_name + " account with Badger, enter your " + registrar_name + " login credentials below."),
           p("Syncing your account may take up to five minutes.  When transferring domains, temporary changes may be made to your account information.")
         ),
 
@@ -95,13 +95,13 @@ with (Hasher('LinkRegistrarAccount','Application')) {
     );
   });
 
-  // // POST to Badger.com API, render errors if returned
+  // // POST to Badger API, render errors if returned
   // // if successful, should drop a queue message to sync the account,
   // // reading domains from the registrar.
   // define('link_account', function(registrar, form_data) {
   //   if (!form_data.agree_to_terms) {
   //     $("#account-link-errors").html(
-  //       error_message("You must allow Badger.com to act as your agent to proceed.")
+  //       error_message("You must allow Badger to act as your agent to proceed.")
   //     );
   //     hide_form_submit_loader();
   //     return;
@@ -128,7 +128,7 @@ with (Hasher('LinkRegistrarAccount','Application')) {
   define('create_linked_account_and_verify_login', function(registrar, form_data) {
     if (!form_data.agree_to_terms) {
       $("#account-link-errors").html(
-        error_message("You must allow Badger.com to act as your agent to proceed.")
+        error_message("You must allow Badger to act as your agent to proceed.")
       );
       hide_form_submit_loader();
       return;

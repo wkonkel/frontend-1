@@ -29,7 +29,7 @@
 //       
 //       div({ 'class': "fancy has-sidebar" },
 //         // div({ style: "margin-left: 60px" },
-//         //   p("By linking your " + SITE_NAME + " account with Badger.com, you will be able to share your domain registrations and transfers with your friends.")
+//         //   p("By linking your " + SITE_NAME + " account with Badger, you will be able to share your domain registrations and transfers with your friends.")
 //         // ),
 //         
 //         target_div

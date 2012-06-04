@@ -18,7 +18,7 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
     );
     
     render(
-      // h1("Transfer Domains from " + REGISTRAR_NAME + " to Badger.com"),
+      // h1("Transfer Domains from " + REGISTRAR_NAME + " to Badger"),
       chained_header_with_links(
         { href: '#account', text: 'My Account' },
         { href: '#linked_accounts', text: 'Linked Accounts' },
@@ -28,12 +28,12 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
       div({ 'class': "sidebar" },
         info_message(
           h3("Registration Extension"),
-          p("When you transfer a domain to Badger.com, the registration will be extended by 1 year.")
+          p("When you transfer a domain to Badger, the registration will be extended by 1 year.")
         ),
         
         info_message(
           h3("Pricing"),
-          p("Transferring a domain to Badger.com requires 1 domain Credit.")
+          p("Transferring a domain to Badger requires 1 domain Credit.")
         )
       ),
       

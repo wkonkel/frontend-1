@@ -384,7 +384,7 @@ with (Hasher('DomainShow','DomainApps')) {
         details = div("This domain transfer is currently pending approval at " + domain_obj.current_registrar + ". This can take up to an hour.");
         progress_indicator = img({ src: "images/ajax-loader.gif" });
       } else if (step_obj.value == 'remote_approval_success') {
-        details = div("Transfer request was approved at " + domain_obj.current_registrar + ". Now, we are transferring the registration to Badger.com...");
+        details = div("Transfer request was approved at " + domain_obj.current_registrar + ". Now, we are transferring the registration to Badger...");
         progress_indicator = img({ src: "images/ajax-loader.gif" });
       } else if (step_obj.value == 'remote_approval_failed') {
         details = div("We were unable to approve the transfer at " + domain_obj.current_registrar + ". You will need to approve it manually", render_help_link('transfer_requested', domain_obj.current_registrar), 
@@ -407,7 +407,7 @@ with (Hasher('DomainShow','DomainApps')) {
         details = div({ style: "text-decoration: line-through" }, "Domain has been processed, and is ready to go!");
         progress_indicator = img({ src: "images/check.png" });
       } else {
-        details = div("Once the transfer request is approved, we can finish setting up the domain on Badger.com.");
+        details = div("Once the transfer request is approved, we can finish setting up the domain on Badger.");
       }
     } else {
       details = div();

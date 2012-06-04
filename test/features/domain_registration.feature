@@ -11,7 +11,7 @@ Feature: Badger Registration
     When I visit Registration for domain "mydomain0.com"
     Then I should see "Registration" within "#content h1"
     And I should see "Current Registration"
-    And I should see "Badger.com until "
+    And I should see "Badger until "
     And I should see "Created"
     And I should see "Through"
     And I should see "Previously"

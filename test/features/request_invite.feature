@@ -5,7 +5,7 @@
 #
 #  Scenario: view the invite request page
 #    Given I am on the home page
-#    Then I should see "Badger.com"
+#    Then I should see "Badger"
 #    And I should see "Thanks for visiting! We're not quite ready yet but if you'd like an invite when we are, please enter your email address:"
 #
 #  Scenario: request invite successfully

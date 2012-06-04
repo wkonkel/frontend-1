@@ -56,7 +56,7 @@ with (Hasher('Signup','Application')) {
           label('Legal stuff:'),
 
           input({ type: 'checkbox', name: 'agree_to_terms', id: 'agree_to_terms', value: true }),
-          label({ 'class': 'normal', 'for': 'agree_to_terms' }, ' I agree to the Badger.com '),
+          label({ 'class': 'normal', 'for': 'agree_to_terms' }, ' I agree to the Badger '),
           a({ href: window.location.href.split('#')[0] + '#terms_of_service', target: '_blank' }, 'Terms of Service')
         ),
     

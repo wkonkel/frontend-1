@@ -189,7 +189,7 @@ with (Hasher('LinkedAccounts','Application')) {
 	  var content_modal = show_modal(
 	    h1("Link Your " + site.capitalize_first() + " Account"),
 			div({ style: "margin: 15px 10px 15px 10px; text-align: center" },
-				"By linking your " + site.capitalize_first() + " account with Badger.com, you will be able to share your domain registrations and transfers with your followers."
+				"By linking your " + site.capitalize_first() + " account with Badger, you will be able to share your domain registrations and transfers with your followers."
 			),
 		  div({ align: "center" },
 		    // IE does not support a name for the window, so leave it empty.

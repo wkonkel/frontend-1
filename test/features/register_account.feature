@@ -26,7 +26,7 @@ Feature: Register
     And I mock neccessary data to mock login with 35 domain credits and 5 invites available
     Then I press "Continue »"
     And The home page is fully loaded
-    Then I should see "Welcome to Badger.com!"
+    Then I should see "Welcome to Badger!"
 
   Scenario: When I am on the register page I want to see terms of service
     Given I am on the home page
@@ -34,7 +34,7 @@ Feature: Register
     And I mock createAccount
     And I follow "Create Account"
     Then I should see "Create Badger Account"
-    And I should see "I agree to the Badger.com Terms of Service"
+    And I should see "I agree to the Badger Terms of Service"
 
   Scenario: I should be able to see terms of service even if I am not logged in
     Given I am on the home page

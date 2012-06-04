@@ -185,7 +185,7 @@ with (Hasher('Welcome','Application')) {
 
 // div({ 'id': 'search-arrow-bar', 'class': 'info-message', style: 'font-weight: bold; padding: 8px 15px; font-size: 16px' }, "«--- Search for available domains using this search box.  ", i({ style: 'font-weight: normal' }, '(Hint: type your name)')),
 
-//h1({ style: 'margin-top: 0' }, 'Welcome to Badger.com'),
+//h1({ style: 'margin-top: 0' }, 'Welcome to Badger'),
 // table({ style: 'width: 100%' }, tbody(
 //   tr(
 //     td({ style: 'vertical-align: top' }, 

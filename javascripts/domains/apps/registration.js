@@ -377,7 +377,7 @@ with (Hasher('Registration','DomainApps')) {
         h3("Transfer request received"),
         
         p("We have received a transfer request from ", span({ style: "font-weight: bold" }, domain_obj.transfer_out.receiving_registrar), "."),
-        p("If you approve this transfer request, then your domain will be transferred out of Badger.com."),
+        p("If you approve this transfer request, then your domain will be transferred out of Badger."),
         p("If you do not take action by ", span({ style: "font-weight: bold" }, new Date(Date.parse(domain_obj.transfer_out.auto_approval_date)).toDateString()), ", the transfer will automatically be approved."),
         
         div({ id:  "approve-reject-buttons", style: "text-align: right" },
@@ -404,7 +404,7 @@ with (Hasher('Registration','DomainApps')) {
           
           // TODO I have no idea how long it will registrars to acknowledge their poll messages
           p("When the registrar you want to transfer this domain to sends the transfer request, this page will be updated, allowing you to reject or accept the transfer."),
-          p("If you do not plan on transferring this domain out of Badger.com, we recommend that you lock the domain again."),
+          p("If you do not plan on transferring this domain out of Badger, we recommend that you lock the domain again."),
 
           div({ id: "lock-domain-button-div", style: "text-align: right" },
             a({ 'class': 'myButton small', href: curry(set_route, get_route()) }, 'Reload Page'),

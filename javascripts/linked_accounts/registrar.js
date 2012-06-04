@@ -6,8 +6,8 @@ with (Hasher('Registrar','Application')) {
         h1('Confirm Account Unlinking?'),
         div({ 'class': 'hidden', id: 'link-form-error' }),
         
-        p({ style: "font-weight: bold" }, "Unlinking this account will remove any associated domains from your Badger.com account."),
-        p("If you transferred any of these domains to your Badger.com account, don't worry, those won't be removed."),
+        p({ style: "font-weight: bold" }, "Unlinking this account will remove any associated domains from your Badger account."),
+        p("If you transferred any of these domains to your Badger account, don't worry, those won't be removed."),
         
         div({ style: 'text-align: right' }, a({ 'class': 'myButton red', href: curry(Registrar.do_remove_link, data) }, 'Unlink Account')),
         div({ style: 'clear: both' })
@@ -61,7 +61,7 @@ with (Hasher('Registrar','Application')) {
 				h1('Link your ' + data.registrar_name + ' Account'),
 				div({ 'class': 'hidden', id: 'link-form-error' }),
 				p( 'When you link your ' + data.registrar_name + ' account, you\'ll be able to manage your ' + data.registrar_name + 
-				  ' domains from within Badger.com.  We won\'t make any changes to your ' + data.registrar_name + 
+				  ' domains from within Badger.  We won\'t make any changes to your ' + data.registrar_name + 
 				  ' account or domains unless you request them.'),
 				email_warn ? p('When we sync your domains, you will recieve an email from ' + data.registrar_name + '. You may also receive additional emails during the transfer process, such as notifications that your account email has changed. This is part of the transfer process, and afterwards, your account information will remain unchanged.') : '',
 				form({ id: 'registrar-link-form', action: curry(Registrar.start_link, data, 'Starting Linking...')},
