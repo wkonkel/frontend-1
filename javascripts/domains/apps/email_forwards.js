@@ -28,7 +28,7 @@ with (Hasher('EmailForwards', 'DomainApps')) {
       div({ id: 'email-forwards-wrapper' },
       // h1_for_domain(domain, 'Email Forwards'),
       chained_header_with_links(
-        { href: '#filter_domains/all/list', text: 'My Domains' },
+        { href: '#domains', text: 'My Domains' },
         { href: '#domains/' + domain, text: domain.toLowerCase() },
         { text: 'Email Forwards' }
       ),

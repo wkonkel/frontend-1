@@ -163,7 +163,7 @@ with (Hasher('LinkRegistrarAccount','Application')) {
       },
       
       on_finish: function(poll_data) {
-        set_route('#filter_domains/all/list');
+        set_route('#domains');
       },
       
       action: {

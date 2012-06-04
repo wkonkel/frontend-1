@@ -8,7 +8,7 @@ with (Hasher('DomainShow','DomainApps')) {
     
     render(
       chained_header_with_links(
-        { href: '#filter_domains/all/list', text: 'My Domains' },
+        { href: '#domains', text: 'My Domains' },
         { text: domain }
       ),
       
@@ -289,7 +289,7 @@ with (Hasher('DomainShow','DomainApps')) {
       update_my_domains_count(true);
       
       hide_modal();
-      set_route("#domain-transfers");
+      set_route("#domains");
     });
   });
 

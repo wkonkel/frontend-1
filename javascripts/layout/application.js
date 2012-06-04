@@ -28,7 +28,7 @@ with (Hasher('Application')) {
       if (next_url) {
         Badger.setCookie('badger_url_after_auth', null);
       } else {
-        next_url = '#filter_domains/all/list';
+        next_url = '#domains';
       }
       set_route(next_url);
     } else {
@@ -189,7 +189,7 @@ String.prototype.capitalize_first = function() {
 }
 
 /**
-I am sick of using indexOf() of everywhere.
+Sick of using Array#indexOf of everywhere?
 returns null if no arguments provided.
 returns true if all arguments are included in the array.
 returns false if any of the arguments are not in the array.
@@ -198,4 +198,31 @@ Array.prototype.includes = function() {
   if (arguments.length < 1) return null;
   for (var i = 0; i < arguments.length; i++) { if (this.indexOf(arguments[i]) < 0) return false; }
   return true;
+};
+
+// == doesn't work for arrays, needed a way to check equality
+Array.prototype.equal_to = function(array) {
+  return array && JSON.stringify(this) == JSON.stringify(array);
+};
+
+// The sorting algorithm in Chrome is not stable.
+// Define a sorting method to guarantee stable sorts
+// in all browsers.
+// NOTE: unlike the vanilla JavaScript Array#sort,
+// this method does not change the underlying object.
+Array.prototype.stable_sort = function(compare) {
+  var array2 = this.map(function(v, i) { return { i: i, v: v } });
+  array2.sort(function(a, b) {
+    if (compare) {
+      var r = compare(a.v, b.v);
+      return r == 0 ? a.i - b.i : r;
+    } else {
+      if (a.v < b.v) return -1;
+      if (a.v > b.v) return 1;
+      if (a.v == b.v) return 0;
+      
+      return r == 0 ? a.i - b.i : r;
+    }
+  });
+  return array2.map(function(v) { return v.v });
 };

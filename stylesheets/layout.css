@@ -135,6 +135,8 @@
 .fancy-table tr.table-header:hover { background: none; }
 .fancy-table tr.success-row { background-color: #E6F8D8 }
 
+.fancy-table .table-header .table-sorter a { cursor: pointer; }
+
 .fancy-table tr td.app_dns_header { border-bottom: none; padding-top: 20px; }
 
 .fancy-dl dt { font-weight: bold; float: left; clear: left; width: 140px; text-align: right; }

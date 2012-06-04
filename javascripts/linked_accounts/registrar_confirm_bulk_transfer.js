@@ -100,7 +100,7 @@ with (Hasher('ConfirmRegistrarBulkTransfer', 'Application')) {
       }, function(response) { /* console.log(response) */ });
     }
     
-    set_route("#domain-transfers");
+    set_route("#domains");
     update_credits(true);
   });
   

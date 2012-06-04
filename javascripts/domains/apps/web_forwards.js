@@ -29,7 +29,7 @@ with (Hasher('WebForwards', 'DomainApps')) {
       div({ id: 'web-forwards-wrapper' },
       // h1_for_domain(domain, 'URL Forwards'),
       chained_header_with_links(
-        { href: '#filter_domains/all/list', text: 'My Domains' },
+        { href: '#domains', text: 'My Domains' },
         { href: '#domains/' + domain, text: domain.toLowerCase() },
         { text: 'URL Forwards' }
       ),

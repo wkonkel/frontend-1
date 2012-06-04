@@ -20,7 +20,7 @@ with (Hasher('Registration','DomainApps')) {
     render(
       // h1_for_domain(domain, 'Registration'),
       chained_header_with_links(
-        { href: '#filter_domains/all/list', text: 'My Domains' },
+        { href: '#domains', text: 'My Domains' },
         { href: '#domains/' + domain, text: domain.toLowerCase() },
         { text: 'Registration' }
       ),
@@ -59,7 +59,7 @@ with (Hasher('Registration','DomainApps')) {
     
     render(
       chained_header_with_links(
-        { href: '#filter_domains/all/list', text: 'My Domains' },
+        { href: '#domains', text: 'My Domains' },
         { href: '#domains/' + domain, text: domain.toLowerCase() },
         { href: '#domains/' + domain + '/registration', text: 'Registration' },
         { text: 'Extend' }

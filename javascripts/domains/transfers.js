@@ -7,7 +7,7 @@ with (Hasher('Domains','Application')) {
       div({ style: 'float: right; margin-top: -44px' },
         a({ 'class': 'myButton small', href: '#domains/transfer' }, 'Transfer in a Domain')
       ),
-      Domains.domain_index_nav_table(target_div)
+      Domains.domains_nav_table(target_div)
     );
 
     BadgerCache.getDomains(function(response) {

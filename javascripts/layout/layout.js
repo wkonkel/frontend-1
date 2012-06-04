@@ -209,7 +209,7 @@ with (Hasher('Application')) {
       $(user_nav).prepend(span({ id: 'use_nav_name' }, a({ href: '#account' }, response.data.name)));
       //$(user_nav).prepend(span({ id: 'user_nav_invites_available', 'class': response.data.invites_available <= 0 ? 'hidden' : '' }, a({ href: '#invites' }, response.data.invites_available + ' Invites')));
       $(user_nav).prepend(span(a({ href: '#account/billing', id: 'user_nav_credits' }, 'Credits')));
-      $(user_nav).prepend(span(a({ href: '#filter_domains/all/list', id: 'user-nav-domains' }, 'Domains')));
+      $(user_nav).prepend(span(a({ href: '#domains', id: 'user-nav-domains' }, 'Domains')));
       update_credits();
       //update_my_domains_count();
     });
@@ -437,7 +437,7 @@ with (Hasher('Application')) {
   //   return ul({ id: 'menu' },
   //     Badger.getAccessToken() ? [
   //       li({ id: 'nav-my-domains' },
-  //         a({ href: "#filter_domains/all/list" }, span(span('MY DOMAINS'), span({ id: 'my-domains-count' }))),
+  //         a({ href: "#domains" }, span(span('MY DOMAINS'), span({ id: 'my-domains-count' }))),
   //         ul(
   //           li({ 'class': "transfer"}, a({ href: "#domain-transfers" }, 'TRANSFERS')),
   //           li({ 'class': "expiring-soon"}, a({ href: "#filter_domains/expiringsoon/list" }, 'EXPIRING SOON'))

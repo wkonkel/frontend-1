@@ -135,7 +135,7 @@ with (Hasher('Registrar','Application')) {
 						// success
 						hide_modal();
 						BadgerCache.reload('domains')
-						set_route('#filter_domains/all/list');
+						set_route('#domains');
 						break;
 					
 					case 'error_auth':

@@ -16,7 +16,7 @@ with (Hasher('Application')) {
 with (Hasher('DomainApps','Application')) {
   define('h1_for_domain', function(domain, current_header) {
     return h1({ 'class': 'h1_for_domains' }, 
-      a({ href: '#filter_domains/all/list' }, 'My Domains'), 
+      a({ href: '#domains' }, 'My Domains'), 
       ' » ', 
       current_header ? [
         a({ href: '#domains/' + domain, 'class': 'long-domain-name' }, domain), 

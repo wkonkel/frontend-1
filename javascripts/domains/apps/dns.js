@@ -25,7 +25,7 @@ with (Hasher('DnsApp','DomainApps')) {
     render(
       // h1_for_domain(domain, 'DNS'),
       chained_header_with_links(
-        { href: '#filter_domains/all/list', text: 'My Domains' },
+        { href: '#domains', text: 'My Domains' },
         { href: '#domains/' + domain, text: domain.toLowerCase() },
         { text: 'DNS' }
       ),
