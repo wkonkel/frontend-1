@@ -208,10 +208,8 @@ with (Hasher('Application')) {
       //$(user_nav).prepend(span(a({ href: '#account/settings'}, response.data.name)));
       $(user_nav).prepend(span({ id: 'use_nav_name' }, a({ href: '#account' }, response.data.name)));
       //$(user_nav).prepend(span({ id: 'user_nav_invites_available', 'class': response.data.invites_available <= 0 ? 'hidden' : '' }, a({ href: '#invites' }, response.data.invites_available + ' Invites')));
-      $(user_nav).prepend(span(a({ href: '#account/billing', id: 'user_nav_credits' }, 'Credits')));
-      $(user_nav).prepend(span(a({ href: '#domains', id: 'user-nav-domains' }, 'Domains')));
-      update_credits();
-      //update_my_domains_count();
+      $(user_nav).prepend(span(a({ href: '#account/billing', id: 'user_nav_credits' }, 'Credits')));  // updated by update_my_domains_count after_filter
+      $(user_nav).prepend(span(a({ href: '#domains', id: 'user-nav-domains' }, 'Domains')));  // updated by update_credits after_filter
     });
 
     return user_nav;
@@ -220,9 +218,11 @@ with (Hasher('Application')) {
   define('update_credits', function(refresh) {
     if (refresh) BadgerCache.flush('account_info');
     BadgerCache.getAccountInfo(function(response) {
-      $('#user_nav_credits').html(response.data.domain_credits == 1 ? '1 Credit' : response.data.domain_credits + ' Credits');
+      $('#user_nav_credits').html(response.data.domain_credits == 1 ? 'One Credit' : response.data.domain_credits + ' Credits');
     });
   });
+
+  after_filter('update_credits', update_credits);
 
   define('update_account_name', function() {
     BadgerCache.flush('account_info');
