@@ -174,6 +174,11 @@ with (Hasher('Application')) {
     })
   });
   
+  define('h1', function() {
+    var h1 = element('h1', arguments);
+    document.title = h1.innerText || h1.textContent;
+    return h1;
+  }); 
 }
 
 String.prototype.capitalize_all = function() {

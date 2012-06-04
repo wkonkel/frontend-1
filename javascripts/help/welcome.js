@@ -8,7 +8,7 @@ with (Hasher('Welcome','Application')) {
 
         div({ 'id': 'content-top' }, 
           img({ src: 'images/badger-6.png', style: 'float: right; width: 150px; height: auto; margin: 20px 50px 20px 20px' }),
-          h2("Domain management done ", span({ style: 'letter-spacing: 2px' }, "r"), "ight."),
+          h1("Domain management done ", span({ style: 'letter-spacing: 2px' }, "r"), "ight."),
           //h3("Badger makes managing your domains easy, wherever they are."),
 
           h3("Link an existing account:"),

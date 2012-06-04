@@ -126,7 +126,7 @@ with (Hasher('Application')) {
     return div({ 'class': 'closed', id: 'chatbar' },
       a({ href: Chat.hide_chat, 'class': 'close-button' }, 'X'),
       a({ href: Chat.minimize_chat, 'class': 'close-button min-button' }, '–'),
-      h1({ onclick: Chat.show_chat }, 'Badger Chatroom'),
+      h2({ onclick: Chat.show_chat }, 'Badger Chatroom'),
       div({ "class": "content" })
     );
   });
@@ -134,7 +134,7 @@ with (Hasher('Application')) {
   define('header', function() {
     return div({ id: 'header' },
       div({ 'class': 'inner' },
-        h1({ id: 'logo' }, a({ href: '#welcome'}, 'badger')),
+        h2({ id: 'logo' }, a({ href: '#welcome'}, 'Badger')),
 
         search_box(),
       
