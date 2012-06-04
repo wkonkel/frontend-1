@@ -122,7 +122,7 @@ with (Hasher('Domains','Application')) {
         td({ colSpan: 3 }, 
           info_message(
             a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: curry(Transfer.redirect_to_transfer_for_domain, linked_domains.map(function(d) { return d.name })) }, 'Begin Transfer'),
-            "You have ", b(linked_domains.length, " domains"), " that can be automatically transferred to Badger!"
+            "You have ", b(linked_domains.length, " domain" + (linked_domains.length != 1 "s": "")), " that can be automatically transferred to Badger!"
           )
         )
       );
