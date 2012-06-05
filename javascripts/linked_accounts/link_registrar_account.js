@@ -48,7 +48,7 @@ with (Hasher('LinkRegistrarAccount','Application')) {
 
         fieldset(
           label({ 'for': 'password-input' }, 'Password:'),
-          div(input({ id: 'password-input', type: 'password', name: 'password', placeholder: 'abc123' }))
+          div(input({ id: 'password-input', type: 'password', name: 'password', placeholder: 'abcd1234' }))
         ),
 
         fieldset(

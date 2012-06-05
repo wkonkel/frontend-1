@@ -22,7 +22,7 @@ with (Hasher('Redeem','Application')) {
       
           fieldset(
             label({ 'for': 'code-input' }, 'Promotional Code:'),
-            text({ name: 'code', id: 'code-input', placeholder: 'abc123' })
+            text({ name: 'code', id: 'code-input', placeholder: 'abcd1234' })
           ),
 
           fieldset({ 'class': 'no-label' },
