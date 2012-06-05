@@ -107,16 +107,16 @@ with (Hasher('DomainShow','DomainApps')) {
     // animate the progress bar on page load
     animate_progress_bar();
   });
-  
+
   define('animate_progress_bar', function(original_width) {
     $(".meter > span").each(function() {
-			$(this)
-				.data("origWidth", $(this).width())
-				.width(original_width || 0)
-				.animate({
-					width: $(this).data("origWidth")
-				}, 600);
-		});
+      $(this)
+      .data("origWidth", $(this).width())
+      .width(original_width || 0)
+      .animate({
+        width: $(this).data("origWidth")
+        }, 600);
+    });
   });
 
   define('domain_status_description', function(domain_obj) {
@@ -132,7 +132,13 @@ with (Hasher('DomainShow','DomainApps')) {
         days <= 30 ? a({ 'class': 'myButton myButton-small', href: curry(Register.renew_domain_modal, domain_obj.name) }, 'Renew') : ''
       ];
     } else if ((domain_obj.permissions_for_person || []).indexOf('linked_account') >=0) {
-      return p('This domain is currently registered to your linked account on ' + domain_obj.current_registrar);
+      
+      return div({ style: 'margin-bottom: 15px' },
+        p('This domain is currently registered to your linked account on ' + domain_obj.current_registrar),
+        a({ 'class': 'myButton', href: curry(Transfer.redirect_to_transfer_for_domain, domain_obj.name) }, 'Transfer to Badger')
+      );
+      
+      return 
     } else {
       return [
         p('This domain is currently registered at ', domain_obj.current_registrar,
@@ -143,10 +149,10 @@ with (Hasher('DomainShow','DomainApps')) {
       ];
     }
   });
-  
-  
-  
-  
+
+
+
+
   define('set_retry_transfer_timeout_if_necessary', function(domain_obj, seconds) {
     if (!domain_obj.transfer_steps || !domain_obj.transfer_steps.pending || domain_obj.transfer_steps.pending.length == 0) return;
     
