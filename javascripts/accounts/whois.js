@@ -94,9 +94,6 @@ with (Hasher('Whois','Application')) {
   });
 
   define('create_or_edit_whois_form', function(data) {
-    console.log(data);
-    
-    
     var already_exists = (Object.keys(data).length > 0);
     
     return form_with_loader({ 'class': 'fancy', action: process_whois_form, loading_message: already_exists ? "Updating contact..." : "Creating contact..." },
