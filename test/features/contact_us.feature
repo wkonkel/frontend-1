@@ -4,7 +4,7 @@ Feature: Contact Us
   I want to send a message to badger.com
 
   Background:
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
     And I follow "Contact Us"
 
   @javascript

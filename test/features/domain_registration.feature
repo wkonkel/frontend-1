@@ -4,7 +4,7 @@ Feature: Badger Registration
   I want to view and edit my domain registration information
 
   Background:
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
 
   Scenario: When I visit Registration I should see information (current registration, whois) of my domain
     And I mock getDomain for domain "mydomain0.com" with permission "renew,transfer_out"

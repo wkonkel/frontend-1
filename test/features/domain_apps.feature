@@ -4,7 +4,7 @@ Feature: Domain apps
   I want to view apps installed on domain and install new apps
 
   Background:
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
 
   Scenario: View apps installed on domain
     And I mock getDomain with domain "mydomain0.com" and dns:

@@ -4,7 +4,7 @@ Feature: Faqs
   I want to see question and answer in faqs section
 
   Background:
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
     And I mock getFaqs return with:
       | id | question                       | answer                                                    |
       | 1  | Step to buy a domain?          | Following 3 step below                                    |

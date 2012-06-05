@@ -4,7 +4,7 @@ Feature: Transfer
   I want to transfer my domain(s)
 
   Background:
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
     When I follow "Transfer in a Domain"
     Then I should see "TRANSFER DOMAINS INTO BADGER.COM"
     And I should see "Enter the domain(s) that you'd like to transfer, one per line:"

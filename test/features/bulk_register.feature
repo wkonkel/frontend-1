@@ -3,8 +3,8 @@ Feature: Bulk Register
   As a logged-in user
   I want to bulk-register my domain
 
-  Scenario: I should be able to bulk-register domains when I have at least one contact and enough credits
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+  Scenario: I should be able to bulk-register domains when I have at least one contact and enough Credits
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
     And I click on "form-search-input"
     Then I should see "Register many domains at once with our Bulk Register Tool"
     And I follow "Bulk Register Tool"
@@ -30,8 +30,8 @@ Feature: Bulk Register
     And I should see "Success" within "#transfer-domains-table"
     And I follow "Close"
 
-  Scenario: I should be able to bulk-register my domains when I have at least one contact but not enough credits
-    Given I logged in with mock data for domains and user info with 1 domain credits and 5 invites available
+  Scenario: I should be able to bulk-register my domains when I have at least one contact but not enough Credits
+    Given I logged in with mock data for domains and user info with 1 domain Credits and 5 invites available
     And I click on "form-search-input"
     Then I should see "Register many domains at once with our Bulk Register Tool"
     And I follow "Bulk Register Tool"
@@ -53,7 +53,7 @@ Feature: Bulk Register
     And I should see "Registrant:"
     Then I press "Register for 2 Credits"
     Then I should see "Purchase Credits"
-    And I mock accountInfo with name "East Agile Company" and 11 domain credits and 5 invites available
+    And I mock accountInfo with name "East Agile Company" and 11 domain Credits and 5 invites available
     And I mock purchaseCredits
     And I press "purchase-button"
     Then I should see "CONFIRMATION: 2 DOMAINS"
@@ -66,8 +66,8 @@ Feature: Bulk Register
     And I should see "Success" within "#transfer-domains-table"
     And I follow "Close"
 
-  Scenario: I should be able to bulk-register my domains when I have no contact but enough credits
-    Given I logged in with mock data for domains and user info with 10 domain credits and 5 invites available
+  Scenario: I should be able to bulk-register my domains when I have no contact but enough Credits
+    Given I logged in with mock data for domains and user info with 10 domain Credits and 5 invites available
     And I mock getContacts returns 0 contacts
     And I click on "form-search-input"
     Then I should see "Register many domains at once with our Bulk Register Tool"
@@ -106,8 +106,8 @@ Feature: Bulk Register
     And I should see "Success" within "#transfer-domains-table"
     And I follow "Close"
 
-  Scenario: I should be able to bulk-register my domains when I have no contact and not enough credits
-    Given I logged in with mock data for domains and user info with 1 domain credits and 5 invites available
+  Scenario: I should be able to bulk-register my domains when I have no contact and not enough Credits
+    Given I logged in with mock data for domains and user info with 1 domain Credits and 5 invites available
     And I mock getContacts returns 0 contacts
     And I click on "form-search-input"
     Then I should see "Register many domains at once with our Bulk Register Tool"
@@ -144,7 +144,7 @@ Feature: Bulk Register
     And I should see "Registrant:"
     Then I press "Register for 2 Credits"
     Then I should see "Purchase Credits"
-    And I mock accountInfo with name "East Agile Company" and 11 domain credits and 5 invites available
+    And I mock accountInfo with name "East Agile Company" and 11 domain Credits and 5 invites available
     And I mock purchaseCredits
     And I press "purchase-button"
     Then I should see "CONFIRMATION: 2 DOMAINS"

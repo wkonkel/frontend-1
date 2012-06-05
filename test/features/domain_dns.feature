@@ -4,7 +4,7 @@ Feature: Badger DNS
   I want to view and edit settings of Badger DNS for my domain
 
   Background:
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
     And I mock getDomain with domain "mydomain0.com" and dns:
       |id |record_type|subdomain    |content                              |ttl |priority|
       |78 |A          |subdomain    |244.245.123.19                       |1800|        |

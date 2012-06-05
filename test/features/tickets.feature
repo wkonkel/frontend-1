@@ -4,7 +4,7 @@ Feature: Tickets
   I want to use ticket system
 
   Background:
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
     And I follow "East Agile Company"
     And I mock getTickets
     When I follow "Support Tickets"

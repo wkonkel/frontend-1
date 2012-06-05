@@ -4,7 +4,7 @@ Feature: Blogs
   I want to view all blogs and detail of a blog
 
   Background:
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
     And I mock getBlogs return with:
       | id | title         | body                 | author       | published_at         |
       | 1  | My Blog       | This is my blog body | EastAgile    | 2011-10-30T14:21:43Z |

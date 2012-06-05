@@ -4,7 +4,7 @@ Feature: Domains
   I want to see my domains in different filter
 
   Background:
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
 
   Scenario: I should see all pending transfer domains when clicking on Transfers tab with list view
     And I follow "Transfers"

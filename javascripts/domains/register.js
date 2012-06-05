@@ -9,7 +9,7 @@ with (Hasher('Register','Application')) {
       form_with_loader({ 'class': 'fancy', action: process_full_form, loading_message: "Registering " + domain + "..." },
         div({ id: 'errors' }),
 
-        // render an info message into this div if credits were just added to the account in order
+        // render an info message into this div if Credits were just added to the account in order
         // to proceed with the registration.
         Billing.show_num_credits_added(),
 
@@ -66,7 +66,7 @@ with (Hasher('Register','Application')) {
         ),
 
         fieldset({ 'class': 'no-label' },
-          submit({ id: 'register-button', value: 'Register ' + Domains.truncate_domain_name(domain) + ' for 1 credit' })
+          submit({ id: 'register-button', value: 'Register ' + Domains.truncate_domain_name(domain) + ' for 1 Credit' })
         )
       )
     );
@@ -77,7 +77,7 @@ with (Hasher('Register','Application')) {
     // if (form_data && form_data.credits_added) {
     //   BadgerCache.getAccountInfo(function(response) {
     //     $("div#errors").html(
-    //       div({ 'class': "info-message" }, "Success! You now have " + response.data.domain_credits + " domain " + (response.data.domain_credits > 1 ? "credits" : "credit") + ".")
+    //       div({ 'class': "info-message" }, "Success! You now have " + response.data.domain_credits + " domain " + (response.data.domain_credits > 1 ? "Credits" : "Credit") + ".")
     //     );
     //   });
     // }

@@ -23,7 +23,7 @@ Feature: Register
     # And I fill in "zip" with "84"
     # And I select "Vietnam" from "country"
     And I check "agree_to_terms"
-    And I mock neccessary data to mock login with 35 domain credits and 5 invites available
+    And I mock neccessary data to mock login with 35 domain Credits and 5 invites available
     Then I press "Continue »"
     And The home page is fully loaded
     Then I should see "Welcome to Badger!"

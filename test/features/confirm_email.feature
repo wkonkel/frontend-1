@@ -5,7 +5,7 @@ Feature: Confirm Email
 
   Scenario: Confirm email with valid confirmation code when I do not log in
     Given I am on the home page
-    And I mock neccessary data to mock login with 35 domain credits and 5 invites available
+    And I mock neccessary data to mock login with 35 domain Credits and 5 invites available
     And I mock confirmEmail with status "ok"
     When I visit the confirm email path
     Then I should see "Login"
@@ -20,7 +20,7 @@ Feature: Confirm Email
 
   Scenario: Confirm email with invalid confirmation code when I do not log in
     Given I am on the home page
-    And I mock neccessary data to mock login with 35 domain credits and 5 invites available
+    And I mock neccessary data to mock login with 35 domain Credits and 5 invites available
     And I mock confirmEmail with status "bad_request"
     When I visit the confirm email path
     Then I should see "Login"
@@ -34,7 +34,7 @@ Feature: Confirm Email
     And I follow "Close"
 
   Scenario: Confirm email with valid confirmation code when I logged in
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
     And I mock confirmEmail with status "ok"
     And I visit the confirm email path
     And A dialog has popped up
@@ -42,7 +42,7 @@ Feature: Confirm Email
     And I follow "Close"
 
   Scenario: Confirm email with invalid confirmation code when I logged in
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
     And I mock confirmEmail with status "bad_request"
     And I visit the confirm email path
     And A dialog has popped up

@@ -4,7 +4,7 @@ Feature: Invite
   I want to send my friends invitations
 
   Scenario: As I have invites available and history of sent invites I should see my history of sent invites
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
     And I mock getInviteStatus with 1 accepted and 1 pending and 1 revoked
     And I am on the invites page
     Then I should see "Email" within ".invite-status-table"
@@ -24,7 +24,7 @@ Feature: Invite
     #And I should see a link with href "#invites"
 
   Scenario: As I have no invites available yet I have history of sent invites I should see my history of sent invites
-    Given I logged in with mock data for domains and user info with 35 domain credits and 0 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 0 invites available
     And I mock getInviteStatus with 1 accepted and 1 pending and 1 revoked
     And I am on the invites page
     Then I should see "Email" within ".invite-status-table"
@@ -44,13 +44,13 @@ Feature: Invite
     #And I should see a link with href "#invites"
 
   Scenario: As I have no invites available and no history of sent invites, I should not be able to send out invitation
-    Given I logged in with mock data for domains and user info with 35 domain credits and 0 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 0 invites available
     And I mock getInviteStatus with 0 accepted and 0 pending and 0 revoked
     And I am on the invites page
     Then I should see "You haven't sent any invites yet!"
 
-  Scenario: As I have invites available and domain credits, I should be able to send out invitation with credits to gift when I input correct information
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+  Scenario: As I have invites available and domain Credits, I should be able to send out invitation with Credits to gift when I input correct information
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
     And I mock getInviteStatus with 1 accepted and 1 pending and 0 pending revoked
     And I am on the invites page
     Then I follow "Send Invite"
@@ -68,8 +68,8 @@ Feature: Invite
     Then I should see "Invitation Message"
     And I should see "Notification message"
 
-  Scenario: As I have invites available and no domain credits, I should not be able to see credits_to_gift drop box
-    Given I logged in with mock data for domains and user info with 0 domain credits and 5 invites available
+  Scenario: As I have invites available and no domain Credits, I should not be able to see credits_to_gift drop box
+    Given I logged in with mock data for domains and user info with 0 domain Credits and 5 invites available
     And I mock getInviteStatus with 1 accepted and 1 pending and 0 pending revoked
     And I am on the invites page
     Then I follow "Send Invite"
@@ -79,8 +79,8 @@ Feature: Invite
     And I fill in "custom_message" with "hi, check this out!"
     And I should not see item with xpath "//select[@name='credits_to_gift']"
 
-  Scenario: As I have invites available and 2 domain credits, I should be able to see credits_to_gift drop box with options 0, 1, 2 only
-    Given I logged in with mock data for domains and user info with 2 domain credits and 5 invites available
+  Scenario: As I have invites available and 2 domain Credits, I should be able to see credits_to_gift drop box with options 0, 1, 2 only
+    Given I logged in with mock data for domains and user info with 2 domain Credits and 5 invites available
     And I mock getInviteStatus with 1 accepted and 1 pending and 0 revoked
     And I am on the invites page
     Then I follow "Send Invite"
@@ -95,7 +95,7 @@ Feature: Invite
     And the "credits_to_gift" drop-down should not contain the option "3"
 
   Scenario: As I have invites available, I should not be able to send out invitation when I input incorrect information
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
     And I mock getInviteStatus with 1 accepted and 1 pending and 0 revoked
     And I am on the invites page
     Then I follow "Send Invite"
@@ -108,7 +108,7 @@ Feature: Invite
     And I should see "Notification message"
 
   Scenario: As I have invites available, I should not be able to send out invitation when I leave the fields empty
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
     And I mock getInviteStatus with 1 accepted and 1 pending and 0 revoked
     And I am on the invites page
     Then I follow "Send Invite"
@@ -116,7 +116,7 @@ Feature: Invite
     Then I should see "First Name, Last Name and Email can not be blank"
 
   Scenario: As I revoke a sent invite, I want to see it updated on the page
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
     And I mock getInviteStatus with 1 accepted and 1 pending and 0 revoked
     And I am on the invites page
     And I mock revokeInvite with status "ok" and message "Revoke invite successfully"

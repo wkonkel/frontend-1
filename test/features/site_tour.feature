@@ -14,7 +14,7 @@
 #     And I fill in "password" with "pwd123"
 #     And I fill in "password_confirmation" with "pwd123"
 #     And I check "agree_to_terms"
-#     And I mock neccessary data to mock login with 35 domain credits and 5 invites available
+#     And I mock neccessary data to mock login with 35 domain Credits and 5 invites available
 #     Then I press "Create Account"
 #     Then I should see "Welcome to Badger!"
 #     And I should see "We do things a little bit differently around here, so please take a moment to read the next few screens. It will be quick!"
@@ -22,7 +22,7 @@
 #     # Then I should see "Credits, not a Shopping Cart."
 #     # And I should see "Instead of sending you through a shopping cart and making you checkout each time, we use Credits."
 #     # And I should see "It costs one Credit to register, transfer or renew a domain for one year."
-#     # And I should see "If you don't have enough credits, you will be asked to purchase more:"
+#     # And I should see "If you don't have enough Credits, you will be asked to purchase more:"
 #     # And I should see "Credits cost between $10 and $15 depending on how many you buy at once. If you know you will be registering and renewing lots of domains, buying Credits in bulk can save you a ton!"
 #     # And I should see "It looks like your invite code came with 35 free Credits, congrats!"
 #     # Then I follow "Next"

@@ -109,7 +109,7 @@ Given /^I mock getDomains with ([^"]*) normal domains, ([^"]*) in transfer domai
   page.execute_script(" BadgerCache.cached_domains = null;");
 end
 
-Given /^I mock accountInfo with name "([^"]*)" and ([^"]*) domain credits and ([^"]*) invites available$/ do |name, domain_credits, invites_available|
+Given /^I mock accountInfo with name "([^"]*)" and ([^"]*) domain Credits and ([^"]*) invites available$/ do |name, domain_credits, invites_available|
   page.execute_script("Badger.accountInfo = function(callback) {
     callback({data : {domain_credits: #{domain_credits}, name: '#{name}', invites_available: #{invites_available}}, meta : {status: 'ok'}});
   };")

@@ -4,7 +4,7 @@ Feature: Knowledge center
   I want to view knowledge center articles list and detail of a knowledge center article
 
   Background:
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
     And I mock getKnowledgeCenterArticles return with:
       | id | title                       | body                                                                     | category                          |
       | 1  | Setup your Gmail            | Ensure that you have correctly set up e-mail forwarding on your website. | How To Send Email From RhinoNames |

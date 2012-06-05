@@ -47,7 +47,7 @@ with (Hasher('Billing','Application')) {
           div({ style: 'float: right; width: 300px'}, credits_table()),
 
           fieldset({ style: 'padding-top: 18px' },
-            label({ 'for': 'credits-input' }, 'How many credits:'),
+            label({ 'for': 'credits-input' }, 'How many Credits:'),
             credits_selector(necessary_credits)
   				),
 
@@ -181,18 +181,21 @@ with (Hasher('Billing','Application')) {
         // select the country if a contact was loaded
         if (contact.country) {
           var country_regex = new RegExp(contact.country, 'i');
-          $('select[name=country_name] > option').each(function() { if (this.value.match(country_regex)) { $(this).attr('selected','selected') } });
+          $('select[name=country_name] > option').each(function() {
+            if (this.value.match(country_regex)) {
+              $(this).attr('selected','selected')
+            }
+          });
         }
 
       });
       
-
       hide_or_show_new_card_fields();
     });
   });
   
   
-  // reads from Badger.Session to get the number of credits just added to the account,
+  // reads from Badger.Session to get the number of Credits just added to the account,
   // and renders and info message into the div
   define('show_num_credits_added', function() {
     if (!Badger.Session.get('credits_added')) return div();
@@ -323,7 +326,7 @@ with (Hasher('Billing','Application')) {
 			$('#price-savings').empty().append("$" + (num_credits*15 - price*num_credits).toString())				
 	
 			// change text on the purchase button
-			$("#purchase-button").attr("value", "Purchase " + num_credits + (num_credits == 1 ? " credit" : " credits") + " for $" + (price*num_credits));
+			$("#purchase-button").attr("value", "Purchase " + num_credits + (num_credits == 1 ? " Credit" : " Credits") + " for $" + (price*num_credits));
 			$("#static-price").html("$" + (price*num_credits));
 			
 			// how/hide savings

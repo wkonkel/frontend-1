@@ -4,7 +4,7 @@ Feature: Nameserver setting
   I want to view and edit settings of nameserver for my domain
 
   Background:
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
     And I mock getDomain for domain "mydomain0.com"
     And I mock getRecords for domain "mydomain0.com"
     When I visit Badger DNS for domain "mydomain0.com"

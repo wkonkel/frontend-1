@@ -4,7 +4,7 @@ Feature: Email Forward
   I want to view and edit settings of email forward for my domain
 
   Background:
-    Given I logged in with mock data for domains and user info with 35 domain credits and 5 invites available
+    Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
     And I mock getDomain for domain "mydomain0.com"
     And I mock getEmailForwards for domain "mydomain0.com"
     When I visit Email Forwarding for domain "mydomain0.com"

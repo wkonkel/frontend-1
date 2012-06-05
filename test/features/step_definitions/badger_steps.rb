@@ -21,7 +21,7 @@ Given /^A form was submitted(?: with message '([^']*)')$/ do |message|
   step 'I wait until "#_form-internals" is visible'
 end
 
-Given /^I logged in with mock data for domains and user info with ([^"]*) domain credits and ([^"]*) invites available$/ do |domain_credits, invites_available|
+Given /^I logged in with mock data for domains and user info with ([^"]*) domain Credits and ([^"]*) invites available$/ do |domain_credits, invites_available|
   step 'I am on the home page'
   step 'I am not logged in'
   step 'I follow "Login"'
@@ -30,14 +30,14 @@ Given /^I logged in with mock data for domains and user info with ([^"]*) domain
   step 'I fill in "password" with "12345678"'
   step 'I press "Login"'
   step 'I wait until "All Domains" is visible'
-  step "I mock neccessary data to mock login with #{domain_credits} domain credits and #{invites_available} invites available"
+  step "I mock neccessary data to mock login with #{domain_credits} domain Credits and #{invites_available} invites available"
   # step 'I view my domains list'
   step 'The home page is fully loaded'
 end
 
-Given /^I mock neccessary data to mock login with ([^"]*) domain credits and ([^"]*) invites available$/ do |domain_credits, invites_available|
+Given /^I mock neccessary data to mock login with ([^"]*) domain Credits and ([^"]*) invites available$/ do |domain_credits, invites_available|
   step 'I mock getDomains with 1 normal domains, 1 in transfer domain and 1 expiring soon domains'
-  step 'I mock accountInfo with name "East Agile Company" and ' + "#{domain_credits} domain credits and #{invites_available} invites available"
+  step 'I mock accountInfo with name "East Agile Company" and ' + "#{domain_credits} domain Credits and #{invites_available} invites available"
   step 'I mock getAccessToken return with "1.123.1234566"'
   step 'I mock getContacts returns 1 contacts'
   step 'I mock getPaymentMethods'
