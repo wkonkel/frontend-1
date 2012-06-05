@@ -176,7 +176,9 @@ with (Hasher('Application')) {
   
   define('h1', function() {
     var h1 = element('h1', arguments);
-    document.title = h1.innerText || h1.textContent;
+    var title = h1.innerText || h1.textContent;
+    if (!title.match(/badger/i)) title += " (Badger)";
+    document.title = title;
     return h1;
   }); 
 }
