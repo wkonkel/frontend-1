@@ -60,20 +60,6 @@ with (Hasher('Application')) {
 
   after_filter('update_my_domains_count', update_my_domains_count);
 
-  // define('update_invites_available_count', function() {
-  //   BadgerCache.getAccountInfo(function(response) {
-  //     $('#nav-my-account ul li#invites_available #invite_available_count').html(' (' + response.data.invites_available + ')')
-  //     if (response.data.invites_available > 0) {
-  //       $('#nav-my-account ul li#invites_available').removeClass('hidden');
-  //     } else {
-  //       BadgerCache.getInviteStatus(function(response) {
-  //         if (response.data.length > 0)
-  //           $('#nav-my-account ul li#invites_available').removeClass('hidden');
-  //       });
-  //     }
-  //   });
-  // });
-
   define('check_if_domain_should_be_added_to_sidebar', function(request_uri) {
     if (!request_uri) request_uri = get_route();
     var domain = (request_uri.match(/#domains\/([^\/]+)/) || [])[1];
@@ -207,7 +193,7 @@ with (Hasher('Application')) {
     BadgerCache.getAccountInfo(function(response) {
       //$(user_nav).prepend(span(a({ href: '#account/settings'}, response.data.name)));
       $(user_nav).prepend(span({ id: 'use_nav_name' }, a({ href: '#account' }, response.data.name)));
-      //$(user_nav).prepend(span({ id: 'user_nav_invites_available', 'class': response.data.invites_available <= 0 ? 'hidden' : '' }, a({ href: '#invites' }, response.data.invites_available + ' Invites')));
+      $(user_nav).prepend(span(a({ href: '#invites', id: 'user_nav_invites_available' }, 'Invites')));
       $(user_nav).prepend(span(a({ href: '#account/billing', id: 'user_nav_credits' }, 'Credits')));  // updated by update_my_domains_count after_filter
       $(user_nav).prepend(span(a({ href: '#domains', id: 'user-nav-domains' }, 'Domains')));  // updated by update_credits after_filter
     });
@@ -232,16 +218,20 @@ with (Hasher('Application')) {
     });
   });
 
-  define('update_invites_available', function(refresh) {
-    if (refresh) BadgerCache.flush('account_info');
-    BadgerCache.getAccountInfo(function(response) {
-      $('#user_nav_invites_available a').html(response.data.invites_available + ' Invites');
-      if (response.data.invites_available > 0)
-        $('#user_nav_invites_available').removeClass('hidden');
-      else
-        $('#user_nav_invites_available').addClass('hidden');
-    });
-  });
+  // Invites are on for everyone, all the time so don't display count
+  // https://www.pivotaltracker.com/story/show/30427979
+  // define('update_invites_available', function(refresh) {
+  //   if (refresh) BadgerCache.flush('account_info');
+  //   BadgerCache.getAccountInfo(function(response) {
+  //     $('#user_nav_invites_available a').html(response.data.invites_available + ' Invites');
+  //     if (response.data.invites_available > 0)
+  //       $('#user_nav_invites_available').removeClass('hidden');
+  //     else
+  //       $('#user_nav_invites_available').addClass('hidden');
+  //   });
+  // });
+  // after_filter('update_invites_available_count', update_invites_available_count);
+  
 
   define('search_box', function(domain) {
     return form({ id: "form-search", action: Search.search_box_changed },

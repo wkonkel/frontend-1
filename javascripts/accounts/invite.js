@@ -64,7 +64,7 @@ with (Hasher('Invite','Application')) {
       BadgerCache.flush('invite_status');
 			send_invite_result(response.data, response.meta.status);
       update_credits();
-      update_invites_available();
+      // update_invites_available();  // Always on: https://www.pivotaltracker.com/story/show/30427979
       set_route("#invites");
 		});
 	});
@@ -75,7 +75,7 @@ with (Hasher('Invite','Application')) {
       BadgerCache.flush('invite_status');
       set_route('#invites');
       update_credits();
-      update_invites_available();
+      // update_invites_available();  //  Always on: https://www.pivotaltracker.com/story/show/30427979
       revoke_message(response.data, response.meta.status);
     });
   });
