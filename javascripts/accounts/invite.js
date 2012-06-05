@@ -1,13 +1,17 @@
 with (Hasher('Invite','Application')) {
   route('#invites', function() {
-    var target_h1 = h1('Sent Invites');
+    var invites_h1 = function(sent_invites_count) {
+      return div(a({ href: '#account'}, 'My Account'), ' » Sent Invites',
+                 (sent_invites_count > 0 ? ' (' + sent_invites_count + ')' : ''));
+    };
+    var target_h1 = h1(invites_h1());
     var target_div = div(spinner('Loading...'));
     var target_button_area = div({ style: 'float: right; margin-top: -44px' });
     
     render(
       target_h1,
       target_button_area,
-      target_div
+      Account.account_nav_table(target_div)
     );
     
     BadgerCache.getAccountInfo(function(response) {
@@ -16,58 +20,91 @@ with (Hasher('Invite','Application')) {
         var domain_credits = response.data.domain_credits;
         var sent_invites_count = invite_status.data.length;
         
-        if (sent_invites_count > 0) render({ target: target_h1 }, 'Sent invites (' + sent_invites_count + ')');
-
         if (invites_available) {
           render({ target: target_button_area }, 
-            a({ 'class': 'myButton small', href: curry(Invite.send_invite_modal, domain_credits) }, 'Send Invite')
+            a({ 'class': 'myButton small', href: '#invites/send' }, 'Send Invite')
           );
         }
-
-        render({ target: target_div }, 
-          (sent_invites_count > 0) ? table({ 'class': 'fancy-table invite-status-table' },
-            tbody(
-              tr(
-                th("Date"),
-                th("Name"),
-                th("Email"),
-                th({'class': 'center' }, "Credits"),
-                th({'class': 'center' }, "Accepted")
-              ),
-
-              invite_status.data.map(function(invite) {
-                return tr(
-                  td(new Date(Date.parse(invite.date_sent)).toDateString()),
-                  td(invite.name),
-                  td(invite.email),
-                  td({'class': 'center' }, invite.domain_credits),
-                  invite.accepted ? td({ 'class': 'center' }, 'Yes')
-                  : invite.revoked_at ? td({ 'class': 'center' }, 'Revoked')
-                  : td({ 'class': 'center' }, 'No - ', a({ href: curry(Invite.revoke_invite, invite.id) }, "Revoke?"))
-                )
-              })
-            )
-          ) : "You haven't sent any invites yet!"
-          
-        );
         
+        var invites_refill = function () {
+          return invites_available ? '' :
+            p("You're currently out of invites. Please ", a({ href: '#contact_us' }, 'contact us'),
+              ' for a refill!');
+        };
+        if (invites_available && sent_invites_count <= 0) {
+          set_route('#invites/send');
+        } else if (sent_invites_count > 0) {
+          render({ target: target_h1 }, invites_h1(sent_invites_count));
+          
+          render({ target: target_div },
+            table({ 'class': 'fancy-table invite-status-table' },
+              tbody(
+                tr(
+                  th("Date"),
+                  th("Name"),
+                  th("Email"),
+                  th({'class': 'center' }, "Credits"),
+                  th({'class': 'center' }, "Accepted")
+                ),
+
+                invite_status.data.map(function(invite) {
+                  return tr(
+                    td(new Date(Date.parse(invite.date_sent)).toDateString()),
+                    td(invite.name),
+                    td(invite.email),
+                    td({'class': 'center' }, invite.domain_credits),
+                    invite.accepted ? td({ 'class': 'center' }, 'Yes')
+                    : invite.revoked_at ? td({ 'class': 'center' }, 'Revoked')
+                    : td({ 'class': 'center' }, 'No - ', a({ href: curry(Invite.revoke_invite, invite.id) }, "Revoke?"))
+                  )
+                })
+              )
+            ),
+            invites_refill()
+          )
+        } else {
+          render({ target: target_div }, invites_refill());
+        }
       });
     });
-	});
+  });
 
-	define('send_invite', function(data) {
-		if(data.first_name == "" || data.last_name == "" || data.invitation_email == "") {
-			return $('#send-invite-messages').empty().append( error_message({ data: { message: "First Name, Last Name and Email can not be blank" } }) );
+  route('#invites/send', function() {
+    var target_h1 = h1(a({ href: '#account'}, 'My Account'), ' » ', a({ href: '#invites'}, 'Invites'), ' » Send Invites');
+    
+    var target_div = div(spinner('Loading...'));
+    render(
+      target_h1,
+      Account.account_nav_table(target_div)
+    );
+    BadgerCache.getAccountInfo(function(response) {
+      BadgerCache.getInviteStatus(function(invite_status) {
+        var invites_available = response.data.invites_available;
+        var domain_credits = response.data.domain_credits;
+        var sent_invites_count = invite_status.data.length;
+
+        if (invites_available <= 0) {
+          set_route('#invites');
+        } else {
+          send_invite_form(target_div, domain_credits);
+        }
+      });
+    });
+  });
+
+  define('send_invite', function(data) {
+    if(data.first_name == "" || data.last_name == "" || data.invitation_email == "") {
+      return $('#send-invite-messages').empty().append( error_message({ data: { message: "First Name, Last Name and Email can not be blank" } }) );
     }
-		Badger.sendInvite(data, function(response) {
+    Badger.sendInvite(data, function(response) {
       BadgerCache.flush('account_info');
       BadgerCache.flush('invite_status');
-			send_invite_result(response.data, response.meta.status);
+      send_invite_result(response.data, response.meta.status);
       update_credits();
       // update_invites_available();  // Always on: https://www.pivotaltracker.com/story/show/30427979
       set_route("#invites");
-		});
-	});
+    });
+  });
 
   define('revoke_invite', function(invite_id) {
     Badger.revokeInvite(invite_id, function(response) {
@@ -80,17 +117,16 @@ with (Hasher('Invite','Application')) {
     });
   });
 
-  define('send_invite_modal', function(domain_credits) {
-    options = [];
-    var credits_to_gift = domain_credits > 3 ? 3 : domain_credits
-    for(var i = 0; i <= credits_to_gift; i++) {
-      options.push(option(i.toString()))
-    }
-
-		show_modal(
-  		form({ action: send_invite },
-        h1('Send Invite'),
-  			div({ id: 'send-invite-messages' }),
+  define('send_invite_form', function(target_div, domain_credits) {
+    render({ target: target_div },
+      div({ 'class': 'sidebar' },
+        info_message(
+          h3('Invite Rewards'),
+          p("We're working on a rewards program but in the meantime we're keeping track of your signups!")
+        )
+      ),
+      form({ action: send_invite, 'class': 'has-sidebar' },
+        div({ id: 'send-invite-messages' }),
           table({ id: 'invitee-information' },
             tbody(
               tr(
@@ -102,7 +138,7 @@ with (Hasher('Invite','Application')) {
                 td(input({ name: 'last_name', 'class': 'fancy' }))
               ),
               tr(
-                td(label({ 'for': 'invitation_email' }, 'Email Address:')),
+                td(label({ 'for': 'invitation_email' }, 'Email:')),
                 td(input({ name: 'invitation_email', 'class': 'fancy' }))
               ),
               tr(
@@ -110,17 +146,19 @@ with (Hasher('Invite','Application')) {
                 td(textarea({ name: 'custom_message' }))
               ),
               domain_credits > 0 ? tr(
-                td(label({ 'for': 'credits_to_gift' }, "Credits to Gift: ")),
-                td(select({ name: 'credits_to_gift' }, options), ' of my Credits')
-              ) : ''
+                td(label({ 'for': 'credits_to_gift' }, "Include a Credit as a gift? ")),
+                td(checkbox({ name: 'credits_to_gift', checked: 'checked', value: 1 }))
+              ) : '',
+              tr(
+                td(),
+                td({ style: 'padding-top: 20px' }, input({ 'class': 'myButton', type: 'submit', value: 'Send Invitation' })
+              )
             )
-          ),
-        
-          div({ style: 'text-align: center; margin-top: 20px' }, input({ 'class': 'myButton', type: 'submit', value: 'Send Invitation' })
+          )
         )
       )
-		);
-	});
+    );
+  });
 
   define('send_invite_result', function(data, status) {
     show_modal(
@@ -129,8 +167,8 @@ with (Hasher('Invite','Application')) {
         p( { 'class': status == 'ok' ? '': 'error-message'}, data.message),
         a({ href: hide_modal, 'class': 'myButton', value: "submit" }, "Close")
       )
-		);
-	});
+    );
+  });
 
   define('revoke_message', function(data, status) {
     show_modal(
