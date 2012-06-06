@@ -26,9 +26,9 @@ with (Hasher('Domains','Application')) {
       //   span(checkbox({ name: 'filter-state-toggle-all', checked: 'checked' }))
       // ),
       
-      div(
-        span(checkbox({ name: 'filter-state-expiring', checked: 'checked' }), " Expiring Soon")
-      ),
+      // div(
+      //   span(checkbox({ name: 'filter-state-expiring', checked: 'checked' }), " Expiring Soon")
+      // ),
       div(
         span(checkbox({ name: 'filter-state-transfers', checked: 'checked' }), " Transfers")
       )
