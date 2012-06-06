@@ -1,7 +1,6 @@
 with (Hasher('Domains')) {
   route('#domains', function(domain_name) {
     var target_div = div(spinner('Loading domains...'));
-    var domains_div = div();
     
     render(
       chained_header_with_links(
@@ -14,6 +13,8 @@ with (Hasher('Domains')) {
     
     with_domains({
       callback: function(domains) {
+        var domains_div = div();
+        
         render({ into: domains_div },
           sortable_domains_table(domains, domains_div)
         );
@@ -31,7 +32,6 @@ with (Hasher('Domains')) {
   
   route('#domains/pending-transfer', function() {
     var target_div = div(spinner('Loading domains...'));
-    var domains_div = div();
     
     render(
       chained_header_with_links(
@@ -47,6 +47,8 @@ with (Hasher('Domains')) {
       },
       
       callback: function(domains) {
+        var domains_div = div();
+        
         if (domains.length <= 0) {
           render({ into: domains_div },
             div('It looks like you do not have any domains in pending transfer.'),
@@ -73,7 +75,6 @@ with (Hasher('Domains')) {
   
   route('#domains/expiring-soon', function() {
     var target_div = div(spinner('Loading domains...'));
-    var domains_div = div();
     
     render(
       chained_header_with_links(
@@ -86,16 +87,18 @@ with (Hasher('Domains')) {
     with_domains({
       filter: function(domain) {
         // filter out if missing expiration date for some reason
-        if (!domain.expires_at) return true;
+        if (!domain.expires_at) return false;
         
         var d1 = new Date();
         var d2 = new Date(domain.expires_at);
         var days = parseInt(d2 - d1)/(24*3600*1000);
         
-        return days > 90;
+        return days <= 90;
       },
       
       callback: function(domains) {
+        var domains_div = div();
+        
         if (domains.length <= 0) {
           render({ into: domains_div },
             div('It looks like you do not have any domains in pending transfer.'),
