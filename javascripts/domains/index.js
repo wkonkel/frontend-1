@@ -35,7 +35,7 @@ with (Hasher('Domains')) {
     
     render(
       chained_header_with_links(
-        { href: '#domains', text: 'My Domains' },
+        { text: 'My Domains' },
         { text: 'Pending Transfer' }
       ),
       target_div
@@ -71,6 +71,55 @@ with (Hasher('Domains')) {
     });
   });
   
+  route('#domains/expiring-soon', function() {
+    var target_div = div(spinner('Loading domains...'));
+    var domains_div = div();
+    
+    render(
+      chained_header_with_links(
+        { text: 'My Domains' },
+        { text: 'Expiring Soon' }
+      ),
+      target_div
+    );
+    
+    with_domains({
+      filter: function(domain) {
+        // filter out if missing expiration date for some reason
+        if (!domain.expires_at) return true;
+        
+        var d1 = new Date();
+        var d2 = new Date(domain.expires_at);
+        var days = parseInt(d2 - d1)/(24*3600*1000);
+        
+        return days > 90;
+      },
+      
+      callback: function(domains) {
+        if (domains.length <= 0) {
+          render({ into: domains_div },
+            div('It looks like you do not have any domains in pending transfer.'),
+            ul(
+              li(a({ href: '#domains/transfer' }, 'Transfer domains to Badger'))
+            )
+          );
+        } else {
+          render({ into: domains_div },
+            sortable_domains_table(domains, domains_div)
+          );
+        }
+        
+        render({ into: target_div },
+          div({ 'class': 'fancy' },
+            domains_nav_table(
+              domains_div
+            )
+          )
+        );
+      }
+    });
+  });
+  
   /*
     Yield the domains fetched by Badger.getDomains,
     but apply an optional filter before the yield,
@@ -78,15 +127,17 @@ with (Hasher('Domains')) {
     code after executing the callback
     
     options:
-    @filter     Optional method to pass to the JavaScript
-                  filter method.
-    @callback   Method to yield domains to. Passes the domains
-                  array as the only argument.
+    @filter       Optional method to pass to the JavaScript
+                    filter method.
+    @for_each  Optional method to apply to each domain.
+    @callback     Method to yield domains to. Passes the domains
+                    array as the only argument.
   */
   define('with_domains', function(options) {
     BadgerCache.getDomains(function(response) {
       // filter domains if requested
       var domains = options.filter ? response.data.filter(options.filter) : response.data;
+      if (options.for_each) domains.forEach(options.for_each);
       if (options.callback) options.callback(domains||[]);
       initialize_filters();
     });

@@ -4,7 +4,11 @@ with (Hasher('Transfer','Application')) {
     var domains = (Badger.Session.get('domains') || []).sort();
 
     render(
-      h1('Transfer In Domains'),
+      chained_header_with_links(
+        { href: '#domains', text: 'My Domains' },
+        { text: 'Transfer In Domains' }
+      ),
+      
       div({ 'class': 'sidebar' },
         info_message(
           h3("How do transfers work?"),

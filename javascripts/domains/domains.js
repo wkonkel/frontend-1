@@ -11,7 +11,8 @@ with (Hasher('Domains','Application')) {
           div({ style: 'margin-bottom: 20px' },
             ul({ id: 'domains-left-nav' },
               li(a({ href: '#domains', 'class': (get_route().match(/^#domains$/) ? 'active' : '') }, 'All Domains')),
-              li(a({ href: '#domains/pending-transfer', 'class': (get_route().match(/^#domains\/pending-transfer$/) ? 'active' : '') }, 'Pending Transfer'))
+              li(a({ href: '#domains/pending-transfer', 'class': (get_route().match(/^#domains\/pending-transfer$/) ? 'active' : '') }, 'Pending Transfer')),
+              li(a({ href: '#domains/expiring-soon', 'class': (get_route().match(/^#domains\/expiring-soon$/) ? 'active' : '') }, 'Expiring Soon'))
             )
           ),
           
@@ -253,7 +254,7 @@ with (Hasher('Domains','Application')) {
       return div(options || {},
         info_message(
           a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: curry(Transfer.redirect_to_transfer_for_domain, linked_domains.map(function(d) { return d.name })) }, 'Begin Transfer'),
-          "You have ", b(linked_domains.length, " domains"), " that can be automatically transferred to Badger!"
+          b(linked_domains.length), " of these domains can be transferred to Badger automatically!"
         )
       )
     }
