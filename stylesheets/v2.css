@@ -161,7 +161,7 @@ html, body, #wrapper, #footer { min-width: 970px; }
 }
 .close-button:hover { text-decoration: none; }
 
-
+.domain-filters { margin-left: 10px; }
 
 
 /***********************************************/

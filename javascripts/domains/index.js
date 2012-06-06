@@ -4,156 +4,93 @@ with (Hasher('Domains')) {
     var domains_div = div();
     
     render(
-      h1('My Domains'),
+      chained_header_with_links(
+        { text: 'My Domains' },
+        { text: 'All' }
+      ),
+      
       target_div
     );
     
-    BadgerCache.getDomains(function(response) {
-      render({ into: domains_div },
-        transfer_linked_domains_message(response.data, { style: 'margin-bottom: 20px;' }),
-        sortable_domains_table(response.data, domains_div)
-      );
+    with_domains({
+      callback: function(domains) {
+        render({ into: domains_div },
+          sortable_domains_table(domains, domains_div)
+        );
       
-      render({ into: target_div },
-        div({ 'class': 'fancy' },
-          domains_nav_table(
-            domains_div
+        render({ into: target_div },
+          div({ 'class': 'fancy' },
+            domains_nav_table(
+              domains_div
+            )
           )
-        )
-      );
-      
-      initialize_filters();
+        );
+      }
     });
   });
   
-  define('initialize_filters', function() {
-    // update filters
-    $("input[name^=filter-]").change(function() {
-      // if this is a registrar filter box
-      if (this.name.match(/^filter-registrar-/i)) {
-        // pick off the registrar name from the checkbox name attribute
-        var registrar = this.name.split('-').slice(-1)[0];
-
-        // now toggle the row based on matcher
-        toggle_show_of_rows_with_column_index_and_values(this.checked, 1, function(row_value) {
-          if (registrar == 'other') {
-            // get names of all known registrars
-            // TODO update this regex as new filters are added. Perhaps just write code to
-            // get all registrar names from filter @names and build a regex that way.
-            return !row_value.match(/badger|godaddy|networksolutions/i);
-          }
-
-          return row_value.match(new RegExp(registrar, 'i'));
-        });
-      }
+  route('#domains/pending-transfer', function() {
+    var target_div = div(spinner('Loading domains...'));
+    var domains_div = div();
+    
+    render(
+      chained_header_with_links(
+        { href: '#domains', text: 'My Domains' },
+        { text: 'Pending Transfer' }
+      ),
+      target_div
+    );
+    
+    with_domains({
+      filter: function(domain) {
+        return domain.permissions_for_person.includes('pending_transfer');
+      },
       
-      // filter states
-      if (this.name.match(/^filter-state-/i)) {
-        var state_name = this.name.split('-').slice(-1)[0];
-        var is_checked = this.checked;
-
-        // don't need the domain objects to do apply this filter
-        if (state_name == 'expiring') {
-          toggle_show_of_rows_with_column_index_and_values(is_checked, 2, function(row_value) {
-            var current_date = new Date();
-            var expire_date = new Date(Date.parse(row_value));
-            var days = parseInt(expire_date - current_date)/(24*3600*1000);
-            
-            return days <= 90;
-          });
+      callback: function(domains) {
+        if (domains.length <= 0) {
+          render({ into: domains_div },
+            div('It looks like you do not have any domains in pending transfer.'),
+            ul(
+              li(a({ href: '#domains/transfer' }, 'Transfer domains to Badger'))
+            )
+          );
+        } else {
+          render({ into: domains_div },
+            sortable_domains_table(domains, domains_div)
+          );
         }
         
-        // need the domain objects to get transfer information
-        BadgerCache.getDomains(function(response) {
-          if (state_name == 'transfers') {
-            // get list of all of the domains pending transfer
-            var domains_pending_transfer = (response.data||[]).map(function(d) { if (d.transfer_steps) return d.name; }).compact();
-
-            toggle_show_of_rows_with_column_index_and_values(is_checked, 0, function(row_value) {
-              for (var i = 0; i < domains_pending_transfer.length; i++) {
-                var regex = new RegExp(domains_pending_transfer[i], 'i');
-                return row_value.match(regex);
-              }
-            });
-          }
-        });
+        render({ into: target_div },
+          div({ 'class': 'fancy' },
+            domains_nav_table(
+              domains_div
+            )
+          )
+        );
       }
     });
-  });
-  
-  define('apply_selected_filters', function() {
-    $("input[name^=filter-]").trigger('change');
   });
   
   /*
-    look through all of the rows in the table, and
-    show or hide the appropriate rows.
-    all of the remaining arguments after @show and @column_index
-    will be checked against table_row[@column_index] to show/hide
+    Yield the domains fetched by Badger.getDomains,
+    but apply an optional filter before the yield,
+    and initialize the filters event watching watching
+    code after executing the callback
     
-    @show           Show the row if true, hide the row if false
-    @column_index   The index of the td whose value is checked
-                      for equality against each of arguments.slice(2)
-    @matcher        A function, whose return value is used for
-                    matching. True to show, false to hide. If a function, then
-                    the value row[@column_index] is passed in as the only argument.
-                    
-    Example:  
-      Hide all of the rows whose second column value is equal to "Godaddy":
-      
-      toggle_show_of_rows_with_column_index_and_values(false, 1, function(row_value) {
-        return !!row_value.match(/godaddy/i);
-      });
+    options:
+    @filter     Optional method to pass to the JavaScript
+                  filter method.
+    @callback   Method to yield domains to. Passes the domains
+                  array as the only argument.
   */
-  define('toggle_show_of_rows_with_column_index_and_values', function(show, column_index, matcher) {
-    // no values were provided, just return
-    if (arguments.length < 2) return;
-    
-    $("#domains-table tr[class!=table-header]").each(function() {
-      var row_value = this.children[column_index].innerHTML;
-      var matched = !!matcher.call(null, row_value);
-      
-      if (matched) {
-        show ? $(this).show() : $(this).hide();
-      }
+  define('with_domains', function(options) {
+    BadgerCache.getDomains(function(response) {
+      // filter domains if requested
+      var domains = options.filter ? response.data.filter(options.filter) : response.data;
+      if (options.callback) options.callback(domains||[]);
+      initialize_filters();
     });
   });
-  
-  define('sortable_domains_table', function(domains, target_div) {
-    return table({ id: 'domains-table', 'class': 'fancy-table' }, tbody(
-      tr({ 'class': 'table-header' },
-        th({ 'class': 'table-sorter', style: 'width: 35%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_domain_name) }, 'Domain')),
-        th({ 'class': 'table-sorter', style: 'width: 30%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_current_registrar) }, 'Registrar')),
-        th({ 'class': 'table-sorter', style: 'width: 20%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_expiration_date) }, 'Expires')),
-        th({ 'class': 'table-sorter', style: 'width: 15%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_auto_renew) }, 'Auto Renew'))
-      ),
-      (domains||[]).map(function(domain) {
-        return tr(
-          td(a({ href: '#domains/' + domain.name }, truncate_domain_name(domain.name))),
-          td(domain.current_registrar),
-          td(!domain.expires_at ? '' : new Date(domain.expires_at).toString('MMMM dd yyyy')),
-          td(domain.auto_renew ? 'Enabled' : 'Disabled')
-        );
-      })
-    ));
-  });
-  
-  define('sort_domains_and_update_table', function(domains, target_div, sort_method) {
-    var before_domains = domains.slice(0);
-    var sorted_domains = domains.stable_sort(sort_method);
-    // var sorted_domains = domains.sort(sort_method);
-    
-    // reverses the elements in place, if already sorted by this
-    if (before_domains.equal_to(sorted_domains)) sorted_domains.reverse();
-    
-    render({ into: target_div },
-      sortable_domains_table(sorted_domains, target_div)
-    );
-    
-    // need to explicitly reapply the filters
-    apply_selected_filters();
-  });
-  
   
 };
 
