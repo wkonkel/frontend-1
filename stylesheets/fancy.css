@@ -11,7 +11,7 @@ form.fancy .right-margin { margin-right: 8px }
 form.fancy .big-text { font-size: 17px }
 form.fancy .small-text { font-size: 12px }
 
-form.fancy textarea { margin-top: 4px; padding: 5px 10px; font-size: 17px; border: 1px solid #aaa; border-radius: 3px; width: 400px; height: 100px; }
+form.fancy textarea { margin-top: 12px; padding: 5px 10px; font-size: 17px; border: 1px solid #aaa; border-radius: 3px; width: 400px; height: 100px; }
 
 
 form.fancy input[type="submit"], form.fancy .button, .myButton {

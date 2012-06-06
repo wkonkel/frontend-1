@@ -42,7 +42,7 @@ with (Hasher('Signup','Application')) {
 
         fieldset(
           label({ 'for': 'email-input' }, 'Email address:'),
-          div(input({ id: 'email-input', name: 'email', style: 'width: 275px', placeholder: 'john.doe@badger.com' }))
+          input({ id: 'email-input', name: 'email', style: 'width: 275px', placeholder: 'john.doe@badger.com' })
         ),
     
         fieldset(

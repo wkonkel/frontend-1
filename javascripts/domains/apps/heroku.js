@@ -21,7 +21,7 @@ with (Hasher('Heroku', 'DomainApps')) {
         p("Heroku is a cloud application platform - a new way of building and deploying web apps."),
         p("Before installing this app, you will need to run these console commands in your project directory:"),
         
-        div({ 'style': 'background: #3b4249; color: #f8f8f8; padding: 10px; font-family: Monaco, monospace; font-size: 11px; margin-top: 6px' }, 
+        div({ style: 'background: #3b4249; color: #f8f8f8; padding: 10px; font-family: Monaco, monospace; font-size: 11px; margin-top: 6px' }, 
           div({ style: 'color: #8DA6CE' }, "$ heroku addons:add custom_domains"),
           div("Adding custom_domains to YOURAPPNAME...done."),
           div({ style: 'color: #8DA6CE; margin-top: 5px' }, "$ heroku domains:add www." + domain_obj.name),

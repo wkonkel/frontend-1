@@ -127,36 +127,33 @@ with (Hasher('Invite','Application')) {
           p("We're working on a rewards program but in the meantime we're keeping track of your signups!")
         )
       ),
-      form_with_loader({ action: send_invite, 'class': 'has-sidebar', loading_message: 'Sending invite...' },
+      form_with_loader({ action: send_invite, 'class': 'fancy has-sidebar', loading_message: 'Sending invite...', 'style': 'margin-left: -120px' },
         div({ id: 'send-invite-messages' }),
-          table({ id: 'invitee-information' },
-            tbody(
-              tr(
-                td(label({ 'for': 'first_name' }, 'First Name:')),
-                td(input({ name: 'first_name', 'class': 'fancy' }))
-              ),
-              tr(
-                td(label({ 'for': 'last_name' }, 'Last Name:')),
-                td(input({ name: 'last_name', 'class': 'fancy' }))
-              ),
-              tr(
-                td(label({ 'for': 'invitation_email' }, 'Email:')),
-                td(input({ name: 'invitation_email', 'class': 'fancy' }))
-              ),
-              tr(
-                td({ style: 'vertical-align: top' }, label({ 'for': 'custom_message' }, 'Custom Message:')),
-                td(textarea({ name: 'custom_message' }))
-              ),
-              domain_credits > 0 ? tr(
-                td(label({ 'for': 'credits_to_gift' }, "Include a Credit as a gift? ")),
-                td(checkbox({ name: 'credits_to_gift', checked: 'checked', value: 1 }))
-              ) : '',
-              tr(
-                td(),
-                td({ style: 'padding-top: 20px' }, input({ 'class': 'myButton', type: 'submit', value: 'Send Invitation' })
-              )
-            )
-          )
+        
+        fieldset(
+          label({ 'for': 'first_name-input' }, 'Name:'),
+          text({ 'class': 'short right-margin', id: 'first_name-input', name: 'first_name', placeholder: 'John' }),
+          text({ 'class': 'short', name: 'last_name', placeholder: 'Doe' })
+        ),
+        
+        fieldset(
+          label({ 'for': 'email-input' }, 'Email:'),
+          input({ id: 'email-input', name: 'invitation_email', style: 'width: 330px', placeholder: 'john.doe@badger.com' })
+        ),
+    
+        fieldset(
+          label({ 'for': 'custom_message' }, 'Message:'),
+          textarea({ name: 'custom_message', id: 'custom_message', placeholder: 'Enter a personal message',
+                     style: 'width: 330px' })
+        ),
+        
+        domain_credits > 0 ? fieldset(
+          label('Gift:'),
+          input({ type: 'checkbox', name: 'credits_to_gift', id: 'credits_to_gift', value: true }),
+          label({ 'class': 'normal', 'for': 'credits_to_gift' }, ' Include one of your Credits as a gift')
+        ) : '',
+        fieldset({ 'class': 'no-label' },
+          input({ 'class': 'myButton', type: 'submit', value: 'Send invitation »' })
         )
       )
     );
