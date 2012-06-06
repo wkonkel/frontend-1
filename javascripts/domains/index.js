@@ -128,7 +128,7 @@ with (Hasher('Domains')) {
       ),
       (domains||[]).map(function(domain) {
         return tr(
-          td(a({ href: '#domains/' + domain.name }, domain.name)),
+          td(a({ href: '#domains/' + domain.name }, truncate_domain_name(domain.name))),
           td(domain.current_registrar),
           td(new Date(domain.expires_at).toString('MMMM dd yyyy')),
           td(domain.auto_renew ? 'Enabled' : 'Disabled')
