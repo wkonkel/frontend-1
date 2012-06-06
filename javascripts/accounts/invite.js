@@ -125,7 +125,7 @@ with (Hasher('Invite','Application')) {
           p("We're working on a rewards program but in the meantime we're keeping track of your signups!")
         )
       ),
-      form({ action: send_invite, 'class': 'has-sidebar' },
+      form_with_loader({ action: send_invite, 'class': 'has-sidebar', loading_message: 'Sending invite...' },
         div({ id: 'send-invite-messages' }),
           table({ id: 'invitee-information' },
             tbody(
