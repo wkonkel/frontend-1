@@ -10,6 +10,7 @@ with (Hasher('Domains')) {
     
     BadgerCache.getDomains(function(response) {
       render({ into: domains_div },
+        transfer_linked_domains_message(response.data, { style: 'margin-bottom: 20px;' }),
         sortable_domains_table(response.data, domains_div)
       );
       
@@ -23,6 +24,22 @@ with (Hasher('Domains')) {
       
       initialize_filters();
     });
+  });
+  
+  define('transfer_linked_domains_message', function(domains, options) {
+    var linked_domains = [];
+    for (var i=0; i < domains.length; i++) {
+      if ((domains[i].permissions_for_person.indexOf('linked_account') >= 0) && domains[i].supported_tld) linked_domains.push(domains[i]);
+    }
+    if (linked_domains.length > 0) {
+      
+      return div(options || {},
+        info_message(
+          a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: curry(Transfer.redirect_to_transfer_for_domain, linked_domains.map(function(d) { return d.name })) }, 'Begin Transfer'),
+          "You have ", b(linked_domains.length, " domains"), " that can be automatically transferred to Badger!"
+        )
+      )
+    }
   });
   
   define('initialize_filters', function() {
@@ -130,7 +147,7 @@ with (Hasher('Domains')) {
         return tr(
           td(a({ href: '#domains/' + domain.name }, truncate_domain_name(domain.name))),
           td(domain.current_registrar),
-          td(new Date(domain.expires_at).toString('MMMM dd yyyy')),
+          td(!domain.expires_at ? '' : new Date(domain.expires_at).toString('MMMM dd yyyy')),
           td(domain.auto_renew ? 'Enabled' : 'Disabled')
         );
       })
