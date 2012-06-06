@@ -18,8 +18,8 @@ Feature: Invite
     And I should see "revoked_invite0@example.com" within ".invite-status-table"
     And I should see "Sat Nov 12 2011" within ".invite-status-table"
     And I should see "Wed Oct 12 2011" within ".invite-status-table"
-    And I should see "Yes" within ".invite-status-table"
-    And I should see "No - Revoke?" within ".invite-status-table"
+    And I should see "Yes!" within ".invite-status-table"
+    And I should see "Not yet" within ".invite-status-table"
     And I should see "Revoked" within ".invite-status-table"
     #And I should see a link with href "#invites"
 

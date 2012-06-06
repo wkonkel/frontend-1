@@ -53,9 +53,11 @@ with (Hasher('Invite','Application')) {
                     td(invite.name),
                     td(invite.email),
                     td({'class': 'center' }, invite.domain_credits),
-                    invite.accepted ? td({ 'class': 'center' }, 'Yes')
-                    : invite.revoked_at ? td({ 'class': 'center' }, 'Revoked')
-                    : td({ 'class': 'center' }, 'No - ', a({ href: curry(Invite.revoke_invite, invite.id) }, "Revoke?"))
+                    invite.accepted ? td({ 'class': 'center' }, 'Yes!')
+                    : invite.revoked_at ? td({ 'class': 'center' }, 'Cancelled')
+                    : td({ 'class': 'center' }, 'Not yet'
+                      // a({ href: curry(Invite.revoke_invite, invite.id) }, "Revoke?")
+                      )
                   )
                 })
               )
