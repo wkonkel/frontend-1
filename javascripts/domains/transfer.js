@@ -273,11 +273,13 @@ with (Hasher('Transfer','Application')) {
         show_error_for_domain(domain, response.data.message || 'Error: Internal server error');
         remove_domain_from_session_var(domain);
       } else if (domain_info.available) {
-        //show_error_for_domain(domain, 'Domain not currently registered.');
-        set_background_color_if_valid(domain, true);
-        add_hidden_field_for_domain(domain, false);
-        $(item_id + ' .registrar_domain').html('<i>Register at Badger</i>');
-        $(item_id + ' .expires_domain').html('<i>Available!</i>');
+        if ($(item_id + ' .registrar_domain').length > 0) {
+          //show_error_for_domain(domain, 'Domain not currently registered.');
+          set_background_color_if_valid(domain, true);
+          add_hidden_field_for_domain(domain, false);
+          $(item_id + ' .registrar_domain').html('<i>Register at Badger</i>');
+          $(item_id + ' .expires_domain').html('<i>Available!</i>');
+        }
       } else if (!domain_info.supported_tld) {
         show_error_for_domain(domain, "Extension ." + domain.split('.').pop() + " is not currently supported.");
         remove_domain_from_session_var(domain);
@@ -285,10 +287,12 @@ with (Hasher('Transfer','Application')) {
         // not done loading, try again in a few seconds if the dialog is still open
         if ($('#transfer-domains-table')) setTimeout(curry(update_domain_info, domain), 2000);
       } else {
-        set_background_color_if_valid(domain, true);
-        add_hidden_field_for_domain(domain, true);
-        $(item_id + ' .registrar_domain').html(domain_info.current_registrar);
-        $(item_id + ' .expires_domain').html(domain_info.expires_at.slice(0,10));
+        if ($(item_id + ' .registrar_domain').length > 0) {
+          set_background_color_if_valid(domain, true);
+          add_hidden_field_for_domain(domain, true);
+          $(item_id + ' .registrar_domain').html(domain_info.current_registrar);
+          $(item_id + ' .expires_domain').html(domain_info.expires_at.slice(0,10));
+        }
       }
       update_continue_button_count();
     });
