@@ -27,7 +27,6 @@ with (Hasher('Signup','Application')) {
       div({ 'class': 'sidebar' },
         info_message(
           h3("Already have an account?"),
-          p("If you've already done this, you're on the wrong page!"),
           div({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
         )
       ),
@@ -48,8 +47,8 @@ with (Hasher('Signup','Application')) {
     
         fieldset(
           label({ 'for': 'password-input' }, 'Password:'),
-					password({ 'class': 'short right-margin', id: 'email-input', name: 'password', placeholder: 'abcd1234' })
-          // password({ 'class': 'short', name: 'password_confirmation', placeholder: 'abc123 (again)' }) --- No more password confirmation. Woot woot!
+          password({ 'class': 'short right-margin', id: 'password-input', name: 'password', placeholder: 'abcd1234' }),
+          span({ 'class': 'small-text' }, 'at least 8 characters with numbers & letters')
         ),
 
         fieldset(

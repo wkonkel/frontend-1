@@ -63,7 +63,8 @@ with (Hasher('Account','Application')) {
       
       fieldset(
         label({ 'for': 'password' }, 'Change password'),
-        password({ name: 'password', placeholder: 'abcd1234' })
+        password({ 'class': 'short right-margin', name: 'password', placeholder: 'abcd1234' }),
+        span({ 'class': 'small-text' }, 'at least 8 characters with numbers & letters')
       ),
       
       fieldset(

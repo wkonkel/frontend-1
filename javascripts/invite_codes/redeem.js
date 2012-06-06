@@ -8,7 +8,6 @@ with (Hasher('Redeem','Application')) {
         div({ 'class': 'sidebar' },
           info_message(
             h3("Already have an account?"),
-            p("If you already have an account, you're on the wrong page!"),
             div({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
           )
         ),
@@ -22,7 +21,7 @@ with (Hasher('Redeem','Application')) {
       
           fieldset(
             label({ 'for': 'code-input' }, 'Promotional Code:'),
-            text({ name: 'code', id: 'code-input', placeholder: 'abcd1234' })
+            text({ name: 'code', id: 'code-input', placeholder: 'OMGBADGER' })
           ),
 
           fieldset({ 'class': 'no-label' },
