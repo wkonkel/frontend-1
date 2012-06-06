@@ -124,7 +124,7 @@ with (Hasher('DomainShow','DomainApps')) {
     var expire_date = new Date(Date.parse(domain_obj.expires_at));
     var days = parseInt(expire_date - current_date)/(24*3600*1000);
 
-    if (domain_obj.transfer_steps && domain_obj.transfer_steps.completed.length > 0 && domain_obj.transfer_steps.pending.length > 0 && domain_obj.transfer_steps.count > 0) {
+    if (domain_obj.transfer_steps && domain_obj.transfer_steps.pending.length > 0 && domain_obj.transfer_steps.count > 0) {
       return display_transfer_status(domain_obj);
     } else if ((domain_obj.permissions_for_person || []).indexOf('show_private_data') >= 0) {
       return [
