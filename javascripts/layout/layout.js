@@ -361,12 +361,13 @@ with (Hasher('Application')) {
     var header_arguments = [];
     for (i = 0; i < arguments.length; i++) {
       var options = arguments[i];
-      options.href = options.href || '#'; // dont't break if no URL provided
+      var href = options.href; delete options.href; // delete off the href
       var text = options.text; delete options.text; // delete off the text
       
-      if (!arguments[i].href) {
+      if (!href) {
         header_arguments.push(span(options, text));
       } else {
+        options.href = href;
         header_arguments.push(a(options, text));
       }
       if ((i + 1) != arguments.length) header_arguments.push(" » ");
