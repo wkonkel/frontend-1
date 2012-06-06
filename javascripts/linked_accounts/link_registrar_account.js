@@ -126,14 +126,6 @@ with (Hasher('LinkRegistrarAccount','Application')) {
   
   
   define('create_linked_account_and_verify_login', function(registrar, form_data) {
-    if (!form_data.agree_to_terms) {
-      $("#account-link-errors").html(
-        error_message("You must allow Badger to act as your agent to proceed.")
-      );
-      hide_form_submit_loader();
-      return;
-    }
-    
     // add registrar to form data
     form_data.site = registrar;
     
@@ -170,15 +162,23 @@ with (Hasher('LinkRegistrarAccount','Application')) {
         method: curry(Badger.getLinkedAccount, id),
         
         on_ok: function(response, poll_data) {
-          switch (response.data.status) {
+          // status is in form of "synced" or "error_auth:Some descriptive message here."
+          var parts = response.data.status.split(':');
+          var status = parts.shift();
+          var message = parts.join(':');
+          
+          switch (status) {
             case 'error_auth':
               hide_form_submit_loader();
-              $('#account-link-errors').html(error_message("Username and/or password not correct."));
+              $('#account-link-errors').html(error_message(message));
               return; //no value meaning stop timer
             case 'error':
               hide_form_submit_loader();
               $('#account-link-errors').html(error_message("An unknown error occured.  Please try again."));
               return; //no value meaning stop timer
+            case 'pending_sync':
+              $('#_form-loader span').html('Verifying your login credentials...');
+              return false; // keep timer going
             case 'syncing':
               $('#_form-loader span').html('Reading list of domains...');
               return false; // keep timer going
