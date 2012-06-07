@@ -53,6 +53,10 @@ with (Hasher('Domains','Application')) {
       // filter domains if requested
       var domains = options.filter ? response.data.filter(options.filter) : response.data;
       if (options.for_each) domains.forEach(options.for_each);
+      
+      // sort domains by registrar, as the default presentation of the domains
+      domains = domains.stable_sort(sort_by_current_registrar);
+      
       if (options.callback) options.callback(domains||[]);
       initialize_filters();
     });
