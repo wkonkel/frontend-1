@@ -19,7 +19,22 @@ with (Hasher('Domains')) {
           transfer_linked_domains_message(domains),
           sortable_domains_table(domains, domains_div)
         );
-      
+        
+        if (domains.length <= 0) {
+          render({ into: domains_div },
+            div('You have not registered, transfered, or linked any domains with Badger.'),
+            ul(
+              li(a({ href: '#search' }, 'Register domains with Badger.')),
+              li(a({ href: '#domains/transfer' }, 'Transfer domains to Badger.')),
+              li(a({ href: '#linked_accounts' }, 'Link domains with Badger through another account.'))
+            )
+          );
+        } else {
+          render({ into: domains_div },
+            sortable_domains_table(domains, domains_div)
+          );
+        }
+        
         render({ into: target_div },
           div({ 'class': 'fancy' },
             domains_nav_table(
