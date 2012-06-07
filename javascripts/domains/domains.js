@@ -66,9 +66,9 @@ with (Hasher('Domains','Application')) {
     Don't let long domain names explode the index table
   */
   define('truncate_domain_name', function(domain_name, length) {
-    length = (length || 25)
-    name = domain_name.substring(0, length)
-    if (domain_name.length > length) name = name + "..."
+    length = (length || 25);
+    var name = domain_name.substring(0, length);
+    if (domain_name.length > length) name = name + "...";
     return name;
   });
 
