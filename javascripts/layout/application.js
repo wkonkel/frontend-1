@@ -217,6 +217,15 @@ Array.prototype.compact = function() {
   return this.filter(function(e) { return e != undefined; });
 };
 
+// return only the unique values of an array
+Array.prototype.unique = function() {
+  var unique_array = [];
+  for (var i = 0; i < this.length; i++) {
+    if (!unique_array.includes(this[i])) unique_array.push(this[i]);
+  }
+  return unique_array;
+}
+
 // The sorting algorithm in Chrome is not stable.
 // Define a sorting method to guarantee stable sorts
 // in all browsers.
