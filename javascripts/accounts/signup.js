@@ -143,7 +143,6 @@ with (Hasher('Signup','Application')) {
       );
 
       Badger.confirmEmail(code, function(response) {
-        console.log(response);
         if (response.meta.status == 'ok') {
           $('#confirm-email-box').html(success_message(response.data.message));
         } else {
