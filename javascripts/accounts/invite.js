@@ -96,6 +96,7 @@ with (Hasher('Invite','Application')) {
 
   define('send_invite', function(data) {
     if(data.first_name == "" || data.last_name == "" || data.invitation_email == "") {
+      hide_form_submit_loader();
       return $('#send-invite-messages').empty().append( error_message({ data: { message: "First Name, Last Name and Email can not be blank" } }) );
     }
     Badger.sendInvite(data, function(response) {
@@ -128,7 +129,7 @@ with (Hasher('Invite','Application')) {
         )
       ),
       form_with_loader({ action: send_invite, 'class': 'fancy has-sidebar', loading_message: 'Sending invite...', 'style': 'margin-left: -120px' },
-        div({ id: 'send-invite-messages' }),
+        div({ id: 'send-invite-messages', style: 'margin-left: 120px' }),
         
         fieldset(
           label({ 'for': 'first_name-input' }, 'Name:'),
@@ -149,7 +150,7 @@ with (Hasher('Invite','Application')) {
         
         domain_credits > 0 ? fieldset(
           label('Gift:'),
-          input({ type: 'checkbox', name: 'credits_to_gift', id: 'credits_to_gift', value: true }),
+          input({ type: 'checkbox', name: 'credits_to_gift', id: 'credits_to_gift', value: 1 }),
           label({ 'class': 'normal', 'for': 'credits_to_gift' }, ' Include one of your Credits as a gift')
         ) : '',
         fieldset({ 'class': 'no-label' },
