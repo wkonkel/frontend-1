@@ -485,13 +485,8 @@ var Badger = {
     Badger.api("/account/all_sent_invites", callback);
   },
   
-  getInvite: function(id, callback) {
-    Badger.api('/account/invites/' + id, callback);
-  },
-  
-  // does not require auth
-  readInvite: function(invite_code, callback) {
-    Badger.api('/account/invites/read_invite', 'GET', { invite_code: invite_code }, callback);
+  getInvite: function(invite_code, callback) {
+    Badger.api('/account/invites/' + invite_code, callback);
   },
 
   remoteWhois: function(domain, callback) {

@@ -20,29 +20,69 @@ with (Hasher('Signup','Application')) {
   //   d.getElementsByTagName('head')[0].appendChild(js);
   // }(document));
 
+  route('#account/create/:invite_code', function(invite_code) {
+    var target_div = div(spinner('Loading...'));
+    var inviter_message_div = div();
+    render(
+      h1('Create Badger Account'),
+      inviter_message_div,
+      target_div
+    );
+    Badger.getInvite(invite_code, function(response) {
+      console.log(response);
+      if (response.meta.status == 'ok') {
+        var form;
+        if (!response.data.redeemed) {
+          form = account_create_form(response.data);
+          var message = response.data.inviter.name + ' has invited you to Badger!';
+          if (response.data.domain_credits > 0) {
+            message += " And they've given you " + response.data.domain_credits + " free Credit" + (response.data.domain_credits != 1 ? 's' : '') + "!";
+          }
+          render({ target: inviter_message_div }, success_message(message));
+        } else {
+          // No need to report the code is already redeemed?
+          form = account_create_form();
+        }
+        render({ target: target_div }, form);
+      } else {
+        render({ target: inviter_message_div }, error_message(response));
+      }
+    });
+  });
+  
+
   route('#account/create', function() {
     render(
       h1('Create Badger Account'),
+      account_create_form()
+    );
+  });
+  
+  define('account_create_form', function(data) {
+    data = data || {};
+    var invitee = data.invitee || {};
+    var sidebar = data.invitee ? div() :
+        div({ 'class': 'sidebar' },
+          info_message(
+            h3("Already have an account?"),
+            div({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
+          )
+        );
 
-      div({ 'class': 'sidebar' },
-        info_message(
-          h3("Already have an account?"),
-          div({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
-        )
-      ),
-
+    return div(
+      sidebar,
       form_with_loader({ 'class': 'fancy has-sidebar', action: create_person, loading_message: "Creating account..." },
         div({ id: 'signup-errors' }),
     
         fieldset(
           label({ 'for': 'first_name-input' }, 'First and last name:'),
-          text({ 'class': 'short right-margin', id: 'first_name-input', name: 'first_name', placeholder: 'John' }),
-          text({ 'class': 'short', name: 'last_name', placeholder: 'Doe' })
+          text({ 'class': 'short right-margin', id: 'first_name-input', name: 'first_name', value: (invitee.first_name || ''), placeholder: 'John' }),
+          text({ 'class': 'short', name: 'last_name', value: (invitee.last_name || ''), placeholder: 'Doe' })
         ),
 
         fieldset(
           label({ 'for': 'email-input' }, 'Email address:'),
-          input({ id: 'email-input', name: 'email', style: 'width: 275px', placeholder: 'john.doe@badger.com' })
+          input({ id: 'email-input', name: 'email', style: 'width: 275px', value: (invitee.email || ''), placeholder: 'john.doe@badger.com' })
         ),
     
         fieldset(
@@ -61,7 +101,8 @@ with (Hasher('Signup','Application')) {
     
         fieldset({ 'class': 'no-label' },
           input({ 'class': 'myButton', type: 'submit', value: 'Continue »' })
-        )
+        ),
+        input({ type: 'hidden', name: 'invite_code', id: 'invite_code', value: data.code })
       )
     );
     $('input[name="first_name"]').focus();
@@ -69,9 +110,6 @@ with (Hasher('Signup','Application')) {
 
   define('create_person', function(data) {
     $('#signup-errors').empty();
-    
-    if (Badger.register_code) data.invite_code = Badger.register_code;
-
     Badger.createAccount(data, function(response) {
       if (response.meta.status == 'ok') {
         set_route('#', { reload_page: true });
