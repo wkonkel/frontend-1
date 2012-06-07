@@ -51,7 +51,7 @@ with (Hasher('Domains')) {
         
         if (domains.length <= 0) {
           render({ into: domains_div },
-            div('It looks like you do not have any domains in pending transfer.'),
+            div('You do not have any domains that are pending transfer.'),
             ul(
               li(a({ href: '#domains/transfer' }, 'Transfer domains to Badger'))
             )
@@ -101,7 +101,7 @@ with (Hasher('Domains')) {
         
         if (domains.length <= 0) {
           render({ into: domains_div },
-            div('None of your domains are expiring soon, nothing to worry about!')
+            div('None of your domains are expiring soon, so you have nothing to worry about!')
           );
         } else {
           render({ into: domains_div },
