@@ -163,6 +163,11 @@ html, body, #wrapper, #footer { min-width: 970px; }
 
 .domain-filters { margin-left: 10px; }
 
+/*
+  Color domains based on their expiration dates
+*/
+td.expiration-date span.red { color: #B91B1B; }
+td.expiration-date span.yellow { color: #D8BD0F; }
 
 /***********************************************/
 /***********************************************/

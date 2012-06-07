@@ -16,6 +16,7 @@ with (Hasher('Domains')) {
         var domains_div = div();
         
         render({ into: domains_div },
+          transfer_linked_domains_message(domains),
           sortable_domains_table(domains, domains_div)
         );
       
@@ -105,6 +106,7 @@ with (Hasher('Domains')) {
           );
         } else {
           render({ into: domains_div },
+            transfer_linked_domains_message(domains),
             sortable_domains_table(domains, domains_div)
           );
         }

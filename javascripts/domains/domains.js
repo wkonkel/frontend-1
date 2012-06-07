@@ -224,8 +224,6 @@ with (Hasher('Domains','Application')) {
   
   define('sortable_domains_table', function(domains, target_div) {
     return div(
-      transfer_linked_domains_message(domains, { style: 'margin-bottom: 20px;' }),
-      
       table({ id: 'domains-table', 'class': 'fancy-table' }, tbody(
         tr({ 'class': 'table-header' },
           th({ 'class': 'table-sorter', style: 'width: 35%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_domain_name) }, 'Domain')),
@@ -234,16 +232,41 @@ with (Hasher('Domains','Application')) {
           th({ 'class': 'table-sorter', style: 'width: 15%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_auto_renew) }, 'Auto Renew'))
         ),
         (domains||[]).map(function(domain) {
+          // image for auto renew
+          var auto_renew_content = domain.auto_renew ? img({ src: 'images/check.png' }) : img({ src: 'images/icon-no-light.gif' })
+          
+          // return a colored expiration date
+          var expiration_date = styled_expiration_date(domain.expires_at);
+          
           return tr({ 'class': 'domains-row' }, 
             td(a({ href: '#domains/' + domain.name }, truncate_domain_name(domain.name))),
             td({ 'class': 'registrar' }, domain.current_registrar),
-            td(!domain.expires_at ? '' : new Date(domain.expires_at).toString('MMMM dd yyyy')),
-            td(domain.auto_renew ? 'Enabled' : 'Disabled')
+            td({ 'class': 'expiration-date' }, expiration_date),
+            td(div({ style: 'text-align: center;' }, auto_renew_content))
           );
         })
       ))
     );
   });
+  
+  define('styled_expiration_date', function(expires_at) {
+    // !domain.expires_at ? '' : new Date(domain.expires_at).toString('MMMM dd yyyy')
+    
+    if (!expires_at) return '';
+    
+    var d1 = new Date();
+    var d2 = new Date(expires_at);
+    var days = parseInt(d2 - d1)/(24*3600*1000);
+    
+    var date_class = '';
+    if (days <= 90 && days >= 30) {
+      date_class = 'yellow'
+    } else if (days < 30) {
+      date_class = 'red'
+    }
+    
+    return span({ 'class': date_class }, new Date(expires_at).toString('MMMM dd yyyy'));
+  })
   
   define('sort_domains_and_update_table', function(domains, target_div, sort_method) {
     var before_domains = domains.slice(0);
