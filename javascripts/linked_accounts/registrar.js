@@ -3,7 +3,7 @@ with (Hasher('Registrar','Application')) {
   define('remove_link', function(data) {
     show_modal(
       div(
-        h1('Confirm Account Unlinking?'),
+        h1('Confirm Account Unlink'),
         div({ 'class': 'hidden', id: 'link-form-error' }),
         
         p({ style: "font-weight: bold" }, "Unlinking this account will remove any associated domains from your Badger account."),
