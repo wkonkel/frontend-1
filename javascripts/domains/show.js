@@ -264,7 +264,7 @@ with (Hasher('DomainShow','DomainApps')) {
         ),
         div({ style: "float: right; margin-top: -20px" },
           //a({ 'class': 'myButton', style: "margin-right: 15px", href: hide_modal }, 'Go Back'),
-          a({ 'class': 'myButton red', href: curry(cancel_transfer, domain_obj.name) }, 'Cancel')
+          a({ 'class': 'myButton red', href: curry(cancel_transfer, domain_obj.name) }, 'Cancel Transfer')
         )
       ] : [
         div({ style: "height: 110px" },
