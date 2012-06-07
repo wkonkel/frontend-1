@@ -123,29 +123,6 @@ with (Hasher('Domains')) {
     });
   });
   
-  /*
-    Yield the domains fetched by Badger.getDomains,
-    but apply an optional filter before the yield,
-    and initialize the filters event watching watching
-    code after executing the callback
-    
-    options:
-    @filter       Optional method to pass to the JavaScript
-                    filter method.
-    @for_each  Optional method to apply to each domain.
-    @callback     Method to yield domains to. Passes the domains
-                    array as the only argument.
-  */
-  define('with_domains', function(options) {
-    BadgerCache.getDomains(function(response) {
-      // filter domains if requested
-      var domains = options.filter ? response.data.filter(options.filter) : response.data;
-      if (options.for_each) domains.forEach(options.for_each);
-      if (options.callback) options.callback(domains||[]);
-      initialize_filters();
-    });
-  });
-  
 };
 
 

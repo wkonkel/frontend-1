@@ -195,6 +195,11 @@ String.prototype.capitalize_first = function() {
 	return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
+String.prototype.escape_for_regexp = function() {
+  var copy = this.slice(0);
+  return copy.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
+
 /**
 Sick of using Array#indexOf of everywhere?
 returns null if no arguments provided.

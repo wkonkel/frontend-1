@@ -1,7 +1,9 @@
 with (Hasher('Domains','Application')) {
   
   define('domains_nav_table', function() {
-    return table({ style: 'width: 100%' }, tbody(
+    var registrar_filters_div = div('Loading...');
+    
+    var domains_nav_table = table({ style: 'width: 100%' }, tbody(
       tr(
         div({ id: 'transfer-prompt-div' })
       ),
@@ -16,13 +18,7 @@ with (Hasher('Domains','Application')) {
             )
           ),
           
-          div(
-            // h4('Filter by State'),
-            // state_filters(),
-            
-            h4('Filter by Registrar'),
-            registrar_filters()
-          )
+          registrar_filters_div
         ),
       
         td({ style: 'vertical-align: top'},
@@ -30,44 +26,115 @@ with (Hasher('Domains','Application')) {
         )
       )
     ));
+    
+    // since this requires reading the domains from the cache,
+    // it needs to work asynchronously like this
+    build_registrar_filters(function(filters) {
+      render({ into: registrar_filters_div }, filters);
+    });
+    
+    return domains_nav_table;
   });
   
-  define('state_filters', function() {
-    return div({ 'class': 'domain-filters' },
-      // div(
-      //   span(checkbox({ name: 'filter-state-toggle-all', checked: 'checked' }))
-      // ),
+  /*
+    Yield the domains fetched by BadgerCache.getDomains,
+    but apply an optional filter before the yield,
+    and initialize the filters' onChange code.
+    
+    options:
+    @filter       Optional method to pass to the JavaScript
+                    filter method.
+    @for_each     Optional method to apply to each domain.
+    @callback     Method to yield domains to. Passes the domains
+                    array as the only argument.
+  */
+  define('with_domains', function(options) {
+    BadgerCache.getDomains(function(response) {
+      // filter domains if requested
+      var domains = options.filter ? response.data.filter(options.filter) : response.data;
+      if (options.for_each) domains.forEach(options.for_each);
+      if (options.callback) options.callback(domains||[]);
+      initialize_filters();
+    });
+  });
+  
+  /*
+    Don't let long domain names explode the index table
+  */
+  define('truncate_domain_name', function(domain_name, length) {
+    length = (length || 25)
+    name = domain_name.substring(0, length)
+    if (domain_name.length > length) name = name + "..."
+    return name;
+  });
+
+  /*
+    Let the user know that they can transfer linked account domains to Badger!
+  */
+  define('transfer_linked_domains_message', function(domains, options) {
+    var linked_domains = [];
+    for (var i=0; i < domains.length; i++) {
+      if ((domains[i].permissions_for_person.indexOf('linked_account') >= 0) && domains[i].supported_tld) linked_domains.push(domains[i]);
+    }
+    if (linked_domains.length > 0) {
       
-      // div(
-      //   span(checkbox({ name: 'filter-state-expiring', checked: 'checked' }), " Expiring Soon")
-      // ),
-      div(
-        span(checkbox({ name: 'filter-state-transfers', checked: 'checked' }), " Pending Transfers")
+      return div(options || {},
+        info_message(
+          a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: curry(Transfer.redirect_to_transfer_for_domain, linked_domains.map(function(d) { return d.name })) }, 'Begin Transfer'),
+          b(linked_domains.length), " of these domains can be transferred to Badger automatically!"
+        )
       )
-    );
+    }
+  });
+
+  define('apply_selected_filters', function() {
+    $("input[name^=filter-]").trigger('change');
   });
   
-  define('registrar_filters', function(options) {
-    return div({ 'class': 'domain-filters' },
-      // div(
-      //   span(checkbox({ name: 'filter-registrar-toggle-all', checked: 'checked' }))
-      // ),
-      
-      div(
-        span(checkbox({ name: 'filter-registrar-badger', checked: 'checked' }), " Badger")
-      ),
-      div(
-        span(checkbox({ name: 'filter-registrar-godaddy', checked: 'checked' }), " GoDaddy")
-      ),
-      div(
-        span(checkbox({ name: 'filter-registrar-networksolutions', checked: 'checked' }), " Network Solutions")
-      ),
-      div(
-        span(checkbox({ name: 'filter-registrar-other', checked: 'checked' }), " Other")
-      )
-    );
+  /*
+    Build filters from the map of registrar names.
+  */
+  define('build_registrar_filters', function(callback) {
+    with_domains({
+      callback: function(domains) {
+        // callback(domains);
+        
+        // build an array of registrar names.
+        // edge case: there is no current registrar for some reason. just return 'Unknown'
+        var registrars = domains.map(function(d) {
+          if (!d.current_registrar) {
+            return 'Other';
+          } else {
+            return d.current_registrar;
+          }
+        }).unique();
+        
+        // if there is only on registrar, just render nothing and stop execution
+        if (registrars.length <= 1) {
+          return '';
+        }
+        
+        // if Other is present, move it to the end of the array
+        if (registrars.indexOf('Other') >= 0) {
+          registrars.splice(registrars.indexOf('Other'), 1);
+          registrars.push('Other');
+        }
+        
+        // create the content for filters
+        var filters = registrars.map(function(registrar) {
+          return div(
+            span(checkbox({ name: 'filter-registrar-' + registrar, checked: 'checked' }), registrar)
+          );
+        });
+        
+        callback(div({ id: 'registrar-filters-div' },
+          h4('Filter by Registrar'),
+          filters
+        ));
+      }
+    });
   });
-  
+    
   // comparison method for Array#sort
   define('sort_by_domain_name', function(domain1, domain2) {
     if (domain1.name < domain2.name) return -1;
@@ -112,46 +179,13 @@ with (Hasher('Domains','Application')) {
 
         // now toggle the row based on matcher
         toggle_show_of_rows_with_column_index_and_values(this.checked, 1, function(row_value) {
-          if (registrar == 'other') {
-            // get names of all known registrars
-            // TODO update this regex as new filters are added. Perhaps just write code to
-            // get all registrar names from filter @names and build a regex that way.
-            return !row_value.match(/badger|godaddy|networksolutions/i);
+          if (registrar.match(/other/i)) {
+            // right now, of registrars is Other, then it means it's missing, so
+            // just match empty strings
+            return (row_value||"").length <= 0;
           }
 
-          return row_value.match(new RegExp(registrar, 'i'));
-        });
-      }
-      
-      // filter states
-      if (this.name.match(/^filter-state-/i)) {
-        var state_name = this.name.split('-').slice(-1)[0];
-        var is_checked = this.checked;
-
-        // don't need the domain objects to do apply this filter
-        if (state_name == 'expiring') {
-          toggle_show_of_rows_with_column_index_and_values(is_checked, 2, function(row_value) {
-            var current_date = new Date();
-            var expire_date = new Date(Date.parse(row_value));
-            var days = parseInt(expire_date - current_date)/(24*3600*1000);
-            
-            return days <= 90;
-          });
-        }
-        
-        // need the domain objects to get transfer information
-        BadgerCache.getDomains(function(response) {
-          if (state_name == 'transfers') {
-            // get list of all of the domains pending transfer
-            var domains_pending_transfer = (response.data||[]).map(function(d) { if (d.transfer_steps) return d.name; }).compact();
-
-            toggle_show_of_rows_with_column_index_and_values(is_checked, 0, function(row_value) {
-              for (var i = 0; i < domains_pending_transfer.length; i++) {
-                var regex = new RegExp(domains_pending_transfer[i], 'i');
-                return row_value.match(regex);
-              }
-            });
-          }
+          return row_value.match(new RegExp(registrar.escape_for_regexp(), 'i'));
         });
       }
     });
@@ -200,9 +234,9 @@ with (Hasher('Domains','Application')) {
           th({ 'class': 'table-sorter', style: 'width: 15%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_auto_renew) }, 'Auto Renew'))
         ),
         (domains||[]).map(function(domain) {
-          return tr(
+          return tr({ 'class': 'domains-row' }, 
             td(a({ href: '#domains/' + domain.name }, truncate_domain_name(domain.name))),
-            td(domain.current_registrar),
+            td({ 'class': 'registrar' }, domain.current_registrar),
             td(!domain.expires_at ? '' : new Date(domain.expires_at).toString('MMMM dd yyyy')),
             td(domain.auto_renew ? 'Enabled' : 'Disabled')
           );
@@ -225,39 +259,6 @@ with (Hasher('Domains','Application')) {
     
     // need to explicitly reapply the filters
     apply_selected_filters();
-  });
-  
-  define('apply_selected_filters', function() {
-    $("input[name^=filter-]").trigger('change');
-  });
-  
-  /*
-    Don't let long domain names explode the index table
-  */
-  define('truncate_domain_name', function(domain_name, length) {
-    length = (length || 25)
-    name = domain_name.substring(0, length)
-    if (domain_name.length > length) name = name + "..."
-    return name;
-  });
-
-  /*
-    Let the user know that they can transfer linked account domains to Badger!
-  */
-  define('transfer_linked_domains_message', function(domains, options) {
-    var linked_domains = [];
-    for (var i=0; i < domains.length; i++) {
-      if ((domains[i].permissions_for_person.indexOf('linked_account') >= 0) && domains[i].supported_tld) linked_domains.push(domains[i]);
-    }
-    if (linked_domains.length > 0) {
-      
-      return div(options || {},
-        info_message(
-          a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: curry(Transfer.redirect_to_transfer_for_domain, linked_domains.map(function(d) { return d.name })) }, 'Begin Transfer'),
-          b(linked_domains.length), " of these domains can be transferred to Badger automatically!"
-        )
-      )
-    }
   });
   
 };
