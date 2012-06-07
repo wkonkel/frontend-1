@@ -144,7 +144,7 @@ with (Hasher('Invite','Application')) {
     
         fieldset(
           label({ 'for': 'custom_message' }, 'Message:'),
-          textarea({ name: 'custom_message', id: 'custom_message', placeholder: 'Enter a personal message',
+          textarea({ name: 'custom_message', id: 'custom_message', placeholder: 'Enter your personal message here!',
                      style: 'width: 330px' })
         ),
         
