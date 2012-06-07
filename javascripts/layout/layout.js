@@ -169,8 +169,8 @@ with (Hasher('Application')) {
                 a({ href: "https://www.facebook.com/BadgerDotCom", target: "_blank" }, 'Facebook'),
                 ' / ',
                 a({ href: "irc://irc.freenode.net/badger" }, 'IRC')
-              )
-              //li(a({ href: "https://community.badger.com/badger", target: "_blank" }, 'Get Satisfaction'))
+              ),
+              li(a({ href: "https://www.google.com/search?tbm=isch&q=" + (Math.random() > 0.5 ? "baby+badgers" : "badger+cubs"), target: "_blank" }, 'More Badgers'))
             )
           ),
           div({ 'class': "col" },
