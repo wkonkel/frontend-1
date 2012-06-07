@@ -1,7 +1,7 @@
 with (Hasher('Domains','Application')) {
   
   define('domains_nav_table', function() {
-    var registrar_filters_div = div('Loading...');
+    var registrar_filters_div = div();
     
     var domains_nav_table = table({ style: 'width: 100%' }, tbody(
       tr(
