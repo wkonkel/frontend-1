@@ -263,7 +263,7 @@ with (Hasher('DomainShow','DomainApps')) {
           p({ style: "font-weight: bold" }, "Are you sure you want to cancel this domain transfer?")
         ),
         div({ style: "float: right; margin-top: -20px" },
-          a({ 'class': 'myButton', style: "margin-right: 15px", href: hide_modal }, 'Go Back'),
+          //a({ 'class': 'myButton', style: "margin-right: 15px", href: hide_modal }, 'Go Back'),
           a({ 'class': 'myButton red', href: curry(cancel_transfer, domain_obj.name) }, 'Cancel')
         )
       ] : [
