@@ -63,6 +63,8 @@ with (Hasher('Welcome','Application')) {
       )      
     );
     
+    document.title = 'Badger'
+    
     //   div({ id: 'homepage-welcome' },
     //     h2("Domains done right."),
     //     h3("Badger makes it easy to find new domains and manage existing domains.")
