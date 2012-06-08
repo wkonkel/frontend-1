@@ -1,12 +1,18 @@
 with (Hasher('Welcome','Application')) {
+  
+  // The cheapest of hacks to make the site work in IE.
+  // Avoids the use of multiple layouts, which was buggy.
+  after_filter('#welcome', function() {
+    document.getElementById('content').setAttribute('id','_content');
+  });
+    
   route('#welcome', function() {
     var registrar_app_icon_url = Badger.getAccessToken() ? '#linked_accounts' : "#account/create";
     
-    render({ layout: no_bg_layout },
-
-      div({ id: 'main' },
-
-        div({ 'id': 'content-top' }, 
+    render({ layout: default_layout },
+      // div({ id: 'main' },
+      div(
+        div({ 'id': 'content-top' },
           img({ src: 'images/badger-6.png', style: 'float: right; width: 150px; height: auto; margin: 20px 50px 20px 20px' }),
           h1("Domain management done ", span({ style: 'letter-spacing: 2px' }, "r"), "ight."),
           //h3("Badger makes managing your domains easy, wherever they are."),

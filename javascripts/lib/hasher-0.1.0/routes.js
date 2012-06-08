@@ -35,6 +35,11 @@ with (Hasher()) {
   });
 
   define('set_route', function(path, options) {
+    // super hax to fix layout bug
+    if (document.getElementById('_content')) { 
+      document.getElementById('_content').setAttribute('id','content');
+    }
+    
     if (!options) options = {};
 
     if (!options.skip_updating_browser_bar) {
