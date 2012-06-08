@@ -333,7 +333,7 @@ with (Hasher('DomainShow','DomainApps')) {
         progress_indicator = img({ src: "images/check.png" });
       } else {
         details = div('You need to disable privacy for this domain at ' + domain_obj.current_registrar + '.',
-          render_help_link('needs_unlock', domain_obj.current_registrar)
+          render_help_link('needs_privacy_disabled', domain_obj.current_registrar)
         );
         progress_indicator = img({ src: "images/icon-no-light.gif" });
       }
@@ -353,12 +353,12 @@ with (Hasher('DomainShow','DomainApps')) {
         details = div(
           (step_obj.value == 'fetched_auth_code_invalid' ? [
             div({ style: "padding: 5px 0px 5px 0px" }, "There was a problem reading the auth code from " + domain_obj.current_registrar + ". You will need to get it manually.",
-              render_help_link('enter_auth_code', domain_obj.current_registrar),
+              render_help_link('needs_auth_code', domain_obj.current_registrar),
               " Once you have the auth code, enter it here and click Submit to request the transfer."
             )
           ] : [
             div({ style: "padding: 5px 0px 5px 0px" }, "In order to proceed, you need the domain auth code from " + domain_obj.current_registrar + ".",
-              render_help_link('needs_unlock', domain_obj.current_registrar),
+              render_help_link('needs_auth_code', domain_obj.current_registrar),
               " Once you have the auth code, enter it here and click Submit to request the transfer."
             )
           ]),
