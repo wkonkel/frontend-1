@@ -5,7 +5,7 @@ Given /^I am on the home page$/ do
 end
 
 Given /^I am on the register page$/ do
-  visit('/index.html#register/code1')
+  visit('/index.html#account/create/code1')
 end
 
 Given /^I am on the invites page$/ do
