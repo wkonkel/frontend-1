@@ -2,8 +2,7 @@ with (Hasher('Welcome','Application')) {
   route('#welcome', function() {
     var registrar_app_icon_url = Badger.getAccessToken() ? '#linked_accounts' : "#account/create";
     
-    render({ layout: no_bg_layout },
-
+    render({ layout: default_layout },
       div({ id: 'main' },
 
         div({ 'id': 'content-top' }, 
