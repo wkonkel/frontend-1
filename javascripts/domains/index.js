@@ -15,11 +15,6 @@ with (Hasher('Domains')) {
       callback: function(domains) {
         var domains_div = div();
         
-        render({ into: domains_div },
-          transfer_linked_domains_message(domains),
-          sortable_domains_table(domains, domains_div)
-        );
-        
         if (domains.length <= 0) {
           render({ into: domains_div },
             div('You have not registered, transfered, or linked any domains with Badger.'),
@@ -38,6 +33,7 @@ with (Hasher('Domains')) {
         render({ into: target_div },
           div({ 'class': 'fancy' },
             domains_nav_table(
+              transfer_linked_domains_message(domains),
               domains_div
             )
           )
