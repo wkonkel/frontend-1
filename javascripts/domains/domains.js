@@ -283,6 +283,7 @@ with (Hasher('Domains','Application')) {
   define('compute_transfer_progress_percentage', function(domain) {
     // calculate step percentage, avoid divide by zero. 
     // default is just 1/total_steps
+    if (!domain.transfer_steps) return 0;
     var step_percentage = (1 / domain.transfer_steps.count);
     if (domain.transfer_steps && domain.transfer_steps.completed && domain.transfer_steps.completed.length > 0) {
       step_percentage = parseInt(100 * (domain.transfer_steps.completed.length / domain.transfer_steps.count));

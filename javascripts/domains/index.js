@@ -245,7 +245,7 @@ with (Hasher('Domains')) {
 //         td({ style: 'width: 200px; vertical-align: top' },
 //           ul({ id: 'domains-left-nav' },
 //             li(a({ href: '#domains', 'class': (active_url == '#domains' ? 'active' : '') }, 'All Domains')),
-//             li(a({ href: '#domain-transfers', 'class': (active_url == '#domain-transfers' ? 'active' : '') }, 'Transfers')),
+//             li(a({ href: '#domains/pending-transfer', 'class': (active_url == '#domains/pending-transfer' ? 'active' : '') }, 'Transfers')),
 //             li(a({ href: '#filter_domains/expiringsoon/list', 'class': (active_url == '#filter_domains/expiringsoon/list' ? 'active' : '') }, 'Expiring Soon'))
 //           )
 //         ),

@@ -328,7 +328,7 @@ with (Hasher('Transfer','Application')) {
   define('confirm_transfers', function(form_data) {
     if ((form_data.cancel || '').match(/cancel/i)) {
       Badger.Session.remove('transfer_domains', 'new_domains', 'domains', 'domain_count', 'form_data');
-      return set_route("#domain-transfers");
+      return set_route("#domains/pending-transfer");
     }
     
     // update domains to remove those that were errors
@@ -399,7 +399,7 @@ with (Hasher('Transfer','Application')) {
     update_credits(true);
     hide_modal();
     
-    domain_name ? set_route('#domains/' + domain_name) : set_route('#domain-transfers');
+    domain_name ? set_route('#domains/' + domain_name) : set_route('#domains/pending-transfer');
   });
 };
 
