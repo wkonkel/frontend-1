@@ -180,7 +180,7 @@ with (Hasher('Application')) {
   define('h1', function() {
     var h1 = element('h1', arguments);
     var title = h1.innerText || h1.textContent;
-    if (!title.match(/badger/i)) title += " (Badger)";
+    if (!title.match(/badger/i)) title = "Badger - " + title;
     document.title = title;
     return h1;
   });
