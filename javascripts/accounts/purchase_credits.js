@@ -88,10 +88,7 @@ with (Hasher('Billing','Application')) {
 
         // TODO add ability to set different contacts as default
         // in account setting
-        var contact = {};
-        if (response.data) {
-          contact = response.data[0];
-        }
+        var contact = (response.data && response.data[0]) ? response.data[0] : {};
 
         render({ into: saved_or_new_card_div },
           fieldset(
