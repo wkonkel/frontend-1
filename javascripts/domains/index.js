@@ -17,7 +17,7 @@ with (Hasher('Domains')) {
         
         if (domains.length <= 0) {
           render({ into: domains_div },
-            div('You have not registered, transfered, or linked any domains with Badger.'),
+            div('You have not registered, transferred, or linked any domains with Badger.'),
             ul(
               li(a({ href: '#search' }, 'Register domains with Badger.')),
               li(a({ href: '#domains/transfer' }, 'Transfer domains to Badger.')),
