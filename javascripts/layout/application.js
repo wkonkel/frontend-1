@@ -174,13 +174,31 @@ with (Hasher('Application')) {
     })
   });
   
+  /*
+    Override h1 to dynamically create <title> for page
+  */
   define('h1', function() {
     var h1 = element('h1', arguments);
     var title = h1.innerText || h1.textContent;
     if (!title.match(/badger/i)) title += " (Badger)";
     document.title = title;
     return h1;
-  }); 
+  });
+  
+  /*
+    Animate progress bars, for the sake of prettiness
+  */
+  define('animate_progress_bar', function(original_width) {
+    $(".meter > span").each(function() {
+      $(this)
+      .data("origWidth", $(this).width())
+      .width(original_width || 0)
+      .animate({
+        width: $(this).data("origWidth")
+        }, 600);
+    });
+  });
+  
 }
 
 String.prototype.capitalize_all = function() {

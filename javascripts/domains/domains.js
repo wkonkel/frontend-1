@@ -170,6 +170,12 @@ with (Hasher('Domains','Application')) {
     return 0;
   });
   
+  define('sort_by_transfer_progress', function(domain1, domain2) {
+    var p1 = compute_transfer_progress_percentage(domain1);
+    var p2 = compute_transfer_progress_percentage(domain2);
+    return p1 == p2 ? 0 : (p1 < p2) ? -1 : 1;
+  });
+  
   /*
     Setup the javascript change event to dynamically alter the domains list
   */
@@ -230,36 +236,65 @@ with (Hasher('Domains','Application')) {
     return div(
       table({ id: 'domains-table', 'class': 'fancy-table' }, tbody(
         tr({ 'class': 'table-header' },
-          th({ 'class': 'table-sorter', style: 'width: 35%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_domain_name) }, 'Domain')),
-          th({ 'class': 'table-sorter', style: 'width: 30%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_current_registrar) }, 'Registrar')),
-          th({ 'class': 'table-sorter', style: 'width: 20%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_expiration_date) }, 'Expires')),
-          th({ 'class': 'table-sorter', style: 'width: 15%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_auto_renew) }, 'Auto Renew'))
+          th({ 'class': 'table-sorter', style: 'width: 35%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_domain_name, sortable_domains_table) }, 'Domain')),
+          th({ 'class': 'table-sorter', style: 'width: 30%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_current_registrar, sortable_domains_table) }, 'Registrar')),
+          th({ 'class': 'table-sorter', style: 'width: 20%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_expiration_date, sortable_domains_table) }, 'Expires'))
         ),
         (domains||[]).map(function(domain) {
-          // image for auto renew
-          var auto_renew_content = domain.auto_renew ? img({ src: 'images/check.png' }) : img({ src: 'images/icon-no-light.gif' })
-          
           // return a colored expiration date
-          var expiration_date = styled_expiration_date(domain.expires_at);
+          var expiration_date = styled_expiration_date(domain);
           
           return tr({ 'class': 'domains-row' }, 
             td(a({ href: '#domains/' + domain.name }, truncate_domain_name(domain.name))),
             td({ 'class': 'registrar' }, domain.current_registrar),
-            td({ 'class': 'expiration-date' }, expiration_date),
-            td(div({ style: 'text-align: center;' }, auto_renew_content))
+            td({ 'class': 'expiration-date' }, expiration_date)
           );
         })
       ))
     );
   });
   
-  define('styled_expiration_date', function(expires_at) {
-    // !domain.expires_at ? '' : new Date(domain.expires_at).toString('MMMM dd yyyy')
-    
-    if (!expires_at) return '';
+  define('sortable_pending_transfer_table', function(domains, target_div) {
+    return div(
+      table({ id: 'domains-table', 'class': 'fancy-table' }, tbody(
+        tr({ 'class': 'table-header' },
+          th({ 'class': 'table-sorter', style: 'width: 35%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_domain_name, sortable_pending_transfer_table) }, 'Domain')),
+          th({ 'class': 'table-sorter', style: 'width: 30%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_current_registrar, sortable_pending_transfer_table) }, 'Registrar')),
+          th({ 'class': 'table-sorter', style: 'width: 35%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_transfer_progress, sortable_pending_transfer_table) }, 'Transfer Progress'))
+        ),
+        (domains||[]).map(function(domain) {
+          var step_percentage = compute_transfer_progress_percentage(domain);
+          
+          return tr({ 'class': 'domains-row' }, 
+            td(a({ href: '#domains/' + domain.name }, truncate_domain_name(domain.name))),
+            td({ 'class': 'registrar' }, domain.current_registrar),
+            td(
+              div({ 'class': "meter small green nostripes", style: 'height: 10px;' }, span({ style: "height: 10px; width: " + step_percentage + "%" }))
+            )
+          );
+        })
+      ))
+    );
+  });
+  
+  /*
+    Return (percentage * 100) of transfer progress for a domain.
+  */
+  define('compute_transfer_progress_percentage', function(domain) {
+    // calculate step percentage, avoid divide by zero. 
+    // default is just 1/total_steps
+    var step_percentage = (1 / domain.transfer_steps.count);
+    if (domain.transfer_steps && domain.transfer_steps.completed && domain.transfer_steps.completed.length > 0) {
+      step_percentage = parseInt(100 * (domain.transfer_steps.completed.length / domain.transfer_steps.count));
+    }
+    return step_percentage;
+  });
+  
+  define('styled_expiration_date', function(domain) {
+    if (!domain.expires_at) return '';
     
     var d1 = new Date();
-    var d2 = new Date(expires_at);
+    var d2 = new Date(domain.expires_at);
     var days = parseInt(d2 - d1)/(24*3600*1000);
     
     var date_class = '';
@@ -269,10 +304,19 @@ with (Hasher('Domains','Application')) {
       date_class = 'red'
     }
     
-    return span({ 'class': date_class }, new Date(expires_at).toString('MMMM dd yyyy'));
+    // if the domain is set to auto renew, 
+    // grey out the font
+    var expiration_date;
+    if (domain.auto_renew) {
+      expiration_date = span({ 'class': date_class, style: 'color: #9B9B9B;' }, new Date(domain.expires_at).toString('MMMM dd yyyy'));
+    } else {
+      expiration_date = span({ 'class': date_class }, new Date(domain.expires_at).toString('MMMM dd yyyy'));
+    }
+    
+    return expiration_date;
   })
   
-  define('sort_domains_and_update_table', function(domains, target_div, sort_method) {
+  define('sort_domains_and_update_table', function(domains, target_div, sort_method, table_method) {
     var before_domains = domains.slice(0);
     var sorted_domains = domains.stable_sort(sort_method);
     // var sorted_domains = domains.sort(sort_method);
@@ -281,7 +325,7 @@ with (Hasher('Domains','Application')) {
     if (before_domains.equal_to(sorted_domains)) sorted_domains.reverse();
     
     render({ into: target_div },
-      sortable_domains_table(sorted_domains, target_div)
+      table_method(sorted_domains, target_div)
     );
     
     // need to explicitly reapply the filters

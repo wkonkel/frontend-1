@@ -74,7 +74,7 @@ with (Hasher('Domains')) {
           );
         } else {
           render({ into: domains_div },
-            sortable_domains_table(domains, domains_div)
+            sortable_pending_transfer_table(domains, domains_div)
           );
         }
         
