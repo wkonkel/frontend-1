@@ -12,7 +12,7 @@ with (Hasher('Blogs', 'Application')) {
         blog_body.innerHTML = blog.body;
         return [
           h2({ 'class': 'blog-title' }, a({ href: '#blogs/' + blog.id + '-' + blog.title.replace(/ /g, '-') }, blog.title)),
-          div({ 'class': 'blog-info' }, 'by ' + blog.author + ' on ' + new Date(Date.parse(blog.published_at)).toDateString()),
+          div({ 'class': 'blog-info' }, 'by ' + blog.author + ' on ' + date(Date.parse(blog.published_at)).toDateString()),
           blog_body
         ]
       }));
@@ -29,7 +29,7 @@ with (Hasher('Blogs', 'Application')) {
         blog_body.innerHTML = blog.body;
         render(
           h1(blog.title),
-          div({ 'class': 'blog-info' }, 'by ' + blog.author + ' on ' + new Date(Date.parse(blog.published_at)).toDateString()),
+          div({ 'class': 'blog-info' }, 'by ' + blog.author + ' on ' + date(Date.parse(blog.published_at)).toDateString()),
           blog_body
         );
       } else {

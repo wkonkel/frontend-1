@@ -162,8 +162,8 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
         ),
         
         (domains || []).map(function(domain) {
-          var old_expires_at = new Date(domain.expires_at);
-          var new_expires_at = new Date(old_expires_at.getFullYear() + 1, old_expires_at.getMonth(), old_expires_at.getDay());
+          var old_expires_at = date(domain.expires_at);
+          var new_expires_at = date(old_expires_at.getFullYear() + 1, old_expires_at.getMonth(), old_expires_at.getDay());
           
           // if the domain is registered with us already, render it as successful row. otherwise, make it selectable
           if ((domain.current_registrar || "").match(/badger/i)) {

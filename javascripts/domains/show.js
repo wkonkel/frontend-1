@@ -120,15 +120,15 @@ with (Hasher('DomainShow','DomainApps')) {
   });
 
   define('domain_status_description', function(domain_obj) {
-    var current_date = new Date();
-    var expire_date = new Date(Date.parse(domain_obj.expires_at));
+    var current_date = date();
+    var expire_date = date(Date.parse(domain_obj.expires_at));
     var days = parseInt(expire_date - current_date)/(24*3600*1000);
 
     if (domain_obj.transfer_steps && domain_obj.transfer_steps.pending.length > 0 && domain_obj.transfer_steps.count > 0) {
       return display_transfer_status(domain_obj);
     } else if ((domain_obj.permissions_for_person || []).indexOf('show_private_data') >= 0) {
       return [
-        p('This domain is active and will auto-renew for one Credit on ', new Date(Date.parse(domain_obj.expires_at)).toDateString(), '.'),
+        p('This domain is active and will auto-renew for one Credit on ', date(Date.parse(domain_obj.expires_at)).toDateString(), '.'),
         days <= 30 ? a({ 'class': 'myButton myButton-small', href: curry(Register.renew_domain_modal, domain_obj.name) }, 'Renew') : ''
       ];
     } else if ((domain_obj.permissions_for_person || []).indexOf('linked_account') >=0) {
@@ -142,7 +142,7 @@ with (Hasher('DomainShow','DomainApps')) {
     } else {
       return [
         p('This domain is currently registered at ', domain_obj.current_registrar,
-          ' and will expire on ', new Date(Date.parse(domain_obj.expires_at)).toDateString(), '.',
+          ' and will expire on ', date(Date.parse(domain_obj.expires_at)).toDateString(), '.',
           ' If this is your domain, you can ',
           a({ href: curry(Transfer.redirect_to_transfer_for_domain, domain_obj.name) }, 'transfer it to Badger'), '.'
         )

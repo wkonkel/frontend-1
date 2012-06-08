@@ -100,7 +100,7 @@ with (Hasher('Application')) {
       
       // data from the last iteration, or initilizer
       _poll_obj: options._poll_obj || {
-        start_time: new Date(),
+        start_time: date(),
         max_time: options.max_time,
         previous_route: get_route()
       }
@@ -109,7 +109,7 @@ with (Hasher('Application')) {
     var poll_forever = options.max_time == -1;
         
     // if timed out, run break callback.
-    if (!poll_forever && (new Date().getTime() - options._poll_obj.start_time.getTime()) >= options.max_time) {
+    if (!poll_forever && (date().getTime() - options._poll_obj.start_time.getTime()) >= options.max_time) {
       options.on_timeout({
         start_time: options._poll_obj.start_time,
         max_time: options._poll_obj.max_time,
@@ -124,7 +124,7 @@ with (Hasher('Application')) {
       });
     } else {
       // track the time at which this iteration started
-      var start_time = new Date().getTime();
+      var start_time = date().getTime();
       
       // save the route before running the action, because the action
       // may or may not change the route.
@@ -199,6 +199,35 @@ with (Hasher('Application')) {
     });
   });
   
+  
+  /*
+    It's not possible to use 'date()', you have to
+    instantiate a new date object and manually add the
+    days/month/year to it. 
+  */
+  
+  define('date', function(date_string) {
+    var new_date = new Date(date_string || '');
+    if (new_date.valid()) {
+      return new_date;
+    } else {
+      // try to parse days/months/years from the provided
+      // date string, and set a date in the IE friendly
+      // manner.
+      // date_string should look like this: "2013-05-03T19:12:03Z"
+      new_date = new Date();
+      if (!date_string) return new_date;
+      date_parts = date_string.slice(0,10).split('-');
+      var year  = date_parts.shift(),
+          month = date_parts.shift(),
+          date  = date_parts.shift();
+      new_date.setDate(date);
+      new_date.setMonth(month);
+      new_date.setYear(year);
+      return new_date;
+    }
+  });
+  
 }
 
 String.prototype.capitalize_all = function() {
@@ -270,3 +299,7 @@ Array.prototype.stable_sort = function(compare) {
   });
   return array2.map(function(v) { return v.v });
 };
+
+Date.prototype.valid = function() {
+  return isFinite(this);
+}

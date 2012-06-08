@@ -155,8 +155,8 @@ with (Hasher('Domains','Application')) {
   
   // comparison method for Array#sort
   define('sort_by_expiration_date', function(domain1, domain2) {
-    d1 = new Date(domain1.expires_at);
-    d2 = new Date(domain2.expires_at);
+    var d1 = date(domain1.expires_at);
+    var d2 = date(domain2.expires_at);
     
     if (d1 < d2) return -1;
     if (d1 > d2) return 1;
@@ -294,8 +294,13 @@ with (Hasher('Domains','Application')) {
   define('styled_expiration_date', function(domain) {
     if (!domain.expires_at) return '';
     
-    var d1 = new Date();
-    var d2 = new Date(domain.expires_at);
+    // Don't try to do anything too crazy if using IE.
+    var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
+    
+    // var d1 = date();
+    // var d2 = date(domain.expires_at);
+    var d1 = date().getTime();
+    var d2 = date(domain.expires_at).getTime();
     var days = parseInt(d2 - d1)/(24*3600*1000);
     
     var date_class = '';
@@ -307,14 +312,19 @@ with (Hasher('Domains','Application')) {
     
     // if the domain is set to auto renew, 
     // grey out the font
-    var expiration_date;
+    var expiration_date_span;
     if (domain.auto_renew) {
-      expiration_date = span({ 'class': date_class, style: 'color: #9B9B9B;' }, new Date(domain.expires_at).toString('MMMM dd yyyy'));
+      expiration_date_span = span({ 'class': date_class, style: 'color: #9B9B9B;' }, date(domain.expires_at).toString('MMMM dd yyyy'));
     } else {
-      expiration_date = span({ 'class': date_class }, new Date(domain.expires_at).toString('MMMM dd yyyy'));
+      expiration_date_span = span({ 'class': date_class }, date(domain.expires_at).toString('MMMM dd yyyy'));
     }
     
-    return expiration_date;
+    // quick hack: IE isn't computing
+    if (ie_browser) {
+      expiration_date_span = span(date(domain.expires_at).toString('MMMM dd yyyy'));
+    }
+    
+    return expiration_date_span;
   })
   
   define('sort_domains_and_update_table', function(domains, target_div, sort_method, table_method) {

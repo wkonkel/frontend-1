@@ -49,7 +49,7 @@ with (Hasher('Invite','Application')) {
 
                 invite_status.data.map(function(invite) {
                   return tr(
-                    td(new Date(Date.parse(invite.date_sent)).toDateString()),
+                    td(date(Date.parse(invite.date_sent)).toDateString()),
                     td(invite.name),
                     td(invite.email),
                     td({'class': 'center' }, invite.domain_credits),

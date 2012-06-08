@@ -36,7 +36,7 @@
 //                 td(a({ href: '#domains/' + domain.name }, Domains.truncate_domain_name(domain.name))),
 //                 td(complete_percentage_for(domain)),
 //                 td(domain.current_registrar),
-//                 td(new Date(Date.parse(domain.expires_at)).toDateString())
+//                 td(date(Date.parse(domain.expires_at)).toDateString())
 //               );
 //             })
 //           )

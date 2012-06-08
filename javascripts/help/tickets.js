@@ -263,7 +263,7 @@ with (Hasher('Ticket','Application')) {
 
 
   define('format_date', function(day) {
-    var date = new Date(Date.parse(day));
+    var date = date(Date.parse(day));
     return (date.getMonth() +  1) + '/' + date.getDate() + '/' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes();
   });
 
