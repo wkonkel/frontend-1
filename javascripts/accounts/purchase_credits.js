@@ -3,13 +3,6 @@ with (Hasher('Billing','Application')) {
   route('#account/billing/credits', function() {
     var necessary_credits = Badger.Session.get('necessary_credits') || 0;
     
-    var saved_or_new_card_div = div(
-      fieldset(
-        label({ 'for': 'payment_method_id' }, 'Saved cards:'),
-        select(option('Loading...'))
-      )
-    );
-    
     render(
       // h1('Purchase Credits'),
       chained_header_with_links(
@@ -57,7 +50,7 @@ with (Hasher('Billing','Application')) {
           )
         ),
         
-        saved_or_new_card_div,
+        saved_card_drop_down_and_fields(),
 
         fieldset({ 'class': 'no-label' },
           submit({ id: 'purchase-button', value: 'Purchase Credits' })
@@ -79,118 +72,120 @@ with (Hasher('Billing','Application')) {
     $("#credits-form").find("input[name=credits]").focus();
     $("#credits-form").find("input[name=credits]").select();
     $("input[name=credits]").trigger("keyup");
-
-    // asynch load payment methods
-    BadgerCache.getPaymentMethods(function(response) {
-      var payment_methods = response.data;
-
-      BadgerCache.getContacts(function(response) {
-
-        // TODO add ability to set different contacts as default
-        // in account setting
-        var contact = (response.data && response.data[0]) ? response.data[0] : {};
-
-        render({ into: saved_or_new_card_div },
-          fieldset(
-            label({ 'for': 'payment_method_id' }, 'Saved cards:'),
-            select({ id: 'payment_method_id', name: 'payment_method_id', events: { change: hide_or_show_new_card_fields }},
-              payment_methods.map(function(payment_method) {
-                return option({ value: payment_method.id }, payment_method.name)
-              }),
-              option({ value: '0' }, 'New card')
-            ),
-
-            span({ id: 'save_card_container' },
-              input({ type: 'checkbox', name: 'save_card', checked: 'checked', style: 'margin-left: 20px', id: 'save_card-checkbox' }), 
-              label({ 'class': 'normal', 'for': 'save_card-checkbox'  }, ' Keep this card on file')
-            )
-          ),
-
-          div({ id: 'new_card_container' },
-
-            fieldset(
-              label({ 'for': 'first_name-input' }, 'Name on card:'),
-              text({ 'class': 'short right-margin', name: 'first_name', placeholder: 'John', id: 'first_name-input', value: contact.first_name || '' }),
-              text({ 'class': 'short', name: 'last_name', placeholder: 'Doe', value: contact.last_name || '' })
-            ),
-
-            fieldset(
-              label({ 'for': 'street_address-input' }, 'Billing address:'),
-              input({ name: 'street_address', placeholder: '123 Main St.', id: 'street_address-input', value: contact.address || '' })
-            ),
-
-            // input({ name: 'extended_address', placeholder: 'Address Line 2 (Optional)', style: "width: 240px; margin: 2px"  })
-
-            fieldset(
-              label({ 'for': 'city-input' }, 'City, state and zip:'),
-              input({ 'class': 'short right-margin', name: 'city', placeholder: 'San Francisco', id: 'city-input', value: contact.city || '' }),
-              input({ 'class': 'supershort right-margin', name: 'state', placeholder: 'CA', value: contact.state || '' }),
-              input({ 'class': 'supershort', name: 'zip', placeholder: '94104', value: contact.zip || '' })
-            ),
-
-            fieldset(
-              label({ 'for': 'country_input' }, 'Country:'),
-              select({ name: 'country_name', id: 'country_input' }, option(''), country_options())
-            ),
-
-            fieldset(
-              label({ 'for': 'cc_number-input' }, 'Card number:'),
-              input({ name: 'cc_number', id: 'cc_number-input', placeholder: 'XXXX-XXXX-XXXX-XXXX' })
-            ),
-
-            fieldset(
-              label({ 'for': 'cc_cvv-input' }, 'Security code:'),
-              input({ name: 'cc_cvv', id: 'cc_cvv-input', placeholder: '123', style: 'width: 40px' })
-            ),
-
-            fieldset(
-              label({ 'for': 'expiration_month-input' }, 'Expiration:'),
-              select({ name: 'cc_expiration_date_month', id: 'expiration_month-input', style: 'width: 46px' },
-                option({ value: '01' }, '01 - January'),
-                option({ value: '02' }, '02 - February'),
-                option({ value: '03' }, '03 - March'),
-                option({ value: '04' }, '04 - April'),
-                option({ value: '05' }, '05 - May'),
-                option({ value: '06' }, '06 - June'),
-                option({ value: '07' }, '07 - July'),
-                option({ value: '08' }, '08 - August'),
-                option({ value: '09' }, '09 - September'),
-                option({ value: '10' }, '10 - October'),
-                option({ value: '11' }, '11 - November'),
-                option({ value: '12' }, '12 - December')
-              ),
-              '/',
-              select({ name: 'cc_expiration_date_year' },
-                option('2012'),
-                option('2013'),
-                option('2014'),
-                option('2015'),
-                option('2016'),
-                option('2017'),
-                option('2018'),
-                option('2019'),
-                option('2020')
-              )
-            )
-          )
-        );
-        
-        // select the country if a contact was loaded
-        if (contact.country) {
-          var country_regex = new RegExp(contact.country, 'i');
-          $('select[name=country_name] > option').each(function() {
-            if (this.value.match(country_regex)) {
-              $(this).attr('selected','selected')
-            }
-          });
-        }
-
-      });
-      
-      hide_or_show_new_card_fields();
-    });
   });
   
+
+  define('saved_card_drop_down_and_fields', function() {
+    var saved_or_new_card_div = div(
+      fieldset(
+        label({ 'for': 'payment_method_id' }, 'Saved cards:'),
+        select(option('Loading...'))
+      )
+    );
+    
+    BadgerCache.getAccountInfo(function(response) {
+      var default_contact = response.data;
+      
+      BadgerCache.getPaymentMethods(function(response) {
+        var payment_methods = response.data;
+
+        BadgerCache.getContacts(function(response) {
+          if (response.data && response.data[0]) default_contact = response.data[0];
+
+          render_saved_card_area(payment_methods, default_contact, saved_or_new_card_div);
+        });
+      });
+    });
+    
+    return saved_or_new_card_div;
+  });
+
+  define("render_saved_card_area", function(payment_methods, default_contact, saved_or_new_card_div) {
+    render({ into: saved_or_new_card_div },
+      fieldset(
+        label({ 'for': 'payment_method_id' }, 'Saved cards:'),
+        select({ id: 'payment_method_id', name: 'payment_method_id', events: { change: hide_or_show_new_card_fields }},
+          payment_methods.map(function(payment_method) {
+            return option({ value: payment_method.id }, payment_method.name)
+          }),
+          option({ value: '0' }, 'New card')
+        ),
+
+        span({ id: 'save_card_container', style: (payment_methods.length > 0 ? 'display: none' : '' ) },
+          input({ type: 'checkbox', name: 'save_card', checked: 'checked', style: 'margin-left: 20px', id: 'save_card-checkbox' }), 
+          label({ 'class': 'normal', 'for': 'save_card-checkbox'  }, ' Keep this card on file')
+        )
+      ),
+
+      div({ id: 'new_card_container', style: (payment_methods.length > 0 ? 'display: none; width: auto' : 'width: 100px' ) },
+
+        fieldset(
+          label({ 'for': 'first_name-input' }, 'Name on card:'),
+          text({ 'class': 'short right-margin', name: 'first_name', placeholder: 'John', id: 'first_name-input', value: default_contact.first_name || '' }),
+          text({ 'class': 'short', name: 'last_name', placeholder: 'Doe', value: default_contact.last_name || '' })
+        ),
+
+        fieldset(
+          label({ 'for': 'street_address-input' }, 'Billing address:'),
+          input({ name: 'street_address', placeholder: '123 Main St.', id: 'street_address-input', value: default_contact.address || '' })
+        ),
+
+        // input({ name: 'extended_address', placeholder: 'Address Line 2 (Optional)', style: "width: 240px; margin: 2px"  })
+
+        fieldset(
+          label({ 'for': 'city-input' }, 'City, state and zip:'),
+          input({ 'class': 'short right-margin', name: 'city', placeholder: 'San Francisco', id: 'city-input', value: default_contact.city || '' }),
+          input({ 'class': 'supershort right-margin', name: 'state', placeholder: 'CA', value: default_contact.state || '' }),
+          input({ 'class': 'supershort', name: 'zip', placeholder: '94104', value: default_contact.zip || '' })
+        ),
+
+        fieldset(
+          label({ 'for': 'country_input' }, 'Country:'),
+          select({ name: 'country_name', id: 'country_input' }, option(''), country_options(default_contact.country))
+        ),
+
+        fieldset(
+          label({ 'for': 'cc_number-input' }, 'Card number:'),
+          input({ name: 'cc_number', id: 'cc_number-input', placeholder: 'XXXX-XXXX-XXXX-XXXX' })
+        ),
+
+        fieldset(
+          label({ 'for': 'cc_cvv-input' }, 'Security code:'),
+          input({ name: 'cc_cvv', id: 'cc_cvv-input', placeholder: '123', style: 'width: 40px' })
+        ),
+
+        fieldset(
+          label({ 'for': 'expiration_month-input' }, 'Expiration:'),
+          select({ name: 'cc_expiration_date_month', id: 'expiration_month-input', style: 'width: 46px' },
+            option({ value: '01' }, '01 - January'),
+            option({ value: '02' }, '02 - February'),
+            option({ value: '03' }, '03 - March'),
+            option({ value: '04' }, '04 - April'),
+            option({ value: '05' }, '05 - May'),
+            option({ value: '06' }, '06 - June'),
+            option({ value: '07' }, '07 - July'),
+            option({ value: '08' }, '08 - August'),
+            option({ value: '09' }, '09 - September'),
+            option({ value: '10' }, '10 - October'),
+            option({ value: '11' }, '11 - November'),
+            option({ value: '12' }, '12 - December')
+          ),
+          '/',
+          select({ name: 'cc_expiration_date_year' },
+            option('2012'),
+            option('2013'),
+            option('2014'),
+            option('2015'),
+            option('2016'),
+            option('2017'),
+            option('2018'),
+            option('2019'),
+            option('2020')
+          )
+        )
+      )
+    );
+  });
   
   // reads from Badger.Session to get the number of Credits just added to the account,
   // and renders and info message into the div
@@ -214,7 +209,7 @@ with (Hasher('Billing','Application')) {
       $('#payment_method_id').css('width','100px');
       $('#save_card_container,#new_card_container').show();
     } else {
-      $('#payment_method_id').css('width','auto')
+      $('#payment_method_id').css('width','auto');
       $('#save_card_container,#new_card_container').hide();
     }
   });
