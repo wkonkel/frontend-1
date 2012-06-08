@@ -75,49 +75,36 @@ with (Hasher('Application')) {
 
   layout('default_layout', function(yield) {
     // var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
-    
-    if (get_route().match(/#welcome/i)) {
-      return [
-        header(),
+    return [
+      header(),
 
-        div({ id: 'wrapper' }, yield),
-
-        footer(),
-
-        chatbar()
-      ];
-    } else {
-      return [
-        header(),
-
-        div({ id: 'wrapper' },
-          div({ id: 'main', 'class': 'whitebg' },
-            div({ 'id': 'content' }, 
-              yield
-            )
+      div({ id: 'wrapper' },
+        div({ id: 'main', 'class': 'whitebg' },
+          div({ 'id': 'content' }, 
+            yield
           )
-        ),
-
-        footer(),
-
-        chatbar()
-      ];
-    }
+        )
+      ),
+      
+      footer(),
+      
+      chatbar()
+    ];
   });
 
 
-  // layout('no_bg_layout', function(yield) {
-  //   // var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
-  //   return [
-  //     header(),
-  // 
-  //     div({ id: 'wrapper' }, yield),
-  //     
-  //     footer(),
-  //     
-  //     chatbar()
-  //   ];
-  // });
+  layout('no_bg_layout', function(yield) {
+    // var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
+    return [
+      header(),
+
+      div({ id: 'wrapper' }, yield),
+      
+      footer(),
+      
+      chatbar()
+    ];
+  });
 
 
 
@@ -206,7 +193,6 @@ with (Hasher('Application')) {
     BadgerCache.getAccountInfo(function(response) {
       //$(user_nav).prepend(span(a({ href: '#account/settings'}, response.data.name)));
       $(user_nav).prepend(span({ id: 'use_nav_name' }, a({ href: '#account' }, response.data.name)));
-      $(user_nav).prepend(span(a({ href: '#linked_accounts', id: 'user_nav_accounts' }, 'Accounts')));
       $(user_nav).prepend(span(a({ href: '#invites', id: 'user_nav_invites_available' }, 'Invites')));
       $(user_nav).prepend(span(a({ href: '#account/billing', id: 'user_nav_credits' }, 'Credits')));  // updated by update_my_domains_count after_filter
       $(user_nav).prepend(span(a({ href: '#domains', id: 'user-nav-domains' }, 'Domains')));  // updated by update_credits after_filter
