@@ -4,7 +4,7 @@ with (Hasher('Share','Application')) {
     var target_div = div({ 'class': 'fancy has-sidebar' }, spinner('Loading...'));
     
     render(
-      h1(a({ href: '#filter_domains/all/list' }, 'My Domains'), ' » ', a({ href: '#domains/' + domain_name }, domain_name.toLowerCase()), ' » Share'),
+      h1(a({ href: '#domains' }, 'My Domains'), ' » ', a({ href: '#domains/' + domain_name }, domain_name.toLowerCase()), ' » Share'),
       
       div({ 'class': 'sidebar' },
         info_message(

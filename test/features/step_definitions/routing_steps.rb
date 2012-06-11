@@ -45,7 +45,7 @@ Given /^I am on the view knowledge center with id "([^"]*)"$/ do |kc_id|
 end
 
 Given /^I view my domains list$/ do
-  visit("/index.html#filter_domains/all/list")
+  visit("/index.html#domains")
 end
 
 Given /^I follow the reset password link for email "([^"]*)" with code "([^"]*)"$/ do |email, code|
