@@ -163,7 +163,7 @@ with (Hasher('Invite','Application')) {
   define('send_invite_result', function(data, status) {
     show_modal(
       div(
-        h1("Invitation Message"),
+        h1("Invitation Sent"),
         p( { 'class': status == 'ok' ? '': 'error-message'}, data.message),
         a({ href: hide_modal, 'class': 'myButton', value: "submit" }, "Close")
       )
