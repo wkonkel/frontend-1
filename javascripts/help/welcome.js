@@ -55,7 +55,7 @@ with (Hasher('Welcome','Application')) {
               p('Install popular apps quickly without touching DNS.')
             ),
             td({ style: 'width: 50%; padding-left: 10px; vertical-align: top' },
-              h3('Register domains for $10 a year.'),
+              h3('Register domains for $10-$12 a year.'),
               p('Pricing is the same for registrations, transfers and renewals.'),
 
               h3('Free WHOIS privacy and forwarding.'),
