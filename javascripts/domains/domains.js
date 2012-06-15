@@ -283,12 +283,13 @@ with (Hasher('Domains','Application')) {
   define('compute_transfer_progress_percentage', function(domain) {
     // calculate step percentage, avoid divide by zero. 
     // default is just 1/total_steps
-    if (!domain.transfer_steps) return 0;
-    var step_percentage = (1 / domain.transfer_steps.count);
-    if (domain.transfer_steps && domain.transfer_steps.completed && domain.transfer_steps.completed.length > 0) {
-      step_percentage = parseInt(100 * (domain.transfer_steps.completed.length / domain.transfer_steps.count));
-    }
-    return step_percentage;
+    var percent = 0;
+    if (domain.transfer_in) percent += 20;
+    if (domain.transfer_in && domain.transfer_in.unlock_domain == 'ok') percent += 20;
+    if (domain.transfer_in && domain.transfer_in.enter_auth_code == 'ok') percent += 20;
+    if (domain.transfer_in && domain.transfer_in.disable_privacy == 'ok') percent += 20;
+    if (domain.transfer_in && domain.transfer_in.approve_transfer == 'ok') percent += 15;
+    return percent;
   });
   
   define('styled_expiration_date', function(domain) {

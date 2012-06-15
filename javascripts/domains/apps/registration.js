@@ -372,7 +372,7 @@ with (Hasher('Registration','DomainApps')) {
   define('transfer_out_domain_if_allowed', function(domain_obj) {
     if ((domain_obj.permissions_for_person || []).indexOf('transfer_out') == -1) return div();
     
-    if (domain_obj.transfer_out && domain_obj.transfer_out.approve_transfer_out == 'pending_transfer_out') {
+    if (domain_obj.transfer_out) {
       return div({ id: "transfer-out-pending", 'class': 'info-message', style: 'border-color: #aaa; background: #eee; margin-top: 42px' },
         h3("Transfer request received"),
         
