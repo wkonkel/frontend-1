@@ -523,55 +523,57 @@ with (Hasher('DomainShow','DomainApps')) {
       case 'needs_unlock':
         switch (registrar) {
           case 'GoDaddy Inc.':
-            return a({ href: 'http://community.badger.com/badger/topics/godaddy_domain_transfer_unlocking_your_domain' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/godaddy_domain_transfer_unlocking_your_domain', target: '_blank' }, '(?)');
           case 'Network Solutions, LLC':
-            return a({ href: 'http://community.badger.com/badger/topics/network_solutions_domain_transfer_unlocking_your_domain_getting_an_auth_code' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/network_solutions_domain_transfer_unlocking_your_domain_getting_an_auth_code', target: '_blank' }, '(?)');
           case '1 & 1 INTERNET AG':
-            return a({ href: 'http://community.badger.com/badger/topics/1_1_domain_transfer_unlocking_your_domain' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/1_1_domain_transfer_unlocking_your_domain', target: '_blank' }, '(?)');
           case 'Enom, Inc.':
-            return a({ href: 'http://community.badger.com/badger/topics/enom_domain_transfer_unlocking_your_domain' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/enom_domain_transfer_unlocking_your_domain', target: '_blank' }, '(?)');
           case 'Gandi SAS':
-            return a({ href: 'http://community.badger.com/badger/topics/gandi_domain_transfer_unlocking_your_domain' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/gandi_domain_transfer_unlocking_your_domain', target: '_blank' }, '(?)');
           default:
-            return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center', target: '_blank' }, '(?)');
         }
       case 'needs_privacy_disabled':
         switch (registrar) {
           case 'GoDaddy Inc.':
-            return a({ href: 'http://community.badger.com/badger/topics/godaddy_domain_transfer_disabling_privacy' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/godaddy_domain_transfer_disabling_privacy', target: '_blank' }, '(?)');
           case 'Network Solutions, LLC':
-            return a({ href: 'http://community.badger.com/badger/topics/network_solutions_domain_transfer_disabling_privacy' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/network_solutions_domain_transfer_disabling_privacy', target: '_blank' }, '(?)');
           case '1 & 1 INTERNET AG':
-            return a({ href: 'http://community.badger.com/badger/topics/1_1_domain_transfer_disabling_privacy' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/1_1_domain_transfer_disabling_privacy', target: '_blank' }, '(?)');
           case 'Enom, Inc.':
-            return a({ href: 'http://community.badger.com/badger/topics/enom_domain_transfer_disabling_privacy' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/enom_domain_transfer_disabling_privacy', target: '_blank' }, '(?)');
           default:
-            return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center', target: '_blank' }, '(?)');
         }
       case 'needs_auth_code':
         switch (registrar) {
           case 'GoDaddy Inc.':
-            return a({ href: 'http://community.badger.com/badger/topics/godaddy_domain_transfer_getting_an_auth_code' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/godaddy_domain_transfer_getting_an_auth_code', target: '_blank' }, '(?)');
           case 'Network Solutions, LLC':
-            return a({ href: 'http://community.badger.com/badger/topics/network_solutions_domain_transfer_unlocking_your_domain_getting_an_auth_code' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/network_solutions_domain_transfer_unlocking_your_domain_getting_an_auth_code', target: '_blank' }, '(?)');
           case '1 & 1 INTERNET AG':
-            return a({ href: 'http://community.badger.com/badger/topics/1_1_domain_transfer_getting_an_auth_code' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/1_1_domain_transfer_getting_an_auth_code', target: '_blank' }, '(?)');
           case 'Enom, Inc.':
-            return a({ href: 'http://community.badger.com/badger/topics/enom_domain_transfer_getting_an_auth_code' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/enom_domain_transfer_getting_an_auth_code', target: '_blank' }, '(?)');
           case 'Gandi SAS':
-            return a({ href: 'http://community.badger.com/badger/topics/gandi_domain_transfer_getting_an_auth_code' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/gandi_domain_transfer_getting_an_auth_code', target: '_blank' }, '(?)');
           default:
-            return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center', target: '_blank' }, '(?)');
         }
       case 'transfer_requested':
         switch (registrar) {
           case 'GoDaddy Inc.':
-            return a({ href: 'http://community.badger.com/badger/topics/godaddy_domain_transfer_manually_approving_a_transfer' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/topics/godaddy_domain_transfer_manually_approving_a_transfer', target: '_blank' }, '(?)');
+          case 'Gandi SAS':
+            return a({ href: 'http://community.badger.com/badger/topics/gandi_domain_transfer_manually_approving_a_transfer', target: '_blank' }, '(?)');
           default:
-            return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center' }, '(?)');
+            return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center', target: '_blank' }, '(?)');
         }
       default:
-        return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center' }, '(?)');
+        return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center', target: '_blank' }, '(?)');
     }
   });
 }
