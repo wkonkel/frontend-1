@@ -1,16 +1,19 @@
 with (Hasher('LinkedAccounts','Application')) {
 
-	route('#linked_accounts', function() {
-	  if (!logged_in()) {
-	    return set_route('#account/create');
-	  }
-	  
-		var target_div = div(
-		  spinner("Loading...")
-		);
-		
-		render(
-			div(
+  var domain_account_sites = ['godaddy', 'networksolutions', 'enom'],
+      social_app_sites = ['facebook', 'twitter'];
+
+  route('#linked_accounts', function() {
+    if (!logged_in()) {
+      return set_route('#account/create');
+    }
+
+    var target_div = div(
+      spinner("Loading...")
+    );
+
+    render(
+      div(
         // h1('Linked Accounts'),
         chained_header_with_links(
           { text: 'My Account' },
@@ -18,10 +21,19 @@ with (Hasher('LinkedAccounts','Application')) {
         ),
         
         Account.account_nav_table(target_div)
-			)
-		);
+      )
+    );
 
     BadgerCache.getLinkedAccounts(function(response) {
+      var my_accounts_div;
+      if ((response.data || []).length > 0) {
+        my_accounts_div = div({ style: 'margin-bottom: 20px;' },
+          my_linked_accounts_table(response.data)
+        )
+      } else {
+        my_accounts_div = info_message('Add an account now by clicking one of the icons below.')
+      }
+      
       render({ into: target_div },
         div({ 'class': 'sidebar' },
           info_message(
@@ -29,30 +41,30 @@ with (Hasher('LinkedAccounts','Application')) {
             p("Link one of your other registrar accounts, such as GoDaddy, to manage all of your domains at Badger.")
           )
         ),
-
-  		  div({ 'class': 'fancy has_sidebar'},
-  		    h2("Add A Linked Account"),
-          add_linked_account_icons(),
-          h2("My Linked Accounts"),
-          my_linked_accounts_table(response.data)
-  		  )
         
+        div({ 'class': 'fancy has_sidebar'},
+          my_accounts_div,
+          h2('Link A Domain Account'),
+          add_linked_account_icons(domain_account_sites),
+          h2('Link A Facebook or Twitter Account'),
+          add_linked_account_icons(social_app_sites)
+        )
       );
     });
-	});
-	
-	define('add_linked_account_icons', function() {
-	  var arguments = flatten_to_array(arguments);
+  });
+  
+  define('add_linked_account_icons', function() {
+    var arguments = flatten_to_array(arguments);
     var options = shift_options_from_args(arguments);
     
     // to only show certain accounts, pass their site strings in as arguments
     if (arguments.length > 0) var accounts_to_show = arguments;
-	  
-	  var table_row_1 = [];
-	  
-	  if (!accounts_to_show || accounts_to_show.includes('godaddy')) {
-	    table_row_1.push(
-	      td(
+
+    var table_row_1 = [];
+
+    if (!accounts_to_show || accounts_to_show.includes('godaddy')) {
+      table_row_1.push(
+        td(
           app_store_icon({
             name: 'GoDaddy',
             image_src: 'images/apps/godaddy.png',
@@ -61,10 +73,10 @@ with (Hasher('LinkedAccounts','Application')) {
           })
         )
       )
-	  }
-	  
-	  if (!accounts_to_show || accounts_to_show.includes('networksolutions')) {
-	    table_row_1.push(
+    }
+
+    if (!accounts_to_show || accounts_to_show.includes('networksolutions')) {
+      table_row_1.push(
         td(
           app_store_icon({
             name: 'Network Solutions',
@@ -74,10 +86,23 @@ with (Hasher('LinkedAccounts','Application')) {
           })
         )
       )
-	  }
-	  
-	  if (!accounts_to_show || accounts_to_show.includes('facebook')) {
-	    table_row_1.push(
+    }
+    
+    if (!accounts_to_show || accounts_to_show.includes('enom')) {
+      table_row_1.push(
+        td(
+          app_store_icon({
+            name: 'Enom',
+            image_src: 'images/apps/enom.png',
+            href: '#linked_accounts/enom/link',
+            size: options.size || 'normal'
+          })
+        )
+      )
+    }
+
+    if (!accounts_to_show || accounts_to_show.includes('facebook')) {
+      table_row_1.push(
         td(
           app_store_icon({
             name: 'Facebook',
@@ -87,11 +112,11 @@ with (Hasher('LinkedAccounts','Application')) {
           })
         )
       )
-	  }
+    }
     
     if (!accounts_to_show || accounts_to_show.includes('twitter')) {
-	    table_row_1.push(
-    	  td(
+      table_row_1.push(
+        td(
           app_store_icon({
             name: 'Twitter',
             image_src: 'images/apps/twitter.png',
@@ -100,78 +125,79 @@ with (Hasher('LinkedAccounts','Application')) {
           })
         )
       )
-	  }
-	  
-	  // remove the extra size attribute
-	  delete options.size;
-	  
-	  return table(options, tbody(
-	    tr(table_row_1)
-	  ));
-	});
-	
-	define('my_linked_accounts_table', function(linked_accounts) {
-	  if ((linked_accounts || []).length <= 0) {
-	    return div({ 'class': 'has-sidebar' },
-        p("You haven't linked any accounts yet! You can do so now by clicking one of the icons above.")
-      )
-	  }
-	  
-	  return div({ 'class': 'has-sidebar' },
-	    table({ 'class': 'fancy-table' }, tbody(
-   	    tr({ 'class': 'table-header'},
-   	      th({ style: 'width: 15%; vertical-align: middle' }),
-   	      th({ style: 'width: 20%' }, "Site"),
-   	      th({ style: 'width: 45%'}, "Username"),
-   	      th({ style: 'width: 45%'}, "Status"),
-   	      th({ style: 'width: 5%'}) // delete account button
-   	    ),
-   	    linked_accounts.map(function(linked_account) {
-          return linked_account_table_row(linked_account);
-   	    })
-   	  ))
-	  )
-	});
-	
-	define('linked_account_table_row', function(linked_account) {
-	  var linked_account_name, icon_src;
-	  
-	  if (linked_account.site == 'networksolutions') {
-	    linked_account_name = "Network Solutions";
-	    icon_src            = "images/apps/ns.png";
-	  } else if (linked_account.site == 'godaddy') {
-	    linked_account_name = "GoDaddy";
-	    icon_src            = "images/apps/godaddy.png";
-	  } else if (linked_account.site == 'facebook') {
-	    linked_account_name = "Facebook";
-	    icon_src            = "images/apps/facebook.png";
-	  } else if (linked_account.site == 'twitter') {
-	    linked_account_name = "Twitter";
-	    icon_src            = "images/apps/twitter.png";
-	  }
-	  	  
-	  return tr(
+    }
+  
+    // remove the extra size attribute
+    delete options.size;
+  
+    return table(options, tbody(
+      tr(table_row_1)
+    ));
+  });
+  
+  define('my_linked_accounts_table', function(linked_accounts) {
+    if ((linked_accounts || []).length <= 0) {
+      return div();
+    }
+    
+    return div({ 'class': 'has-sidebar' },
+      table({ 'class': 'fancy-table' }, tbody(
+       tr({ 'class': 'table-header'},
+         th({ style: 'width: 15%; vertical-align: middle' }),
+         th({ style: 'width: 20%' }, "Site"),
+         th({ style: 'width: 45%'}, "Username"),
+         th({ style: 'width: 45%'}, "Status"),
+         th({ style: 'width: 5%'}) // delete account button
+       ),
+       linked_accounts.map(function(linked_account) {
+         return linked_account_table_row(linked_account);
+       })
+      ))
+    )
+  });
+  
+  define('linked_account_table_row', function(linked_account) {
+    var linked_account_name, icon_src;
+    
+    if (linked_account.site == 'networksolutions') {
+      linked_account_name = "Network Solutions";
+      icon_src            = "images/apps/ns.png";
+    } else if (linked_account.site == 'godaddy') {
+      linked_account_name = "GoDaddy";
+      icon_src            = "images/apps/godaddy.png";
+    } else if (linked_account.site == 'enom') {
+      linked_account_name = "Enom";
+      icon_src            = "images/apps/enom.png";
+    } else if (linked_account.site == 'facebook') {
+      linked_account_name = "Facebook";
+      icon_src            = "images/apps/facebook.png";
+    } else if (linked_account.site == 'twitter') {
+      linked_account_name = "Twitter";
+      icon_src            = "images/apps/twitter.png";
+    }
+        
+    return tr(
       td({ align: 'center' }, img({ 'class': 'app_store_icon', src: icon_src, style: 'width: 50px; height: 50px; margin: 5px auto auto auto' })),
       td(linked_account_name),
       td(linked_account.login),
       td(['error_auth', 'unlinked', 'error'].includes(linked_account.status) ? span({ style: 'font-style: italic; font-weight: bold; color: red' }, linked_account.status) : linked_account.status),
       td(delete_linked_account_button(linked_account))
     );
-	});
-	
-	define('delete_linked_account_button', function(linked_account) {
-	  var arguments = flatten_to_array(arguments);
+  });
+  
+  define('delete_linked_account_button', function(linked_account) {
+    var arguments = flatten_to_array(arguments);
     var options = shift_options_from_args(arguments);
     
-	  return div(options,
-	    a({ href: curry(Registrar.remove_link, linked_account) }, img({ src: 'images/icon-no-light.gif' }))
-	  );
-	});
-	
-	define('link_social_account', function(site, callback) {
-	  var auth_url;
-	  if (site == 'facebook') auth_url = Badger.api_host + "auth/facebook?state=" + Badger.getAccessToken();
-	  else if (site == 'twitter') auth_url = Badger.api_host + "auth/twitter?access_token=" + Badger.getAccessToken();
+    return div(options,
+      a({ href: curry(Registrar.remove_link, linked_account) }, img({ src: 'images/icon-no-light.gif' }))
+    );
+  });
+  
+  define('link_social_account', function(site, callback) {
+    var auth_url;
+    if (site == 'facebook') auth_url = Badger.api_host + "auth/facebook?state=" + Badger.getAccessToken();
+    else if (site == 'twitter') auth_url = Badger.api_host + "auth/twitter?access_token=" + Badger.getAccessToken();
 
     var auth_window;
     
@@ -181,18 +207,18 @@ with (Hasher('LinkedAccounts','Application')) {
     if (site == 'twitter') {
       render({ into: auto_follow_prompt },
         div({ style: 'text-align: center; margin-top: 10px; font-size: 16px;' },
-  			  span(checkbox({ name: 'auto_follow', checked: 'checked' }), span({ 'class': 'big-text' }, " Follow @Badger"))
-  			)
+          span(checkbox({ name: 'auto_follow', checked: 'checked' }), span({ 'class': 'big-text' }, " Follow @Badger"))
+        )
       )
     }
 
-	  var content_modal = show_modal(
-	    h1("Link Your " + site.capitalize_first() + " Account"),
-			div({ style: "margin: 15px 10px 15px 10px; text-align: center" },
-				"By linking your " + site.capitalize_first() + " account with Badger, you will be able to share your domain registrations and transfers with your followers."
-			),
-		  div({ align: "center" },
-		    // IE does not support a name for the window, so leave it empty.
+    var content_modal = show_modal(
+      h1("Link Your " + site.capitalize_first() + " Account"),
+      div({ style: "margin: 15px 10px 15px 10px; text-align: center" },
+        "By linking your " + site.capitalize_first() + " account with Badger, you will be able to share your domain registrations and transfers with your followers."
+      ),
+      div({ align: "center" },
+        // IE does not support a name for the window, so leave it empty.
         a({ onclick: function(e) {
               // if the 'automatically follow @Badger' box checked, append to auth_url
               auth_url += "&auto_follow=" + ($(":checked").length > 0).toString();
@@ -211,21 +237,21 @@ with (Hasher('LinkedAccounts','Application')) {
           ((site == 'facebook') && img({ src: "images/linked_accounts/facebook.png" })) || 
           ((site == 'twitter') && img({ src: "images/linked_accounts/twitter.png" }))
         )
-			),
+      ),
 
-			auto_follow_prompt
-	  );
-	})
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+      auto_follow_prompt
+    );
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   // define('add_linked_accounts_modal', function(accounts) {
   //  show_modal(
   //    h1('Add Linked Account'),

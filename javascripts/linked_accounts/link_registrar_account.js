@@ -8,7 +8,8 @@ with (Hasher('LinkRegistrarAccount','Application')) {
     } else if (registrar == "networksolutions") {
       render_registrar_link_form(registrar, "Network Solutions", "images/apps/ns.png");
     } else if (registrar == "enom") {
-      render_coming_soon_page(registrar, "Enom", "images/apps/enom.png");
+      render_registrar_link_form(registrar, "Enom", "images/apps/enom.png");
+      // render_coming_soon_page(registrar, "Enom", "images/apps/enom.png");
     } else {
       render_coming_soon_page(registrar);
     }
