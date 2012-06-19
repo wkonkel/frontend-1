@@ -46,7 +46,7 @@ with (Hasher('LinkedAccounts','Application')) {
           my_accounts_div,
           h2('Link A Domain Account'),
           add_linked_account_icons(domain_account_sites),
-          h2('Link A Facebook or Twitter Account'),
+          h2('Link A Social Account'),
           add_linked_account_icons(social_app_sites)
         )
       );
