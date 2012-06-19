@@ -39,6 +39,7 @@ var Badger = {
       
       var sessionVars = {};
       for (var i = 0; i < arguments.length; i++) {
+        key = arguments[i];
         sessionVars[key] = Session[key];
       }
       return sessionVars;
