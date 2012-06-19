@@ -38,45 +38,45 @@ with (Hasher('ConfirmRegistrarBulkTransfer', 'Application')) {
       )
     );
     
-    with (Badger.Session.read('domains')) {
-      var transfer_button_text;
-      if (domains.length == 0) {
-        transfer_button_text = "Continue";
-      } else if (domains.length == 1) {
-        transfer_button_text = "Transfer " + domains.length + " Domain for " + domains.length + " Credit";
-      } else {
-        transfer_button_text = "Transfer " + domains.length + " Domains for " + domains.length + " Credits";
-      }
-
-      var domains_table = div({ style: 'overflow: auto; min-height: 150px; max-height: 250px; border: 1px #333 solid; border-radius: 5px; padding: 5px' },
-        table({ 'class': 'fancy-table has-sidebar', style: 'overflow: auto; min-height: 200px' }, tbody(
-          tr({ 'class': 'table-header' },
-            th('Domain')
-          ),
-
-          (domains || []).map(function(domain) {
-            return tr(
-              td(domain.name)
-            );
-          })
-        ))
-      );
-
-      render({ into: domains_div },
-        form_with_loader({ 'class': 'fancy', action: curry(bulk_transfer_domains, domains), loading_message: 'Initiating transfer of ' + domains.length + ' domains...' },
-          domains_table,
-
-          input({ type: 'hidden', name: 'auto_renew', value: 'true'}),
-          input({ type: 'hidden', name: 'privacy', value: 'true'}),
-
-          Contact.selector_with_all_form_fields({ name: 'registrant_contact_id' }),
-
-          fieldset({ 'class': 'no-label' },
-            submit({ id: 'register-button', value: transfer_button_text })
-          )
-        )
-      );
+    var domains = Badger.Session.get('domains');
+    
+    var transfer_button_text;
+    if (domains.length == 0) {
+      transfer_button_text = "Continue";
+    } else if (domains.length == 1) {
+      transfer_button_text = "Transfer " + domains.length + " Domain for " + domains.length + " Credit";
+    } else {
+      transfer_button_text = "Transfer " + domains.length + " Domains for " + domains.length + " Credits";
     }
+
+    var domains_table = div({ style: 'overflow: auto; min-height: 150px; max-height: 250px; border: 1px #333 solid; border-radius: 5px; padding: 5px' },
+      table({ 'class': 'fancy-table has-sidebar', style: 'overflow: auto; min-height: 200px' }, tbody(
+        tr({ 'class': 'table-header' },
+          th('Domain')
+        ),
+
+        (domains || []).map(function(domain) {
+          return tr(
+            td(domain.name)
+          );
+        })
+      ))
+    );
+
+    render({ into: domains_div },
+      form_with_loader({ 'class': 'fancy', action: curry(bulk_transfer_domains, domains), loading_message: 'Initiating transfer of ' + domains.length + ' domains...' },
+        domains_table,
+
+        input({ type: 'hidden', name: 'auto_renew', value: 'true'}),
+        input({ type: 'hidden', name: 'privacy', value: 'true'}),
+
+        Contact.selector_with_all_form_fields({ name: 'registrant_contact_id' }),
+
+        fieldset({ 'class': 'no-label' },
+          submit({ id: 'register-button', value: transfer_button_text })
+        )
+      )
+    );
   });  
   
   define('bulk_transfer_domains', function(domains, form_data) {

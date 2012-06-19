@@ -28,10 +28,6 @@ with (Hasher('Share','Application')) {
   });
   
   define('linked_accounts_form', function(domain_name, linked_accounts) {
-    // with (Badger.Session.read('share_message_type')) {
-    //   console.log('share_message_type', share_message_type);
-    // }
-    
     var linked_accounts_form = form_with_loader({ 'class': 'fancy', action: share_message, loading_message: 'Submitting message...' },
       div({ id: 'response-messages' }),
       

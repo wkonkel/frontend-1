@@ -23,35 +23,45 @@ var Badger = {
       for (k in sessvars) {
         Session[k] = sessvars[k];
       }
-      return true;
-    },
-    
-    // returns a hash of key/value pairs
-    read: function() {
-      var sessionVars = {};
-      for (i in arguments) {
-        sessionVars[arguments[i]] = Session[arguments[i]];
-      }
-      
-      return sessionVars;
     },
     
     set: function(key,value) {
-      var opts = {};
-      opts[key] = value
-      this.write(opts);
+      Session[key] = value;
     },
     
-    // returns a single value for the given key
-    get: function(key) {
-      return this.read(key)[key];
+    // read the key/value from session and return value
+    // if multiple keys provided, returns a hash of key => value
+    get: function() {
+      if (arguments.length == 1) {
+        key = arguments[0];
+        return Session[key];
+      }
+      
+      var sessionVars = {};
+      for (var i = 0; i < arguments.length; i++) {
+        sessionVars[key] = Session[key];
+      }
+      return sessionVars;
     },
-
+    
     // delete the key/value from session and return value
-    remove: function(key) {
-      value = this.read(key)[key];
-      delete Session[key];
-      return value;
+    // if multiple keys provided, returns a hash of key => value
+    remove: function() {
+      if (arguments.length == 1) {
+        key = arguments[0];
+        value = Session[key];
+        delete Session[key];
+        return value;
+      }
+      
+      var sessionVars = {};
+      for (var i = 0; i < arguments.length; i++) {
+        key = arguments[i];
+        value = Session[key];
+        delete Session[key];
+        sessionVars[key] = value;
+      }
+      return sessionVars;
     },
     
     clear: function() {

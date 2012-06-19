@@ -80,7 +80,7 @@ with (Hasher('Transfer','Application')) {
   
   route('#domain-transfers/confirm_transfer', function() {
     
-    with (Badger.Session.read('transfer_domains', 'new_domains', 'domain_count')) {
+    with (Badger.Session.get('transfer_domains', 'new_domains', 'domain_count')) {
       // build the appropriate header
       var confirm_transfer_header = (domain_count && domain_count > 0) ? h1('Confirm Transfer of ', domain_count, ' Domain' + (domain_count != 1 ? 's' : '')) : h1('Confirm Transfer');
 
@@ -134,7 +134,7 @@ with (Hasher('Transfer','Application')) {
   });
   
   route('#domain-transfers/processing_transfer', function() {
-    with (Badger.Session.read('transfer_domains', 'new_domains', 'domain_count', 'domains', 'credits_added', 'form_data')) {
+    with (Badger.Session.get('transfer_domains', 'new_domains', 'domain_count', 'domains', 'credits_added', 'form_data')) {
       
       render(
         h1('Processing Transfer of ' + domain_count + ' Domain' + (domain_count != 1 ? 's' : '')),
@@ -371,15 +371,16 @@ with (Hasher('Transfer','Application')) {
       form_data: form_data,
       message_area: $('#errors').first(),
       callback: (function() {
-        with(Badger.Session.read('transfer_domains', 'new_domains', 'domains', 'domain_count')) {
+        with(Badger.Session.get('transfer_domains', 'new_domains', 'domains', 'domain_count')) {
           BadgerCache.getAccountInfo(function(account_info) {
             if (account_info.data.domain_credits < domain_count) {
               // Billing.purchase_modal(curry(register_or_transfer_all_domains, form_data), domain_count - account_info.data.domain_credits);
               // Billing.purchase_modal(curry(confirm_transfers, form_data), domain_count - account_info.data.domain_credits);
 
-              Badger.Session.write({ 
+              Badger.Session.write({
+                form_data: form_data,
                 necessary_credits: domain_count - account_info.data.domain_credits,
-                redirect_url: '#domain-transfers/confirm_transfer'
+                redirect_url: '#domain-transfers/processing_transfer'
               });
 
               set_route('#account/billing/credits');
