@@ -53,7 +53,7 @@ with (Hasher('Transfer','Application')) {
 
         div({ style: "margin-top: 20px; text-align: right "},
           input({ type: 'hidden', name: 'hidden_tag_anchor', id: 'hidden_tag_anchor', value: '' }),
-          submit({ id: 'continue-transfer-btn', 'class': 'myButton', name: 'cancel', value: "Cancel" })
+          submit({ id: 'continue-transfer-btn', 'class': 'myButton', style: 'display: none', name: 'cancel', value: "Continue Transfer" })
         )
       )
       
@@ -260,8 +260,16 @@ with (Hasher('Transfer','Application')) {
   });
 
   define('update_continue_button_count', function() {
-    var num = $('#transfer-domains-table .success-row').length;
-    $('#continue-transfer-btn').val(num == 0 ? 'Cancel' : ('Continue with ' + num + ' domain' + (num == 1 ? '' : 's')));
+    var num = $('#transfer-domains-table .success-row').length,
+        button = $('#continue-transfer-btn');
+    
+    button.val('Continue with ' + num + ' domain' + (num == 1 ? '' : 's'));
+    
+    if (num > 0) {
+      button.show();
+    } else {
+      button.hide();
+    }
   });
 
   define('update_domain_info', function(domain) {
