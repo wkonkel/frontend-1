@@ -39,7 +39,7 @@ with (Hasher('Search','Application')) {
 
     var current_value = $('#form-search-input').val().toLowerCase().replace(/[^a-zA-Z0-9\-\.]/g,'').split('.')[0];
 
-		var search_callback = function() {
+    var search_callback = function() {
       Badger.domainSearch(current_value, true, function(resp) {
         $('#search-instructions').remove();
         $('#search-help').remove();

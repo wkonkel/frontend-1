@@ -235,17 +235,17 @@ input.fancy[type=text], input.fancy[type=password] { margin-top: 4px; padding: 5
 .app_store_container span { display: block; color: #000; }
 
 .app_store_icon {
-	box-shadow: 1px 1px 5px #666;
-	-moz-box-shadow: 1px 1px 5px #666;
-	
-	background-repeat: no-repeat;
-	background-size: 100%;
-	width: 90px;
-	height: 90px;
- 	margin-bottom: 10px;
-	overflow: hidden;
-	
-	border-radius: 12px;
+  box-shadow: 1px 1px 5px #666;
+  -moz-box-shadow: 1px 1px 5px #666;
+  
+  background-repeat: no-repeat;
+  background-size: 100%;
+  width: 90px;
+  height: 90px;
+   margin-bottom: 10px;
+  overflow: hidden;
+  
+  border-radius: 12px;
   -moz-border-radius: 12px;
   -webkit-border-radius: 12px;
 }

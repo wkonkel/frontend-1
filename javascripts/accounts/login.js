@@ -52,7 +52,7 @@ with (Hasher('Signup','Application')) {
 
   route('#account/forgot-password', function() {
     render(
-			h1("Forgot Password"),
+      h1("Forgot Password"),
 
       div({ 'class': 'sidebar' },
         info_message(
@@ -63,7 +63,7 @@ with (Hasher('Signup','Application')) {
       ),
 
       form_with_loader({ 'class': 'fancy has-sidebar', action: process_forgot_password, loading_message: 'Sending password reset email...' },
-		    div({ id: 'forgot-password-messages' }),
+        div({ id: 'forgot-password-messages' }),
 
         div({ id: 'forgot-password-form' },
           fieldset(
@@ -78,7 +78,7 @@ with (Hasher('Signup','Application')) {
           // ),
 
           fieldset({ 'class': 'no-label' },
-  				  input({ 'class': 'myButton', type: 'submit', value: 'Email Reset Code' })
+            input({ 'class': 'myButton', type: 'submit', value: 'Email Reset Code' })
           )
         )
       )
@@ -101,23 +101,23 @@ with (Hasher('Signup','Application')) {
     });
   });
 
-	define('process_forgot_password', function(form_data) {
-	  $('#forgot-password-messages').empty();
-		Badger.sendPasswordResetEmail(form_data, function(response) {
-			if (response.meta.status == 'ok') {
+  define('process_forgot_password', function(form_data) {
+    $('#forgot-password-messages').empty();
+    Badger.sendPasswordResetEmail(form_data, function(response) {
+      if (response.meta.status == 'ok') {
         $('#forgot-password-messages').html(success_message(response));
-				$('#forgot-password-form').empty();
-			} else {
-				$('#forgot-password-messages').html(error_message(response));
-			}
-			
-			hide_form_submit_loader();
-		});
-	});
-	
+        $('#forgot-password-form').empty();
+      } else {
+        $('#forgot-password-messages').html(error_message(response));
+      }
+      
+      hide_form_submit_loader();
+    });
+  });
+  
   route('#reset_password/:email/:code', function(email, code) {
     render(
-			h1("Forgot Password"),
+      h1("Forgot Password"),
 
       div({ 'class': 'sidebar' },
         info_message(
@@ -128,10 +128,10 @@ with (Hasher('Signup','Application')) {
       ),
 
       form({ 'class': 'fancy has-sidebar', action: process_reset_password },
-  		  hidden({ name: "email", value: email }),
-  			hidden({ name: "code", type: 'hidden', value: code  }),
+        hidden({ name: "email", value: email }),
+        hidden({ name: "code", type: 'hidden', value: code  }),
 
-				div({ id: 'reset-password-messages' }),
+        div({ id: 'reset-password-messages' }),
 
         fieldset(
           label({ 'for': 'email-input' }, 'Email address:'),
@@ -140,27 +140,27 @@ with (Hasher('Signup','Application')) {
 
         fieldset(
           label({ 'for': 'email-input' }, 'New password:'),
-					password({ 'class': 'short right-margin', id: 'email-input', name: 'new_password', placeholder: 'abcd1234' }),
-					password({ 'class': 'short', name: 'confirm_password', placeholder: 'abc123 (again)' })
+          password({ 'class': 'short right-margin', id: 'email-input', name: 'new_password', placeholder: 'abcd1234' }),
+          password({ 'class': 'short', name: 'confirm_password', placeholder: 'abc123 (again)' })
         ),
 
-				fieldset(
-					input({ 'class': 'myButton small', type: 'submit', value: 'Update Password' })
-				)
-			)
-		);
+        fieldset(
+          input({ 'class': 'myButton small', type: 'submit', value: 'Update Password' })
+        )
+      )
+    );
   });
 
-	define('process_reset_password', function(form_data) {
+  define('process_reset_password', function(form_data) {
     $('#reset-password-messages').empty();
     
-		if (form_data.new_password != form_data.confirm_password) {
-			return $('#reset-password-messages').html(error_message("Passwords do not match"));
-		}
+    if (form_data.new_password != form_data.confirm_password) {
+      return $('#reset-password-messages').html(error_message("Passwords do not match"));
+    }
 
-		Badger.resetPasswordWithCode(form_data, function(response) {
-			if (response.meta.status != 'ok') $('#reset-password-messages').append(error_message(response));
-		});
-	});
+    Badger.resetPasswordWithCode(form_data, function(response) {
+      if (response.meta.status != 'ok') $('#reset-password-messages').append(error_message(response));
+    });
+  });
 
 }

@@ -126,16 +126,16 @@ with (Hasher('Registration','DomainApps')) {
   define('renew_domain', function(domain_obj, form_data) {
     if (date(domain_obj.expires_at).add(parseInt(form_data.years)).years() > date(domain_obj.expires_at).add(10).years()) {
       hide_form_submit_loader();
-			$("#errors").html(error_message("Cannot extend registration by more than 10 years"));
+      $("#errors").html(error_message("Cannot extend registration by more than 10 years"));
       return;
     }
     
     Badger.renewDomain(form_data.domain, form_data.years, function(response) {
-			if (response.meta.status == "ok") {
-				set_route("#domains/" + form_data.domain + "/registration");
-				update_credits(true);
-			} else {
-			  if (response.data && response.data.extra) {
+      if (response.meta.status == "ok") {
+        set_route("#domains/" + form_data.domain + "/registration");
+        update_credits(true);
+      } else {
+        if (response.data && response.data.extra) {
           
           Badger.Session.write({
             years: form_data.years,
@@ -145,12 +145,12 @@ with (Hasher('Registration','DomainApps')) {
           
           set_route("#account/billing/credits");
         }
-			  
-				hide_form_submit_loader();
-				$("#errors").html(error_message(response));
-			}
-		});
-		
+        
+        hide_form_submit_loader();
+        $("#errors").html(error_message(response));
+      }
+    });
+    
     // BadgerCache.getAccountInfo(function(results) {
     //   var needed_credits = form_data.years
     //   var current_credits = results.data.domain_credits;
@@ -172,9 +172,9 @@ with (Hasher('Registration','DomainApps')) {
     //     Billing.purchase_modal(curry(renew_domain_modal, form_data.domain, $.extend(form_data, { credits_added: true })), needed_credits - current_credits); // after successfully buying credits, go back to the initial renewal modal --- CAB
     //   }
     // });
-	});
-	
-	
+  });
+  
+  
   
   define('logo_url_for_registrar', function(name) {
     var src;
@@ -228,17 +228,17 @@ with (Hasher('Registration','DomainApps')) {
             td({ style: 'width: 50%; vertical-align: top; padding-right: 5px' },
 
               div({ 'class': 'info-message', style: "width: 381px" },
-        			  div({ style: "float: left; padding-right: 10px" }, logo_for_registrar(domain_obj.current_registrar) ),
+                div({ style: "float: left; padding-right: 10px" }, logo_for_registrar(domain_obj.current_registrar) ),
 
-        			  h3({ style: 'margin: 0 0 12px' }, 'Current Registration'),
-        			  div(domain_obj.current_registrar, " until ", date(Date.parse(domain_obj.expires_at)).toDateString().split(' ').slice(1).join(' ')),
+                h3({ style: 'margin: 0 0 12px' }, 'Current Registration'),
+                div(domain_obj.current_registrar, " until ", date(Date.parse(domain_obj.expires_at)).toDateString().split(' ').slice(1).join(' ')),
 
-      			    // if this is a badger registration and the person can renew the domain, show the extend registration button
-      			    // domain_obj.current_registrar.match(/badger/i) && div({ style: 'text-align: left; margin-top: 12px' }, a({ 'class': "myButton small", href: curry(Register.renew_domain_modal, domain) }, "Extend Registration")),
-      			    (domain_obj.badger_registration && $.inArray("renew", (domain_obj.permissions_for_person || [])) >= 0) && div({ style: 'text-align: left; margin-top: 12px' }, a({ 'class': "myButton small", href: '#domains/' + domain + '/registration/extend' }, "Extend Registration")),
+                // if this is a badger registration and the person can renew the domain, show the extend registration button
+                // domain_obj.current_registrar.match(/badger/i) && div({ style: 'text-align: left; margin-top: 12px' }, a({ 'class': "myButton small", href: curry(Register.renew_domain_modal, domain) }, "Extend Registration")),
+                (domain_obj.badger_registration && $.inArray("renew", (domain_obj.permissions_for_person || [])) >= 0) && div({ style: 'text-align: left; margin-top: 12px' }, a({ 'class': "myButton small", href: '#domains/' + domain + '/registration/extend' }, "Extend Registration")),
 
-        			  div({ style: 'clear: left' })
-        			)
+                div({ style: 'clear: left' })
+              )
               
             ),
             td({ style: 'width: 50%; vertical-align: top; padding-left: 5px' },
@@ -372,7 +372,7 @@ with (Hasher('Registration','DomainApps')) {
   define('transfer_out_domain_if_allowed', function(domain_obj) {
     if ((domain_obj.permissions_for_person || []).indexOf('transfer_out') == -1) return div();
     
-    if (domain_obj.transfer_out) {
+    if (domain_obj.transfer_out && domain_obj.transfer_out.approve_transfer_out == 'pending_transfer_out') {
       return div({ id: "transfer-out-pending", 'class': 'info-message', style: 'border-color: #aaa; background: #eee; margin-top: 42px' },
         h3("Transfer request received"),
         

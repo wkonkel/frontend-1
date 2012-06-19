@@ -5,7 +5,7 @@ Feature: Account
 
   Background:
     Given I logged in with mock data for domains and user info with 35 domain Credits and 5 invites available
-		Given I mock neccessary data to mock login with 35 domain Credits and 5 invites available
+    Given I mock neccessary data to mock login with 35 domain Credits and 5 invites available
     And I follow "East Agile Company"
 
   Scenario: As a logged in user I want to see My Account page

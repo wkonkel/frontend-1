@@ -154,12 +154,12 @@ with (Hasher('Signup','Application')) {
   
   define('request_invite', function(form_data) {
     if (form_data.password != form_data.confirm_password) {
-			$('#signup-errors').empty().append(error_message({ data: { message: "Passwords do not match" } }));
+      $('#signup-errors').empty().append(error_message({ data: { message: "Passwords do not match" } }));
       return;
-		}
-		
+    }
+    
     // console.log(form_data);
-		
+    
     if (form_data.require_invite_code && !form_data.invite_code) {
       $('#signup-errors').empty().append(error_message({ data: { message: "Missing invite code!" } }));
       return;

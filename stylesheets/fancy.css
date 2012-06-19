@@ -15,38 +15,38 @@ form.fancy textarea { margin-top: 12px; padding: 5px 10px; font-size: 17px; bord
 
 
 form.fancy input[type="submit"], form.fancy .button, .myButton {
-	-moz-box-shadow:inset 0px 1px 0px 0px #c1ed9c;
-	-webkit-box-shadow:inset 0px 1px 0px 0px #c1ed9c;
-	box-shadow:inset 0px 1px 0px 0px #c1ed9c;
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #9dce2c), color-stop(1, #8cb82b) );
-	background:-moz-linear-gradient( center top, #9dce2c 5%, #8cb82b 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#9dce2c', endColorstr='#8cb82b');
-	background-color:#9dce2c;
-	-moz-border-radius:6px;
-	-webkit-border-radius:6px;
-	border-radius:6px;
-	border:1px solid #83c41a;
-	display:inline-block;
-	color:#ffffff;
-	font-family:arial;
-	font-size:18px;
-	font-weight:bold;
-	padding:6px 24px;
-	text-decoration:none;
-	text-shadow:1px 1px 0px #689324;
+  -moz-box-shadow:inset 0px 1px 0px 0px #c1ed9c;
+  -webkit-box-shadow:inset 0px 1px 0px 0px #c1ed9c;
+  box-shadow:inset 0px 1px 0px 0px #c1ed9c;
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #9dce2c), color-stop(1, #8cb82b) );
+  background:-moz-linear-gradient( center top, #9dce2c 5%, #8cb82b 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#9dce2c', endColorstr='#8cb82b');
+  background-color:#9dce2c;
+  -moz-border-radius:6px;
+  -webkit-border-radius:6px;
+  border-radius:6px;
+  border:1px solid #83c41a;
+  display:inline-block;
+  color:#ffffff;
+  font-family:arial;
+  font-size:18px;
+  font-weight:bold;
+  padding:6px 24px;
+  text-decoration:none;
+  text-shadow:1px 1px 0px #689324;
   overflow: visible;
 }
 form.fancy input[type="submit"]:hover, .myButton:hover {
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #8cb82b), color-stop(1, #9dce2c) );
-	background:-moz-linear-gradient( center top, #8cb82b 5%, #9dce2c 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#8cb82b', endColorstr='#9dce2c');
-	background-color:#8cb82b;
-	cursor: pointer;
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #8cb82b), color-stop(1, #9dce2c) );
+  background:-moz-linear-gradient( center top, #8cb82b 5%, #9dce2c 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#8cb82b', endColorstr='#9dce2c');
+  background-color:#8cb82b;
+  cursor: pointer;
 }
 form.fancy input[type="submit"]:active, .myButton:active {
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #8cb82b), color-stop(1, #8cb82b) );
-	background:-moz-linear-gradient( center top, #8cb82b 5%, #8cb82b 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#8cb82b', endColorstr='#8cb82b');
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #8cb82b), color-stop(1, #8cb82b) );
+  background:-moz-linear-gradient( center top, #8cb82b 5%, #8cb82b 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#8cb82b', endColorstr='#8cb82b');
 }
 form.fancy input[type="submit"].red, .myButton.red {
   -moz-box-shadow:inset 0px 1px 0px 0px #fdc1cc;
@@ -61,10 +61,10 @@ form.fancy input[type="submit"].red, .myButton.red {
   text-shadow:1px 1px 0px #a30824;
 }
 form.fancy input[type="submit"].red:hover, .myButton.red:hover {
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #c81c2b), color-stop(1, #c81c2b) );
-	background:-moz-linear-gradient( center top, #c81c2b 5%, #c81c2b 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#c81c2b', endColorstr='#c81c2b');
-	background-color:#c81c2b;
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #c81c2b), color-stop(1, #c81c2b) );
+  background:-moz-linear-gradient( center top, #c81c2b 5%, #c81c2b 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#c81c2b', endColorstr='#c81c2b');
+  background-color:#c81c2b;
 }
 form.fancy input[type="submit"].grey, .myButton.grey {
   -moz-box-shadow:inset 0px 1px 0px 0px #c9c9c9;
@@ -79,10 +79,10 @@ form.fancy input[type="submit"].grey, .myButton.grey {
   text-shadow:1px 1px 0px #6a6a6a;
 }
 form.fancy input[type="submit"].grey:hover, .myButton.grey:hover {
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #666666), color-stop(1, #8c8c8c) );
-	background:-moz-linear-gradient( center top, #666666 5%, #8c8c8c 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#666666', endColorstr='#8c8c8c');
-	background-color:#666666;
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #666666), color-stop(1, #8c8c8c) );
+  background:-moz-linear-gradient( center top, #666666 5%, #8c8c8c 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#666666', endColorstr='#8c8c8c');
+  background-color:#666666;
 }
 form.fancy input[type="submit"].small, .myButton.small { font-size: 15px; padding: 3px 10px; }
 form.fancy input[type="submit"].large, .myButton.large { font-size: 24px; padding: 10px 32px; }

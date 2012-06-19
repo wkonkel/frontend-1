@@ -5,7 +5,7 @@ with (Hasher()) {
       callback = name;
       name = null;
     }
-  	if (!this.hasOwnProperty('before_filters')) this.before_filters = [];
+    if (!this.hasOwnProperty('before_filters')) this.before_filters = [];
     this.before_filters.push({ name: name, callback: callback, context: this });
   });
 
@@ -14,33 +14,33 @@ with (Hasher()) {
       callback = name;
       name = null;
     }
-  	if (!this.hasOwnProperty('after_filters')) this.after_filters = [];
+    if (!this.hasOwnProperty('after_filters')) this.after_filters = [];
     this.after_filters.push({ name: name, callback: callback, context: this });
   });
 
   define('run_filters', function(name) {
-  	var filters = [];
-  	var obj = this;
-  	var that = this;
-  	while (obj) {
-  	  // NOTE: IE doesn't like hasOwnProperty... this seems to work though
-  		//if (obj.hasOwnProperty(name + '_filters')) filters = obj[name + '_filters'].concat(filters);
-  		if (obj.__proto__ && (obj[name + '_filters'] != obj.__proto__[name + '_filters'])) filters = obj[name + '_filters'].concat(filters);
-  		obj = obj.__proto__;
-  	}
-	
-	  for (var i=0; i < filters.length; i++) {
+    var filters = [];
+    var obj = this;
+    var that = this;
+    while (obj) {
+      // NOTE: IE doesn't like hasOwnProperty... this seems to work though
+      //if (obj.hasOwnProperty(name + '_filters')) filters = obj[name + '_filters'].concat(filters);
+      if (obj.__proto__ && (obj[name + '_filters'] != obj.__proto__[name + '_filters'])) filters = obj[name + '_filters'].concat(filters);
+      obj = obj.__proto__;
+    }
+  
+    for (var i=0; i < filters.length; i++) {
       Hasher.running_filters = true;
-  		filters[i].callback.call(that);
+      filters[i].callback.call(that);
       delete Hasher.running_filters;
 
-  		if (Hasher.filter_performed_action) {
+      if (Hasher.filter_performed_action) {
         var tmp_action = Hasher.filter_performed_action;
         delete Hasher.filter_performed_action;
-  		  tmp_action.call(filters[i].context);
-  		  return;
-  		}
-	  }
+        tmp_action.call(filters[i].context);
+        return;
+      }
+    }
 
     return true;
   });

@@ -92,7 +92,7 @@ html, body, #wrapper, #footer { min-width: 970px; }
   background: white;
   
   box-shadow: 0 0 5px rgba(0,0,0,0.2);
-	-moz-box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  -moz-box-shadow: 0 0 5px rgba(0,0,0,0.2);
 }
 
 /* footer styling */
@@ -178,7 +178,7 @@ td.expiration-date span.yellow { color: #D8BD0F; }
   -webkit-border-radius: 5px;
    
   box-shadow: 0 0 5px rgba(0,0,0,0.3);
-	-moz-box-shadow: 0 0 5px rgba(0,0,0,0.3);
+  -moz-box-shadow: 0 0 5px rgba(0,0,0,0.3);
   
   padding: 15px 20px 15px 30px; 
   margin: 20px 0; 
@@ -219,19 +219,19 @@ td.expiration-date span.yellow { color: #D8BD0F; }
 }
 
 #content-top .registrars .app_store_icon {
-	border-radius: 4px;
+  border-radius: 4px;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
   
   box-shadow: 1px 1px 1px #333;
-	-moz-box-shadow: 1px 1px 1px #333;
+  -moz-box-shadow: 1px 1px 1px #333;
   
-	width: 32px;
-	height: 32px;
- 	margin-bottom: 10px;
- 	margin-right: 6px;
-	overflow: hidden;
-	vertical-align: middle;
+  width: 32px;
+  height: 32px;
+   margin-bottom: 10px;
+   margin-right: 6px;
+  overflow: hidden;
+  vertical-align: middle;
 }
 
 #content-top .registrars a { 

@@ -106,9 +106,9 @@ if (!('some' in Array.prototype)) {
  **********************************************************************************/
 
 jQuery(function() {
-	jQuery.support.placeholder = false;
-	test = document.createElement('input');
-	if('placeholder' in test) jQuery.support.placeholder = true;
+  jQuery.support.placeholder = false;
+  test = document.createElement('input');
+  if('placeholder' in test) jQuery.support.placeholder = true;
 });
 var Placeholder = {
   fix_ie: function() {

@@ -68,7 +68,7 @@ with (Hasher('Application')) {
         $('#menu .domain-menu-item').slice(4).remove();
         $('#nav-help-and-support').after(domain_menu_item(domain));
       }
-	    if (request_uri.indexOf("filter_domains/all") != -1) request_uri = '#';
+      if (request_uri.indexOf("filter_domains/all") != -1) request_uri = '#';
       else if (request_uri.indexOf("filter_domains") != -1) request_uri = request_uri.replace('grid', 'list');
     }
   });
@@ -143,7 +143,7 @@ with (Hasher('Application')) {
             ul(
               li(a({ href: "http://blog.badger.com", target: "_blank" }, 'Blog')),
               li(a({ href: "#terms_of_service" }, 'Terms of Service')),
-    					li(a({ href: "http://www.icann.org/en/registrars/registrant-rights-responsibilities-en.htm", target: "_blank" }, 'ICANN Registrant Rights')),
+              li(a({ href: "http://www.icann.org/en/registrars/registrant-rights-responsibilities-en.htm", target: "_blank" }, 'ICANN Registrant Rights')),
               li(a({ href: "https://whois.badger.com/", target: '_blank' }, 'Whois Lookup'))
             )
           ),
@@ -285,24 +285,24 @@ with (Hasher('Application')) {
   
   define('error_message', function(response) {
     return div({ 'class': 'error-message' },
-			div(
-			  response.data ? [
-  				response.data.message,
-  				!response.data.errors ? "" : ": " + response.data.errors.map(function(error) { return error.reason ? error.reason : error.field.replace(/_/g, ' ').capitalize_first() + " " + error.code.replace(/_/g, ' ');}).join(', ')
-			  ] : arguments
-			)
+      div(
+        response.data ? [
+          response.data.message,
+          !response.data.errors ? "" : ": " + response.data.errors.map(function(error) { return error.reason ? error.reason : error.field.replace(/_/g, ' ').capitalize_first() + " " + error.code.replace(/_/g, ' ');}).join(', ')
+        ] : arguments
+      )
     )
   });
 
   define('success_message', function(response) {
     return div({ 'class': 'success-message' },
-			div( response.data ? response.data.message : arguments )
+      div( response.data ? response.data.message : arguments )
     )
   });
 
   define('info_message', function(response) {
     return div({ 'class': 'info-message' },
-			div( response.data ? response.data.message : arguments )
+      div( response.data ? response.data.message : arguments )
     )
   });
   

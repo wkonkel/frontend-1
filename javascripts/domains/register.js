@@ -238,7 +238,7 @@ with (Hasher('Register','Application')) {
     // });
   });
 
-	
+  
   // NOTE: this function has a few race conditions...
   //  - "install_app_on_domain" isn't chained so the getDomains() could finish first
   //    and redirect you to the domain page before the dns entries are installed.

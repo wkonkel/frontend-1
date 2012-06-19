@@ -18,7 +18,7 @@ with (Hasher()) {
       Hasher.routes.push({
         regex: (new RegExp("^" + path.replace(/:[a-z_]+/g, '([^/]+)') + '$')),
         callback: callback,
-				context: this
+        context: this
       });
     } else {
       for (var key in path) {
