@@ -505,10 +505,6 @@ var Badger = {
 		Badger.api("/linked_accounts/" + id, "PUT", data, callback);
 	},
 	
-	syncLinkedAccount: function(id, data, callback) {
-		Badger.api("/linked_accounts/" + id + "/sync", "POST", data, callback);
-	},
-	
 	getLinkedAccounts: function(callback) {
 		Badger.api("/linked_accounts", callback);
 	},

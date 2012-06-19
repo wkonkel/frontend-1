@@ -84,13 +84,6 @@ with (Hasher('Registrar','Application')) {
 		return data;
   });
   
-  define('sync_now', function(data) {
-    // draw form for error handling but skip past it
-    data = Registrar.show_link(data);
-    data.sync = true;
-    Registrar.start_link(data, 'Starting Sync...', {});
-  });
-
   define('start_link', function(data, message, form_data) {
 		start_modal_spin(message);
 		$('#modal-dialog a.close-button').hide();
@@ -114,9 +107,6 @@ with (Hasher('Registrar','Application')) {
       BadgerCache.reload('linked_accounts');
 		};
 		
-		if (data.sync) {
-		  Badger.syncLinkedAccount(data.id, callback);
-		}
 		else if (data.id) {
 			// update existing account
 			Badger.updateLinkedAccount(data.id, data, callback);
