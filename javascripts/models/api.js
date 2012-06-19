@@ -33,13 +33,13 @@ var Badger = {
     // if multiple keys provided, returns a hash of key => value
     get: function() {
       if (arguments.length == 1) {
-        key = arguments[0];
+        var key = arguments[0];
         return Session[key];
       }
       
       var sessionVars = {};
       for (var i = 0; i < arguments.length; i++) {
-        key = arguments[i];
+        var key = arguments[i];
         sessionVars[key] = Session[key];
       }
       return sessionVars;
@@ -49,16 +49,16 @@ var Badger = {
     // if multiple keys provided, returns a hash of key => value
     remove: function() {
       if (arguments.length == 1) {
-        key = arguments[0];
-        value = Session[key];
+        var key = arguments[0];
+        var value = Session[key];
         delete Session[key];
         return value;
       }
       
       var sessionVars = {};
       for (var i = 0; i < arguments.length; i++) {
-        key = arguments[i];
-        value = Session[key];
+        var key = arguments[i];
+        var value = Session[key];
         delete Session[key];
         sessionVars[key] = value;
       }
