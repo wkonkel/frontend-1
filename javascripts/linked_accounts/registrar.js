@@ -107,7 +107,7 @@ with (Hasher('Registrar','Application')) {
       BadgerCache.reload('linked_accounts');
 		};
 		
-		else if (data.id) {
+		if (data.id) {
 			// update existing account
 			Badger.updateLinkedAccount(data.id, data, callback);
 		}
