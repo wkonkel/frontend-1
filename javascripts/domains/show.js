@@ -53,7 +53,7 @@ with (Hasher('DomainShow','DomainApps')) {
           );
           
           // if the number of years was already set, pick it off from session variables
-          if (years = Badger.Session.get('years')) {
+          if (years = Badger.Session.remove('years')) {
             $("select[name=years] option[value=" + years + "]").attr('selected', true);
           }
           

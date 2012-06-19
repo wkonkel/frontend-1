@@ -190,17 +190,14 @@ with (Hasher('Billing','Application')) {
   // reads from Badger.Session to get the number of Credits just added to the account,
   // and renders and info message into the div
   define('show_num_credits_added', function() {
-    if (!Badger.Session.get('credits_added')) return div();
+    var credits_added = Badger.Session.remove('credits_added');
+    if (!credits_added) return div();
     
     var arguments = flatten_to_array(arguments);
     var options = shift_options_from_args(arguments);
     
-    with (Badger.Session.read('credits_added')) {
-      if (options.delete_var) Badger.Session.remove('credits_added');
-      
-      var message = info_message("You have added ", credits_added, " ", credits_added <= 1 ? "Credit" : "Credits", " to your account.");
-      return div(options, message);
-    }
+    var message = info_message("You have added ", credits_added, " ", credits_added <= 1 ? "Credit" : "Credits", " to your account.");
+    return div(options, message);
   });
   
 

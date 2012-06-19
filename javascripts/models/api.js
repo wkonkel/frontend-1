@@ -46,21 +46,18 @@ var Badger = {
     get: function(key) {
       return this.read(key)[key];
     },
+
+    // delete the key/value from session and return value
+    remove: function(key) {
+      value = this.read(key)[key];
+      delete Session[key];
+      return value;
+    },
     
-    remove: function() {
-      if (arguments.length == 0) {
-        var keys = Object.keys(Session).slice(1);
-        for (i in keys) {
-          delete Session[keys[i]];
-        }
-      } else {
-        var sessionVars = {};
-        for (i in arguments) {
-          var key = arguments[i];
-          sessionVars[key] = Session[key];
-          delete Session[key]; // delete the variable from session
-        }
-        return sessionVars;
+    clear: function() {
+      var keys = Object.keys(Session).slice(1);
+      for (i in keys) {
+        delete Session[keys[i]];
       }
     }
   },
