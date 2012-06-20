@@ -105,17 +105,6 @@ with (Hasher('DomainShow','DomainApps')) {
     animate_progress_bar();
   });
 
-  define('animate_progress_bar', function(original_width) {
-    $(".meter > span").each(function() {
-      $(this)
-      .data("origWidth", $(this).width())
-      .width(original_width || 0)
-      .animate({
-        width: $(this).data("origWidth")
-        }, 600);
-    });
-  });
-
   define('domain_status_description', function(domain_obj) {
     var current_date = date();
     var expire_date = date(Date.parse(domain_obj.expires_at));
