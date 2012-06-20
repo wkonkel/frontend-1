@@ -81,6 +81,8 @@ with (Hasher('Domains')) {
             )
           )
         );
+        
+        animate_progress_bar();
       }
     });
   });
