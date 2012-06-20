@@ -532,15 +532,7 @@ var Badger = {
   
   shareMessage: function(linked_account_ids, data, callback) {
     if (typeof(linked_account_ids) == 'number') { linked_account_ids = [linked_account_ids] }
-
-    linked_account_ids.split(',').forEach(function(id) {
-      request_data = { 
-        domain_name: data.domain_name,
-        message: data.content
-      };
-
-      Badger.api("linked_accounts/" + id + "/share_message", "POST", request_data, callback);
-    });
+    Badger.api("linked_accounts/share_message", "POST", { message: message, linked_account_ids: linked_account_ids }, callback);
   },
   
   // shareDomainRegistration: function(linked_account_id, domain_name, hide_share_messages, callback) {
