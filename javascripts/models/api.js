@@ -338,12 +338,17 @@ var Badger = {
     Badger.api("/domains/" + name + "/transfer", 'POST', data, callback);
   },
   
+
+  tryAuthCodeForTransfer: function(domain_name, auth_code, callback) {
+    Badger.api("/domains/" + domain_name + "/try_auth_code", 'POST', { auth_code: auth_code }, callback);
+  },
+  
   // bulkTransferDomains: function(registrant_contact_id, domain_names, callback) {
   //   Badger.api("/domains/bulk_transfer", 'POST', { registrant_contact_id: registrant_contact_id, domain_names: domain_names }, callback);
   // },
   
   cancelDomainTransfer: function(domain_name, callback) {
-    Badger.api("/domains/" + domain_name + "/transfer", 'POST', { cancel: true }, callback);
+    Badger.api("/domains/" + domain_name + "/cancel_transfer", 'POST', callback);
   },
 
   renewDomain: function(name, years, callback) {
@@ -507,10 +512,6 @@ var Badger = {
   
   updateLinkedAccount: function(id, data, callback) {
     Badger.api("/linked_accounts/" + id, "PUT", data, callback);
-  },
-  
-  syncLinkedAccount: function(id, data, callback) {
-    Badger.api("/linked_accounts/" + id + "/sync", "POST", data, callback);
   },
   
   getLinkedAccounts: function(callback) {
