@@ -179,34 +179,36 @@ with (Hasher('DomainShow','DomainApps')) {
     //     show_retry = true;
     // });
     
-    return div({ id: "transfer-progress-report", 'class': "info-message", style: "padding: 10px; margin-top: 20px" },
-      cancel_transfer_button(domain_obj),
-      
-      div({ id: "progress-bar", style: "margin: -10px auto 0 auto" },
-        table( tbody(
-          tr(
-            td({ style: "width: 25%" }, p({ style: "font: 25px AdelleBold, Titillium, Arial, sans-serif" }, "Transfer Progress")),
-            td({ style: "width: 10%; text-align: center; font-weight: bold; font-size: 20px", id: "progress-bar-percentage" }, step_percentage + "%"),
-            td({ style: "width: 50%" }, div({ 'class': "meter green nostripes" }, span({ style: "width: " + step_percentage + "%" })))
-          )
-        ))
+    return div(
+      div({ id: "transfer-progress-report", 'class': "info-message", style: "padding: 10px; margin-top: 20px" },
+        div({ id: "progress-bar", style: "margin: -10px auto 0 auto" },
+          table( tbody(
+            tr(
+              td({ style: "width: 25%" }, p({ style: "font: 25px AdelleBold, Titillium, Arial, sans-serif" }, "Transfer Progress")),
+              td({ style: "width: 10%; text-align: center; font-weight: bold; font-size: 20px", id: "progress-bar-percentage" }, step_percentage + "%"),
+              td({ style: "width: 50%" }, div({ 'class': "meter green nostripes" }, span({ style: "width: " + step_percentage + "%" })))
+            )
+          ))
+        ),
+
+        // div({ 'class': "status-message", style: 'margin-top: -20px' }, 
+        //   "Estimated transfer time: ", 
+        //   span({ style: "font-weight: bold" }, "5 minutes"), '. ', 
+        //   'Feel free to leave this page and come back later.'
+        // ),
+
+        div({ style: "margin-bottom: 40px", id: 'transfer-steps' }, detail_information_rows(domain_obj))
       ),
       
-      // div({ 'class': "status-message", style: 'margin-top: -20px' }, 
-      //   "Estimated transfer time: ", 
-      //   span({ style: "font-weight: bold" }, "5 minutes"), '. ', 
-      //   'Feel free to leave this page and come back later.'
-      // ),
-      
-      div({ style: "margin-bottom: 40px", id: 'transfer-steps' }, detail_information_rows(domain_obj))
+      div({ id: "cancel-transfer-button-div", style: 'float: right' },
+        cancel_transfer_button(domain_obj)
+      )
     );
   });
   
   define('cancel_transfer_button', function(domain_obj, callback) {
-    return div({ id: "cancel-transfer-button-div" },
-      a({ 'class': 'close-button', style: "position: relative; float: right; margin-top: -10px; margin-right: -10px", href: callback || curry(cancel_transfer_modal, domain_obj) }, 'X')
-    );
-  })
+    return a({ href: callback || curry(cancel_transfer_modal, domain_obj) }, 'Cancel this transfer.');
+  });
   
   define('cancel_transfer_modal', function(domain_obj) {
     if (!domain_obj.transfer_in) return ;
