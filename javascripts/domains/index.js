@@ -17,12 +17,16 @@ with (Hasher('Domains')) {
         
         if (domains.length <= 0) {
           render({ into: domains_div },
-            div('You have not registered, transferred, or linked any domains with Badger.'),
+            h2('Get Started With Badger'),
+
             ul(
-              li(a({ href: '#search' }, 'Register domains with Badger.')),
-              li(a({ href: '#domains/transfer' }, 'Transfer domains to Badger.')),
-              li(a({ href: '#linked_accounts' }, 'Link domains with Badger through another account.'))
-            )
+              li(a({ href: '#search' }, 'Register a new domain')),
+              li(a({ href: '#domains/transfer' }, 'Transfer an existing domain'))
+            ),
+            
+            h2('Link an Existing Account'),
+            LinkedAccounts.add_linked_account_icons(['godaddy', 'networksolutions', 'enom'])
+            
           );
         } else {
           render({ into: domains_div },

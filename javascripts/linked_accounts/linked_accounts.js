@@ -30,8 +30,6 @@ with (Hasher('LinkedAccounts','Application')) {
         my_accounts_div = div({ style: 'margin-bottom: 20px;' },
           my_linked_accounts_table(response.data)
         )
-      } else {
-        my_accounts_div = info_message('Add an account now by clicking one of the icons below.')
       }
       
       render({ into: target_div },
