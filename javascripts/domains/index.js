@@ -60,8 +60,6 @@ with (Hasher('Domains')) {
       action: {
         method: Badger.getDomains,
         on_ok: function(response) {
-          console.log(response);
-          
           var domains = (response.data || []).filter(function(domain) {
             return domain.permissions_for_person.includes('pending_transfer');
           });
