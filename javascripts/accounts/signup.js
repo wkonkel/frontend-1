@@ -31,26 +31,20 @@ with (Hasher('Signup','Application')) {
     Badger.getInvite(invite_code, function(response) {
       //console.log(response);
       if (response.meta.status == 'ok') {
-        var form;
-        if (!response.data.redeemed) {
-          form = account_create_form(response.data);
-          var message;
-          if (response.data.inviter) {
-            message = response.data.inviter.name + ' has invited you to Badger!';
-            if (response.data.domain_credits > 0) {
-              message += " And they've given you " + response.data.domain_credits + " free Credit" + (response.data.domain_credits != 1 ? 's' : '') + "!";
-            }
-          } else if (response.data.domain_credits > 0) {
-            message = " This signup code has " + response.data.domain_credits + " free Credit" + (response.data.domain_credits != 1 ? 's' : '') + "!";
+        var message;
+        if (response.data.inviter) {
+          message = response.data.inviter.name + ' has invited you to Badger!';
+          if (response.data.domain_credits > 0) {
+            message += " And they've given you " + response.data.domain_credits + " free Credit" + (response.data.domain_credits != 1 ? 's' : '') + "!";
           }
-          render({ target: inviter_message_div }, success_message(message));
-        } else {
-          // No need to report the code is already redeemed?
-          form = account_create_form();
+        } else if (response.data.domain_credits > 0) {
+          message = " This signup code has " + response.data.domain_credits + " free Credit" + (response.data.domain_credits != 1 ? 's' : '') + "!";
         }
-        render({ target: target_div }, form);
+        render({ target: inviter_message_div }, success_message(message));
+        render({ target: target_div }, account_create_form(response.data));
       } else {
-        render({ target: inviter_message_div }, error_message(response));
+        render({ target: inviter_message_div }, error_message(response.data.message, ' However, you can still signup using the form below.'));
+        render({ target: target_div }, account_create_form());
       }
     });
   });
