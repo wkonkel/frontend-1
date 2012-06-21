@@ -29,14 +29,19 @@ with (Hasher('Signup','Application')) {
       target_div
     );
     Badger.getInvite(invite_code, function(response) {
-      console.log(response);
+      //console.log(response);
       if (response.meta.status == 'ok') {
         var form;
         if (!response.data.redeemed) {
           form = account_create_form(response.data);
-          var message = response.data.inviter.name + ' has invited you to Badger!';
-          if (response.data.domain_credits > 0) {
-            message += " And they've given you " + response.data.domain_credits + " free Credit" + (response.data.domain_credits != 1 ? 's' : '') + "!";
+          var message;
+          if (response.data.inviter) {
+            message = response.data.inviter.name + ' has invited you to Badger!';
+            if (response.data.domain_credits > 0) {
+              message += " And they've given you " + response.data.domain_credits + " free Credit" + (response.data.domain_credits != 1 ? 's' : '') + "!";
+            }
+          } else if (response.data.domain_credits > 0) {
+            message = " This signup code has " + response.data.domain_credits + " free Credit" + (response.data.domain_credits != 1 ? 's' : '') + "!";
           }
           render({ target: inviter_message_div }, success_message(message));
         } else {

@@ -300,7 +300,7 @@ with (Hasher('DomainShow','DomainApps')) {
       details:{
         'ok':       div({ style: "text-decoration: line-through" }, "Auth code verified!"),
 
-        'pending':  div("Reading auth code from " + domain_obj.current_registrar + "... this could take a few days."),
+        'pending':  div("Reading auth code from " + domain_obj.current_registrar + "."),
 
         'needed':   div(
           div({ id: 'auth-code-row-form-wrapper' },
@@ -344,7 +344,7 @@ with (Hasher('DomainShow','DomainApps')) {
       name: 'Approve request',
 
       details:{
-        'pending':  div("Approving transfer request at " + domain_obj.current_registrar + "... this could take a few days."),
+        'pending':  div("Approving transfer request at " + domain_obj.current_registrar + "."),
         'needed':   div(
           "This will be automatically approved in 5 days.  You may be able to approve it immediately through " + domain_obj.current_registrar + ".", 
           render_help_link('transfer_requested', domain_obj.current_registrar)
