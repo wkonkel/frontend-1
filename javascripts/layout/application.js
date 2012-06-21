@@ -188,7 +188,7 @@ with (Hasher('Application')) {
   /*
     Animate progress bars, for the sake of prettiness
   */
-  define('animate_progress_bar', function(original_width) {
+  define('animate_progress_bars', function(original_width) {
     $(".meter > span").each(function() {
       $(this)
       .data("origWidth", $(this).width())
@@ -198,7 +198,6 @@ with (Hasher('Application')) {
         }, 600);
     });
   });
-  
   
   /*
     It's not possible to use 'date()', you have to

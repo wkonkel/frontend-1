@@ -102,7 +102,7 @@ with (Hasher('DomainShow','DomainApps')) {
     }
     
     // animate the progress bar on page load
-    animate_progress_bar();
+    animate_progress_bars();
   });
 
   define('domain_status_description', function(domain_obj) {

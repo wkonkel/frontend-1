@@ -272,6 +272,8 @@ with (Hasher('Domains','Application')) {
               div({ 'class': "meter small green nostripes", style: 'height: 10px;' }, span({ style: "height: 10px; width: " + step_percentage + "%" }))
             )
           );
+          
+          animate_progress_bars();
         })
       ))
     );

@@ -53,38 +53,77 @@ with (Hasher('Domains')) {
       target_div
     );
     
-    with_domains({
-      filter: function(domain) {
-        return domain.permissions_for_person.includes('pending_transfer');
-      },
+    long_poll({
+      max_time: -1,
+      interval: 15000,
       
-      callback: function(domains) {
-        var domains_div = div();
-        
-        if (domains.length <= 0) {
-          render({ into: domains_div },
-            div('You do not have any domains that are pending transfer.'),
-            ul(
-              li(a({ href: '#domains/transfer' }, 'Transfer domains to Badger'))
+      action: {
+        method: Badger.getDomains,
+        on_ok: function(response) {
+          console.log(response);
+          
+          var domains = (response.data || []).filter(function(domain) {
+            return domain.permissions_for_person.includes('pending_transfer');
+          });
+          
+          var domains_div = div();
+          
+          if (domains.length <= 0) {
+            render({ into: domains_div },
+              div('You do not have any domains that are pending transfer.'),
+              ul(
+                li(a({ href: '#domains/transfer' }, 'Transfer domains to Badger'))
+              )
+            );
+          } else {
+            render({ into: domains_div },
+              sortable_pending_transfer_table(domains, domains_div)
+            );
+          }
+          
+          render({ into: target_div },
+            div({ 'class': 'fancy' },
+              domains_nav_table(
+                domains_div
+              )
             )
-          );
-        } else {
-          render({ into: domains_div },
-            sortable_pending_transfer_table(domains, domains_div)
           );
         }
-        
-        render({ into: target_div },
-          div({ 'class': 'fancy' },
-            domains_nav_table(
-              domains_div
-            )
-          )
-        );
-        
-        animate_progress_bar();
       }
-    });
+    })
+    
+    // with_domains({
+    //   filter: function(domain) {
+    //     return domain.permissions_for_person.includes('pending_transfer');
+    //   },
+    //   
+    //   callback: function(domains) {
+    //     var domains_div = div();
+    //     
+    //     if (domains.length <= 0) {
+    //       render({ into: domains_div },
+    //         div('You do not have any domains that are pending transfer.'),
+    //         ul(
+    //           li(a({ href: '#domains/transfer' }, 'Transfer domains to Badger'))
+    //         )
+    //       );
+    //     } else {
+    //       render({ into: domains_div },
+    //         sortable_pending_transfer_table(domains, domains_div)
+    //       );
+    //     }
+    //     
+    //     render({ into: target_div },
+    //       div({ 'class': 'fancy' },
+    //         domains_nav_table(
+    //           domains_div
+    //         )
+    //       )
+    //     );
+    //     
+    //     animate_progress_bars();
+    //   }
+    // });
   });
   
   route('#domains/expiring-soon', function() {
