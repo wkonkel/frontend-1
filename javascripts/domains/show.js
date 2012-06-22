@@ -410,7 +410,7 @@ with (Hasher('DomainShow','DomainApps')) {
   define('update_progress_bar', function(new_percentage) {
     var current_meter_width = parseInt($(".meter > span").css('width'));
     $(".meter > span").css('width', new_percentage.toString() + "%");
-    animate_progress_bar(current_meter_width);
+    animate_progress_bars(current_meter_width);
     $("#progress-bar-percentage").html(parseInt(new_percentage).toString() + "%");
   });
   
