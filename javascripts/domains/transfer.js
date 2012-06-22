@@ -1,7 +1,7 @@
 with (Hasher('Transfer','Application')) {
   
   route('#domains/transfer', function() {
-    var domains = (Badger.Session.get('domains') || []).sort();
+    var domains = (Badger.Session.remove('domains') || []).unique().sort();
 
     render(
       chained_header_with_links(
@@ -212,7 +212,7 @@ with (Hasher('Transfer','Application')) {
   // invoke this method to make it happen
   define('redirect_to_transfer_for_domain', function(domains) {
     // prepopulate the domains array with this one
-    Badger.Session.write({ domains: typeof(domains) == 'string' ? [domains] : domains });
+    Badger.Session.write({ domains: typeof(domains) == 'string' ? [domains] : domains.unique() });
     set_route('#domains/transfer');
   });
   
