@@ -342,6 +342,10 @@ var Badger = {
   tryAuthCodeForTransfer: function(domain_name, auth_code, callback) {
     Badger.api("/domains/" + domain_name + "/try_auth_code", 'POST', { auth_code: auth_code }, callback);
   },
+
+  retryRejectedTransfer: function(domain_name, callback) {
+    Badger.api("/domains/" + domain_name + "/retry_rejected_transfer", 'POST', callback);
+  },
   
   // bulkTransferDomains: function(registrant_contact_id, domain_names, callback) {
   //   Badger.api("/domains/bulk_transfer", 'POST', { registrant_contact_id: registrant_contact_id, domain_names: domain_names }, callback);

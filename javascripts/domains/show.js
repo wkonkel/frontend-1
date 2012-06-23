@@ -161,13 +161,6 @@ with (Hasher('DomainShow','DomainApps')) {
   define('display_transfer_status', function(domain_obj) {
     var step_percentage = Domains.compute_transfer_progress_percentage(domain_obj);
 
-    // determine whether or not we should show the retry button
-    var show_retry = true;
-    // domain_obj.transfer_steps.pending.forEach(function(step) {
-    //   if (step.name == "Approve transfer" && step.value == "transfer_rejected")
-    //     show_retry = true;
-    // });
-    
     return div(
       div({ id: "transfer-progress-report", 'class': "info-message", style: "padding: 10px; margin-top: 20px" },
         div({ id: "progress-bar", style: "margin: -10px auto 0 auto" },
@@ -180,11 +173,11 @@ with (Hasher('DomainShow','DomainApps')) {
           ))
         ),
 
-        // div({ 'class': "status-message", style: 'margin-top: -20px' }, 
-        //   "Estimated transfer time: ", 
-        //   span({ style: "font-weight: bold" }, "5 minutes"), '. ', 
-        //   'Feel free to leave this page and come back later.'
-        // ),
+        ($.map(domain_obj.transfer_in, function(k,v) { return k; }).indexOf('needed') == -1) ? [
+          div({ 'class': "status-message" }, 
+            "Estimated transfer time is ", span({ style: "font-weight: bold" }, "5 minutes"), '.  Feel free to leave this page and check back later.'
+          )
+        ] : [],
 
         div({ style: "margin-bottom: 40px", id: 'transfer-steps' }, detail_information_rows(domain_obj))
       ),
@@ -253,7 +246,7 @@ with (Hasher('DomainShow','DomainApps')) {
 
       details:{
         'ok':       div({ style: "text-decoration: line-through" }, 'This domain is currently unlocked.'),
-        'pending':  div('This domain is currently being unlocked at ' + domain_obj.current_registrar  + '. This can take up to 5 minutes.'),
+        'pending':  div('This domain is currently being unlocked at ' + domain_obj.current_registrar  + '.'),
         'needed':   div(
           'You need to unlock this domain at ' + domain_obj.current_registrar + '.',
           render_help_link('needs_unlock', domain_obj.current_registrar)
@@ -351,7 +344,16 @@ with (Hasher('DomainShow','DomainApps')) {
         ),
         'trying':   div('Submitting transfer request to registry.'),
         'unknown':  div('The previous steps must be completed first.'),
-        'ok':       div('Finalizing transfer and configuring domain.')
+        'ok':       div('Finalizing transfer and configuring domain.'),
+        
+        'rejected': div(
+                      div({ id: 'approve_transfer-row-wrapper' },
+                        'This transfer has been rejected at the current registrar (' + domain_obj.current_registrar + '). ',
+                        form({ style: 'margin: 5px 0', action: curry(retry_rejected_transfer, domain_obj.name)}, submit({ 'class': "myButton" }, 'Retry Transfer'))
+                      ),
+                      div({ id: 'approve_transfer-row-retrying', style: 'display: none' }, 'Submitting transfer request to registry.')
+                    )
+        
       }[domain_obj.transfer_in.approve_transfer],
 
       icon:{
@@ -359,17 +361,17 @@ with (Hasher('DomainShow','DomainApps')) {
         'needed':   'spin',
         'trying':   'spin',
         'unknown':  'none',
-        'ok':       'spin'
-      }[domain_obj.transfer_in.approve_transfer]
+        'ok':       'spin',
+        'rejected':   'error'
+      }[domain_obj.transfer_in.approve_transfer],
+      
+      icon_id: 'approve_transfer_icon'
     });
     
     // details = div(
     //   'You attempted to transfer this domain, however, the currently owning registrar, ' + domain_obj.current_registrar + ', rejected it.',
     //   render_help_link('transfer_rejected', domain_obj.current_registrar)  
     // );
-    // progress_indicator = img({ src: "images/icon-no-light.gif" });
-    // // bring the retry button out of hiding
-    // $("#retry-transfer-button").css('display','');
   });
 
 
@@ -405,6 +407,16 @@ with (Hasher('DomainShow','DomainApps')) {
         reload_transfer_steps_data(domain_name);
       });
     }
+  });
+
+  define('retry_rejected_transfer', function(domain_name) {
+    $('#approve_transfer_icon')[0].src = 'images/ajax-loader.gif';
+    $("#approve_transfer-row-wrapper").hide();
+    $("#approve_transfer-row-retrying").show();
+
+    Badger.retryRejectedTransfer(domain_name, function(transfer_response) {
+      reload_transfer_steps_data(domain_name);
+    });
   });
   
   define('update_progress_bar', function(new_percentage) {
