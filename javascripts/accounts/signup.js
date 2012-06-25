@@ -30,8 +30,8 @@ with (Hasher('Signup','Application')) {
     );
     Badger.getInvite(invite_code, function(response) {
       //console.log(response);
+      var message;
       if (response.meta.status == 'ok') {
-        var message;
         if (response.data.inviter) {
           message = response.data.inviter.name + ' has invited you to Badger!';
           if (response.data.domain_credits > 0) {
@@ -40,12 +40,12 @@ with (Hasher('Signup','Application')) {
         } else if (response.data.domain_credits > 0) {
           message = " This signup code has " + response.data.domain_credits + " free Credit" + (response.data.domain_credits != 1 ? 's' : '') + "!";
         }
-        render({ target: inviter_message_div }, success_message(message));
-        render({ target: target_div }, account_create_form(response.data));
+        message = success_message(message);
       } else {
-        render({ target: inviter_message_div }, error_message(response.data.message, ' However, you can still signup using the form below.'));
-        render({ target: target_div }, account_create_form());
+        message = error_message(response.data.message, ' However, you can still sign up using the form below.');
       }
+      render({ target: inviter_message_div }, message);
+      render({ target: target_div }, account_create_form(response.data.invitee, invite_code));
     });
   });
   
@@ -57,16 +57,21 @@ with (Hasher('Signup','Application')) {
     );
   });
   
-  define('account_create_form', function(data) {
-    data = data || {};
-    var invitee = data.invitee || {};
-    var sidebar = data.invitee ? div() :
+  define('account_create_form', function(invitee, invite_code) {
+    var sidebar = invite_code ?
         div({ 'class': 'sidebar' },
-          info_message(
-            h3("Already have an account?"),
-            div({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
-          )
+            info_message(
+                h3("Welcome to Badger!"),
+                p("We're looking forward to helping you manage your domains here and at other registrars.")
+            )
+        ) :
+        div({ 'class': 'sidebar' },
+            info_message(
+                h3("Already have an account?"),
+                p({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
+            )
         );
+    invitee = invitee || {};
 
     return div(
       sidebar,
@@ -101,7 +106,7 @@ with (Hasher('Signup','Application')) {
         fieldset({ 'class': 'no-label' },
           input({ 'class': 'myButton', type: 'submit', value: 'Continue »' })
         ),
-        input({ type: 'hidden', name: 'invite_code', id: 'invite_code', value: data.code })
+        input({ type: 'hidden', name: 'invite_code', id: 'invite_code', value: invite_code })
       )
     );
     $('input[name="first_name"]').focus();
