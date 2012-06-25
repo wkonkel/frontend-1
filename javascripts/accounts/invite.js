@@ -39,7 +39,7 @@ with (Hasher('Invite','Application')) {
           render({ target: target_div },
             table({ 'class': 'fancy-table invite-status-table' },
               tbody(
-                tr(
+                tr({ 'class': 'table-header' },
                   th("Date"),
                   th("Name"),
                   th("Email"),
@@ -102,10 +102,13 @@ with (Hasher('Invite','Application')) {
     Badger.sendInvite(data, function(response) {
       BadgerCache.flush('account_info');
       BadgerCache.flush('invite_status');
-      send_invite_result(response.data, response.meta.status);
       update_credits();
-      // update_invites_available();  // Always on: https://www.pivotaltracker.com/story/show/30427979
-      set_route("#invites");
+      if (response.meta.status == 'ok') {
+        set_route("#invites");
+      } else {
+        hide_form_submit_loader();
+        $('#send-invite-messages').empty().append(error_message({ data: { message: response.data.message } }) );
+      }
     });
   });
 
@@ -113,10 +116,13 @@ with (Hasher('Invite','Application')) {
     Badger.revokeInvite(invite_id, function(response) {
       BadgerCache.flush('account_info');
       BadgerCache.flush('invite_status');
-      set_route('#invites');
       update_credits();
-      // update_invites_available();  //  Always on: https://www.pivotaltracker.com/story/show/30427979
-      revoke_message(response.data, response.meta.status);
+      if (response.meta.status == 'ok') {
+        set_route("#invites");
+      } else {
+        hide_form_submit_loader();
+        $('#send-invite-messages').empty().append(error_message({ data: { message: response.data.message } }) );
+      }
     });
   });
 
@@ -159,25 +165,4 @@ with (Hasher('Invite','Application')) {
       )
     );
   });
-
-  define('send_invite_result', function(data, status) {
-    show_modal(
-      div(
-        h1("Invitation Sent"),
-        p( { 'class': status == 'ok' ? '': 'error-message'}, data.message),
-        a({ href: hide_modal, 'class': 'myButton', value: "submit" }, "Close")
-      )
-    );
-  });
-
-  define('revoke_message', function(data, status) {
-    show_modal(
-      div (
-        h1("Revoke Result Message"),
-        p( {'class': status == 'ok' ? '' : 'error-message'}, data.message),
-        a({ href: hide_modal, 'class': 'myButton', value: "submit" }, "Close")
-      )
-    );
-  });
-
 }
