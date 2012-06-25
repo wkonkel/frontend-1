@@ -527,6 +527,10 @@ var Badger = {
     Badger.api("/domains/remote_whois", "POST", { domain: domain }, callback);
   },
 
+  badgerWhois: function(domain, callback) {
+    Badger.api("/domains/whois", "POST", { domain: domain }, callback);
+  },
+
   createLinkedAccount: function(data, callback) {
     Badger.api("/linked_accounts", "POST", data, callback);
   },
