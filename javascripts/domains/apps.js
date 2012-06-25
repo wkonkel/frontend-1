@@ -1,5 +1,5 @@
 with (Hasher('Application')) {
-  // TODO: this despearetly needs to be cached
+  // TODO: this desperately needs to be cached
   define('load_domain', function(domain, callback) {
     var that = this;
     

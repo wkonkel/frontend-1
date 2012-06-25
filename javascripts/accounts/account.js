@@ -1,16 +1,16 @@
 with (Hasher('Account','Application')) {
   route('#account', function() {
-    var account_setings = div(spinner('Loading...'));
+    var account_settings = div(spinner('Loading...'));
 
     render(
       h1('My Account » Settings'),
       account_nav_table(
-        account_setings
+        account_settings
       )
     );
 //;
     BadgerCache.getAccountInfo(function(response) {
-      render({ into: account_setings }, 
+      render({ into: account_settings },
         change_account_form(response.data)
       );
     });
