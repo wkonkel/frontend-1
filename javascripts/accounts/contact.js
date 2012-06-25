@@ -5,6 +5,7 @@ with (Hasher('Contact','Application')) {
     var fields_wrapper = div({ style: 'display: none' }, all_form_fields(data));
     
     return div(
+      div({ id: 'contact-select-message-div' }),
       fieldset(
         label({ 'for': 'registrant_contact_id' }, 'Registrant:'),
         contacts_select({ id: 'registrant_contact_id', name: 'registrant_contact_id', style: "max-width: 400px", new_contact_elements: fields_wrapper })
@@ -63,19 +64,39 @@ with (Hasher('Contact','Application')) {
 
   define('contacts_select', function(options) {
     var selected_id = options.selected_id; delete options.selected_id;
-
+    
     // if new_contact_elements is passed in, add an extra option for it at end and toggle the element
     var new_contact_elements = options.new_contact_elements; delete options.new_contact_elements;
     if (new_contact_elements) options.onChange = function() { (this.selectedIndex == this.options.length-1) ? $(new_contact_elements).show() : $(new_contact_elements).hide(); };
 
     var select_elem = select(options, option({ disabled: 'disabled' }, 'Loading...'));
 
-    BadgerCache.getContacts(function(contacts) {
+    BadgerCache.getContacts(function(response) {
+      var contacts = response.data || [];
+      
       // remove "Loading..."
       select_elem.removeChild(select_elem.firstChild);
       
+      // hide contacts that aren't complete, and need to be updated
+      // manually by the user (legacy contact data imported from rhinonames) --- CAB
+      contacts = contacts.filter(function(contact) {
+        
+        if (contact.needs_update) {
+          console.log('contact (' + contact.id + ') needs update');
+
+          // hack to show message after form loads. --- CAB
+          setTimeout(function() {
+            $('#contact-select-message-div').html(info_message(
+              'You already have a Whois profile created, but it needs to be updated. ', a({ href: '#account/profiles/edit/' + contact.id }, 'Update profile.')
+            ));
+          }, 250);
+        }
+        
+        return !contact.needs_update; // this attribute is added clientside, in the getContacts method of api.js
+      });
+      
       // add each of the contacts
-      contacts.data.map(function(profile) { 
+      contacts.map(function(profile) { 
         var opts = { value: profile.id };
         if (''+profile.id == ''+selected_id) opts['selected'] = 'selected';
         var node = option(opts, profile.first_name + ' ' + profile.last_name + (profile.organization ? ", " + profile.organization : '') + " (" + profile.address + (profile.address2 ? ', ' + profile.address2 : '') + ")");

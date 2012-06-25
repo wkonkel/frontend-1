@@ -70,7 +70,11 @@ with (Hasher('Whois','Application')) {
 
     render(
       div(
-        h1('Edit Contact'),
+        chained_header_with_links(
+          { text: 'My Account' },
+          { text: 'Profiles', href: '#account/profiles' },
+          { text: 'Edit' }
+        ),
 
         div({ style: 'float: left; width: 200px'},
           Account.account_nav_table()

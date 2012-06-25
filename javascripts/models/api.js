@@ -364,7 +364,24 @@ var Badger = {
   },
 
   getContacts: function(callback) {
-    Badger.api("/account/contacts", callback);
+    Badger.api("/account/contacts", function(response) {
+      if (response.data) {
+        response.data = (response.data || []).map(function(contact) {
+          contact.needs_update = false;
+          
+          for (key in contact) {
+            if (contact[key] && contact[key].toString().match(/^UNKNOWN$/)) {
+              contact[key] = undefined;
+              contact.needs_update = true;
+            }
+          }
+          
+          return contact;
+        });
+      }
+      
+      callback(response);
+    });
   },
 
   createContact: function(data, callback) {
