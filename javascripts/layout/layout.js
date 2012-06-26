@@ -238,11 +238,11 @@ with (Hasher('Application')) {
       input({ id: 'form-search-input', type: 'text', value: '', placeholder: 'Search for domains', events: {
         // click: Search.set_search_route,
         change: Search.search_box_changed,
-        keyup: Search.search_box_changed;
+        keyup: Search.search_box_changed,
         keypress: function(e) {
           if (Search.key_is_valid_for_domain_name(e)) stop_event(e);
         }
-      }})
+      }});
     );
   });
 
