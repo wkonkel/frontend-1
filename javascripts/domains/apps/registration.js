@@ -40,16 +40,13 @@ with (Hasher('Registration','DomainApps')) {
         
         render({ target: whois_div }, whois_view(domain_obj));
 
-        render({ target: button_div },
-          div({ style: "float: right; margin-top: -44px" },
-            (domain_obj.badger_registration && $.inArray("renew", (domain_obj.permissions_for_person || [])) >= 0) ? [
-              // a({ 'class': "myButton small", href: '#domains/' + domain + '/registration/extend' }, "Extend Registration (Renew)")
-            ] : [
+         if (!domain_obj.badger_registration && !Account.has_permission('pending_transfer', domain_obj.permissions_for_person)) {
+          render({ into: button_div },
+            div({ style: "float: right; margin-top: -44px" },
               a({ 'class': "myButton small", href: curry(Transfer.redirect_to_transfer_for_domain, domain) }, "Transfer to Badger")
-            ]
-          )
-        );
-
+            )
+          );
+        }
       });
     });
   });
