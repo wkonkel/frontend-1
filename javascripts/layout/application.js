@@ -207,7 +207,11 @@ with (Hasher('Application')) {
     var my_date = date('10-10-2020');
   */
   define('date', function(date_string) {
-    return new Date(date_string ? Date.parse(date_string) : '');
+    if (date_string) {
+      return new Date(Date.parse(date_string));
+    } else {
+      return new Date();
+    }
   });
 }
 
