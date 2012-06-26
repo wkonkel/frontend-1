@@ -32,8 +32,8 @@ with (Hasher('Search','Application')) {
       set_route('#search');
       this.last_search_value = null;
     }
-  })
-
+  });
+  
   define('search_box_changed', function() {
     set_search_route();
 
@@ -61,6 +61,18 @@ with (Hasher('Search','Application')) {
     }
 
     this.last_search_value = current_value;
+  });
+  
+  // Hack to make it work on Firefox
+  // In Firefox, charCode of Arrow and Delete key is 0, keyCode is 37, 38, 39, 40, 8
+  define('key_is_valid_for_domain_name', function(keypress_event) {
+    return !([37, 38, 39, 40, 8].indexOf(parseInt(keypress_event.keyCode)) != -1 && keypress_event.charCode == 0) && key_code_matches(keypress_event, /[^a-zA-Z0-9\-\.]/);
+  });
+  
+  define('key_code_matches', function(keypress_event, regex) {
+    // In IE charCode is Undefined, use keyCode
+    var code = keypress_event.charCode || keypress_event.keyCode;
+    return regex.test(String.fromCharCode(code));
   });
 
   define('search_result_row', function(results) {

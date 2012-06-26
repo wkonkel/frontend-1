@@ -236,22 +236,15 @@ with (Hasher('Application')) {
   define('search_box', function(domain) {
     return form({ id: "form-search", action: Search.search_box_changed },
       input({ id: 'form-search-input', type: 'text', value: '', placeholder: 'Search for domains', events: {
-        click: Search.set_search_route,
+        // click: Search.set_search_route,
         change: Search.search_box_changed,
-        keyup: Search.search_box_changed,
+        keyup: Search.search_box_changed;
         keypress: function(e) {
-          if (e.charCode)
-            code = e.charCode
-          else // In IE charCode is Undefined, use keyCode
-            code = e.keyCode
-          // Hack to make it work on Firefox
-          // In Firefox, charCode of Arrow and Delete key is 0, keyCode is 37, 38, 39, 40, 8
-          if (!([37, 38, 39, 40, 8].indexOf(parseInt(e.keyCode)) != -1 && e.charCode == 0) && /[^a-zA-Z0-9\-\.]/.test(String.fromCharCode(code))) stop_event(e);
+          if (Search.key_is_valid_for_domain_name(e)) stop_event(e);
         }
       }})
     );
   });
-  
 
   ////////////////
   // dom helpers
