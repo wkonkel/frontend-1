@@ -42,6 +42,8 @@ with (Hasher('Domains')) {
             )
           )
         );
+        
+        initialize_filters();
       }
     });
   });
@@ -63,7 +65,7 @@ with (Hasher('Domains')) {
       
       action: {
         method: BadgerCache.getDomains,
-        on_ok: function(response) {
+        on_ok: function(response, poll_data) {
           var domains = (response.data || []).filter(function(domain) {
             return domain.permissions_for_person.includes('pending_transfer');
           });
@@ -78,9 +80,11 @@ with (Hasher('Domains')) {
               )
             );
           } else {
+            save_domain_filter_states();
             render({ into: domains_div },
               sortable_pending_transfer_table(domains, domains_div)
             );
+            initialize_filters();
           }
           
           render({ into: target_div },
@@ -93,39 +97,6 @@ with (Hasher('Domains')) {
         }
       }
     })
-    
-    // with_domains({
-    //   filter: function(domain) {
-    //     return domain.permissions_for_person.includes('pending_transfer');
-    //   },
-    //   
-    //   callback: function(domains) {
-    //     var domains_div = div();
-    //     
-    //     if (domains.length <= 0) {
-    //       render({ into: domains_div },
-    //         div('You do not have any domains that are pending transfer.'),
-    //         ul(
-    //           li(a({ href: '#domains/transfer' }, 'Transfer domains to Badger'))
-    //         )
-    //       );
-    //     } else {
-    //       render({ into: domains_div },
-    //         sortable_pending_transfer_table(domains, domains_div)
-    //       );
-    //     }
-    //     
-    //     render({ into: target_div },
-    //       div({ 'class': 'fancy' },
-    //         domains_nav_table(
-    //           domains_div
-    //         )
-    //       )
-    //     );
-    //     
-    //     animate_progress_bars();
-    //   }
-    // });
   });
   
   route('#domains/expiring-soon', function() {
@@ -172,6 +143,8 @@ with (Hasher('Domains')) {
             )
           )
         );
+        
+        initialize_filters();
       }
     });
   });

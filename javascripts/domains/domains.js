@@ -12,9 +12,9 @@ with (Hasher('Domains','Application')) {
           // domains nav
           div({ style: 'margin-bottom: 20px' },
             ul({ id: 'domains-left-nav' },
-              li(a({ href: '#domains', 'class': (get_route().match(/^#domains$/) ? 'active' : '') }, 'All Domains')),
-              li(a({ href: '#domains/pending-transfer', 'class': (get_route().match(/^#domains\/pending-transfer$/) ? 'active' : '') }, 'Pending Transfer')),
-              li(a({ href: '#domains/expiring-soon', 'class': (get_route().match(/^#domains\/expiring-soon$/) ? 'active' : '') }, 'Expiring Soon'))
+              li(a({ onClick: curry(save_domain_filter_states_and_set_route, '#domains'), 'class': (get_route().match(/^#domains$/) ? 'active' : '') }, 'All Domains')),
+              li(a({ onClick: curry(save_domain_filter_states_and_set_route, '#domains/pending-transfer'), 'class': (get_route().match(/^#domains\/pending-transfer$/) ? 'active' : '') }, 'Pending Transfer')),
+              li(a({ onClick: curry(save_domain_filter_states_and_set_route, '#domains/expiring-soon'), 'class': (get_route().match(/^#domains\/expiring-soon$/) ? 'active' : '') }, 'Expiring Soon'))
             )
           ),
           
@@ -34,6 +34,20 @@ with (Hasher('Domains','Application')) {
     });
     
     return domains_nav_table;
+  });
+  
+  define('save_domain_filter_states_and_set_route', function(route) {
+    save_domain_filter_states();
+    set_route(route);
+    apply_selected_filters();
+  });
+  
+  define ('save_domain_filter_states', function() {
+    var domain_filter_states = {};
+    $(':checkbox[name^=filter-registrar]').each(function() {
+      domain_filter_states[this.name] = this.checked;
+    });
+    Badger.Session.write({ 'domain_filter_states': domain_filter_states });
   });
   
   /*
@@ -58,7 +72,6 @@ with (Hasher('Domains','Application')) {
       // domains = domains.stable_sort(sort_by_current_registrar);
       
       if (options.callback) options.callback(domains||[]);
-      initialize_filters();
     });
   });
   
@@ -80,14 +93,23 @@ with (Hasher('Domains','Application')) {
     for (var i=0; i < domains.length; i++) {
       if ((domains[i].permissions_for_person.indexOf('linked_account') >= 0) && domains[i].supported_tld) linked_domains.push(domains[i]);
     }
-    if (linked_domains.length > 0) {
+
+    // filter out hidden rows (from filters)
+    linked_domains = linked_domains.map(function(domain) {
       
+      
+      
+      return domain;
+    });
+
+    // just return now if no linked domains
+    if (linked_domains.length > 0) {
       return div(options || {},
         info_message(
           a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: curry(Transfer.redirect_to_transfer_for_domain, linked_domains.map(function(d) { return d.name })) }, 'Begin Transfer'),
           b(linked_domains.length), " of these domains can be transferred to Badger automatically!"
         )
-      )
+      );
     }
   });
 
@@ -113,7 +135,7 @@ with (Hasher('Domains','Application')) {
           }
         }).unique();
         
-        // if there is only on registrar, just render nothing and stop execution
+        // if there is only onw registrar, just render nothing and stop execution
         if (registrars.length <= 1) {
           return '';
         }
@@ -124,10 +146,23 @@ with (Hasher('Domains','Application')) {
           registrars.push('Other');
         }
         
+        // read the previous domain filter_states
+        var previous_filter_states = Badger.Session.get('domain_filter_states') || {};
+        
         // create the content for filters
         var filters = registrars.map(function(registrar) {
+          var filter_name = 'filter-registrar-' + normalized_registrar_name(registrar),
+              filter_checkbox = null;
+          
+          // if explicity set to true, or not yet set, render the box checked.
+          if (!!previous_filter_states[filter_name] || previous_filter_states[filter_name] == undefined) {
+            filter_checkbox = checkbox({ name: filter_name, checked: 'checked' });
+          } else {
+            filter_checkbox = checkbox({ name: filter_name });
+          }
+          
           return div(
-            span(checkbox({ name: 'filter-registrar-' + registrar, checked: 'checked' }), registrar)
+            span(filter_checkbox, registrar)
           );
         });
         
@@ -137,6 +172,10 @@ with (Hasher('Domains','Application')) {
         ));
       }
     });
+  });
+  
+  define('normalized_registrar_name', function(registrar_name) {
+    return registrar_name.replace(/\W+/,'').replace(/\./,'').toLowerCase();
   });
     
   // comparison method for Array#sort
@@ -195,7 +234,7 @@ with (Hasher('Domains','Application')) {
             return (row_value||"").length <= 0;
           }
 
-          return row_value.match(new RegExp(registrar.escape_for_regexp(), 'i'));
+          return normalized_registrar_name(row_value).match(new RegExp(registrar.escape_for_regexp(), 'i'));
         });
       }
     });
