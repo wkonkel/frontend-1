@@ -49,8 +49,8 @@ with (Hasher('Whois', 'Application')) {
 
     Badger.badgerWhois(domain, function(response) {
       var results = div();
-      if (response.meta.status == 'ok') {
-        results = div(h2({ 'style': 'margin: 40px 0px 0px 0px' }, 'Results for ' + response.data.name), pre(response.data.whois.raw));
+      if (response.meta.status == 'ok' && response.data.whois) {
+        results = div(h2({ 'style': 'margin: 40px 0px 0px 0px' }, 'Results for ' + response.data.name), pre(response.data.whois));
       } else {
         messages.append(error_message({ data: { message: response.data.message } }) );
       }
