@@ -200,33 +200,15 @@ with (Hasher('Application')) {
   });
   
   /*
-    It's not possible to use 'date()', you have to
-    instantiate a new date object and manually add the
-    days/month/year to it. 
+    Date wrapper, to fix things up for IE.
+    you use it just like 'new Date()'.
+    
+    example:
+    var my_date = date('10-10-2020');
   */
-  
   define('date', function(date_string) {
-    var new_date = new Date(date_string || '');
-    if (new_date.valid()) {
-      return new_date;
-    } else {
-      // try to parse days/months/years from the provided
-      // date string, and set a date in the IE friendly
-      // manner.
-      // date_string should look like this: "2013-05-03T19:12:03Z"
-      new_date = new Date();
-      if (!date_string) return new_date;
-      date_parts = date_string.slice(0,10).split('-');
-      var year  = date_parts.shift(),
-          month = date_parts.shift(),
-          date  = date_parts.shift();
-      new_date.setDate(date);
-      new_date.setMonth(month);
-      new_date.setYear(year);
-      return new_date;
-    }
+    return new Date(date_string ? Date.parse(date_string) : '');
   });
-  
 }
 
 String.prototype.capitalize_all = function() {
