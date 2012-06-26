@@ -297,9 +297,6 @@ with (Hasher('Domains','Application')) {
   define('styled_expiration_date', function(domain) {
     if (!domain.expires_at) return '';
     
-    // Don't try to do anything too crazy if using IE.
-    var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
-    
     // var d1 = date();
     // var d2 = date(domain.expires_at);
     var d1 = date().getTime();
@@ -320,11 +317,6 @@ with (Hasher('Domains','Application')) {
       expiration_date_span = span({ 'class': date_class, style: 'color: #9B9B9B;' }, date(domain.expires_at).toString('MMMM dd yyyy'));
     } else {
       expiration_date_span = span({ 'class': date_class }, date(domain.expires_at).toString('MMMM dd yyyy'));
-    }
-    
-    // quick hack: IE isn't computing
-    if (ie_browser) {
-      expiration_date_span = span(date(domain.expires_at).toString('MMMM dd yyyy'));
     }
     
     return expiration_date_span;
