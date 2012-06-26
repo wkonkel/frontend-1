@@ -100,6 +100,7 @@ with (Hasher('Application')) {
       
       // data from the last iteration, or initilizer
       _poll_obj: options._poll_obj || {
+        iterations: 0,
         start_time: date(),
         max_time: options.max_time,
         previous_route: get_route()
@@ -110,18 +111,10 @@ with (Hasher('Application')) {
         
     // if timed out, run break callback.
     if (!poll_forever && (date().getTime() - options._poll_obj.start_time.getTime()) >= options.max_time) {
-      options.on_timeout({
-        start_time: options._poll_obj.start_time,
-        max_time: options._poll_obj.max_time,
-        timed_out: true
-      });
+      options.on_timeout($.extend(options._poll_obj, { timed_out: true }));
     // if route changed, kill of the poll
     } else if (get_route() != options._poll_obj.previous_route) {
-      options.on_route_change({
-        start_time: options._poll_obj.start_time,
-        max_time: options._poll_obj.max_time,
-        route_changed: true
-      });
+      options.on_route_change($.extend(options._poll_obj, { route_changed: true }));
     } else {
       // track the time at which this iteration started
       var start_time = date().getTime();
@@ -129,6 +122,8 @@ with (Hasher('Application')) {
       // save the route before running the action, because the action
       // may or may not change the route.
       var current_route = get_route();
+
+      options._poll_obj.iterations++;
 
       process_action_and_set_timeout(options);
     }
@@ -148,10 +143,7 @@ with (Hasher('Application')) {
     action_options.method(function(response) {
       if (['ok', 'created'].includes(response.meta.status)) {
         // execute callback. break from poll defaults to true
-        var break_from_poll = action_options.on_ok(response, {
-          start_time: options._poll_obj.start_time,
-          max_time: options._poll_obj.max_time
-        });
+        var break_from_poll = action_options.on_ok(response, options._poll_obj);
       } else {
         // error. break from poll defaults to true
         var break_from_poll = options.on_error(response, {
@@ -162,16 +154,13 @@ with (Hasher('Application')) {
       
       if (break_from_poll == true) {
         // break out of the poll, call the on_finish_callback
-        options.on_finish(response, {
-          start_time: options._poll_obj.start_time,
-          max_time: options._poll_obj.max_time
-        });
+        options.on_finish(response, options._poll_obj);
       } else if (break_from_poll == false) {
         setTimeout(curry(long_poll, options), options.interval);
       } else if (break_from_poll == undefined) {
         if (poll_forever) return setTimeout(curry(long_poll, options), options.interval);
       }
-    })
+    });
   });
   
   /*
