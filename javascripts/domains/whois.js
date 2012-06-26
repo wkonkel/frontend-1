@@ -40,9 +40,10 @@ with (Hasher('Whois', 'Application')) {
 
   define('whois_lookup', function(whois_results, data) {
     var domain = data.whois.replace(/\s+/, '');
+    var messages = $('#whois-messages').empty();
     hide_form_submit_loader();
     if(domain == "") {
-      return $('#whois-messages').empty().append( error_message({ data: { message: "Domain must be valid, e.g. badger.com" } }) );
+      return messages.append( error_message({ data: { message: "Domain must be valid, e.g. badger.com" } }) );
     }
     render({ 'into': whois_results }, spinner('Looking up ' + domain + '...'));
 
@@ -51,7 +52,7 @@ with (Hasher('Whois', 'Application')) {
       if (response.meta.status == 'ok') {
         results = div(h2({ 'style': 'margin: 40px 0px 0px 0px' }, 'Results for ' + response.data.name), pre(response.data.whois.raw));
       } else {
-        $('#whois-messages').empty().append(error_message({ data: { message: response.data.message } }) );
+        messages.append(error_message({ data: { message: response.data.message } }) );
       }
       render({ 'into': whois_results }, results);
     });
