@@ -240,7 +240,7 @@ with (Hasher('Application')) {
         change: Search.search_box_changed,
         keyup: Search.search_box_changed,
         keypress: function(e) {
-          // if (Search.key_is_valid_for_domain_name(e)) stop_event(e);
+          if (Search.key_is_valid_for_domain_name(e)) stop_event(e);
         }
       }})
     );
