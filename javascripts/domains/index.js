@@ -62,7 +62,7 @@ with (Hasher('Domains')) {
       interval: 15000,
       
       action: {
-        method: Badger.getDomains,
+        method: BadgerCache.getDomains,
         on_ok: function(response) {
           var domains = (response.data || []).filter(function(domain) {
             return domain.permissions_for_person.includes('pending_transfer');
