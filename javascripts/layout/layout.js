@@ -293,10 +293,15 @@ with (Hasher('Application')) {
     )
   });
 
-  define('info_message', function(response) {
-    return div({ 'class': 'info-message' },
-      div( response.data ? response.data.message : arguments )
-    )
+  define('info_message', function() {
+    if (arguments[0].data && arguments[0].data.message) {
+      return div({ 'class': 'info_message' }, arguments[0].data.message);
+    } else {
+      var arguments = flatten_to_array(arguments);
+      var options = shift_options_from_args(arguments);
+      options['class'] = 'info-message';
+      return div(options, arguments);
+    }
   });
   
   define('spinner', function() {
