@@ -9,9 +9,26 @@ with (Hasher('Welcome','Application')) {
   route('#welcome', function() {
     var registrar_app_icon_url = Badger.getAccessToken() ? '#linked_accounts' : "#account/create";
     
+    var update_contact_message_div = div();
+    BadgerCache.getContacts(function(response) {
+      // hide contacts that aren't complete, and need to be updated
+      // manually by the user (legacy contact data imported from rhinonames) --- CAB
+      (response.data||[]).forEach(function(contact) {
+        if (contact.needs_update) {
+          render({ into: update_contact_message_div },
+            div({ style: 'margin-top: 15px; text-align: center; font-size: 20px;' },
+              info_message("It looks like your profile isn't complete, please ", a({ href: '#account/profiles/edit/' + contact.id }, 'complete it now.'))
+            )
+          );
+        }
+      });
+    });
+    
     render({ layout: default_layout },
       // div({ id: 'main' },
       div(
+        update_contact_message_div,
+        
         div({ 'id': 'content-top' },
           img({ src: 'images/badger-6.png', style: 'float: right; width: 150px; height: auto; margin: 20px 50px 20px 20px' }),
           h1("Domain management done ", span({ style: 'letter-spacing: 2px' }, "r"), "ight."),

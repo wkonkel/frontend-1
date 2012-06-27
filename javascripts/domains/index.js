@@ -14,7 +14,7 @@ with (Hasher('Domains')) {
     with_domains({
       callback: function(domains) {
         var domains_div = div();
-        
+
         if (domains.length <= 0) {
           render({ into: domains_div },
             h2('Get Started With Badger'),
@@ -33,9 +33,27 @@ with (Hasher('Domains')) {
             sortable_domains_table(domains, domains_div)
           );
         }
+
+        // render message for incomplete profile (legacy rhinonames contacts) --- CAB
+        var update_contact_message_div = div();
+        BadgerCache.getContacts(function(response) {
+          // hide contacts that aren't complete, and need to be updated
+          // manually by the user (legacy contact data imported from rhinonames) --- CAB
+          (response.data||[]).forEach(function(contact) {
+            if (contact.needs_update) {
+              render({ into: update_contact_message_div },
+                div({ style: 'margin-top: 15px; text-align: center; font-size: 20px;' },
+                  info_message("It looks like your profile isn't complete, please ", a({ href: '#account/profiles/edit/' + contact.id }, 'complete it now.'))
+                )
+              );
+            }
+          });
+        });
         
         render({ into: target_div },
           div({ 'class': 'fancy' },
+            update_contact_message_div,
+            
             domains_nav_table(
               transfer_linked_domains_message(domains),
               domains_div
