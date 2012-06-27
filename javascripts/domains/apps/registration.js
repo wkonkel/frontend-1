@@ -228,7 +228,7 @@ with (Hasher('Registration','DomainApps')) {
                 div({ style: "float: left; padding-right: 10px" }, logo_for_registrar(domain_obj.current_registrar) ),
 
                 h3({ style: 'margin: 0 0 12px' }, 'Current Registration'),
-                div(domain_obj.current_registrar, " until ", date(Date.parse(domain_obj.expires_at)).toDateString().split(' ').slice(1).join(' ')),
+                div(domain_obj.current_registrar, " until ", date(domain_obj.expires_at).toString('MMMM dd yyyy')),
 
                 // if this is a badger registration and the person can renew the domain, show the extend registration button
                 // domain_obj.current_registrar.match(/badger/i) && div({ style: 'text-align: left; margin-top: 12px' }, a({ 'class': "myButton small", href: curry(Register.renew_domain_modal, domain) }, "Extend Registration")),
@@ -241,13 +241,13 @@ with (Hasher('Registration','DomainApps')) {
             td({ style: 'width: 50%; vertical-align: top; padding-left: 5px' },
               div({ 'class': 'info-message', style: 'border-color: #aaa; background: #eee' },
                 dl({ 'class': 'fancy-dl', style: 'margin: 0' },
-                  dt({ style: 'width: 80px' }, 'Created:'), dd(date(Date.parse(domain_obj.registered_at)).toDateString()), br(),
+                  dt({ style: 'width: 80px' }, 'Created:'), dd(date(domain_obj.registered_at).toString('MMMM dd yyyy')), br(),
                   dt({ style: 'width: 80px' }, 'Through:'), dd((domain_obj.created_registrar ? domain_obj.created_registrar : '')), br(),
                   dt({ style: 'width: 80px' }, 'Previously: '), dd(domain_obj.losing_registrar), br()
                   // dt('Expires:'), dd(), br(),
-                  // dt('Created: '), dd(date(Date.parse(domain_obj.created_at)).toDateString()), br(),
-                  // dt('Updated At: '), dd(date(Date.parse(domain_obj.updated_at)).toDateString()), br(),
-                  // dt('Updated On: '), dd(date(Date.parse(domain_obj.updated_on)).toDateString())
+                  // dt('Created: '), dd(date(domain_obj.created_at).toString('MMMM dd yyyy')), br(),
+                  // dt('Updated At: '), dd(date(domain_obj.updated_at).toString('MMMM dd yyyy')), br(),
+                  // dt('Updated On: '), dd(date(domain_obj.updated_on).toString('MMMM dd yyyy'))
                 )
               )
             )
@@ -259,7 +259,7 @@ with (Hasher('Registration','DomainApps')) {
           // 
           // h3({ style: 'margin: 0 0 6px' }, 'Current Registration'),
           // div(domain_obj.current_registrar),
-          // div("Expires ", date(Date.parse(domain_obj.expires_on)).toDateString().split(' ').slice(1).join(' ')),
+          // div("Expires ", date(domain_obj.expires_on).toString('MMMM dd yyyy').split(' ').slice(1).join(' ')),
           // 
           //          !domain_obj.badger_dns && div({ style: 'text-align: right' }, a({ 'class': "myButton small", href: curry(Register.renew_domain_modal, domain) }, "Extend")),
           // 
@@ -269,12 +269,12 @@ with (Hasher('Registration','DomainApps')) {
           //           // dl({ 'class': 'fancy-dl', style: 'padding-left: 40px' },
           //           //   dt('Registrar: '), dd(), br(),
           //           //   dt('Status: '), dd(domain_obj.status), br(),
-          //           //   dt('Created: '), dd(date(Date.parse(domain_obj.created_at)).toDateString()), br(),
+          //           //   dt('Created: '), dd(date(domain_obj.created_at).toString('MMMM dd yyyy')), br(),
           //           //   dt('Expires:'), dd(), br()
-          //           //   // dt('Registered:'), dd(date(Date.parse(data.registered_on)).toDateString(), (data.created_registrar ? ' via '+data.created_registrar : '')), br(),
+          //           //   // dt('Registered:'), dd(date(data.registered_on).toString('MMMM dd yyyy'), (data.created_registrar ? ' via '+data.created_registrar : '')), br(),
           //           //   // dt('Previous Registrar: '), dd(data.losing_registrar), br(),
-          //           //   // dt('Updated At: '), dd(date(Date.parse(data.updated_at)).toDateString()), br(),
-          //           //   // dt('Updated On: '), dd(date(Date.parse(data.updated_on)).toDateString())
+          //           //   // dt('Updated At: '), dd(date(data.updated_at).toString('MMMM dd yyyy')), br(),
+          //           //   // dt('Updated On: '), dd(date(data.updated_on).toString('MMMM dd yyyy'))
           //           // )
           //         )
       );
@@ -375,7 +375,7 @@ with (Hasher('Registration','DomainApps')) {
         
         p("We have received a transfer request from ", span({ style: "font-weight: bold" }, domain_obj.transfer_out.receiving_registrar), "."),
         p("If you approve this transfer request, then your domain will be transferred out of Badger."),
-        p("If you do not take action by ", span({ style: "font-weight: bold" }, date(Date.parse(domain_obj.transfer_out.auto_approval_date)).toDateString()), ", the transfer will automatically be approved."),
+        p("If you do not take action by ", span({ style: "font-weight: bold" }, date(domain_obj.transfer_out.auto_approval_date).toString('MMMM dd yyyy')), ", the transfer will automatically be approved."),
         
         div({ id:  "approve-reject-buttons", style: "text-align: right" },
           a({ id: "approve-transfer_button", 'class': 'myButton small', href: curry(transfer_out, domain_obj, "approve") }, 'Approve'),

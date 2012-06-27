@@ -212,7 +212,7 @@ with (Hasher('Domains')) {
 //           for (i = 0; i < domains.length; i ++) {
 //             if (domains[i].expires_at) {
 //               var current_date = date();
-//               var expire_date = date(Date.parse(domains[i].expires_at));
+//               var expire_date = date(domains[i].expires_at);
 // 
 //               var days = parseInt(expire_date - current_date)/(24*3600*1000);
 //               if (days <= 90)
@@ -375,7 +375,7 @@ with (Hasher('Domains')) {
 //             return tr(
 //               td(a({ href: '#domains/' + domain.name }, Domains.truncate_domain_name(domain.name))),
 //               td(domain.current_registrar),
-//               td(domain.expires_at ? date(Date.parse(domain.expires_at)).toString('MMMM dd yyyy') : '')
+//               td(domain.expires_at ? date(domain.expires_at).toString('MMMM dd yyyy') : '')
 //               
 //               // td(
 //               //   // img({ src: 'images/apps/facebook-icon.png'}),

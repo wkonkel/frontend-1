@@ -193,7 +193,11 @@ with (Hasher('Application')) {
     you use it just like 'new Date()'.
     
     example:
-    var my_date = date('10-10-2020');
+    var my_date1 = date('10-10-2020');
+    var my_date2 = date();
+    
+    don't do this:
+    var my_bad_date = date(Date.parse('10-10-2020'))
   */
   define('date', function(date_string) {
     if (date_string) {
