@@ -60,6 +60,9 @@ with (Hasher()) {
       var route = Hasher.routes[i];
       var matches = path.match(route.regex);
       if (matches) {
+        // scroll to the top of newly loaded page --- CAB
+        window.scrollTo(0);
+        
         if (!route.context.run_filters('before')) return;
         route.callback.apply(null, matches.slice(1));
         if (!route.context.run_filters('after')) return;
