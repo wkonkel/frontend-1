@@ -165,6 +165,7 @@ input.fancy[type=text], input.fancy[type=password] { margin-top: 4px; padding: 5
 }
 .info-message .fancy-table tr:hover { background: #FFFEF8; }
 .info-message .fancy-table tr.table-header:hover { background: none; }
+.info-message ul li { margin-left: -13px }
 
 .error-message {
   border: 1px solid #dd3c10;
