@@ -78,8 +78,7 @@ with (Hasher('Registration','DomainApps')) {
   route('#domains/:domain/registration', function(domain) {
     with_registration_nav_table_for_domain(domain, function(nav_table, domain_obj) {
       var created_registrar_div = div(),
-          previous_registrar_div = div(),
-          updated_registrar_div = div();
+          previous_registrar_div = div();
           
       if (domain_obj.created_registrar) {
         render({ into: created_registrar_div },
@@ -95,15 +94,6 @@ with (Hasher('Registration','DomainApps')) {
           fieldset(
             label('Previous Registrar:'),
             Registrar.small_icon(domain_obj.previous_registrar)
-          )
-        )
-      }
-      
-      if (domain_obj.updated_registrar) {
-        render({ into: updated_registrar_div },
-          fieldset(
-            label('Last Action By:'),
-            Registrar.small_icon(domain_obj.updated_registrar)
           )
         )
       }
@@ -137,23 +127,22 @@ with (Hasher('Registration','DomainApps')) {
           div({ 'class': 'has-sidebar' },
             form({ 'class': 'fancy' },
               fieldset(
+                label('Expires:'),
+                span({ 'class': 'big-text' }, date(domain_obj.expires_on).toString('MMMM dd yyyy'))
+              ),
+              
+              fieldset(
+                label('Created:'),
+                span({ 'class': 'big-text' }, date(domain_obj.registered_at).toString('MMMM dd yyyy'))
+              ),
+              
+              fieldset(
                 label('Current Registrar:'),
                 Registrar.small_icon(domain_obj.current_registrar)
               ),
               
               created_registrar_div,
-              previous_registrar_div,
-              // updated_registrar_div, // this might confuse people, and isn't really necessary
-              
-              fieldset(
-                label('Expires:'),
-                span(date(domain_obj.expires_on).toString('MMMM dd yyyy'))
-              ),
-              
-              fieldset(
-                label('Created:'),
-                span(date(domain_obj.registered_at).toString('MMMM dd yyyy'))
-              )
+              previous_registrar_div
             )
           )
         )
