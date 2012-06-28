@@ -62,6 +62,19 @@ var BadgerCache = {
     }
   },
 
+  getDomain: function(domain_name, callback) {
+    callback = callback || function(){};
+    BadgerCache.cached_domain = BadgerCache.cached_domain || {};
+    if (BadgerCache.cached_domain[domain_name]) {
+      callback(BadgerCache.cached_domain[domain_name]);
+    } else {
+      Badger.getDomain(domain_name, function(response) {
+        BadgerCache.cached_domain[domain_name] = response;
+        callback(BadgerCache.cached_domain[domain_name]);
+      });
+    }
+  },
+
   getDomains: function(callback) {
     callback = callback || function(){};
     if (BadgerCache.cached_domains) {
