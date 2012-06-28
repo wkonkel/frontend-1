@@ -145,9 +145,6 @@
 input.fancy[type=text], input.fancy[type=password] { margin-top: 4px; padding: 5px; font-size: 17px; border: 1px solid #aaa; border-radius: 3px }
 
 
-#search-results td.tld, #grid th.tld, #grid td.tld, #suggest-grid td.tld { width: 10%; text-align: center; }
-#search-results td a, #grid td a, #suggest-grid td a { font-weight: bold; }
-
 #suggest-grid { border-top: 1px solid #333; }
 
 
@@ -381,8 +378,9 @@ input.fancy[type=text], input.fancy[type=password] { margin-top: 4px; padding: 5
 
 .tld img { display: block; margin: 0 auto; }
 
-td.tld-available  a       { }
-td.tld-taken      a       { text-decoration: line-through; color: #000; font-weight: normal !important; }
+td.tld-available, td.tld-taken { width: 10%; }
+td.tld-available  a       { font-weight: bold; }
+td.tld-taken      a       { text-decoration: line-through; color: #000; }
 td.tld-taken      a:hover { text-decoration: underline; }
 
 
