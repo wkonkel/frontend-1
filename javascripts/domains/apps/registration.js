@@ -39,7 +39,7 @@ with (Hasher('Registration','DomainApps')) {
       var base_url = '#domains/' + domain;
       
       var permissions = (response.data || {}).permissions_for_person || {};
-      var show_contacts = permissions.includes('modify_contacts'),
+      var show_transfer_out = permissions.includes('transfer_out'),
           show_settings = permissions.includes('renew');
       
       var nav_table = function() {
@@ -50,15 +50,15 @@ with (Hasher('Registration','DomainApps')) {
                 li(a({ href: (base_url + '/registration'), 'class': (active_url.match(/^#domains\/.+?\/registration$/) ? 'active' : '') }, 'Registration')),
                 li(a({ href: (base_url + '/whois'), 'class': (active_url.match(/^#domains\/.+?\/whois$/) ? 'active' : '') }, 'Whois')),
                 
-                show_contacts ? [
-                  li({ style: ('display: ' + show_contacts ? '' : 'none') },
-                    a({ href: (base_url + '/contacts'), 'class': (active_url.match(/^#domains\/.+?\/contacts$/) ? 'active' : '') }, 'Contacts')
-                  )
-                ] : [],
-                
                 show_settings ? [
                   li({ style: 'display: ' + show_settings ? '' : 'none' },
                     a({ href: (base_url + '/settings'), 'class': (active_url.match(/^#domains\/.+?\/settings$/) ? 'active' : '') }, 'Settings')
+                  ),
+                ] : [],
+                
+                show_transfer_out ? [
+                  li({ style: 'display: ' + show_transfer_out ? '' : 'none' },
+                    a({ href: (base_url + '/transfer-out'), 'class': (active_url.match(/^#domains\/.+?\/transfer-out$/) ? 'active' : '') }, 'Transfer Out')
                   )
                 ] : []
               )
@@ -78,7 +78,8 @@ with (Hasher('Registration','DomainApps')) {
   route('#domains/:domain/registration', function(domain) {
     with_registration_nav_table_for_domain(domain, function(nav_table, domain_obj) {
       var created_registrar_div = div(),
-          previous_registrar_div = div();
+          previous_registrar_div = div(),
+          registered_at_div = div();
           
       if (domain_obj.created_registrar) {
         render({ into: created_registrar_div },
@@ -86,7 +87,7 @@ with (Hasher('Registration','DomainApps')) {
             label('Created By:'),
             Registrar.small_icon(domain_obj.created_registrar)
           )
-        )
+        );
       }
       
       if (domain_obj.previous_registrar) {
@@ -95,10 +96,20 @@ with (Hasher('Registration','DomainApps')) {
             label('Previous Registrar:'),
             Registrar.small_icon(domain_obj.previous_registrar)
           )
-        )
+        );
+      }
+      
+      if (domain_obj.registered_at) {
+        render({ into: registered_at_div },
+          fieldset(
+            label('Registered:'),
+            span({ 'class': 'big-text' }, date(domain_obj.registered_at).toString('MMMM dd yyyy'))
+          )
+        );
       }
       
       var sidebar_content = div();
+      
       if ((domain_obj.permissions_for_person||[]).includes('modify_contacts')) {
         render({ into: sidebar_content },
           info_message(
@@ -130,10 +141,12 @@ with (Hasher('Registration','DomainApps')) {
                 label('Expires:'),
                 span({ 'class': 'big-text' }, date(domain_obj.expires_on).toString('MMMM dd yyyy'))
               ),
+
+              registered_at_div,
               
               fieldset(
                 label('Created:'),
-                span({ 'class': 'big-text' }, date(domain_obj.registered_at).toString('MMMM dd yyyy'))
+                span({ 'class': 'big-text' }, date(domain_obj.created_at).toString('MMMM dd yyyy'))
               ),
               
               fieldset(
@@ -175,65 +188,6 @@ with (Hasher('Registration','DomainApps')) {
     });
   });
   
-  route('#domains/:domain/contacts', function(domain) {
-    with_registration_nav_table_for_domain(domain, function(nav_table, domain_obj) {
-      render(
-        chained_header_with_links(
-          { text: 'My Domains', href: '#domains' },
-          { text: domain, href: '#domains/' + domain },
-          { text: 'Whois Contacts' }
-        ),
-        
-        nav_table(
-          form_with_loader({ 'class': 'fancy', action: curry(update_whois, domain_obj), loading_message: 'Updating Whois Contacts...' },
-            fieldset(
-              label('Registrant:'),
-              select({ name: 'registrant_contact_id' },
-                profile_options_for_select(domain_obj.registrant_contact.id)
-              )
-            ),
-            
-            fieldset(
-              label('Administrator:'),
-              select({ name: 'administrator_contact_id' },
-                option({ value: '' }, 'Same as Registrant'),
-                profile_options_for_select(domain_obj.administrator_contact && domain_obj.administrator_contact.id)
-              )
-            ),
-            
-            fieldset(
-              label('Technical:'),
-              select({ name: 'technical_contact_id' },
-                option({ value: '' }, 'Same as Registrant'),
-                profile_options_for_select(domain_obj.technical_contact && domain_obj.technical_contact.id)
-              )
-            ),
-            
-            fieldset(
-              label('Billing:'),
-              select({ name: 'billing_contact_id' },
-                option({ value: '' }, 'Same as Registrant'),
-                profile_options_for_select(domain_obj.billing_contact && domain_obj.billing_contact.id)
-              )
-            ),
-            
-            fieldset(
-              label('Privacy:'),
-              span(
-                (domain_obj.whois.privacy ? checkbox({ name: 'privacy', checked: 'checked' }) : checkbox({ name: 'privacy' })),
-                span({ style: 'margin-left: 5px' }, 'Keep contact information private')
-              )
-            ),
-            
-            fieldset({ 'class': 'no-label' },
-              submit({ value: 'Save Contacts' })
-            )
-          )
-        )
-      );
-    });
-  });
-  
   route('#domains/:domain/settings', function(domain) {
     with_registration_nav_table_for_domain(domain, function(nav_table, domain_obj) {
       render(
@@ -244,16 +198,59 @@ with (Hasher('Registration','DomainApps')) {
         ),
         
         nav_table(
-          form_with_loader({ 'class': 'fancy', action: curry(update_whois, domain_obj) },
+          form_with_loader({ 'class': 'fancy', action: curry(update_domain, domain_obj) },
             fieldset(
-              label('Auto Renew:'),
-              (domain_obj.auto_renew ? checkbox({ name: 'auto_renew', checked: 'checked' }) : checkbox({ name: 'auto_renew' }))
+              label('Registrant Contact:'),
+              select({ name: 'registrant_contact_id' },
+                profile_options_for_select(domain_obj.registrant_contact.id)
+              )
             ),
-            
+
+            fieldset(
+              label('Administrative Contact:'),
+              select({ name: 'administrator_contact_id' },
+                option({ value: '' }, 'Same as Registrant'),
+                profile_options_for_select(domain_obj.administrator_contact && domain_obj.administrator_contact.id)
+              )
+            ),
+
+            fieldset(
+              label('Technical Contact:'),
+              select({ name: 'technical_contact_id' },
+                option({ value: '' }, 'Same as Registrant'),
+                profile_options_for_select(domain_obj.technical_contact && domain_obj.technical_contact.id)
+              )
+            ),
+
+            fieldset(
+              label('Billing Contact:'),
+              select({ name: 'billing_contact_id' },
+                option({ value: '' }, 'Same as Registrant'),
+                profile_options_for_select(domain_obj.billing_contact && domain_obj.billing_contact.id)
+              )
+            ),
+
             fieldset(
               label('Whois Privacy:'),
               span(
-                (domain_obj.whois.privacy ? checkbox({ name: 'privacy', checked: 'checked' }) : checkbox({ name: 'privacy' }))
+                (domain_obj.whois.privacy ? checkbox({ name: 'privacy', checked: 'checked' }) : checkbox({ name: 'privacy' })),
+                span({ style: 'margin-left: 10px' }, "Keep contact information private")
+              )
+            ),
+            
+            fieldset(
+              label('Auto Renew:'),
+              span(
+                (domain_obj.auto_renew ? checkbox({ name: 'auto_renew', checked: 'checked' }) : checkbox({ name: 'auto_renew' })),
+                span({ style: 'margin-left: 10px' }, "Automatically renew domain on ", span({ style: 'font-weight: bold' }, date(domain_obj.expires_on).toString('MMMM dd yyyy')))
+              )
+            ),
+            
+            fieldset(
+              label('Transfer Lock:'),
+              span(
+                (domain_obj.locked ? checkbox({ name: 'locked', checked: 'checked' }) : checkbox({ name: 'locked' })),
+                span({ style: 'margin-left: 10px' }, "Disable to allow transfer of domain")
               )
             ),
             
@@ -266,7 +263,66 @@ with (Hasher('Registration','DomainApps')) {
     });
   });
   
-  
+  route('#domains/:domain/transfer-out', function(domain) {
+    with_registration_nav_table_for_domain(domain, function(nav_table, domain_obj) {
+      
+      var transfer_content_for_status = div();
+      
+      var days_registered;
+      if (domain_obj.registered_at) {
+        days_registered = (date().getDate() - date(domain_obj.registered_at).getDate());
+      }
+      
+      if (domain_obj.locked) {
+        render({ into: transfer_content_for_status },
+          p('This domain is currently locked. Before you can transfer the domain out of Badger, you need to ', a({ href: '#domains/' + domain + '/settings' }, 'unlock it.'))
+        );
+      } else if (days_registered && days_registered < 60) {
+        render({ into: transfer_content_for_status },
+          p("Unfortunately, domains cannot be transferred within 60 days of registration."),
+          p("You will be able to transfer the domain on ", span({ style: 'font-weight: bold' }, date().add(60-days_registered).days().toString('MMMM dd yyyy')), '.')
+        );
+      } else if (domain_obj.transfer_out) {
+        render({ into: transfer_content_for_status },
+          p("We have received a transfer request from ", span({ style: "font-weight: bold" }, domain_obj.transfer_out.receiving_registrar), "."),
+          p("If you approve this transfer request, then your domain will be transferred out of Badger."),
+          p("If you do not take action by ", span({ style: "font-weight: bold" }, date(domain_obj.transfer_out.auto_approval_date).toString('MMMM dd yyyy')), ", the transfer will automatically be approved."),
+          
+          div(
+            a({ 'class': 'myButton', href: curry(transfer_out, domain_obj, "approve") }, 'Approve'),
+            a({ 'class': 'myButton red', style: "margin-left: 10px", href: curry(transfer_out, domain_obj, "reject") }, 'Reject')
+          )
+        );
+      } else {
+        render({ into: transfer_content_for_status },
+          p("Provide the receiving registrar with this auth code. When the receiving registrar sends us a transfer request, this page will be updated, allowing you to reject or accept the request."),
+          
+          form({ 'class': 'fancy', onclick: function(e) { $('input#auth-code').select() } },
+            fieldset(
+              label('Domain Auth Code:'),
+              input({ id: 'auth-code', style: "text-align: center", value: domain_obj.auth_code, disabled: true })
+            )
+          )
+        );
+      }
+      
+      render(
+        chained_header_with_links(
+          { text: 'My Domains', href: '#domains' },
+          { text: domain, href: '#domains/' + domain },
+          { text: 'Settings' }
+        ),
+        
+        nav_table(
+          div({ 'class': 'sidebar' }),
+          
+          div({ 'class': 'fancy' },
+            transfer_content_for_status
+          )
+        )
+      );
+    });
+  });
   
   
   route('#domains/:domain/registration/extend', function(domain) {
@@ -390,10 +446,11 @@ with (Hasher('Registration','DomainApps')) {
     }
   });
   
-  define('update_whois', function(domain, form_data) {
+  define('update_domain', function(domain, form_data) {
     // force sends a "privacy=false"... exclusion isn't enough
     form_data['privacy'] = form_data['privacy'] ? 'true' : 'false';
     form_data['auto_renew'] = form_data['auto_renew'] ? 'true' : 'false';
+    form_data['locked'] = form_data['locked'] ? 'true' : 'false';
     
     Badger.updateDomain(domain.name, form_data, function(response) {
       // console.log(response); --- commented out debug output CAB
@@ -401,82 +458,9 @@ with (Hasher('Registration','DomainApps')) {
     });
   });
   
-  define('transfer_out_domain_if_allowed', function(domain_obj) {
-    if ((domain_obj.permissions_for_person || []).indexOf('transfer_out') == -1) return div();
-    
-    if (domain_obj.transfer_out) {
-      return div({ id: "transfer-out-pending", 'class': 'info-message', style: 'border-color: #aaa; background: #eee; margin-top: 42px' },
-        h3("Transfer request received"),
-        
-        p("We have received a transfer request from ", span({ style: "font-weight: bold" }, domain_obj.transfer_out.receiving_registrar), "."),
-        p("If you approve this transfer request, then your domain will be transferred out of Badger."),
-        p("If you do not take action by ", span({ style: "font-weight: bold" }, date(domain_obj.transfer_out.auto_approval_date).toString('MMMM dd yyyy')), ", the transfer will automatically be approved."),
-        
-        div({ id:  "approve-reject-buttons", style: "text-align: right" },
-          a({ id: "approve-transfer_button", 'class': 'myButton small', href: curry(transfer_out, domain_obj, "approve") }, 'Approve'),
-          a({ id: "reject-transfer-button", 'class': 'myButton small red', style: "margin-left: 10px", href: curry(transfer_out, domain_obj, "reject") }, 'Reject')
-        )
-      );
-    } else {
-      return div({ id: "lock-domain", 'class': 'info-message', style: 'border-color: #aaa; background: #eee; margin-top: 30px' },
-        h3('Want to transfer this domain to another registrar?'),
-        domain_obj.locked ? [
-          p({ style: "padding-bottom: 10px" }, "This domain is currently locked.  If you'd like to transfer this domain to another registrar, unlock this domain to receive the auth code."),
-          
-          div({ id: "unlock-domain-button-div", style: "text-align: right" },
-            a({ 'class': 'myButton small', id: "unlock-domain-button", href: curry(lock_domain, domain_obj.name, false) }, 'Unlock Domain')
-          )
-        ]
-        : [
-          p({ style: "font-weight: bold; text-align: center; margin-bottom: 0px" }, "Domain Auth Code:"),
-          
-          div({ style: "text-align: center; margin-bottom: 10px" },
-            input({ id: "auth-code", 'class': "fancy", style: "text-align: center", size: "17", value: domain_obj.auth_code, readonly: true })
-          ),
-          
-          // TODO I have no idea how long it will registrars to acknowledge their poll messages
-          p("When the registrar you want to transfer this domain to sends the transfer request, this page will be updated, allowing you to reject or accept the transfer."),
-          p("If you do not plan on transferring this domain out of Badger, we recommend that you lock the domain again."),
-
-          div({ id: "lock-domain-button-div", style: "text-align: right" },
-            a({ 'class': 'myButton small', href: curry(set_route, get_route()) }, 'Reload Page'),
-            a({ 'class': 'myButton small', style: "margin-left: 15px", href: curry(lock_domain, domain_obj.name, true) }, 'Lock Domain')
-          )
-        ]
-      );
-    }
-  });
-  
   define('transfer_out', function(domain_obj, operation) {
-    hide_and_show_ajax_loader("#approve-reject-buttons");
-    
     // perform transfer out request and reload the page
-    Badger.transferOutDomain(domain_obj.name, operation, curry(set_route, get_route()));
+    Badger.transferOutDomain(domain_obj.name, operation, curry(set_route, '#domains/' + domain_obj.name + '/registration'));
   })
-  
-  define('hide_and_show_ajax_loader', function(button_id) {
-    $(button_id).hide().after(
-      div({ style: "text-align: right" },
-        img({ src: "images/ajax-loader.gif" })
-      )
-    );
-  });
-  
-  define('lock_domain', function(domain, locked) {
-    hide_and_show_ajax_loader("#" + (locked ? "lock" : "unlock") + "-domain-button-div");
-    
-    Badger.updateDomain(domain, { locked: locked }, function(response) {
-      set_route(get_route());
-      if (response.meta.status == 'ok') {
-        // $('#success-message').html(locked ? 'Domain has been locked' : 'Domain has been unlocked');
-        // $('#success-message').removeClass('hidden');
-        $('#error-message').addClass('hidden');
-      } else {
-        $('#error-message').html(response.data.message);
-        $('#error-message').removeClass('hidden');
-        $('#success-message').addClass('hidden');
-      }
-    });
-  });
   
 }
