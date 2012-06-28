@@ -38,10 +38,10 @@ with (Hasher('Registrar','Application')) {
   
   // get the image src for registrar's app store icon
   define('logo_url_for_registrar', function(name) {
-    if (name.match(/badger/i)) return 'images/apps/' + normalize_name(name) + '.png';
-    else if (name.match(/godaddy/i)) return 'images/apps/' + normalize_name(name) + '.png';
-    else if (name.match(/enom/i)) return 'images/apps/' + normalize_name(name) + '.png';
-    else if (name.match(/1and1/)) return 'images/apps/' + normalize_name(name) + '.png';
+    if (name.match(/badger/i)) return 'images/apps/badger.png';
+    else if (name.match(/godaddy/i)) return 'images/apps/godaddy.png';
+    else if (name.match(/enom/i)) return 'images/apps/enom.png';
+    else if (name.match(/1and1/)) return 'images/apps/1and1.png';
     return 'images/apps/badger.png';
   });
   
