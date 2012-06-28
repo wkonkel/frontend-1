@@ -83,8 +83,8 @@ with (Hasher('Search','Application')) {
       td(results[0][0].split('.')[0]),
       results.map(function(domain) {
         var tld = domain[0].split('.')[1];
-        return td({ 'class': 'tld' }, 
-          domain[1] ? a({ href: '#domains/'+domain[0] }, tld) : span({ style: 'text-decoration: line-through' }, tld)
+        return td({ 'class': (domain[1] ? 'tld-available' : 'tld-taken') }, 
+          a({ href: '#domains/'+domain[0] }, tld)
         );
       })
     );
