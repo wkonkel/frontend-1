@@ -31,6 +31,10 @@ with (Hasher('Registration','DomainApps')) {
   */
   define('with_registration_nav_table_for_domain', function(domain, callback) {
     Badger.getDomain(domain, function(response) {
+      // if trying to load this and the domain is available,
+      // just redirect to the 'register this domain' page
+      if ((response.data || {}).available) return set_route('#domains/' + domain);
+      
       var active_url = get_route();
       var base_url = '#domains/' + domain;
       
@@ -170,7 +174,7 @@ with (Hasher('Registration','DomainApps')) {
         
         nav_table(
           info_message({ style: 'display: ' + (show_whois_pricay_message ? '' : 'none' )  },
-            "Don't want your contact information available to the public? ", a({ href: '#domains/' + domain + '/contacts' }, 'Enable Whois privacy.'), " It's free!"
+            "Don't want your contact information available to the public? ", a({ href: '#domains/' + domain + '/settings' }, 'Enable Whois privacy.'), " It's free!"
           ),
           
           // hard-code the width, because it will go off the page since we're using pre whitespace
