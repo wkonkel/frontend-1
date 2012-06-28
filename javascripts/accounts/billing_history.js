@@ -27,7 +27,7 @@ with (Hasher('Billing','Application')) {
             
             results.data.map(function(credit_history) {
               return tr(
-                td(date(Date.parse(credit_history.created_at)).toDateString()),
+                td(date(credit_history.created_at).toString('MMMM dd yyyy')),
                 td(credit_history.details),
                 td(credit_history.domain ? a({ href: '#domains/' + credit_history.domain.name }, Domains.truncate_domain_name(credit_history.domain.name, 30)) : ''),
                 td({ style: "text-align: right" }, credit_history.num_credits)
