@@ -61,7 +61,7 @@ with (Hasher('Domains')) {
           )
         );
         
-        initialize_filters();
+        initialize_filters({ domains: domains });
       }
     });
   });
@@ -102,7 +102,7 @@ with (Hasher('Domains')) {
             render({ into: domains_div },
               sortable_pending_transfer_table(domains, domains_div)
             );
-            initialize_filters();
+            initialize_filters({ domains: domains });
           }
           
           render({ into: target_div },
@@ -162,7 +162,7 @@ with (Hasher('Domains')) {
           )
         );
         
-        initialize_filters();
+        initialize_filters({ domains: domains });
       }
     });
   });

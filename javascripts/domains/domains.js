@@ -93,22 +93,12 @@ with (Hasher('Domains','Application')) {
     for (var i=0; i < domains.length; i++) {
       if ((domains[i].permissions_for_person.indexOf('linked_account') >= 0) && domains[i].supported_tld) linked_domains.push(domains[i]);
     }
-
-    // filter out hidden rows (from filters)
-    linked_domains = linked_domains.map(function(domain) {
-      
-      
-      
-      return domain;
-    });
-
+    
     // just return now if no linked domains
     if (linked_domains.length > 0) {
-      return div(options || {},
-        info_message(
-          a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: curry(Transfer.redirect_to_transfer_for_domain, linked_domains.map(function(d) { return d.name })) }, 'Begin Transfer'),
-          b(linked_domains.length), " of these domains can be transferred to Badger automatically!"
-        )
+      return info_message({ id: 'auto-transfer-message' },
+        a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: curry(Transfer.redirect_to_transfer_for_domain, linked_domains.map(function(d) { return d.name })) }, 'Begin Transfer'),
+        span({ id: 'count', style: 'font-weight: bold' }, linked_domains.length), " of these domains can be transferred to Badger automatically!"
       );
     }
   });
@@ -218,7 +208,15 @@ with (Hasher('Domains','Application')) {
   /*
     Setup the javascript change event to dynamically alter the domains list
   */
-  define('initialize_filters', function() {
+  define('initialize_filters', function(options) {
+    options = options || {};
+    var linked_domains = [];
+    if (options.domains) {
+      for (var i=0; i < options.domains.length; i++) {
+        if ((options.domains[i].permissions_for_person.indexOf('linked_account') >= 0) && options.domains[i].supported_tld) linked_domains.push(options.domains[i].name);
+      }
+    }
+    
     // update filters
     $("input[name^=filter-]").change(function() {
       // if this is a registrar filter box
@@ -236,6 +234,22 @@ with (Hasher('Domains','Application')) {
 
           return normalized_registrar_name(row_value).match(new RegExp(registrar.escape_for_regexp(), 'i'));
         });
+      }
+      
+      // update the 'transfer X domains to Badger' counter
+      if (linked_domains.length > 0) {
+        var visible_domains = $('table#domains-table tr[class=domains-row]:visible').map(function() { return $(this.children[0]).find('a').html(); }),
+            count = 0;
+        for (var i = 0; i < visible_domains.length; i++) {
+          if (linked_domains.includes(visible_domains[i])) count++;
+        }
+        
+        if (count > 0) {
+          $('div#auto-transfer-message').show();
+          $('div#auto-transfer-message #count').html(count);
+        } else {
+          $('div#auto-transfer-message').hide();
+        }
       }
     });
   });
