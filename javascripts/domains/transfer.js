@@ -11,7 +11,7 @@ with (Hasher('Transfer','Application')) {
       
       div({ 'class': 'sidebar' },
         info_message(
-          h3("Waiting until expiration?"),
+          h3("Waiting for the expiration?"),
           p("No need. Transferring your domain to Badger extends the current registration by one year.")
         )
       ),
