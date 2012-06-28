@@ -30,7 +30,7 @@ with (Hasher('Registration','DomainApps')) {
     });
   */
   define('with_registration_nav_table_for_domain', function(domain, callback) {
-    Badger.getDomain(domain, function(response) {
+    BadgerCache.getDomain(domain, function(response) {
       // if trying to load this and the domain is available,
       // just redirect to the 'register this domain' page
       if ((response.data || {}).available) return set_route('#domains/' + domain);
@@ -451,9 +451,10 @@ with (Hasher('Registration','DomainApps')) {
     form_data['privacy'] = form_data['privacy'] ? 'true' : 'false';
     form_data['auto_renew'] = form_data['auto_renew'] ? 'true' : 'false';
     form_data['locked'] = form_data['locked'] ? 'true' : 'false';
+
+    BadgerCache.flush('domains');
     
     Badger.updateDomain(domain.name, form_data, function(response) {
-      // console.log(response); --- commented out debug output CAB
       set_route(get_route());
     });
   });
