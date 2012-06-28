@@ -15,6 +15,56 @@ with (Hasher('Registrar','Application')) {
     )
   });
   
+  // return a pretty representation of the registrar, with 
+  // icon and humanized registrar name
+  define('icon', function(name) {
+    return div({ 'class': 'registrar-icon' },
+      span({ 'class': 'app_store_icon', style: 'background-image: url(' + logo_url_for_registrar(name) + ')' }),
+      span({ style: 'text-align: center; font-weight: bold; min-height: 36px' }, humanize_name(name))
+    );
+  });
+  
+  // show a small representation of registrar, with name and image
+  define('small_icon', function(name) {
+    return div({ style: 'width: 160px; height: 40px; padding: 5px' },
+      table(tbody(
+        tr(
+          td({ style: 'width: 10%' }, img({ 'class': 'app_store_icon', src: Registrar.logo_url_for_registrar(name), style: 'width: 40px; height: 40px; border-radius: 5px' })),
+          td(span({ style: 'font-weight: bold; margin-left: 10px' }, Registrar.humanize_name(name)))
+        )
+      ))
+    )
+  });
+  
+  // get the image src for registrar's app store icon
+  define('logo_url_for_registrar', function(name) {
+    if (name.match(/badger/i)) return 'images/apps/' + normalize_name(name) + '.png';
+    else if (name.match(/godaddy/i)) return 'images/apps/' + normalize_name(name) + '.png';
+    else if (name.match(/enom/i)) return 'images/apps/' + normalize_name(name) + '.png';
+    else if (name.match(/1and1/)) return 'images/apps/' + normalize_name(name) + '.png';
+    return 'images/apps/badger.png';
+  });
+  
+  // make a normalized registrar name pretty again
+  define('humanize_name', function(name) {
+    if (name.match(/badger/i)) return 'Badger';
+    if (name.match(/godaddy/i)) return 'GoDaddy';
+    if (name.match(/enom/i)) return 'Enom';
+    if (name.match(/network[\s_]?solutions/i)) return 'Network Solutions';
+    if (name.match(/1and1/)) return '1 & 1';
+    return name;
+  });
+  
+  // make registrar name usable in code.
+  define('normalize_name', function(name) {
+    if (name.match(/badger/i)) return 'badger';
+    if (name.match(/godaddy/i)) return 'godaddy';
+    if (name.match(/enom/i)) return 'enom';
+    if (name.match(/network[\s_]?solutions/i)) return 'networksolutions';
+    if (name.match(/1and1/)) return '1and1';
+    return name;
+  });
+  
   define('do_remove_link', function(data) {
     start_modal_spin('Removing Linked Account...');
     

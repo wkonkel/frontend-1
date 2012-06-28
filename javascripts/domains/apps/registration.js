@@ -1,9 +1,9 @@
 with (Hasher('Registration','DomainApps')) {
-
+  
   register_domain_app({
     id: 'badger_registration',
     icon: function(domain_obj) {
-      return logo_url_for_registrar(domain_obj.current_registrar);
+      return Registrar.logo_url_for_registrar(domain_obj.current_registrar);
     },
     name: function(domain_obj) {
       //return "Registration: " + domain_obj.current_registrar;
@@ -12,44 +12,269 @@ with (Hasher('Registration','DomainApps')) {
     menu_item: { text: 'Registration', href: '#domains/:domain/registration', css_class: 'registration' },
     requires: {}
   });
-
-  route('#domains/:domain/registration', function(domain) {
-    var whois_div = div(spinner('Loading...'));
-    var button_div = div();
+  
+  /*
+    Build a nav table for a specific domain. Fetches domain info from server
+    and passes it to the callback.
     
-    render(
-      // h1_for_domain(domain, 'Registration'),
-      chained_header_with_links(
-        { href: '#domains', text: 'My Domains' },
-        { href: '#domains/' + domain, text: domain.toLowerCase() },
-        { text: 'Registration' }
-      ),
-      
-      button_div,
-      div({ 'class': 'error-message hidden', id: 'error-message' }),
-      div({ 'class': 'success-message hidden', id: 'success-message' }),
-      domain_nav_table(
-        domain_data_block(domain),
-        whois_div
-      )
-    );
-
-    Badger.getContacts(function() {
-      Badger.getDomain(domain, function(response) {
-        var domain_obj = response.data;
+    example:
+    registration_nav_table_for_domain('test.com', function(nav_table, domain_obj) {
+      render(
+        h1('My Page'),
         
-        render({ target: whois_div }, whois_view(domain_obj));
-
-         if (!domain_obj.badger_registration && !Account.has_permission('pending_transfer', domain_obj.permissions_for_person)) {
-          render({ into: button_div },
-            div({ style: "float: right; margin-top: -44px" },
-              a({ 'class': "myButton small", href: curry(Transfer.redirect_to_transfer_for_domain, domain) }, "Transfer to Badger")
+        nav_table(
+          div('code wrapped by nav'),
+          div('My domain: ' + domain_obj.name)
+        )
+      );
+    });
+  */
+  define('with_registration_nav_table_for_domain', function(domain, callback) {
+    Badger.getDomain(domain, function(response) {
+      var active_url = get_route();
+      var base_url = '#domains/' + domain;
+      
+      var permissions = (response.data || {}).permissions_for_person || {};
+      var show_contacts = permissions.includes('modify_contacts'),
+          show_settings = permissions.includes('renew');
+      
+      var nav_table = function() {
+        return table({ style: 'width: 100%' }, tbody(
+          tr(
+            td({ style: 'width: 200px; vertical-align: top' },
+              ul({ id: 'domains-left-nav' },
+                li(a({ href: (base_url + '/registration'), 'class': (active_url.match(/^#domains\/.+?\/registration$/) ? 'active' : '') }, 'Registration')),
+                li(a({ href: (base_url + '/whois'), 'class': (active_url.match(/^#domains\/.+?\/whois$/) ? 'active' : '') }, 'Whois')),
+                
+                show_contacts ? [
+                  li({ style: ('display: ' + show_contacts ? '' : 'none') },
+                    a({ href: (base_url + '/contacts'), 'class': (active_url.match(/^#domains\/.+?\/contacts$/) ? 'active' : '') }, 'Contacts')
+                  )
+                ] : [],
+                
+                show_settings ? [
+                  li({ style: 'display: ' + show_settings ? '' : 'none' },
+                    a({ href: (base_url + '/settings'), 'class': (active_url.match(/^#domains\/.+?\/settings$/) ? 'active' : '') }, 'Settings')
+                  )
+                ] : []
+              )
+            ),
+            
+            td({ style: 'vertical-align: top'},
+              arguments
             )
-          );
-        }
-      });
+          )
+        ));
+      }
+      
+      callback(nav_table, response.data);
     });
   });
+  
+  route('#domains/:domain/registration', function(domain) {
+    with_registration_nav_table_for_domain(domain, function(nav_table, domain_obj) {
+      var created_registrar_div = div(),
+          previous_registrar_div = div(),
+          updated_registrar_div = div();
+          
+      if (domain_obj.created_registrar) {
+        render({ into: created_registrar_div },
+          fieldset(
+            label('Created By:'),
+            Registrar.small_icon(domain_obj.created_registrar)
+          )
+        )
+      }
+      
+      if (domain_obj.previous_registrar) {
+        render({ into: previous_registrar_div },
+          fieldset(
+            label('Previous Registrar:'),
+            Registrar.small_icon(domain_obj.previous_registrar)
+          )
+        )
+      }
+      
+      if (domain_obj.updated_registrar) {
+        render({ into: updated_registrar_div },
+          fieldset(
+            label('Last Action By:'),
+            Registrar.small_icon(domain_obj.updated_registrar)
+          )
+        )
+      }
+      
+      var sidebar_content = div();
+      if ((domain_obj.permissions_for_person||[]).includes('modify_contacts')) {
+        render({ into: sidebar_content },
+          info_message(
+            h3("Don't lose your domain!"),
+            p("1 year can pass quickly, and your domain is important. Take action now:"),
+            ul(
+              li(a({ href: '#domains/' + domain + '/registration/extend' }, 'Extend the registration')),
+              li(a({ href: '#domains/' + domain + '/settings' }, 'Enable auto renewal'))
+            )
+          )
+        );
+      }
+      
+      render(
+        chained_header_with_links(
+          { text: 'My Domains', href: '#domains' },
+          { text: domain.toLowerCase(), href: '#domains/' + domain },
+          { text: 'Registration' }
+        ),
+        
+        nav_table(
+          div({ 'class': 'sidebar'},
+            sidebar_content
+          ),
+          
+          div({ 'class': 'has-sidebar' },
+            form({ 'class': 'fancy' },
+              fieldset(
+                label('Current Registrar:'),
+                Registrar.small_icon(domain_obj.current_registrar)
+              ),
+              
+              created_registrar_div,
+              previous_registrar_div,
+              // updated_registrar_div, // this might confuse people, and isn't really necessary
+              
+              fieldset(
+                label('Expires:'),
+                span(date(domain_obj.expires_on).toString('MMMM dd yyyy'))
+              ),
+              
+              fieldset(
+                label('Created:'),
+                span(date(domain_obj.registered_at).toString('MMMM dd yyyy'))
+              )
+            )
+          )
+        )
+      );
+    });
+  });
+  
+  route('#domains/:domain/whois', function(domain) {
+    with_registration_nav_table_for_domain(domain, function(nav_table, domain_obj) {
+      var show_whois_pricay_message = (domain_obj.permissions_for_person||[]).includes('modify_contacts') && !(domain_obj.whois && domain_obj.whois.privacy);
+      
+      render(
+        chained_header_with_links(
+          { text: 'My Domains', href: '#domains' },
+          { text: domain.toLowerCase(), href: '#domains/' + domain },
+          { text: 'Public Whois Listing' }
+        ),
+        
+        nav_table(
+          info_message({ style: 'display: ' + (show_whois_pricay_message ? '' : 'none' )  },
+            "Don't want your contact information available to the public? ", a({ href: '#domains/' + domain + '/contacts' }, 'Enable Whois privacy.'), " It's free!"
+          ),
+          
+          // hard-code the width, because it will go off the page since we're using pre whitespace
+          info_message({ style: 'overflow: scroll; width: 700px; border-color: #aaa; background: #eee; white-space: pre; padding: 10px' },
+            (domain_obj.whois || {}).raw || 'Missing'
+          )
+        )
+      );
+    });
+  });
+  
+  route('#domains/:domain/contacts', function(domain) {
+    with_registration_nav_table_for_domain(domain, function(nav_table, domain_obj) {
+      render(
+        chained_header_with_links(
+          { text: 'My Domains', href: '#domains' },
+          { text: domain, href: '#domains/' + domain },
+          { text: 'Whois Contacts' }
+        ),
+        
+        nav_table(
+          form_with_loader({ 'class': 'fancy', action: curry(update_whois, domain_obj), loading_message: 'Updating Whois Contacts...' },
+            fieldset(
+              label('Registrant:'),
+              select({ name: 'registrant_contact_id' },
+                profile_options_for_select(domain_obj.registrant_contact.id)
+              )
+            ),
+            
+            fieldset(
+              label('Administrator:'),
+              select({ name: 'administrator_contact_id' },
+                option({ value: '' }, 'Same as Registrant'),
+                profile_options_for_select(domain_obj.administrator_contact && domain_obj.administrator_contact.id)
+              )
+            ),
+            
+            fieldset(
+              label('Technical:'),
+              select({ name: 'technical_contact_id' },
+                option({ value: '' }, 'Same as Registrant'),
+                profile_options_for_select(domain_obj.technical_contact && domain_obj.technical_contact.id)
+              )
+            ),
+            
+            fieldset(
+              label('Billing:'),
+              select({ name: 'billing_contact_id' },
+                option({ value: '' }, 'Same as Registrant'),
+                profile_options_for_select(domain_obj.billing_contact && domain_obj.billing_contact.id)
+              )
+            ),
+            
+            fieldset(
+              label('Privacy:'),
+              span(
+                (domain_obj.whois.privacy ? checkbox({ name: 'privacy', checked: 'checked' }) : checkbox({ name: 'privacy' })),
+                span({ style: 'margin-left: 5px' }, 'Keep contact information private')
+              )
+            ),
+            
+            fieldset({ 'class': 'no-label' },
+              submit({ value: 'Save Contacts' })
+            )
+          )
+        )
+      );
+    });
+  });
+  
+  route('#domains/:domain/settings', function(domain) {
+    with_registration_nav_table_for_domain(domain, function(nav_table, domain_obj) {
+      render(
+        chained_header_with_links(
+          { text: 'My Domains', href: '#domains' },
+          { text: domain, href: '#domains/' + domain },
+          { text: 'Settings' }
+        ),
+        
+        nav_table(
+          form_with_loader({ 'class': 'fancy', action: curry(update_whois, domain_obj) },
+            fieldset(
+              label('Auto Renew:'),
+              (domain_obj.auto_renew ? checkbox({ name: 'auto_renew', checked: 'checked' }) : checkbox({ name: 'auto_renew' }))
+            ),
+            
+            fieldset(
+              label('Whois Privacy:'),
+              span(
+                (domain_obj.whois.privacy ? checkbox({ name: 'privacy', checked: 'checked' }) : checkbox({ name: 'privacy' }))
+              )
+            ),
+            
+            fieldset(
+              submit({ value: 'Save Changes' })
+            )
+          )
+        )
+      );
+    });
+  });
+  
+  
+  
   
   route('#domains/:domain/registration/extend', function(domain) {
     var target_div = div(spinner('Loading...'));
@@ -117,7 +342,6 @@ with (Hasher('Registration','DomainApps')) {
         });
       }
     });
-    
   });
   
   define('renew_domain', function(domain_obj, form_data) {
@@ -147,46 +371,6 @@ with (Hasher('Registration','DomainApps')) {
         $("#errors").html(error_message(response));
       }
     });
-    
-    // BadgerCache.getAccountInfo(function(results) {
-    //   var needed_credits = form_data.years
-    //   var current_credits = results.data.domain_credits;
-    //   
-    //   if (current_credits >= needed_credits) {
-    //        start_modal_spin('Renewing domain...');
-    //        Badger.renewDomain(form_data.domain, form_data.years, function(response) {
-    //          if (response.meta.status == "ok") {
-    //            hide_modal();
-    //            set_route("#domains/" + form_data.domain + "/registration");
-    //            update_credits(true);
-    //          } else {
-    //            stop_modal_spin();
-    //            $("#errors").append(div({ 'class': "error-message" }, response.data.message));
-    //          }
-    //        });
-    //   } else {
-    //     // Billing.purchase_modal(curry(renew_domain, form_data), needed_credits - current_credits);
-    //     Billing.purchase_modal(curry(renew_domain_modal, form_data.domain, $.extend(form_data, { credits_added: true })), needed_credits - current_credits); // after successfully buying credits, go back to the initial renewal modal --- CAB
-    //   }
-    // });
-  });
-  
-  
-  
-  define('logo_url_for_registrar', function(name) {
-    var src;
-    
-    if (name && name.match(/badger/i)) src = "images/apps/badger.png";
-    else if (name.match(/godaddy/i)) src = "images/apps/godaddy.png";
-    else if (name.match(/enom/i)) src = "images/apps/enom.png";
-    else if (name.match(/1and1/)) src = "images/apps/1and1.png";
-    else src = "images/apps/badger.png"
-    
-    return src;
-  });
-  
-  define('logo_for_registrar', function(name) {
-    return img({ 'class': "app_store_icon", style: "margin-bottom: 0px", src: logo_url_for_registrar(name) })
   });
   
   define('profile_options_for_select', function(selected_id) {
@@ -212,158 +396,16 @@ with (Hasher('Registration','DomainApps')) {
       return dummy_opt;
     }
   });
-
-  define('domain_data_block', function(domain) {
-    var elem = div();
-
-    Badger.getDomain(domain, function(response) {
-      var domain_obj = response.data;
-      render({ target: elem },
-        
-        table({ style: "width: 100%; border-collapse: collapse" }, tbody(
-          tr(
-            td({ style: 'width: 50%; vertical-align: top; padding-right: 5px' },
-
-              div({ 'class': 'info-message', style: "width: 381px" },
-                div({ style: "float: left; padding-right: 10px" }, logo_for_registrar(domain_obj.current_registrar) ),
-
-                h3({ style: 'margin: 0 0 12px' }, 'Current Registration'),
-                div(domain_obj.current_registrar, " until ", date(domain_obj.expires_at).toString('MMMM dd yyyy')),
-
-                // if this is a badger registration and the person can renew the domain, show the extend registration button
-                // domain_obj.current_registrar.match(/badger/i) && div({ style: 'text-align: left; margin-top: 12px' }, a({ 'class': "myButton small", href: curry(Register.renew_domain_modal, domain) }, "Extend Registration")),
-                (domain_obj.badger_registration && $.inArray("renew", (domain_obj.permissions_for_person || [])) >= 0) && div({ style: 'text-align: left; margin-top: 12px' }, a({ 'class': "myButton small", href: '#domains/' + domain + '/registration/extend' }, "Extend Registration")),
-
-                div({ style: 'clear: left' })
-              )
-              
-            ),
-            td({ style: 'width: 50%; vertical-align: top; padding-left: 5px' },
-              div({ 'class': 'info-message', style: 'border-color: #aaa; background: #eee' },
-                dl({ 'class': 'fancy-dl', style: 'margin: 0' },
-                  dt({ style: 'width: 80px' }, 'Created:'), dd(date(domain_obj.registered_at).toString('MMMM dd yyyy')), br(),
-                  dt({ style: 'width: 80px' }, 'Through:'), dd((domain_obj.created_registrar ? domain_obj.created_registrar : '')), br(),
-                  dt({ style: 'width: 80px' }, 'Previously: '), dd(domain_obj.losing_registrar), br()
-                  // dt('Expires:'), dd(), br(),
-                  // dt('Created: '), dd(date(domain_obj.created_at).toString('MMMM dd yyyy')), br(),
-                  // dt('Updated At: '), dd(date(domain_obj.updated_at).toString('MMMM dd yyyy')), br(),
-                  // dt('Updated On: '), dd(date(domain_obj.updated_on).toString('MMMM dd yyyy'))
-                )
-              )
-            )
-          )
-        ))
-        
-          //         div({ 'class': 'info-message' },
-          // div({ style: "float: left; padding-right: 10px" }, img({ src: logo_for_registrar(domain_obj.current_registrar) })),
-          // 
-          // h3({ style: 'margin: 0 0 6px' }, 'Current Registration'),
-          // div(domain_obj.current_registrar),
-          // div("Expires ", date(domain_obj.expires_on).toString('MMMM dd yyyy').split(' ').slice(1).join(' ')),
-          // 
-          //          !domain_obj.badger_dns && div({ style: 'text-align: right' }, a({ 'class': "myButton small", href: curry(Register.renew_domain_modal, domain) }, "Extend")),
-          // 
-          // div({ style: 'clear: left' })
-          // 
-          //           //          
-          //           // dl({ 'class': 'fancy-dl', style: 'padding-left: 40px' },
-          //           //   dt('Registrar: '), dd(), br(),
-          //           //   dt('Status: '), dd(domain_obj.status), br(),
-          //           //   dt('Created: '), dd(date(domain_obj.created_at).toString('MMMM dd yyyy')), br(),
-          //           //   dt('Expires:'), dd(), br()
-          //           //   // dt('Registered:'), dd(date(data.registered_on).toString('MMMM dd yyyy'), (data.created_registrar ? ' via '+data.created_registrar : '')), br(),
-          //           //   // dt('Previous Registrar: '), dd(data.losing_registrar), br(),
-          //           //   // dt('Updated At: '), dd(date(data.updated_at).toString('MMMM dd yyyy')), br(),
-          //           //   // dt('Updated On: '), dd(date(data.updated_on).toString('MMMM dd yyyy'))
-          //           // )
-          //         )
-      );
-    });
-
-    return elem;
-  });
   
-  
-
-
-
   define('update_whois', function(domain, form_data) {
-    hide_and_show_ajax_loader("#save-contacts-button");
-    
     // force sends a "privacy=false"... exclusion isn't enough
     form_data['privacy'] = form_data['privacy'] ? 'true' : 'false';
+    form_data['auto_renew'] = form_data['auto_renew'] ? 'true' : 'false';
+    
     Badger.updateDomain(domain.name, form_data, function(response) {
       // console.log(response); --- commented out debug output CAB
       set_route(get_route());
     });
-  });
-  
-  define('whois_view', function(domain) {
-    var hide_modify_contacts_form = (!domain.badger_registration || !domain.registrant_contact || !domain.registrant_contact.id);
-
-    return div(
-      table({ style: 'width: 100% '}, tbody(
-        tr(
-          td({ style: 'vertical-align: top; padding-right: 20px'},
-            h2('Public Whois Listing'),
-            div({ 'class': 'long-domain-name', style: 'border: 1px solid #ccc; width: ' + (hide_modify_contacts_form ? '690px' : '409px') + '; overflow: auto; white-space: pre; padding: 5px; background: #f0f0f0' }, (domain.whois ? domain.whois.raw : 'Missing.'))
-          ),
-          td({ style: 'vertical-align: top'},
-            hide_modify_contacts_form ? [] : [
-              div({ 'class': "info-message", style: "border-color: #aaa; background: #eee; margin-top: 42px;" },
-                h2('Change Contacts'),
-
-                form({ action: curry(update_whois, domain) },
-                  table(tbody(
-                    tr(
-                      td('Registrant:'),
-                      td(select({ name: 'registrant_contact_id', style: 'width: 150px' },
-                        profile_options_for_select(domain.registrant_contact.id)
-                      ))
-                    ),
-                    tr(
-                      td('Administrator:'),
-                      td(select({ name: 'administrator_contact_id', style: 'width: 150px' },
-                        option({ value: '' }, 'Same as Registrant'),
-                        profile_options_for_select(domain.administrator_contact && domain.administrator_contact.id)
-                      ))
-                    ),
-                    tr(
-                      td('Billing:'),
-                      td(select({ name: 'billing_contact_id', style: 'width: 150px' },
-                        option({ value: '' }, 'Same as Registrant'),
-                        profile_options_for_select(domain.billing_contact && domain.billing_contact.id)
-                      ))
-                    ),
-                    tr(
-                      td('Technical:'),
-                      td(select({ name: 'technical_contact_id', style: 'width: 150px' },
-                        option({ value: '' }, 'Same as Registrant'),
-                        profile_options_for_select(domain.technical_contact && domain.technical_contact.id)
-                      ))
-                    )
-                  )),
-                  div(
-                    (domain.whois.privacy ? input({ name: 'privacy', type: 'checkbox', checked: 'checked' }) : input({ name: 'privacy', type: 'checkbox' })),
-                    'Keep contact information private'
-                  ),
-
-                  div({ style: "text-align: right" },
-                    input({ id: "save-contacts-button", type: 'submit', 'class': 'myButton small', value: 'Save' })
-                  )
-                )
-              )
-            ],
-
-            transfer_out_domain_if_allowed(domain) // show the transfer out UI
-          )
-        )
-      ))
-    );
-  });
-  
-  define('reload_domain_object', function() {
-    
   });
   
   define('transfer_out_domain_if_allowed', function(domain_obj) {
@@ -443,4 +485,5 @@ with (Hasher('Registration','DomainApps')) {
       }
     });
   });
+  
 }
