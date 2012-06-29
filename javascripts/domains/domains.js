@@ -290,8 +290,8 @@ with (Hasher('Domains','Application')) {
       table({ id: 'domains-table', 'class': 'fancy-table' }, tbody(
         tr({ 'class': 'table-header' },
           th({ 'class': 'table-sorter', style: 'width: 35%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_domain_name, sortable_domains_table) }, 'Domain')),
-          th({ 'class': 'table-sorter', style: 'width: 30%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_current_registrar, sortable_domains_table) }, 'Registrar')),
-          th({ 'class': 'table-sorter', style: 'width: 20%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_expiration_date, sortable_domains_table) }, 'Expires'))
+          th({ 'class': 'table-sorter', style: 'width: 35%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_current_registrar, sortable_domains_table) }, 'Registrar')),
+          th({ 'class': 'table-sorter', style: 'width: 30%;' }, a({ onclick: curry(sort_domains_and_update_table, domains, target_div, sort_by_expiration_date, sortable_domains_table) }, 'Expires / Renews'))
         ),
         (domains||[]).map(function(domain) {
           // return a colored expiration date
@@ -363,16 +363,11 @@ with (Hasher('Domains','Application')) {
       date_class = 'red'
     }
     
-    // if the domain is set to auto renew, 
-    // grey out the font
-    var expiration_date_span;
-    if (domain.auto_renew) {
-      expiration_date_span = span({ 'class': date_class, style: 'color: #9B9B9B;' }, date(domain.expires_at).toString('MMMM dd yyyy'));
+    if (domain.badger_registration && domain.auto_renew) {
+      return span(date(domain.expires_at).toString('MMMM dd yyyy'), ' ', span({ style: 'color: #B8B8B8' }, '(auto)'));
     } else {
-      expiration_date_span = span({ 'class': date_class }, date(domain.expires_at).toString('MMMM dd yyyy'));
+      return span({ 'class': date_class }, date(domain.expires_at).toString('MMMM dd yyyy'));
     }
-    
-    return expiration_date_span;
   })
   
   define('sort_domains_and_update_table', function(domains, target_div, sort_method, table_method) {
