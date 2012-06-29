@@ -423,8 +423,8 @@ with (Hasher('DomainApps','Application')) {
     for_each(delete_records, function(record) {
       var server_record = domain_has_record(domain_obj, record)
       if (server_record) {
-        console.log("DELETE RECORD")
-        console.log(server_record);
+        // console.log("DELETE RECORD")
+        // console.log(server_record);
         Badger.deleteRecord(domain_obj.name, server_record.id, function(response) {
           //TODO: notify user if error
           if (response.meta.status == 'ok') {
