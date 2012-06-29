@@ -61,7 +61,7 @@ with (Hasher()) {
       var matches = path.match(route.regex);
       if (matches) {
         // scroll to the top of newly loaded page --- CAB
-        window.scrollTo(0);
+        window.scrollTo(0, 0);
         
         if (!route.context.run_filters('before')) return;
         route.callback.apply(null, matches.slice(1));
