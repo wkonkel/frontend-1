@@ -352,6 +352,8 @@ with (Hasher('DomainApps','Application')) {
   define('install_app_on_domain', function(app, domain_obj, form_data, need_confirm) {
     var tmp_app = $.extend(true, {}, app);
     var dns_required = (form_data.install_on_subdomain ? app.requires.subdomain_dns : app.requires.dns)
+    
+    BadgerCache.flush('domains');
 
     for_each(dns_required, function(record) {
       if (record.content_input)
@@ -415,6 +417,8 @@ with (Hasher('DomainApps','Application')) {
     var dns_installed_on_domain = get_dns_of_installed_app(app, temp_domain_obj, false);
     var dns_installed_on_subdomain = app.requires.subdomain_dns ? get_dns_of_installed_app(app, temp_domain_obj, true) : [];
     var delete_records = dns_installed_on_domain.concat(dns_installed_on_subdomain);
+
+    BadgerCache.flush('domains');
 
     for_each(delete_records, function(record) {
       var server_record = domain_has_record(domain_obj, record)
