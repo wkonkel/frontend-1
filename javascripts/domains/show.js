@@ -59,7 +59,7 @@ with (Hasher('DomainShow','DomainApps')) {
           spinner('Loading domain...')
         );
         setTimeout(function() {
-          var domain_route = '#domains/' + domain + '/registration';
+          var domain_route = '#domains/' + domain;
           if (get_route() == domain_route) {
             BadgerCache.flush('domains');
             set_route(domain_route);
