@@ -1,9 +1,9 @@
 with (Hasher('WebForwards', 'DomainApps')) {
 
-  register_domain_app({
+  var app = register_domain_app({
     id: 'badger_web_forward',
     name: 'URL Forwarding',
-    menu_item: { text: 'URL Forwarding', href: '#domains/:domain/web_forwards', css_class: 'url-forwarding' },
+    menu_item: { text: 'URL Forwarding', href: '#domains/:domain/apps/web_forwards', css_class: 'url-forwarding' },
     icon: 'images/apps/web-forward.png',
     
     requires: {
@@ -24,49 +24,48 @@ with (Hasher('WebForwards', 'DomainApps')) {
     }
   });
   
-  route('#domains/:domain/web_forwards', function(domain) {
-    render(
-      div({ id: 'web-forwards-wrapper' },
-      // h1_for_domain(domain, 'URL Forwards'),
-      chained_header_with_links(
-        { href: '#domains', text: 'My Domains' },
-        { href: '#domains/' + domain, text: domain.toLowerCase() },
-        { text: 'URL Forwards' }
-      ),
-      
-        domain_app_settings_button('badger_web_forward', domain),
+  route('#domains/:domain/apps/web_forwards', function(domain) {
+    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+      render(
+        div({ id: 'web-forwards-wrapper' },
+          h1_for_domain(domain, 'URL Forwards'),
 
-        div({ id: 'web-forwards-errors' }),
-      
-        form({ action: curry(create_web_forward, domain) },
-          table({ 'class': 'fancy-table', id: 'web-forwards-table' },
-            tbody({ id: 'web-forwards-table-tbody' },
-              tr({ 'class': 'table-header'},
-                th('Source'),
-                th(''),
-                th('Destination'),
-                th('')
-              ),
+          nav_table(
+            domain_app_settings_button('badger_web_forward', domain),
 
-              tr(
-                td(
-                  div(
-                    Domains.truncate_domain_name(domain), "/ ", input({ id: 'input-path', name: 'path', placeholder: 'path' })
+            div({ id: 'web-forwards-errors' }),
+
+            form({ action: curry(create_web_forward, domain) },
+              table({ 'class': 'fancy-table', id: 'web-forwards-table' },
+                tbody({ id: 'web-forwards-table-tbody' },
+                  tr({ 'class': 'table-header'},
+                    th('Source'),
+                    th(''),
+                    th('Destination'),
+                    th('')
+                  ),
+
+                  tr(
+                    td(
+                      div(
+                        Domains.truncate_domain_name(domain), "/ ", input({ id: 'input-path', name: 'path', placeholder: 'path' })
+                      )
+                    ),
+                    td({ style: 'text-align: center' }, img({ src: 'images/icon-arrow-right.png' })),
+                    td(
+                      input({ id: 'input-destination', name: 'destination', placeholder: 'example.com' })
+                    ),
+                    td({ style: 'text-align: center' }, 
+                      input({ 'class': 'myButton small', type: 'submit', value: 'Add' })
+                    )
                   )
-                ),
-                td({ style: 'text-align: center' }, img({ src: 'images/icon-arrow-right.png' })),
-                td(
-                  input({ id: 'input-destination', name: 'destination', placeholder: 'example.com' })
-                ),
-                td({ style: 'text-align: center' }, 
-                  input({ 'class': 'myButton small', type: 'submit', value: 'Add' })
                 )
               )
             )
           )
         )
-      )
-    );
+      );
+    });
 
     var the_tbody = $('#web-forwards-table-tbody');
     Badger.getWebForwards(domain, function(results) {

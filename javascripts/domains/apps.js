@@ -13,50 +13,102 @@ with (Hasher('Application')) {
   });
 }
 
-with (Hasher('DomainApps','Application')) {
+with (Hasher('DomainApps','Domains')) {
   define('h1_for_domain', function(domain, current_header) {
-    return h1({ 'class': 'h1_for_domains' }, 
-      a({ href: '#domains' }, 'My Domains'), 
-      ' » ', 
-      current_header ? [
-        a({ href: '#domains/' + domain, 'class': 'long-domain-name' }, domain), 
-        ' » ', 
-        current_header
-      ] : [
-        domain
-      ]
+    return chained_header_with_links(
+      { text: 'My Domains', href: '#domains/' },
+      { text: domain },
+      { text: 'Apps', href: '#domains/' + domain + '/apps' },
+      { text: current_header }
     );
   });
   
-  define('domain_nav_table', function() {
-    // TODO: Not quite ready
-    return arguments;
-    
-    
+  define('with_domain_nav_for_app', function(domain, app, callback) {
     var active_url = get_route();
-    var domain = active_url.split('/')[1];
     
-    return table({ style: 'width: 100%' }, tbody(
-      tr(
-        td({ style: 'width: 200px; vertical-align: top' },
-          ul({ id: 'domains-left-nav' },
-            [
-              ['Applications', '#domains/' + domain],
-              ['Registration', '#domains/' + domain + '/registration'],
-              ['DNS', '#domains/' + domain + '/dns']
-            ].map(function(pair) {
-              return li(a({ href: pair[1], 'class': (active_url == pair[1] ? 'active' : '') }, pair[0]));
-            })
-          )
-        ),
-        
-        td({ style: 'vertical-align: top'},
-          arguments
-        )
-      )
-    ));
+    callback(function() {
+      return div(arguments);
+      
+      // TODO: Finish domain app nav table --- CAB
+      // return table({ style: 'width: 100%' }, tbody(
+      //   tr(
+      //     td({ style: 'width: 200px; vertical-align: top' },
+      //       ul({ id: 'domains-left-nav' },
+      //         li(a({ href: (app.menu_item), 'class': (active_url.match(new RegExp(app.menu_item)) ? 'active' : '') }, app.name))
+      //         // li(a({ href: curry(show_settings_modal_for_app, app.id, domain), 'class': (active_url.match(new RegExp(app.menu_item)) ? 'active' : '') }, 'Settings'))
+      //       )
+      //     ),
+      //     
+      //     td({ style: 'vertical-align: top'},
+      //       arguments
+      //     )
+      //   )
+      // ));
+    });
   });
   
+  define('render_all_application_icons', function(options) {
+    var domain_obj = options.domain_obj,
+        apps_per_row = options.apps_per_row || 6,
+        installed_apps = div({ id: 'installed-apps' }),
+        available_apps = div({ id: 'available-apps' }),
+        installed_apps_count = 0,
+        available_apps_count = 0;
+    
+    // filter out applications
+    var filter = options.filter || function(){ return true; };
+    
+    for (var key in Hasher.domain_apps) {
+      var app = Hasher.domain_apps[key];
+      if (app.menu_item) {
+        var href;
+        var target;
+        if (app_is_installed_on_domain(app, domain_obj)) {
+          href = app.menu_item.href.replace(/:domain/, domain_obj.name);
+          target = installed_apps;
+        } else {
+          if ((app.id == 'badger_dns') || (app.id == 'remote_dns')) {
+            href = curry(DnsApp.change_name_servers_modal, domain_obj);
+          } else {
+            href = curry(show_modal_install_app, app, domain_obj);
+          }
+          target = available_apps;
+        }
+        
+        if (filter(app.id)) {
+          target.appendChild(
+            a({ 'class': 'app_store_container', href: href },
+              span({ 'class': 'app_store_icon', style: 'background-image: url(' + ((app.icon && app.icon.call ? app.icon.call(null, domain_obj) : app.icon) || 'images/apps/badger.png') + ')' } ),
+              span({ style: 'text-align: center; font-weight: bold' }, (app.name.call ? app.name.call(null, domain_obj) : app.name))
+            )
+          );
+
+          if (target.id == 'installed-apps') {
+            installed_apps_count++;
+            if (installed_apps_count % apps_per_row == 0) installed_apps.appendChild(div({ style: 'clear: left' }));
+          } else {
+            available_apps_count++;
+            if (available_apps_count % apps_per_row == 0) available_apps.appendChild(div({ style: 'clear: left' }));
+          }
+        }
+      }
+    }
+    
+    var available_apps_div = div();
+    if (((domain_obj.permissions_for_person || []).indexOf('modify_dns') >= 0) || ((domain_obj.permissions_for_person || []).indexOf('change_nameservers') >= 0)) {
+      render({ into: available_apps_div },
+        h2('Available Applications'),
+        available_apps
+      );
+    }
+    
+    return div(
+      installed_apps,
+      div({ style: 'clear: left' }),
+      available_apps_div,
+      div({ style: 'clear: both' })
+    );
+  });
   
   define('install_app_button_clicked', function(app, domain_obj, form_data) {
     if (form_data.install_on_subdomain && form_data.subdomain == "") {
@@ -251,7 +303,7 @@ with (Hasher('DomainApps','Application')) {
               remove_app_from_domain(app, domain_obj);
               hide_modal();
               $('#domain-menu-item-' + domain_obj.name.replace('.','-')).remove();
-              set_route('#domains/' + domain_obj.name);
+              set_route('#domains/' + domain_obj.name + '/apps');
             });
           }
         }, 'Uninstall ', app.name)
@@ -277,6 +329,7 @@ with (Hasher('DomainApps','Application')) {
   define('register_domain_app', function(options) {
     if (!Hasher.domain_apps) Hasher.domain_apps = {};
     Hasher.domain_apps[options.id] = options;
+    return Hasher.domain_apps[options.id];
   });
   
   define('app_is_installed_on_domain', function(app, domain_obj) {
@@ -318,7 +371,7 @@ with (Hasher('DomainApps','Application')) {
   
 
   define('domain_has_record', function(domain_obj, record) {
-    for (var i=0; i < domain_obj.dns.length; i++) {
+    for (var i=0; i < (domain_obj.dns || []).length; i++) {
       var tmp_record = domain_obj.dns[i];
 
       var sanitize_domain = function(host) {

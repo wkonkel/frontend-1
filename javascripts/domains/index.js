@@ -1,11 +1,11 @@
-with (Hasher('Domains')) {
+with (Hasher('DomainsIndex','Domains')) {
   route('#domains', function(domain_name) {
     var target_div = div(spinner('Loading domains...'));
     
     render(
       chained_header_with_links(
-        { text: 'My Domains' },
-        { text: 'All' }
+        { text: 'Domains' },
+        { text: 'My Domains' }
       ),
       
       target_div
@@ -33,7 +33,7 @@ with (Hasher('Domains')) {
             sortable_domains_table(domains, domains_div)
           );
         }
-
+        
         // render message for incomplete profile (legacy rhinonames contacts) --- CAB
         var update_contact_message_div = div();
         BadgerCache.getContacts(function(response) {
@@ -71,7 +71,7 @@ with (Hasher('Domains')) {
     
     render(
       chained_header_with_links(
-        { text: 'My Domains' },
+        { text: 'Domains' },
         { text: 'Pending Transfer' }
       ),
       target_div
@@ -122,7 +122,7 @@ with (Hasher('Domains')) {
     
     render(
       chained_header_with_links(
-        { text: 'My Domains' },
+        { text: 'Domains' },
         { text: 'Expiring Soon' }
       ),
       target_div
@@ -191,7 +191,7 @@ with (Hasher('Domains')) {
 // with (Hasher('Domains','Application')) {
 //   route('#filter_domains/:filter/:view_type', function(filter, view_type) {
 //     render(
-//       h1('My Domains'),
+//       h1('Domains'),
 //       domain_index_nav_table()
 //     );
 //     
@@ -310,7 +310,7 @@ with (Hasher('Domains')) {
 // 
 //   define('index_view', function(domains, filter, view_type) {
 //     var empty_domain_message = [];
-//     var title = "My Domains";
+//     var title = "Domains";
 //     switch (filter) {
 //       case 'transfers':
 //         empty_domain_message = [div("It looks like you don't have any domains in pending transfer.")];
@@ -318,7 +318,7 @@ with (Hasher('Domains')) {
 //         break;
 //       case 'expiringsoon':
 //         empty_domain_message = [div("It looks like you don't have any domains expiring soon.")];
-//         title = "My Domains » Expiring Soon";
+//         title = "Domains » Expiring Soon";
 //         break;
 //       default:
 //         empty_domain_message = [

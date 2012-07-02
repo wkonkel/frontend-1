@@ -1,10 +1,10 @@
 with (Hasher('GoogleMail', 'DomainApps')) { 
 
-  register_domain_app({
+  var app = register_domain_app({
     id: 'google_mail',
     name: 'Google Mail',
     icon: 'images/apps/gmail.png',
-    menu_item: { text: 'Google Mail', href: '#domains/:domain/google_apps/gmail' },
+    menu_item: { text: 'Google Mail', href: '#domains/:domain/apps/google/gmail' },
 
     requires: {
       dns: [
@@ -36,13 +36,19 @@ with (Hasher('GoogleMail', 'DomainApps')) {
   // 
   // For more detailed instructions, please see <a href="https://www.badger.com/#knowledge_center/47-Properly-configuring-Google-Mail-on-your-Badger-domain">this Knowledge Center article</a>.
 
-  route('#domains/:domain/google_apps/gmail', function(domain) {
-    render(
-      h1_for_domain(domain, 'Google Mail'),
-      domain_app_settings_button('google_mail', domain),
-      p("Before anything else, you will need to ", a({ href: 'https://www.google.com/a/cpanel/domain/new', target: '_blank'}, 'set up Google Apps for your domain'), ' if you haven\'t already.'),
-      p("For more detailed instructions, please see ", a({ href: "http://community.badger.com/badger/topics/configuring_google_mail_for_your_domain_on_badger_com", target: '_blank' }, "this Knowledge Center article"), ".")
-    );
+  route('#domains/:domain/apps/google/gmail', function(domain) {
+    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+      render(
+        h1_for_domain(domain, 'Google Mail'),
+        
+        nav_table(
+          domain_app_settings_button('google_mail', domain),
+          
+          p("Before anything else, you will need to ", a({ href: 'https://www.google.com/a/cpanel/domain/new', target: '_blank'}, 'set up Google Apps for your domain'), ' if you haven\'t already.'),
+          p("For more detailed instructions, please see ", a({ href: "http://community.badger.com/badger/topics/configuring_google_mail_for_your_domain_on_badger_com", target: '_blank' }, "this Knowledge Center article"), ".")
+        )
+      );
+    });
   });
   
 

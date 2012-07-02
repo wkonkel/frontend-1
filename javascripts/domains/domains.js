@@ -1,4 +1,72 @@
 with (Hasher('Domains','Application')) {
+  /*
+    Build a nav table for a specific domain. Fetches domain info from server
+    and passes it to the callback.
+    
+    example:
+    registration_nav_table_for_domain('test.com', function(nav_table, domain_obj) {
+      render(
+        h1('My Page'),
+        
+        nav_table(
+          div('code wrapped by nav'),
+          div('My domain: ' + domain_obj.name)
+        )
+      );
+    });
+  */
+  define('with_domain_nav', function(domain, callback) {
+    BadgerCache.getDomain(domain, function(response) {
+      var domain_obj = response.data || {};
+      
+      var active_url = get_route();
+      var base_url = '#domains/' + domain;
+      
+      var permissions = domain_obj.permissions_for_person || [];
+      var show_transfer_out = permissions.includes('transfer_out'),
+          show_whois = !domain_obj.available && !(domain_obj.current_registrar||'').match(/^unknown$/i),
+          show_settings = permissions.includes('renew'),
+          show_apps = !domain_obj.available;
+      
+      var nav_table = function() {
+        return table({ style: 'width: 100%' }, tbody(
+          tr(
+            td({ style: 'width: 200px; vertical-align: top' },
+              ul({ id: 'domains-left-nav' },
+                li(a({ href: base_url, 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}$/i) ? 'active' : '') }, 'Registration')),
+                
+                (function() {
+                  if (show_apps) return li(a({ id: '/apps', href: (base_url + '/apps'), 'class': (active_url.match(/^#domains\/.+?\/apps/i) ? 'active' : '') }, 'Apps'));
+                })(),
+                
+                (function() {
+                  if (show_whois) return li(a({ href: (base_url + '/whois'), 'class': (active_url.match(/^#domains\/.+?\/whois$/) ? 'active' : '') }, 'Whois'));
+                })(),
+                
+                // (function() {
+                //   if (show_apps) return li(a({ href: (base_url + '/history'), 'class': (active_url.match(/^#domains\/apps$/i) ? 'active' : '') }, 'History'));
+                // })(),
+                
+                (function() {
+                  if (show_settings) return li(a({ href: (base_url + '/settings'), 'class': (active_url.match(/^#domains\/.+?\/settings$/) ? 'active' : '') }, 'Settings'));
+                })(),
+                
+                (function() {
+                  if (show_transfer_out) return li(a({ href: (base_url + '/transfer-out'), 'class': (active_url.match(/^#domains\/.+?\/transfer-out$/) ? 'active' : '') }, 'Transfer Out'));
+                })()
+              )
+            ),
+            
+            td({ style: 'vertical-align: top'},
+              arguments
+            )
+          )
+        ));
+      }
+      
+      callback(nav_table, domain_obj);
+    });
+  });
   
   define('domains_nav_table', function() {
     var registrar_filters_div = div();
@@ -12,8 +80,8 @@ with (Hasher('Domains','Application')) {
           // domains nav
           div({ style: 'margin-bottom: 20px' },
             ul({ id: 'domains-left-nav' },
-              li(a({ onClick: curry(save_domain_filter_states_and_set_route, '#domains'), 'class': (get_route().match(/^#domains$/) ? 'active' : '') }, 'All Domains')),
-              li(a({ onClick: curry(save_domain_filter_states_and_set_route, '#domains/pending-transfer'), 'class': (get_route().match(/^#domains\/pending-transfer$/) ? 'active' : '') }, 'Pending Transfer')),
+              li(a({ onClick: curry(save_domain_filter_states_and_set_route, '#domains'), 'class': (get_route().match(/^#domains$/) ? 'active' : '') }, 'My Domains')),
+              li(a({ onClick: curry(save_domain_filter_states_and_set_route, '#domains/pending-transfer'), 'class': (get_route().match(/^#domains\/pending-transfer$/) ? 'active' : '') }, 'Pending Transfers')),
               li(a({ onClick: curry(save_domain_filter_states_and_set_route, '#domains/expiring-soon'), 'class': (get_route().match(/^#domains\/expiring-soon$/) ? 'active' : '') }, 'Expiring Soon'))
             )
           ),
@@ -364,7 +432,7 @@ with (Hasher('Domains','Application')) {
     }
     
     if (domain.badger_registration && domain.auto_renew) {
-      return span(date(domain.expires_at).toString('MMMM dd yyyy'), ' ', span({ style: 'color: #B8B8B8' }, '(auto)'));
+      return span(date(domain.expires_at).toString('MMMM dd yyyy'), ' ', a({ style: 'color: #B8B8B8; text-decoration: none', href: '#domains/' + domain.name + '/settings' }, '(auto)'));
     } else {
       return span({ 'class': date_class }, date(domain.expires_at).toString('MMMM dd yyyy'));
     }
@@ -385,5 +453,7 @@ with (Hasher('Domains','Application')) {
     // need to explicitly reapply the filters
     apply_selected_filters();
   });
+  
+  
   
 };

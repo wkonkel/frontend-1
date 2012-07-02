@@ -1,10 +1,10 @@
 with (Hasher('Shopify', 'DomainApps')) {
 
-  register_domain_app({
+  var app = register_domain_app({
     id: 'badger_shopify',
     name: 'Shopify',
     icon: 'images/apps/shopify.png',
-    menu_item: { text: 'Shopify', href: '#domains/:domain/shopify' },
+    menu_item: { text: 'Shopify', href: '#domains/:domain/apps/shopify' },
     requires: {
       dns: [
         { type: 'a', content: "204.93.213.45" },
@@ -39,20 +39,26 @@ with (Hasher('Shopify', 'DomainApps')) {
     }
   });
 
-  route('#domains/:domain/shopify', function(domain) {
-    render(
-      h1_for_domain(domain, 'Shopify'),
-      domain_app_settings_button('badger_shopify', domain),
-      p("Shopify DNS settings have successfully been installed into Badger DNS."),
-      div(
-        span("Last steps before you're all set:"), br(),
-        span("1. Log in to ", a({ href: "http://www.shopify.com/", target: '_blank' }, "Shopify"), '.'), br(),
-        span("2. Click on ", strong("Preferences "), "then click on ", strong("DNS & Domains"), '.'), br(),
-        span("3. Click on ", strong("Add a domain you already own"), ", add www." + domain + ", then click ", strong("Claim this domain"), "."), br(),
-        span("4. Click on ", strong("Add a domain you already own"), ", add " + domain + ", then click ", strong("Claim this domain"), "."), br()
-      ),
-      p (span("For more information, ", a({ href: 'http://wiki.shopify.com/Using_Your_Own_Domains', target: '_blank' }, 'click here'), "."))
-    );
+  route('#domains/:domain/apps/shopify', function(domain) {
+    
+    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+      render(
+        h1_for_domain(domain, 'Shopify'),
+        
+        nav_table(
+          domain_app_settings_button('badger_shopify', domain),
+          p("Shopify DNS settings have successfully been installed into Badger DNS."),
+          div(
+            span("Last steps before you're all set:"), br(),
+            span("1. Log in to ", a({ href: "http://www.shopify.com/", target: '_blank' }, "Shopify"), '.'), br(),
+            span("2. Click on ", strong("Preferences "), "then click on ", strong("DNS & Domains"), '.'), br(),
+            span("3. Click on ", strong("Add a domain you already own"), ", add www." + domain + ", then click ", strong("Claim this domain"), "."), br(),
+            span("4. Click on ", strong("Add a domain you already own"), ", add " + domain + ", then click ", strong("Claim this domain"), "."), br()
+          ),
+          p (span("For more information, ", a({ href: 'http://wiki.shopify.com/Using_Your_Own_Domains', target: '_blank' }, 'click here'), "."))
+        )
+      );
+    });
   });
 
 

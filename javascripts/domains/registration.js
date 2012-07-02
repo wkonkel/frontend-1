@@ -1,176 +1,13 @@
-with (Hasher('Registration','DomainApps')) {
-  
-  register_domain_app({
-    id: 'badger_registration',
-    icon: function(domain_obj) {
-      return Registrar.logo_url_for_registrar(domain_obj.current_registrar);
-    },
-    name: function(domain_obj) {
-      //return "Registration: " + domain_obj.current_registrar;
-      return "Registration";
-    },
-    menu_item: { text: 'Registration', href: '#domains/:domain/registration', css_class: 'registration' },
-    requires: {}
-  });
-  
-  /*
-    Build a nav table for a specific domain. Fetches domain info from server
-    and passes it to the callback.
-    
-    example:
-    registration_nav_table_for_domain('test.com', function(nav_table, domain_obj) {
-      render(
-        h1('My Page'),
-        
-        nav_table(
-          div('code wrapped by nav'),
-          div('My domain: ' + domain_obj.name)
-        )
-      );
-    });
-  */
-  define('with_registration_nav_table_for_domain', function(domain, callback) {
-    BadgerCache.getDomain(domain, function(response) {
-      // if trying to load this and the domain is available,
-      // just redirect to the 'register this domain' page
-      if ((response.data || {}).available) return set_route('#domains/' + domain);
-      
-      var active_url = get_route();
-      var base_url = '#domains/' + domain;
-      
-      var permissions = (response.data || {}).permissions_for_person || {};
-      var show_transfer_out = permissions.includes('transfer_out'),
-          show_settings = permissions.includes('renew');
-      
-      var nav_table = function() {
-        return table({ style: 'width: 100%' }, tbody(
-          tr(
-            td({ style: 'width: 200px; vertical-align: top' },
-              ul({ id: 'domains-left-nav' },
-                li(a({ href: (base_url + '/registration'), 'class': (active_url.match(/^#domains\/.+?\/registration$/) ? 'active' : '') }, 'Registration')),
-                li(a({ href: (base_url + '/whois'), 'class': (active_url.match(/^#domains\/.+?\/whois$/) ? 'active' : '') }, 'Whois')),
-                
-                show_settings ? [
-                  li({ style: 'display: ' + show_settings ? '' : 'none' },
-                    a({ href: (base_url + '/settings'), 'class': (active_url.match(/^#domains\/.+?\/settings$/) ? 'active' : '') }, 'Settings')
-                  ),
-                ] : [],
-                
-                show_transfer_out ? [
-                  li({ style: 'display: ' + show_transfer_out ? '' : 'none' },
-                    a({ href: (base_url + '/transfer-out'), 'class': (active_url.match(/^#domains\/.+?\/transfer-out$/) ? 'active' : '') }, 'Transfer Out')
-                  )
-                ] : []
-              )
-            ),
-            
-            td({ style: 'vertical-align: top'},
-              arguments
-            )
-          )
-        ));
-      }
-      
-      callback(nav_table, response.data);
-    });
-  });
-  
-  route('#domains/:domain/registration', function(domain) {
-    with_registration_nav_table_for_domain(domain, function(nav_table, domain_obj) {
-      var created_registrar_div = div(),
-          previous_registrar_div = div(),
-          registered_at_div = div();
-          
-      if (domain_obj.created_registrar) {
-        render({ into: created_registrar_div },
-          fieldset(
-            label('Created By:'),
-            Registrar.small_icon(domain_obj.created_registrar)
-          )
-        );
-      }
-      
-      if (domain_obj.previous_registrar) {
-        render({ into: previous_registrar_div },
-          fieldset(
-            label('Previous Registrar:'),
-            Registrar.small_icon(domain_obj.previous_registrar)
-          )
-        );
-      }
-      
-      if (domain_obj.registered_at) {
-        render({ into: registered_at_div },
-          fieldset(
-            label('Registered:'),
-            span({ 'class': 'big-text' }, date(domain_obj.registered_at).toString('MMMM dd yyyy'))
-          )
-        );
-      }
-      
-      var sidebar_content = div();
-      
-      if ((domain_obj.permissions_for_person||[]).includes('modify_contacts')) {
-        render({ into: sidebar_content },
-          info_message(
-            h3("Don't lose your domain!"),
-            p("1 year can pass quickly, and your domain is important. Take action now:"),
-            ul(
-              li(a({ href: '#domains/' + domain + '/registration/extend' }, 'Extend the registration')),
-              li(a({ href: '#domains/' + domain + '/settings' }, 'Enable auto renewal'))
-            )
-          )
-        );
-      }
-      
-      render(
-        chained_header_with_links(
-          { text: 'My Domains', href: '#domains' },
-          { text: domain.toLowerCase(), href: '#domains/' + domain },
-          { text: 'Registration' }
-        ),
-        
-        nav_table(
-          div({ 'class': 'sidebar'},
-            sidebar_content
-          ),
-          
-          div({ 'class': 'has-sidebar' },
-            form({ 'class': 'fancy' },
-              fieldset(
-                label('Expires:'),
-                span({ 'class': 'big-text' }, date(domain_obj.expires_on).toString('MMMM dd yyyy'))
-              ),
-
-              registered_at_div,
-              
-              fieldset(
-                label('Created:'),
-                span({ 'class': 'big-text' }, date(domain_obj.created_at).toString('MMMM dd yyyy'))
-              ),
-              
-              fieldset(
-                label('Current Registrar:'),
-                Registrar.small_icon(domain_obj.current_registrar)
-              ),
-              
-              created_registrar_div,
-              previous_registrar_div
-            )
-          )
-        )
-      );
-    });
-  });
+with (Hasher('Registration','Domains')) {
   
   route('#domains/:domain/whois', function(domain) {
-    with_registration_nav_table_for_domain(domain, function(nav_table, domain_obj) {
+    with_domain_nav(domain, function(nav_table, domain_obj) {
       var show_whois_pricay_message = (domain_obj.permissions_for_person||[]).includes('modify_contacts') && !(domain_obj.whois && domain_obj.whois.privacy);
       
       render(
         chained_header_with_links(
-          { text: 'My Domains', href: '#domains' },
-          { text: domain.toLowerCase(), href: '#domains/' + domain },
+          { text: 'Domains', href: '#domains' },
+          { text: domain },
           { text: 'Public Whois Listing' }
         ),
         
@@ -189,11 +26,11 @@ with (Hasher('Registration','DomainApps')) {
   });
   
   route('#domains/:domain/settings', function(domain) {
-    with_registration_nav_table_for_domain(domain, function(nav_table, domain_obj) {
+    with_domain_nav(domain, function(nav_table, domain_obj) {
       render(
         chained_header_with_links(
-          { text: 'My Domains', href: '#domains' },
-          { text: domain, href: '#domains/' + domain },
+          { text: 'Domains', href: '#domains' },
+          { text: domain },
           { text: 'Settings' }
         ),
         
@@ -264,7 +101,7 @@ with (Hasher('Registration','DomainApps')) {
   });
   
   route('#domains/:domain/transfer-out', function(domain) {
-    with_registration_nav_table_for_domain(domain, function(nav_table, domain_obj) {
+    with_domain_nav(domain, function(nav_table, domain_obj) {
       
       var transfer_content_for_status = div();
       
@@ -308,9 +145,9 @@ with (Hasher('Registration','DomainApps')) {
       
       render(
         chained_header_with_links(
-          { text: 'My Domains', href: '#domains' },
-          { text: domain, href: '#domains/' + domain },
-          { text: 'Settings' }
+          { text: 'Domains', href: '#domains' },
+          { text: domain },
+          { text: 'Transfer Out' }
         ),
         
         nav_table(
@@ -330,8 +167,8 @@ with (Hasher('Registration','DomainApps')) {
     
     render(
       chained_header_with_links(
-        { href: '#domains', text: 'My Domains' },
-        { href: '#domains/' + domain, text: domain.toLowerCase() },
+        { href: '#domains', text: 'Domains' },
+        { href: '#domains/' + domain, text: domain },
         { href: '#domains/' + domain + '/registration', text: 'Registration' },
         { text: 'Extend' }
       ),

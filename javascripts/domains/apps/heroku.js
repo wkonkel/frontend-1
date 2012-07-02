@@ -1,10 +1,10 @@
 with (Hasher('Heroku', 'DomainApps')) {
 
-  register_domain_app({
+  var app = register_domain_app({
     id: 'badger_heroku',
     name: 'Heroku',
     icon: 'images/apps/heroku.png',
-    menu_item: { text: 'Heroku', href: '#domains/:domain/heroku' },
+    menu_item: { text: 'Heroku', href: '#domains/:domain/apps/heroku' },
     requires: {
       dns: [
         { type: 'a', content: "75.101.163.44" },
@@ -54,17 +54,22 @@ with (Hasher('Heroku', 'DomainApps')) {
     }
   });
   
-  route('#domains/:domain/heroku', function(domain) {
-    render(
-      h1_for_domain(domain, 'Heroku'),
-      domain_app_settings_button('badger_heroku', domain),
+  route('#domains/:domain/apps/heroku', function(domain) {
+    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+      render(
+        h1_for_domain(domain, 'Heroku'),
+        
+        nav_table(
+          domain_app_settings_button('badger_heroku', domain),
 
-      div({ id: 'web-forwards-errors' }),
-      
-      div("Heroku DNS settings have been installed into ", a({ href: '#domains/' + domain + '/dns' }, "Badger DNS"), '.'),
-      br(),
-      div("Also check out ", a({ href: 'http://devcenter.heroku.com/articles/custom-domains', target: '_blank' }, 'Heroku Custom Domains'), '.')
-    );
+          div({ id: 'web-forwards-errors' }),
+
+          div("Heroku DNS settings have been installed into ", a({ href: '#domains/' + domain + '/dns' }, "Badger DNS"), '.'),
+          br(),
+          div("Also check out ", a({ href: 'http://devcenter.heroku.com/articles/custom-domains', target: '_blank' }, 'Heroku Custom Domains'), '.')
+        )
+      );
+    });
   });
   
    

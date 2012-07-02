@@ -1,185 +1,214 @@
 with (Hasher('DomainShow','DomainApps')) {
-
-  route('#domains/:domain', function(domain) {
-    var content_div = div(spinner('Loading...'));
-    
-    render(
-      chained_header_with_links(
-        { href: '#domains', text: 'My Domains' },
-        { text: domain }
-      ),
-      
-      div({ id: 'error-message', 'class': 'error-message hidden' }),
-      domain_nav_table(content_div)
-    );
-    
-    // wrap get domain in a long_poll. if this is the first contact we have 
-    // had with the domain, we need to wait until it has initially been synced
-    long_poll({
-      max_time: -1, // TODO make this timeout, maybe
-      interval: 3000,
-      
-      action: {
-        method: curry(Badger.getDomain, domain),
-        on_ok: function(response) {
-          if (response.data && (response.data.available || !response.data.current_registrar.match(/^unknown$/i))) {
-            handle_get_domain_response(content_div, domain, response);
-            return true;
-          }
-        }
-      }
+  
+  // show the apps on this domain
+  route('#domains/:domain/apps', function(domain) {
+    with_domain_nav(domain, function(nav_table, domain_obj) {
+      render(
+        chained_header_with_links(
+          { text: 'Domains', href: '#domains' },
+          { text: domain },
+          { text: 'Apps' }
+        ),
+        
+        nav_table(
+          div({ 'class': 'sidebar', style: 'float: right' },
+            info_message(
+              h3('Make things easier!'),
+              p("Domain apps make it easy to use your domain with popular services.")
+            ),
+            
+            info_message(
+              h3("Don't see the app you are looking for?"),
+              p("We are always looking for new apps to add, if you have a suggestion ", a({ href: '#contact_us', target: '_blank' }, "let us know!"))
+            )
+          ),
+          
+          div({ 'class': 'has-sidebar' },
+            render_all_application_icons({
+              domain_obj: domain_obj,
+              apps_per_row: 4,
+              filter: function(app_id) {
+                if ((domain_obj.permissions_for_person||[]).includes('modify_dns')) return true;
+                return ['dns'].includes(app_id);
+              }
+            })
+          )
+        )
+      )
     });
-
-    // Badger.getDomain(domain, curry(handle_get_domain_response, content_div, domain));
   });
-
-  define('handle_get_domain_response', function(content_div, domain, response, skip_retry) {
-    var domain_obj = response.data;
-
-    if (response.meta.status == 'ok') {
-      if (!domain_obj.current_registrar) {
+  
+  route('#domains/:domain', function(domain) {
+    with_domain_nav(domain, function(nav_table, domain_obj) {
+      var domain_content_div = div();
+      
+      /*
+        Three States:
+        1. Domain.current_registrar =~ /unknown/i
+          We are adding this domain to our DB for the first time,
+          and it has not yet been synced.
+        2. Domain is available!
+          The domain has not yet been registered. Show the registration
+          form.
+        3. Domain registered!
+          Either with us, or another registrar. Show the registration
+          data.
+      */
+      if ((domain_obj.current_registrar||'').match(/^unknown$/i)) {
+        render({ into: domain_content_div },
+          spinner('Loading domain...')
+        );
+        setTimeout(function() {
+          var domain_route = '#domains/' + domain + '/registration';
+          if (get_route() == domain_route) {
+            BadgerCache.flush('domains');
+            set_route(domain_route);
+          }
+        }, 3000);
+      } else if (domain_obj.available) {
         if (domain_obj.can_register) {
-          render({ into: content_div }, 
+          render({ into: domain_content_div },
             div({ 'class': 'sidebar' },
               success_message(
                 h3("This domain is available!"),
-                p("Quick, register it before somebody else does!")
+                p("Quickly, register it before somebody else does!")
               )
             ),
 
-            div({ 'class': 'has-sidebar' },
-              Register.full_form(domain_obj.name)
+            div({ style: 'margin-left: -100px;' },
+              Register.full_form(domain)
             )
           );
-          
-          // if the number of years was already set, pick it off from session variables
-          if (years = Badger.Session.remove('years')) {
-            $("select[name=years] option[value=" + years + "]").attr('selected', true);
-          }
-          
-          // update the register domains button
-          $("select[name=years]").change(function(e) {
-            $('#register-button').val('Register ' + domain + ' for ' + this.value + (this.value == 1 ? ' Credit' : ' Credits'));
-            $('#expiration-date').html(
-              (parseInt(this.value)).years().fromNow().toString("MMMM dd yyyy")
-            );
-          });
-          
-          $("select[name=years]").trigger('change');
         } else {
-          render({ into: content_div },
-            div("This domain is not currently registered! Unfortunately, we do not support this top level domain quite yet. Check back later!")
-            // TODO add some sort of way to watch the domain here. Make these messages way prettier. --- CAB
+          render({ into: domain_content_div },
+            p("This domain is not currently registered! Unfortunately, we do not support this top level domain quite yet. Check back later!")
           );
         }
-      } else if (domain_obj.current_registrar == 'Unknown') {
-        // if it's "unknown", it was probably just added and we're still loading info for it... poll until synced
-        
-        // var timeout = setTimeout(function() {
-        //   Badger.getDomain(domain_obj.name, curry(handle_get_domain_response, content_div, domain));
-        // }, 3000);
       } else {
-        render({ into: content_div },
-          ((domain_obj.permissions_for_person || []).includes('linked_account') || (domain_obj.permissions_for_person || []).includes('modify_dns')) ? [
-            div({ style: 'float: right; margin-top: -50px' },
-              a({ href: '#linked_accounts/share/' + domain },
-                img({ src: 'images/apps/facebook.png', style: 'height: 25px; width: 25px; border-radius: 3px; margin-right: 5px' })
+        render({ into: domain_content_div },
+          div({ 'class': 'sidebar'},
+            (function() {
+              if ((domain_obj.permissions_for_person||[]).includes('renew')) {
+                return info_message(
+                  h3("Don't lose your domain!"),
+                  p("1 year can pass quickly, and your domain is important. Take action now:"),
+                  ul(
+                    li(a({ href: '#domains/' + domain + '/registration/extend' }, 'Extend the registration')),
+                    li(a({ href: '#domains/' + domain + '/settings' }, 'Enable auto renewal'))
+                  )
+                );
+              }
+            })()
+          ),
+
+          div({ 'class': 'has-sidebar' },
+            form({ 'class': 'fancy' },
+              fieldset(
+                label('Expires:'),
+                span({ 'class': 'big-text' }, date(domain_obj.expires_on).toString('MMMM dd yyyy'))
               ),
-              a({ href: '#linked_accounts/share/' + domain },
-                img({ src: 'images/apps/twitter.png', style: 'height: 25px; width: 25px; border-radius: 3px' })
-              )
+
+              (function() {
+                if (domain_obj.registered_at) {
+                  return fieldset(
+                    label('Registered:'),
+                    span({ 'class': 'big-text' }, date(domain_obj.registered_at).toString('MMMM dd yyyy'))
+                  );
+                }
+              })(),
+
+              fieldset(
+                label('Created:'),
+                span({ 'class': 'big-text' }, date(domain_obj.created_at).toString('MMMM dd yyyy'))
+              ),
+
+              fieldset(
+                label('Current Registrar:'),
+                Registrar.small_icon(domain_obj.current_registrar)
+              ),
+
+              (function() {
+                if (domain_obj.created_registrar) {
+                  return fieldset(
+                    label('Created By:'),
+                    Registrar.small_icon(domain_obj.created_registrar)
+                  );
+                }
+              })(),
+              
+              (function() {
+                if (domain_obj.previous_registrar) {
+                  return fieldset(
+                    label('Previous Registrar:'),
+                    Registrar.small_icon(domain_obj.previous_registrar)
+                  );
+                }
+              })()
             )
-          ] : [],
-          
-          domain_status_description(domain_obj),
-          render_all_application_icons(domain_obj)
+          )
         );
       }
-    } else {
-      render({ into: content_div },
-        error_message("Oops, we're having a problem finding any information for: " + domain)
-      );
-    }
-    
-    // animate the progress bar on page load
-    animate_progress_bars();
-  });
-
-  define('domain_status_description', function(domain_obj) {
-    var current_date = date();
-    var expire_date = date(domain_obj.expires_at);
-    var days = parseInt((expire_date - current_date) / (24*3600*1000));
-
-    days = 29;
-
-    if (domain_obj.transfer_in) {
-      return display_transfer_status(domain_obj);
-    } else if ((domain_obj.permissions_for_person || []).indexOf('show_private_data') >= 0) {
-      return [
-        p('This domain is active and will auto-renew for one Credit on ', date(domain_obj.expires_at).toString('MMMM dd yyyy'), '.'),
-        days <= 30 ? a({ 'class': 'myButton myButton-small', href: ('#domains/' + domain_obj.name + '/registration/extend') }, 'Renew') : ''
-      ];
-    } else if ((domain_obj.permissions_for_person || []).indexOf('linked_account') >=0) {
       
-      return div({ style: 'margin-bottom: 15px' },
-        p('This domain is currently registered to your linked account on ' + domain_obj.current_registrar),
-        a({ 'class': 'myButton', href: curry(Transfer.redirect_to_transfer_for_domain, domain_obj.name) }, 'Transfer to Badger')
-      );
-      
-      return 
-    } else {
-      return [
-        p('This domain is currently registered at ', domain_obj.current_registrar,
-          ' and will expire on ', date(domain_obj.expires_at).toString('MMMM dd yyyy'), '.',
-          ' If this is your domain, you can ',
-          a({ href: curry(Transfer.redirect_to_transfer_for_domain, domain_obj.name) }, 'transfer it to Badger'), '.'
+      render(
+        chained_header_with_links(
+          { text: 'Domains', href: '#domains' },
+          { text: domain },
+          { text: 'Registration' }
+        ),
+        
+        nav_table(
+          (function() {
+            if ((domain_obj.permissions_for_person || []).includes('pending_transfer')) return display_transfer_status(domain_obj);
+          })(),
+          
+          domain_content_div
         )
-      ];
-    }
+      );
+      
+      // update the expiration date and button as years selector changed
+      if (domain_obj.available && domain_obj.can_register) {
+        // if the number of years was already set, pick it off from session variables
+        if (years = Badger.Session.remove('years')) {
+          $("select[name=years] option[value=" + years + "]").attr('selected', true);
+        }
+        // update the register domains button
+        $("select[name=years]").change(function(e) {
+          $('#register-button').val('Register ' + domain + ' for ' + this.value + (this.value == 1 ? ' Credit' : ' Credits'));
+          $('#expiration-date').html(
+            (parseInt(this.value)).years().fromNow().toString("MMMM dd yyyy")
+          );
+        });
+        
+        $("select[name=years]").trigger('change');
+      }
+    });
   });
   
-  define('detail_information_rows', function(domain_obj) {
-    if (!domain_obj.transfer_in) return;
-    
-    var auto_reload;
-    if (domain_obj.transfer_in.enter_auth_code == 'needed') auto_reload = false; //if we're showing a form, dont reload
-    else if (domain_obj.transfer_in.unlock_domain != 'ok') auto_reload = true;
-    else if (domain_obj.transfer_in.disable_privacy != 'ok') auto_reload = true;
-    else if (domain_obj.transfer_in.enter_auth_code != 'ok') auto_reload = true;
-    else if (domain_obj.transfer_in.approve_transfer != 'unknown') auto_reload = true;
-    else auto_reload = false;
-
-    if (auto_reload) setTimeout(curry(reload_transfer_steps_data, domain_obj.name), 5000);
-
-    return table({ 'class': "fancy-table", id: "transfer-steps" }, tbody(
-      transfer_description_row_initiated(domain_obj),
-      transfer_description_row_unlock(domain_obj),
-      transfer_description_row_disable_privacy(domain_obj),
-      transfer_description_row_auth_code(domain_obj),
-      transfer_description_row_approve_transfer(domain_obj)
-    ));
-  });
-
+  
+  
+  
+  
+  
   define('display_transfer_status', function(domain_obj) {
     var step_percentage = Domains.compute_transfer_progress_percentage(domain_obj);
 
     return div(
-      div({ id: "transfer-progress-report", 'class': "info-message", style: "padding: 10px; margin-top: 20px" },
+      info_message(
         div({ id: "progress-bar", style: "margin: -10px auto 0 auto" },
           table( tbody(
             tr(
-              td({ style: "width: 25%" }, p({ style: "font: 25px AdelleBold, Titillium, Arial, sans-serif" }, "Transfer Progress")),
+              td({ style: "width: 25%" }, p({ style: "font: 20px AdelleBold, Titillium, Arial, sans-serif" }, "Transfer Progress")),
               td({ style: "width: 10%; text-align: center; font-weight: bold; font-size: 20px", id: "progress-bar-percentage" }, step_percentage + "%"),
               td({ style: "width: 50%" }, div({ 'class': "meter green nostripes" }, span({ style: "width: " + step_percentage + "%" })))
             )
           ))
         ),
 
-        ($.map(domain_obj.transfer_in, function(k,v) { return k; }).indexOf('needed') == -1) ? [
-          div({ 'class': "status-message" }, 
-            "Estimated transfer time is ", span({ style: "font-weight: bold" }, "5 minutes"), '.  Feel free to leave this page and check back later.'
-          )
-        ] : [],
+        // ($.map(domain_obj.transfer_in, function(k,v) { return k; }).indexOf('needed') == -1) ? [
+        //   div({ 'class': "status-message" }, 
+        //     "Estimated transfer time is ", span({ style: "font-weight: bold" }, "5 minutes"), '.  Feel free to leave this page and check back later.'
+        //   )
+        // ] : [],
 
         div({ style: "margin-bottom: 40px", id: 'transfer-steps' }, detail_information_rows(domain_obj))
       ),
@@ -471,56 +500,6 @@ with (Hasher('DomainShow','DomainApps')) {
     $("#cancel-transfer-button-div").empty().html(cancel_transfer_button(domain_obj));
   });
 
-  define('render_all_application_icons', function(domain_obj) {
-    var installed_apps = div();
-    var available_apps = div({ id: "available-apps" });
-
-    for (var key in Hasher.domain_apps) {
-      var app = Hasher.domain_apps[key];
-      if (app.menu_item) {
-        var href;
-        var target;
-        if (app_is_installed_on_domain(app, domain_obj)) {
-          href = app.menu_item.href.replace(/:domain/, domain_obj.name);
-          target = installed_apps;
-        } else {
-          if ((app.id == 'badger_dns') || (app.id == 'remote_dns')) {
-            href = curry(DnsApp.change_name_servers_modal, domain_obj);
-          } else {
-            href = curry(show_modal_install_app, app, domain_obj);
-          }
-          target = available_apps;
-        }
-        target.appendChild(
-          a({ 'class': 'app_store_container', href: href },
-            span({ 'class': 'app_store_icon', style: 'background-image: url(' + ((app.icon && app.icon.call ? app.icon.call(null, domain_obj) : app.icon) || 'images/apps/badger.png') + ')' } ),
-            span({ style: 'text-align: center; font-weight: bold' }, (app.name.call ? app.name.call(null, domain_obj) : app.name))
-          )
-        );
-        // add a clear every six icons
-        if (target.childNodes.length % 9 == 8) target.appendChild(div({ style: 'clear: left ' }));
-      }
-    }
-
-    var available_apps_div = div();
-    if (((domain_obj.permissions_for_person || []).indexOf('modify_dns') >= 0) || ((domain_obj.permissions_for_person || []).indexOf('change_nameservers') >= 0)) {
-      render({ into: available_apps_div },
-        h2({ style: 'border-bottom: 1px solid #888; padding-bottom: 6px' }, 'Available Applications'),
-        available_apps
-      );
-    }
-    
-    return [
-      h2({ style: 'border-bottom: 1px solid #888; padding-bottom: 6px' }, 'Installed Applications'),
-      installed_apps,
-      div({ style: 'clear: both '}),
-
-      available_apps_div,
-
-      div({ style: 'clear: both '})
-    ];
-  });
-
   define('render_help_link', function(topic, registrar) {
     topic = (topic == null ? '' : topic);
     registrar = (registrar == null ? '' : registrar);
@@ -581,4 +560,27 @@ with (Hasher('DomainShow','DomainApps')) {
         return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center', target: '_blank' }, '(?)');
     }
   });
+  
+  define('detail_information_rows', function(domain_obj) {
+    if (!domain_obj.transfer_in) return;
+    
+    var auto_reload;
+    if (domain_obj.transfer_in.enter_auth_code == 'needed') auto_reload = false; //if we're showing a form, dont reload
+    else if (domain_obj.transfer_in.unlock_domain != 'ok') auto_reload = true;
+    else if (domain_obj.transfer_in.disable_privacy != 'ok') auto_reload = true;
+    else if (domain_obj.transfer_in.enter_auth_code != 'ok') auto_reload = true;
+    else if (domain_obj.transfer_in.approve_transfer != 'unknown') auto_reload = true;
+    else auto_reload = false;
+
+    if (auto_reload) setTimeout(curry(reload_transfer_steps_data, domain_obj.name), 5000);
+
+    return table({ 'class': "fancy-table", id: "transfer-steps" }, tbody(
+      transfer_description_row_initiated(domain_obj),
+      transfer_description_row_unlock(domain_obj),
+      transfer_description_row_disable_privacy(domain_obj),
+      transfer_description_row_auth_code(domain_obj),
+      transfer_description_row_approve_transfer(domain_obj)
+    ));
+  });  
+  
 }

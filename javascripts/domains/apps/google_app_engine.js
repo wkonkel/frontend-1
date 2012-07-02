@@ -1,10 +1,10 @@
 with (Hasher('GoogleAppEngine', 'DomainApps')) {
 
-  register_domain_app({
+  var app = register_domain_app({
     id: 'badger_google_app_engine',
     name: 'Google App Engine',
     icon: 'images/apps/appengine.png',
-    menu_item: { text: 'Google App Engine', href: '#domains/:domain/google_app_engine' },
+    menu_item: { text: 'Google App Engine', href: '#domains/:domain/apps/google_app_engine' },
     requires: {
       dns: [
         { type: 'cname', subdomain: 'www', content: 'ghs.google.com' }
@@ -26,14 +26,21 @@ with (Hasher('GoogleAppEngine', 'DomainApps')) {
     }
   });
 
-  route('#domains/:domain/google_app_engine', function(domain) {
-    render(
-      h1_for_domain(domain, 'Google App Engine'),
-      domain_app_settings_button('badger_google_app_engine', domain),
+  route('#domains/:domain/apps/google_app_engine', function(domain) {
+    
+    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+      render(
+        h1_for_domain(domain, 'Google App Engine'),
+        
+        nav_table(
+          domain_app_settings_button('badger_google_app_engine', domain),
 
-      div("Google App Engine DNS settings have been installed into Badger DNS. ",
-          'Also check out ',
-          a({ href: 'http://code.google.com/appengine/docs/domain.html', target: '_blank' }, 'Google App Engine Custom Domains'), '.')
-    );
+          div("Google App Engine DNS settings have been installed into Badger DNS. ",
+            'Also check out ',
+            a({ href: 'http://code.google.com/appengine/docs/domain.html', target: '_blank' }, 'Google App Engine Custom Domains'), '.'
+          )
+        )
+      );
+    });
   });
 };

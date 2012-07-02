@@ -1,9 +1,9 @@
 with (Hasher('EmailForwards', 'DomainApps')) {
 
-  register_domain_app({
+  var app = register_domain_app({
     id: 'badger_email_forward',
     name: 'Email Forwarding',
-    menu_item: { text: 'Email Forwarding', href: '#domains/:domain/email_forwards', css_class: 'email-forwarding' },
+    menu_item: { text: 'Email Forwarding', href: '#domains/:domain/apps/email_forwards', css_class: 'email-forwarding' },
     icon: 'images/apps/email-forward.png',
     requires: {
       dns: [
@@ -23,45 +23,44 @@ with (Hasher('EmailForwards', 'DomainApps')) {
     }
   });
   
-  route('#domains/:domain/email_forwards', function(domain) {
-    render(
-      div({ id: 'email-forwards-wrapper' },
-      // h1_for_domain(domain, 'Email Forwards'),
-      chained_header_with_links(
-        { href: '#domains', text: 'My Domains' },
-        { href: '#domains/' + domain, text: domain.toLowerCase() },
-        { text: 'Email Forwards' }
-      ),
-      
-        domain_app_settings_button('badger_email_forward', domain),
-      
-        div({ id: 'email-forwards-errors' }),
-  
-        form({ action: curry(create_email_forward, domain) },
-          table({ 'class': 'fancy-table', id: 'email-forwards-table' },
-            tbody({ id: 'email-forwards-table-tbody' },
-              tr({ 'class': 'table-header'},
-                th('Source'),
-                th(''),
-                th('Destination'),
-                th('')
-              ),
-              tr(
-                td(input({ id: 'input-username', name: 'username', placeholder: 'username' }), div({ 'class': 'long-domain-name domain-name-label' }, '@', domain)),
-                td({ style: 'text-align: center' }, img({ src: 'images/icon-arrow-right.png' })),
-                td(input({ id: 'input-destination', name: 'destination', placeholder: 'test@example.com' })),
-                td({ style: 'text-align: center' }, input({ 'class': 'myButton small', type: 'submit', value: 'Add' }))
+  route('#domains/:domain/apps/email_forwards', function(domain) {
+    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+      render(
+        div({ id: 'email-forwards-wrapper' },
+          h1_for_domain(domain, 'Email Forwards'),
+          
+          nav_table(
+            domain_app_settings_button('badger_email_forward', domain),
+
+            div({ id: 'email-forwards-errors' }),
+
+            form({ action: curry(create_email_forward, domain) },
+              table({ 'class': 'fancy-table', id: 'email-forwards-table' },
+                tbody({ id: 'email-forwards-table-tbody' },
+                  tr({ 'class': 'table-header'},
+                    th('Source'),
+                    th(''),
+                    th('Destination'),
+                    th('')
+                  ),
+                  tr(
+                    td(input({ id: 'input-username', name: 'username', placeholder: 'username' }), div({ 'class': 'long-domain-name domain-name-label' }, '@', domain)),
+                    td({ style: 'text-align: center' }, img({ src: 'images/icon-arrow-right.png' })),
+                    td(input({ id: 'input-destination', name: 'destination', placeholder: 'test@example.com' })),
+                    td({ style: 'text-align: center' }, input({ 'class': 'myButton small', type: 'submit', value: 'Add' }))
+                  )
+                )
               )
             )
           )
         )
-      )
-    );
+      );
 
-    Badger.getEmailForwards(domain, function(results) {
-      var the_tbody = $('#email-forwards-table-tbody');
-      results.data.map(function(email_forward) {
-        the_tbody.append(show_email_forward_table_row(domain, email_forward));
+      Badger.getEmailForwards(domain, function(results) {
+        var the_tbody = $('#email-forwards-table-tbody');
+        results.data.map(function(email_forward) {
+          the_tbody.append(show_email_forward_table_row(domain, email_forward));
+        });
       });
     });
   });

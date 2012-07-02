@@ -4,7 +4,7 @@ with (Hasher('DnsApp','DomainApps')) {
     id: 'dns',
     name: 'DNS',
     icon: 'images/apps/dns.png',
-    menu_item: { text: 'DNS', href: '#domains/:domain/dns', css_class: 'dns' }
+    menu_item: { text: 'DNS', href: '#domains/:domain/apps/dns', css_class: 'dns' }
   });
 
   // // use cases:
@@ -17,26 +17,22 @@ with (Hasher('DnsApp','DomainApps')) {
   // 5. remote registration. badger nameservers. no linked account.      // dns_manager
   // 6. remote registration. no/remote nameservers.  no linked account.  // dns_viewer
 
-  route('#domains/:domain/dns', function(domain) {
+  route('#domains/:domain/apps/dns', function(domain) {
     var content_div = div(spinner('Loading DNS records...'));
     var message_div = div();
     var button_div = div({ style: 'float: right; margin-top: -44px' });
     
-    render(
-      // h1_for_domain(domain, 'DNS'),
-      chained_header_with_links(
-        { href: '#domains', text: 'My Domains' },
-        { href: '#domains/' + domain, text: domain.toLowerCase() },
-        { text: 'DNS' }
-      ),
-      
-      button_div,
-      domain_nav_table(
-        message_div,
-        content_div
-      )
-    );
-
+    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+      render(
+        h1_for_domain(domain, 'DNS'),
+        nav_table(
+          button_div,
+          message_div,
+          content_div
+        )
+      );
+    });
+    
     Badger.getDomain(domain, function(response) {
       var domain_obj = response.data;
       if (response.meta.status == 'ok') {
@@ -217,7 +213,7 @@ with (Hasher('DnsApp','DomainApps')) {
     //   }
     // });
 
-  route('#domains/:domain/remote_dns', function(domain) {
+  route('#domains/:domain/apps/remote_dns', function(domain) {
     load_domain(domain, function(domain_info) {
       render(
         div(
@@ -356,7 +352,7 @@ define('get_dns_params', function(id) {
   define('dns_delete', function(domain, record) {
     if (confirm('Are you sure you want to delete this record?')) {
       Badger.deleteRecord(domain, record.id, function(results) {
-        console.log(results);
+        // console.log(results);
         set_route(get_route());
       })
     }

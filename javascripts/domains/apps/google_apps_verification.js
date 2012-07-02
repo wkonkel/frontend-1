@@ -1,10 +1,10 @@
 with (Hasher('GoogleAppsVerification', 'DomainApps')) {
 
-  register_domain_app({
+  var app = register_domain_app({
     id: 'badger_google_apps_verification',
     name: 'Google Apps Verification',
     icon: 'images/apps/googleapps.png',
-    menu_item: { text: 'Google Apps Verification', href: '#domains/:domain/google_verification' },
+    menu_item: { text: 'Google Apps Verification', href: '#domains/:domain/apps/google_verification' },
     requires: {
       dns: [
         { type: 'txt', content: /^(google-site-verification|google_site_verification).*/, content_input: 'google_app_verification_code' }
@@ -37,30 +37,42 @@ with (Hasher('GoogleAppsVerification', 'DomainApps')) {
     }
   });
 
-  route('#domains/:domain/google_verification', function(domain) {
+  route('#domains/:domain/apps/google_verification', function(domain) {
     load_domain(domain, function(domain_obj) {
       var found_record = domain_has_record(domain_obj, Hasher.domain_apps.badger_google_apps_verification.requires.dns[0])
       if (found_record) {
-        render(
-          h1_for_domain(domain, 'Google Verification'),
-          domain_app_settings_button('badger_google_apps_verification', domain),
+        
+        with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+          render(
+            h1_for_domain(domain, 'Google Verification'),
+            
+            nav_table(
+              domain_app_settings_button('badger_google_apps_verification', domain),
 
-          p("The TXT record below has been added to the DNS configuration for ", domain,":"),
-          p({ style: 'text-align: center; margin: 0px 20px;' }, found_record.content),
-          p("You can complete the verification ",
-            a({ href: 'http://www.google.com/a/' + domain, target: '_blank' }, 'here'),
-            ". When you are done verifying this URL with Google, you can remove this app."
-          ),
-          p("For more detailed instructions, you can read ",
-            a({ href: 'http://community.badger.com/badger/topics/using_the_google_apps_verification_widget_on_badger_com', target: '_blank' }, "this Knowledge Center article"),
-            '.'
-          )
-        );
+              p("The TXT record below has been added to the DNS configuration for ", domain,":"),
+              p({ style: 'text-align: center; margin: 0px 20px;' }, found_record.content),
+              p("You can complete the verification ",
+                a({ href: 'http://www.google.com/a/' + domain, target: '_blank' }, 'here'),
+                ". When you are done verifying this URL with Google, you can remove this app."
+              ),
+              p("For more detailed instructions, you can read ",
+                a({ href: 'http://community.badger.com/badger/topics/using_the_google_apps_verification_widget_on_badger_com', target: '_blank' }, "this Knowledge Center article"),
+                '.'
+              )
+            )
+          );
+        });
+        
       } else {
-        render(
-          h1({ 'class': 'header-with-right-btn' }, div({ 'class': 'long-domain-name' }, 'Google Apps Verification for ' + domain)),
-          div({ 'class': 'error-message' }, 'Could not find TXT record for Google Apps Verification.')
-        );
+        with_domain_nav_for_app(domain, function(nav_table, domain_obj) {
+          render(
+            h1_for_domain(domain, 'Google Verification'),
+            
+            nav_table(
+              error_message('Could not find TXT record for Google Apps Verification.')
+            )
+          );
+        });
       }
 
     });

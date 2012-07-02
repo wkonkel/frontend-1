@@ -1,10 +1,10 @@
 with (Hasher('Posterous', 'DomainApps')) {
 
-  register_domain_app({
+  var app = register_domain_app({
     id: 'badger_posterous',
     name: 'Posterous',
     icon: 'images/apps/posterous.png',
-    menu_item: { text: 'Posterous', href: '#domains/:domain/posterous' },
+    menu_item: { text: 'Posterous', href: '#domains/:domain/apps/posterous' },
     requires: {
       dns: [
         { type: 'a', content: "184.106.20.102" }
@@ -26,22 +26,27 @@ with (Hasher('Posterous', 'DomainApps')) {
     }
   });
 
-  route('#domains/:domain/posterous', function(domain) {
-    render(
-      h1_for_domain(domain, 'Posterous'),
-      domain_app_settings_button('badger_posterous', domain),
+  route('#domains/:domain/apps/posterous', function(domain) {
+    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+      render(
+        h1_for_domain(domain, 'Posterous'),
+        
+        nav_table(
+          domain_app_settings_button('badger_posterous', domain),
 
-      p("Posterous DNS settings have successfully been installed into Badger DNS."),
-      div(
-        span("Last steps before you're all set:"), br(),
-        span("1. Log in to ", a({ href: "http://posterous.com/", target: '_blank' }, "Posterous"), "."), br(),
-        span("2. Click on ", strong("Manage Spaces"), "."), br(),
-        span("3. Under the appropriate Space, click on the gear icon, then click on ", strong ("Space Settings"), "."), br(),
-        span("4. Click ", strong("Edit"), " beside your Space."), br(),
-        span("5.  Under ", strong("Setup a custom domain I already own"), ", enter your domain, " + domain + ", then click on ", strong("Save Settings"), "."), br()
-      ),
-      p (span("For more information, ", a({ href: 'http://posterous.uservoice.com/knowledgebase/articles/36303-setting-up-posterous-spaces-with-a-third-party-reg', target: '_blank' }, 'click here'), "."))
-    );
+          p("Posterous DNS settings have successfully been installed into Badger DNS."),
+          div(
+            span("Last steps before you're all set:"), br(),
+            span("1. Log in to ", a({ href: "http://posterous.com/", target: '_blank' }, "Posterous"), "."), br(),
+            span("2. Click on ", strong("Manage Spaces"), "."), br(),
+            span("3. Under the appropriate Space, click on the gear icon, then click on ", strong ("Space Settings"), "."), br(),
+            span("4. Click ", strong("Edit"), " beside your Space."), br(),
+            span("5.  Under ", strong("Setup a custom domain I already own"), ", enter your domain, " + domain + ", then click on ", strong("Save Settings"), "."), br()
+          ),
+          p (span("For more information, ", a({ href: 'http://posterous.uservoice.com/knowledgebase/articles/36303-setting-up-posterous-spaces-with-a-third-party-reg', target: '_blank' }, 'click here'), "."))
+        )
+      );
+    });
   });
 
 

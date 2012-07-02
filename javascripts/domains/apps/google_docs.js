@@ -1,10 +1,10 @@
 with (Hasher('GoogleDocs', 'DomainApps')) { 
 
-  register_domain_app({
+  var app = register_domain_app({
     id: 'google_docs',
     name: 'Google Docs',
     icon: 'images/apps/googledocs.png',
-    menu_item: { text: 'Google Docs', href: '#domains/:domain/google_apps/docs' },
+    menu_item: { text: 'Google Docs', href: '#domains/:domain/apps/google/docs' },
 
     requires: {
       dns: [
@@ -24,13 +24,19 @@ with (Hasher('GoogleDocs', 'DomainApps')) {
   });
 
 
-  route('#domains/:domain/google_apps/docs', function(domain) {
-    render(
-      h1_for_domain(domain, 'Google Docs'),
-      domain_app_settings_button('google_docs', domain),
-      p("If you haven't already, you'll need to ", a({ href: 'https://www.google.com/a/cpanel/domain/new', target: '_blank'}, 'setup Google Apps for Your Domain'), '.'),
-      p("Once you've done that, you can head on over to ", a({ href: 'http://docs.' + domain + '/', target: '_blank' }, 'docs.' + domain), " and get started!")
-    );
+  route('#domains/:domain/apps/google/docs', function(domain) {
+    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+      render(
+        h1_for_domain(domain, 'Google Docs'),
+        
+        nav_table(
+          domain_app_settings_button('google_docs', domain),
+          p("If you haven't already, you'll need to ", a({ href: 'https://www.google.com/a/cpanel/domain/new', target: '_blank'}, 'setup Google Apps for Your Domain'), '.'),
+          p("Once you've done that, you can head on over to ", a({ href: 'http://docs.' + domain + '/', target: '_blank' }, 'docs.' + domain), " and get started!")
+        )
+      );
+    });
+    
   });
   
 

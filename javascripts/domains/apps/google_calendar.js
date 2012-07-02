@@ -1,10 +1,10 @@
 with (Hasher('GoogleCalendar', 'DomainApps')) {
 
-  register_domain_app({
+  var app = register_domain_app({
     id: 'google_calendar',
     name: 'Google Calendar',
     icon: 'images/apps/google_calendar.png',
-    menu_item: { text: 'Google Calendar', href: '#domains/:domain/google_apps/calendar' },
+    menu_item: { text: 'Google Calendar', href: '#domains/:domain/apps/google/calendar' },
 
     requires: {
       dns: [
@@ -24,13 +24,19 @@ with (Hasher('GoogleCalendar', 'DomainApps')) {
   });
 
 
-  route('#domains/:domain/google_apps/calendar', function(domain) {
-    render(
-      h1_for_domain(domain, 'Google Calendar'),
-      domain_app_settings_button('google_calendar', domain),
-      p("If you haven't already, you'll need to ", a({ href: 'https://www.google.com/a/cpanel/domain/new', target: '_blank'}, 'setup Google Apps for Your Domain'), '.'),
-      p("Once you've done that, you can head on over to ", a({ href: 'http://calendar.' + domain + '/', target: '_blank' }, 'calendar.' + domain), " and get started!")
-    );
+  route('#domains/:domain/apps/google/calendar', function(domain) {
+    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+      render(
+        h1_for_domain(domain, 'Google Calendar'),
+        
+        nav_table(
+          domain_app_settings_button('google_calendar', domain),
+          p("If you haven't already, you'll need to ", a({ href: 'https://www.google.com/a/cpanel/domain/new', target: '_blank'}, 'setup Google Apps for Your Domain'), '.'),
+          p("Once you've done that, you can head on over to ", a({ href: 'http://calendar.' + domain + '/', target: '_blank' }, 'calendar.' + domain), " and get started!")
+        )
+      );
+    });
+    
   });
 
 
