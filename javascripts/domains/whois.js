@@ -1,7 +1,5 @@
 with (Hasher('Whois', 'Application')) {
   route('#whois', function() {
-    var whois_results = div({ 'id': 'whois-results' });
-
     render(
         div(
             h1('Whois Lookup'),
@@ -18,7 +16,7 @@ with (Hasher('Whois', 'Application')) {
 
             ),
 
-            form_with_loader({ action: curry(whois_lookup, whois_results), 'class': 'fancy has-sidebar', loading_message: 'Performing whois lookup...', 'style': 'margin-left: -120px' },
+            form_with_loader({ action: whois_lookup, 'class': 'fancy has-sidebar', loading_message: 'Performing whois lookup...', 'style': 'margin-left: -120px' },
                 div({ id: 'whois-messages', style: 'margin-left: 120px' }),
 
                 fieldset(
@@ -29,8 +27,7 @@ with (Hasher('Whois', 'Application')) {
                 fieldset({ 'class': 'no-label' },
                     input({ 'class': 'myButton', type: 'submit', value: 'Lookup »' })
                 )
-            ),
-            whois_results
+            )
         )
     );
 
@@ -38,23 +35,14 @@ with (Hasher('Whois', 'Application')) {
     $('#whois-input').focus();
   });
 
-  define('whois_lookup', function(whois_results, data) {
+  define('whois_lookup', function(data) {
     var domain = data.whois.replace(/\s+/, '');
     var messages = $('#whois-messages').empty();
     hide_form_submit_loader();
     if(domain == "") {
       return messages.append( error_message({ data: { message: "Domain must be valid, e.g. badger.com" } }) );
     }
-    render({ 'into': whois_results }, spinner('Looking up ' + domain + '...'));
-
-    Badger.badgerWhois(domain, function(response) {
-      var results = div();
-      if (response.meta.status == 'ok' && response.data.whois) {
-        results = div(h2({ 'style': 'margin: 40px 0px 0px 0px' }, 'Results for ' + response.data.name), pre(response.data.whois));
-      } else {
-        messages.append(error_message({ data: { message: response.data.message } }) );
-      }
-      render({ 'into': whois_results }, results);
-    });
+    set_route('#domains/' + domain + '/whois');
   });
+
 }
