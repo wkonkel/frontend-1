@@ -200,7 +200,8 @@ with (Hasher('Application')) {
     var my_bad_date = date(Date.parse('10-10-2020'))
   */
   define('date', function(date_string) {
-    if (date_string) {
+    if (arguments.length == 1) {
+      if (!date_string) return;
       return new Date(Date.parse(date_string));
     } else {
       return new Date();
