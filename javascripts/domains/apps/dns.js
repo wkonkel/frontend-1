@@ -492,8 +492,8 @@ define('get_dns_params', function(id) {
           h2(span({ style: 'cursor: pointer; font-size: 20px', onclick: function() { $('#remote-dns-details').hide(); $('#badger-dns-details').show(); $('#radio-nameservers-badger').click(); } }, radio({ id: 'radio-nameservers-badger', style: 'margin: 0 8px 2px 0', name: 'nameservers' }), 'Badger DNS'), span({ style: 'padding-left: 10px; font-weight: normal; font-size: 11px'}, '(Recommended)')),
           div({ id: 'badger-dns-details' },
             ul(
-              li("Proven reliability."),
-              li("Servers around the world."),
+              li("Proven reliability"),
+              // li("Servers around the world."),
               li("Manage from within Badger")
             ),
             
