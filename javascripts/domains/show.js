@@ -55,9 +55,16 @@ with (Hasher('DomainShow','DomainApps')) {
           data.
       */
       if ((domain_obj.current_registrar||'').match(/^unknown$/i)) {
-        render({ into: domain_content_div },
+        render(
+          chained_header_with_links(
+            { text: 'Domains', href: '#domains' },
+            { text: domain },
+            { text: 'Registration' }
+          ),
+          
           spinner('Loading domain...')
         );
+        
         setTimeout(function() {
           var domain_route = '#domains/' + domain;
           if (get_route() == domain_route) {
@@ -65,6 +72,8 @@ with (Hasher('DomainShow','DomainApps')) {
             set_route(domain_route);
           }
         }, 3000);
+        
+        return;
       } else if (domain_obj.available) {
         if (domain_obj.can_register) {
           render(
