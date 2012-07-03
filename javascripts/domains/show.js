@@ -1,44 +1,210 @@
 with (Hasher('DomainShow','DomainApps')) {
   
   // show the apps on this domain
-  route('#domains/:domain/apps', function(domain) {
+  route('#domains/:domain', function(domain) {
     with_domain_nav(domain, function(nav_table, domain_obj) {
+      
+      /*
+        Three States:
+        1. Domain.current_registrar =~ /unknown/i
+          We are adding this domain to our DB for the first time,
+          and it has not yet been synced.
+        2. Domain is available!
+          The domain has not yet been registered. Show the registration
+          form.
+        3. Domain registered!
+          Either with us, or another registrar. Show the registration
+          data.
+      */
+      if ((domain_obj.current_registrar||'').match(/^unknown$/i)) {
+        render(
+          chained_header_with_links(
+            { text: 'Domains', href: '#domains' },
+            { text: domain },
+            { text: 'Overview' }
+          ),
+          
+          spinner('Loading domain...')
+        );
+        
+        setTimeout(function() {
+          var domain_route = '#domains/' + domain;
+          if (get_route() == domain_route) {
+            BadgerCache.flush('domains');
+            set_route(domain_route);
+          }
+        }, 3000);
+        
+        return;
+      } else if (domain_obj.available) {
+        if (domain_obj.can_register) {
+          render(
+            chained_header_with_links(
+              { text: 'Domains', href: '#domains' },
+              { text: domain },
+              { text: 'Overview' }
+            ),
+            
+            div({ 'class': 'sidebar' },
+              success_message(
+                h3("This domain is available!"),
+                p("Quickly, register it before somebody else does!")
+              )
+            ),
+            
+            div({ 'class': 'has-sidebar' },
+              // render an info message into this div if Credits were just added to the account in order
+              // to proceed with the registration.
+              Billing.show_num_credits_added(),
+              
+              Register.full_form(domain)
+            )
+          );
+          
+          // update the expiration date and button as years selector changed
+          if (domain_obj.available && domain_obj.can_register) {
+            // if the number of years was already set, pick it off from session variables
+            if (years = Badger.Session.remove('years')) {
+              $("select[name=years] option[value=" + years + "]").attr('selected', true);
+            }
+            // update the register domains button
+            $("select[name=years]").change(function(e) {
+              $('#register-button').val('Register ' + domain + ' for ' + this.value + (this.value == 1 ? ' Credit' : ' Credits'));
+              $('#expiration-date').html(
+                (parseInt(this.value)).years().fromNow().toString("MMMM dd yyyy")
+              );
+            });
+
+            $("select[name=years]").trigger('change');
+          }
+          
+          return;
+        } else {
+          return render(
+            chained_header_with_links(
+              { text: 'Domains', href: '#domains' },
+              { text: domain },
+              { text: 'Overview' }
+            ),
+            
+            error_message("This domain is not currently registered! Unfortunately, we do not support this top level domain quite yet. Check back later!")
+          );
+        }
+      }
+      
       render(
         chained_header_with_links(
           { text: 'Domains', href: '#domains' },
           { text: domain },
-          { text: 'Apps' }
+          { text: 'Overview' }
         ),
-        
+
         nav_table(
-          div({ 'class': 'sidebar', style: 'float: right' },
-            info_message(
-              h3('Make things easier!'),
-              p("Domain apps make it easy to use your domain with popular services.")
-            ),
-            
-            info_message(
-              h3("Don't see the app you are looking for?"),
-              p("We are always looking for new apps to add, if you have a suggestion ", a({ href: '#contact_us', target: '_blank' }, "let us know!"))
-            )
-          ),
+          // div({ 'class': 'sidebar', style: 'float: right' },
+          //   info_message(
+          //     h3('Make things easier!'),
+          //     p("Domain apps make it easy to use your domain with popular services.")
+          //   ),
+          //   
+          //   info_message(
+          //     h3("Don't see the app you are looking for?"),
+          //     p("We are always looking for new apps to add, if you have a suggestion ", a({ href: '#contact_us', target: '_blank' }, "let us know!"))
+          //   )
+          // ),
           
-          div({ 'class': 'has-sidebar' },
-            render_all_application_icons({
-              domain_obj: domain_obj,
-              apps_per_row: 4,
-              filter: function(app_id) {
-                if ((domain_obj.permissions_for_person||[]).includes('modify_dns')) return true;
-                return ['dns'].includes(app_id);
-              }
-            })
-          )
+          (function() {
+            if ((domain_obj.permissions_for_person || []).includes('pending_transfer')) return display_transfer_status(domain_obj);
+          })(),
+          
+          
+          render_all_application_icons({
+            domain_obj: domain_obj,
+            apps_per_row: 6,
+            filter: function(app_id) {
+              if ((domain_obj.permissions_for_person||[]).includes('modify_dns')) return true;
+              return ['dns'].includes(app_id);
+            }
+          })
         )
       )
     });
   });
   
-  route('#domains/:domain', function(domain) {
+  route('#domains/:domain/whois', function(domain) {
+    with_domain_nav(domain, function(nav_table, domain_obj) {
+      var show_whois_privacy_message = (domain_obj.permissions_for_person||[]).includes('modify_contacts') && !(domain_obj.whois && domain_obj.whois.privacy);
+      
+      render(
+        chained_header_with_links(
+          { text: 'Domains', href: '#domains' },
+          { text: domain },
+          { text: 'Whois' }
+        ),
+        
+        nav_table(
+          div({ 'class': 'has-sidebar' },
+            form({ 'class': 'fancy', style: 'margin-bottom: 20px' },
+              fieldset(
+                label('Expires:'),
+                span({ 'class': 'big-text' }, date(domain_obj.expires_on).toString('MMMM dd yyyy'))
+              ),
+
+              (function() {
+                if (domain_obj.registered_at) {
+                  return fieldset(
+                    label('Registered:'),
+                    span({ 'class': 'big-text' }, date(domain_obj.registered_at).toString('MMMM dd yyyy'))
+                  );
+                }
+              })(),
+
+              fieldset(
+                label('Created:'),
+                span({ 'class': 'big-text' }, date(domain_obj.created_at).toString('MMMM dd yyyy'))
+              ),
+
+              fieldset(
+                label('Current Registrar:'),
+                Registrar.small_icon(domain_obj.current_registrar)
+              ),
+
+              (function() {
+                if (domain_obj.created_registrar) {
+                  return fieldset(
+                    label('Created By:'),
+                    Registrar.small_icon(domain_obj.created_registrar)
+                  );
+                }
+              })(),
+
+              (function() {
+                if (domain_obj.previous_registrar) {
+                  return fieldset(
+                    label('Previous Registrar:'),
+                    Registrar.small_icon(domain_obj.previous_registrar)
+                  );
+                }
+              })()
+            ),
+            
+            (function() {
+              if (show_whois_privacy_message) return info_message("Don't want your contact information available to the public? ", a({ href: '#domains/' + domain + '/settings' }, 'Enable Whois privacy.'), " It's free!")
+            })(),
+            
+            div(
+              info_message({ style: 'overflow: scroll; width: 700px; border-color: #aaa; background: #eee; white-space: pre; padding: 10px;' }, (domain_obj.whois || {}).raw || 'Missing')
+            )
+          )
+        )
+      )
+    });
+    
+    return;
+    
+    
+    
+    
+    
     with_domain_nav(domain, function(nav_table, domain_obj) {
       var domain_content_div = div();
       
@@ -201,10 +367,6 @@ with (Hasher('DomainShow','DomainApps')) {
         ),
         
         nav_table(
-          (function() {
-            if ((domain_obj.permissions_for_person || []).includes('pending_transfer')) return display_transfer_status(domain_obj);
-          })(),
-          
           domain_content_div
         )
       );
@@ -214,40 +376,27 @@ with (Hasher('DomainShow','DomainApps')) {
   
   
   
-  
-  
   define('display_transfer_status', function(domain_obj) {
     var step_percentage = Domains.compute_transfer_progress_percentage(domain_obj);
 
-    return div(
-      info_message(
-        div({ id: "progress-bar", style: "margin: -10px auto 0 auto" },
-          table( tbody(
-            tr(
-              td({ style: "width: 25%" }, p({ style: "font: 20px AdelleBold, Titillium, Arial, sans-serif" }, "Transfer Progress")),
-              td({ style: "width: 10%; text-align: center; font-weight: bold; font-size: 20px", id: "progress-bar-percentage" }, step_percentage + "%"),
-              td({ style: "width: 50%" }, div({ 'class': "meter green nostripes" }, span({ style: "width: " + step_percentage + "%" })))
-            )
-          ))
-        ),
-
-        // ($.map(domain_obj.transfer_in, function(k,v) { return k; }).indexOf('needed') == -1) ? [
-        //   div({ 'class': "status-message" }, 
-        //     "Estimated transfer time is ", span({ style: "font-weight: bold" }, "5 minutes"), '.  Feel free to leave this page and check back later.'
-        //   )
-        // ] : [],
-
-        div({ style: "margin-bottom: 40px", id: 'transfer-steps' }, detail_information_rows(domain_obj))
-      ),
+    return info_message({ 'class': 'transfer-status', style: 'margin-bottom: 15px;' },
+      h1('Transfer Status'),
       
-      div({ id: "cancel-transfer-button-div", style: 'float: right' },
+      div({ style: 'height: 46px; padding: 10px; margin: 10px;' },
+        span({ style: 'float: left; font-size: 50px; font-weight: bold; padding: 10px' }, step_percentage + '%'),
+        div({ 'class': 'meter green nostripes', style: 'float: right; width: 75%' }, span({ style: 'width: ' + step_percentage + '%' }))
+      ),
+
+      div({ style: "margin-bottom: 40px", id: 'transfer-steps' }, detail_information_rows(domain_obj)),
+      
+      div({ id: 'cancel-transfer-button-div', style: 'text-align: right; margin-top: 15px' },
         cancel_transfer_button(domain_obj)
       )
     );
   });
   
   define('cancel_transfer_button', function(domain_obj, callback) {
-    return a({ href: callback || curry(cancel_transfer_modal, domain_obj) }, 'Cancel this transfer.');
+    return a({ href: callback || curry(cancel_transfer_modal, domain_obj) }, 'Cancel transfer.');
   });
   
   define('cancel_transfer_modal', function(domain_obj) {

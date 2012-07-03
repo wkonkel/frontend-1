@@ -2,7 +2,7 @@ with (Hasher('Registration','Domains')) {
   
   route('#domains/:domain/whois', function(domain) {
     with_domain_nav(domain, function(nav_table, domain_obj) {
-      var show_whois_pricay_message = (domain_obj.permissions_for_person||[]).includes('modify_contacts') && !(domain_obj.whois && domain_obj.whois.privacy);
+      var show_whois_privacy_message = (domain_obj.permissions_for_person||[]).includes('modify_contacts') && !(domain_obj.whois && domain_obj.whois.privacy);
       
       render(
         chained_header_with_links(
@@ -12,7 +12,7 @@ with (Hasher('Registration','Domains')) {
         ),
         
         nav_table(
-          info_message({ style: 'display: ' + (show_whois_pricay_message ? '' : 'none' )  },
+          info_message({ style: 'display: ' + (show_whois_privacy_message ? '' : 'none' )  },
             "Don't want your contact information available to the public? ", a({ href: '#domains/' + domain + '/settings' }, 'Enable Whois privacy.'), " It's free!"
           ),
           

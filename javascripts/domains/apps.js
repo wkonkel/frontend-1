@@ -94,19 +94,26 @@ with (Hasher('DomainApps','Domains')) {
       }
     }
     
-    var available_apps_div = div();
-    if (((domain_obj.permissions_for_person || []).indexOf('modify_dns') >= 0) || ((domain_obj.permissions_for_person || []).indexOf('change_nameservers') >= 0)) {
-      render({ into: available_apps_div },
-        h2('Available Applications'),
-        available_apps
-      );
-    }
-    
     return div(
-      installed_apps,
-      div({ style: 'clear: left' }),
-      available_apps_div,
-      div({ style: 'clear: both' })
+      (function() {
+        if (installed_apps_count > 0) {
+          return div({ style: 'margin: 10px auto;' },
+            h2('Installed Applications'),
+            installed_apps,
+            div({ style: 'clear: left' })
+          );
+        }
+      })(),
+      
+      (function() {
+        if (available_apps_count > 0 && ((domain_obj.permissions_for_person || []).indexOf('modify_dns') >= 0) || ((domain_obj.permissions_for_person || []).indexOf('change_nameservers') >= 0)) {
+          return div({ style: 'margin: 10px auto;' },
+            h2('Available Applications'),
+            available_apps,
+            div({ style: 'clear: left' })
+          );
+        }
+      })()
     );
   });
   

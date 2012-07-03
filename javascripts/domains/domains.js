@@ -23,7 +23,7 @@ with (Hasher('Domains','Application')) {
       var base_url = '#domains/' + domain;
       
       var permissions = domain_obj.permissions_for_person || [];
-      var show_transfer_out = permissions.includes('transfer_out'),
+      var show_transfer_out = !domain_obj.locked && permissions.includes('transfer_out'),
           show_whois = !domain_obj.available && !(domain_obj.current_registrar||'').match(/^unknown$/i),
           show_settings = permissions.includes('renew');
       
@@ -32,11 +32,7 @@ with (Hasher('Domains','Application')) {
           tr(
             td({ style: 'width: 200px; vertical-align: top' },
               ul({ id: 'domains-left-nav' },
-                li(a({ href: base_url, 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}$/i) ? 'active' : '') }, 'Registration')),
-                
-                (function() {
-                  if (show_whois) return li(a({ id: '/apps', href: (base_url + '/apps'), 'class': (active_url.match(/^#domains\/.+?\/apps/i) ? 'active' : '') }, 'Apps'));
-                })(),
+                li(a({ href: base_url, 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}$/i) ? 'active' : '') }, 'Overview')),
                 
                 (function() {
                   if (show_whois) return li(a({ href: (base_url + '/whois'), 'class': (active_url.match(/^#domains\/.+?\/whois$/) ? 'active' : '') }, 'Whois'));
