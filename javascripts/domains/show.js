@@ -161,6 +161,10 @@ with (Hasher('DomainShow','DomainApps')) {
             if ((domain_obj.permissions_for_person || []).includes('pending_transfer')) return display_transfer_status(domain_obj);
           })(),
           
+          // render an info message into this div if Credits were just added to the account in order
+          // to proceed with the registration.
+          Billing.show_num_credits_added(),
+          
           domain_content_div
         )
       );

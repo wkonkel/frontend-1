@@ -9,10 +9,6 @@ with (Hasher('Register','Application')) {
       form_with_loader({ 'class': 'fancy', action: process_full_form, loading_message: "Registering " + domain + "..." },
         div({ id: 'errors' }),
 
-        // render an info message into this div if Credits were just added to the account in order
-        // to proceed with the registration.
-        Billing.show_num_credits_added(),
-
         input({ type: 'hidden', name: 'name', value: domain }),
         input({ type: 'hidden', name: 'name_servers', value: 'ns1.badger.com,ns2.badger.com'}),
 
