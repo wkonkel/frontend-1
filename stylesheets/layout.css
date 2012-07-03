@@ -242,8 +242,8 @@ input.fancy[type=text], input.fancy[type=password] { margin-top: 4px; padding: 5
 #about-div #company p { font-size: 16px; line-height: 30px; }
 #about-div #company img {
   float: right;
-  width: 18%;
-  height: 18%;
+  width: 30%;
+  height: 30%;
   
   /*horizontal flip of image*/
   -moz-transform: scaleX(-1);
