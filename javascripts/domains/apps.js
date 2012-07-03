@@ -74,7 +74,7 @@ with (Hasher('DomainApps','Domains')) {
           }
           target = available_apps;
         }
-        
+
         if (filter(app.id)) {
           target.appendChild(
             a({ 'class': 'app_store_container', href: href },
@@ -106,7 +106,7 @@ with (Hasher('DomainApps','Domains')) {
       })(),
       
       (function() {
-        if (available_apps_count > 0 && ((domain_obj.permissions_for_person || []).indexOf('modify_dns') >= 0) || ((domain_obj.permissions_for_person || []).indexOf('change_nameservers') >= 0)) {
+        if (available_apps_count > 0 && (((domain_obj.permissions_for_person || []).indexOf('modify_dns') >= 0) || ((domain_obj.permissions_for_person || []).indexOf('change_nameservers') >= 0))) {
           return div({ style: 'margin: 10px auto;' },
             h2('Available Applications'),
             available_apps,

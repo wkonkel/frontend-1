@@ -572,7 +572,6 @@ define('get_dns_params', function(id) {
           textarea({ 
             style: 'width: 200px; height: 80px',
             onChange: function() {
-              console.log(tmp_custom_option)
               tmp_custom_option.value = $(this).val().replace("\r",'').split("\n").join(',').replace(/,+/,',').replace(/^,/,'').replace(/,$/,'');
             }},
             tmp_select.val().split(',').join("\n")

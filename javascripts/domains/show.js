@@ -122,6 +122,7 @@ with (Hasher('DomainShow','DomainApps')) {
             apps_per_row: 6,
             filter: function(app_id) {
               if ((domain_obj.permissions_for_person||[]).includes('modify_dns')) return true;
+              if ((domain_obj.permissions_for_person||[]).includes('change_nameservers')) return true;
               return ['dns'].includes(app_id);
             }
           })
@@ -133,11 +134,6 @@ with (Hasher('DomainShow','DomainApps')) {
   route('#domains/:domain/whois', function(domain) {
     with_domain_nav(domain, function(nav_table, domain_obj) {
       var show_whois_privacy_message = (domain_obj.permissions_for_person||[]).includes('modify_contacts') && !(domain_obj.whois && domain_obj.whois.privacy);
-      
-      
-      console.log(domain_obj);
-      
-      
       
       render(
         chained_header_with_links(
