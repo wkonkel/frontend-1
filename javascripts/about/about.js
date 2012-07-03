@@ -6,11 +6,12 @@ with (Hasher('About', 'Application')) {
         profile_image_src: 'images/team/warren.png',
         'Name':       "Warren Konkel",
         'Team Role':  "Founder and CEO",
-        'Duties':     "Writing code, Making plans, and Chief Badgerer",
+        'Duties':     "Writing code, making plans, and Chief Badgerer",
         'Recently':   "Senior Engineer at LivingSocial",
         'Hometown':   "Washington, DC",
         'Education':  "Rensselaer Polytechnic Institute",
-        'For Fun':    "Snowboarding and sailing"
+        'For Fun':    "Snowboarding and sailing",
+        'Least Favorite Game': 'Elephant Quest'
       }),
       
       bio({
