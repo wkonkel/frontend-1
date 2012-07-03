@@ -25,8 +25,7 @@ with (Hasher('Domains','Application')) {
       var permissions = domain_obj.permissions_for_person || [];
       var show_transfer_out = permissions.includes('transfer_out'),
           show_whois = !domain_obj.available && !(domain_obj.current_registrar||'').match(/^unknown$/i),
-          show_settings = permissions.includes('renew'),
-          show_apps = !domain_obj.available;
+          show_settings = permissions.includes('renew');
       
       var nav_table = function() {
         return table({ style: 'width: 100%' }, tbody(
@@ -36,7 +35,7 @@ with (Hasher('Domains','Application')) {
                 li(a({ href: base_url, 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}$/i) ? 'active' : '') }, 'Registration')),
                 
                 (function() {
-                  if (show_apps) return li(a({ id: '/apps', href: (base_url + '/apps'), 'class': (active_url.match(/^#domains\/.+?\/apps/i) ? 'active' : '') }, 'Apps'));
+                  if (show_whois) return li(a({ id: '/apps', href: (base_url + '/apps'), 'class': (active_url.match(/^#domains\/.+?\/apps/i) ? 'active' : '') }, 'Apps'));
                 })(),
                 
                 (function() {
