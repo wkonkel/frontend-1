@@ -141,7 +141,7 @@ with (Hasher('Signup','Application')) {
         fieldset(
           label({ 'for': 'email-input' }, 'New password:'),
           password({ 'class': 'short right-margin', id: 'email-input', name: 'new_password', placeholder: 'abcd1234' }),
-          password({ 'class': 'short', name: 'confirm_password', placeholder: 'abc123 (again)' })
+          password({ 'class': 'short', name: 'confirm_password', placeholder: 'abcd1234 (again)' })
         ),
 
         fieldset(
