@@ -134,6 +134,11 @@ with (Hasher('DomainShow','DomainApps')) {
     with_domain_nav(domain, function(nav_table, domain_obj) {
       var show_whois_privacy_message = (domain_obj.permissions_for_person||[]).includes('modify_contacts') && !(domain_obj.whois && domain_obj.whois.privacy);
       
+      
+      console.log(domain_obj);
+      
+      
+      
       render(
         chained_header_with_links(
           { text: 'Domains', href: '#domains' },
@@ -146,7 +151,7 @@ with (Hasher('DomainShow','DomainApps')) {
             form({ 'class': 'fancy', style: 'margin-bottom: 20px' },
               fieldset(
                 label('Expires:'),
-                span({ 'class': 'big-text' }, date(domain_obj.expires_on).toString('MMMM dd yyyy'))
+                span({ 'class': 'big-text' }, date(domain_obj.expires_at).toString('MMMM dd yyyy'))
               ),
 
               (function() {
@@ -315,7 +320,7 @@ with (Hasher('DomainShow','DomainApps')) {
             form({ 'class': 'fancy' },
               fieldset(
                 label('Expires:'),
-                span({ 'class': 'big-text' }, date(domain_obj.expires_on).toString('MMMM dd yyyy'))
+                span({ 'class': 'big-text' }, date(domain_obj.expires_at).toString('MMMM dd yyyy'))
               ),
 
               (function() {

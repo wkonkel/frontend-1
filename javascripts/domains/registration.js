@@ -79,7 +79,7 @@ with (Hasher('Registration','Domains')) {
               label('Auto Renew:'),
               span(
                 (domain_obj.auto_renew ? checkbox({ name: 'auto_renew', checked: 'checked' }) : checkbox({ name: 'auto_renew' })),
-                span({ style: 'margin-left: 10px' }, "Automatically renew domain on ", span({ style: 'font-weight: bold' }, date(domain_obj.expires_on).toString('MMMM dd yyyy')))
+                span({ style: 'margin-left: 10px' }, "Automatically renew domain on ", span({ style: 'font-weight: bold' }, date(domain_obj.expires_at).toString('MMMM dd yyyy')))
               )
             ),
             
