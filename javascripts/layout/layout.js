@@ -141,7 +141,11 @@ with (Hasher('Application')) {
           div({ 'class': "col" },
             h2('Company'),
             ul(
-              li(a({ href: "http://blog.badger.com", target: "_blank" }, 'Blog')),
+              li(
+                a({ href: "#about", target: '_blank' }, 'About'),
+                ' / ',
+                a({ href: "http://blog.badger.com", target: "_blank" }, 'Blog')
+              ),
               li(a({ href: "#terms_of_service" }, 'Terms of Service')),
               li(a({ href: "http://www.icann.org/en/registrars/registrant-rights-responsibilities-en.htm", target: "_blank" }, 'ICANN Registrant Rights')),
               li(a({ href: "#whois", target: '_blank' }, 'Whois Lookup'))

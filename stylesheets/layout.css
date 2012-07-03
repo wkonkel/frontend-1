@@ -216,6 +216,47 @@ input.fancy[type=text], input.fancy[type=password] { margin-top: 4px; padding: 5
 .ie-browser #user-nav { background:transparent; filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#40000000,endColorstr=#40000000); zoom: 1; }
 .ie-browser .close-button { background: transparent url(../images/close.png); display: block; width: 32px; height: 32px; position: absolute; right:-10px; top: -10px; border: none; }
 
+.bio { 
+  /*border: 1px solid #858585;*/
+  padding: 15px;
+  background: #EEE;
+  
+  margin: 15px;
+  
+  border-radius: 15px;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+}
+.bio img.profile { 
+  width: 150px;
+  height: 150px;
+  float: left;
+  
+  box-shadow: 1px 1px 5px #B1B1B1;
+  -moz-box-shadow: 1px 1px 5px #B1B1B1;
+  
+  border-radius: 15px;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+}
+#about-div #company p { font-size: 16px; line-height: 30px; }
+#about-div #company img {
+  float: right;
+  width: 18%;
+  height: 18%;
+  
+  /*horizontal flip of image*/
+  -moz-transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  transform: scaleX(-1);
+  -ms-filter: fliph; /*IE*/
+  filter: fliph; /*IE*/
+}
+.bio .content { margin-left: -80px; }
+.bio .content fieldset { line-height: 25px; }
+.bio .content fieldset.about-me { line-height: 20px; }
+
 .app_store_container { float: left; width: 90px; padding: 10px 10px 20px 10px; border: 1px solid transparent; }
 .app_store_container_small { float: left; width: 0px; padding: 5px 5px 5px 5px; }
 
