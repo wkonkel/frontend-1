@@ -117,7 +117,7 @@ with (Hasher('Billing','Application')) {
         )
       ),
 
-      div({ id: 'new_card_container', style: (payment_methods.length > 0 ? 'display: none; width: auto' : 'width: 100px' ) },
+      div({ id: 'new_card_container', style: (payment_methods.length > 0 && 'display: none') },
 
         fieldset(
           label({ 'for': 'first_name-input' }, 'Name on card:'),
