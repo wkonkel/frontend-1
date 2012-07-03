@@ -14,8 +14,6 @@ with (Hasher('Register','Application')) {
         Billing.show_num_credits_added(),
 
         input({ type: 'hidden', name: 'name', value: domain }),
-        input({ type: 'hidden', name: 'auto_renew', value: 'true'}),
-        input({ type: 'hidden', name: 'privacy', value: 'true'}),
         input({ type: 'hidden', name: 'name_servers', value: 'ns1.badger.com,ns2.badger.com'}),
 
         fieldset(
@@ -150,10 +148,14 @@ with (Hasher('Register','Application')) {
   define('process_full_form', function(form_data, callback) {
     $('#errors').empty();
     
+    form_data.privacy = $(':checked[name=privacy]').length > 0 ? true : false;
+    form_data.auto_renew = $(':checked[name=auto_renew]').length > 0 ? true : false;
+    
     Contact.create_contact_if_necessary_form_data({
       field_name: 'registrant_contact_id',
       form_data: form_data,
       message_area: $('#errors').first(),
+      
       callback: curry(Badger.registerDomain, form_data, function(response) {
         if (response.meta.status == 'created') {
           update_credits(true);
