@@ -145,56 +145,40 @@ with (Hasher('DomainShow','DomainApps')) {
         nav_table(
           div({ 'class': 'has-sidebar' },
             form({ 'class': 'fancy', style: 'margin-bottom: 20px' },
-              fieldset(
+              domain_obj.expires_at && fieldset(
                 label('Expires:'),
                 span({ 'class': 'big-text' }, date(domain_obj.expires_at).toString('MMMM dd yyyy'))
               ),
 
-              (function() {
-                if (domain_obj.registered_at) {
-                  return fieldset(
-                    label('Registered:'),
-                    span({ 'class': 'big-text' }, date(domain_obj.registered_at).toString('MMMM dd yyyy'))
-                  );
-                }
-              })(),
+              domain_obj.registered_at && fieldset(
+                label('Registered:'),
+                span({ 'class': 'big-text' }, date(domain_obj.registered_at).toString('MMMM dd yyyy'))
+              ),
 
-              fieldset(
+              domain_obj.created_at && fieldset(
                 label('Created:'),
                 span({ 'class': 'big-text' }, date(domain_obj.created_at).toString('MMMM dd yyyy'))
               ),
 
-              fieldset(
+              domain_obj.current_registrar && fieldset(
                 label('Current Registrar:'),
                 Registrar.small_icon(domain_obj.current_registrar)
               ),
 
-              (function() {
-                if (domain_obj.created_registrar) {
-                  return fieldset(
-                    label('Created By:'),
-                    Registrar.small_icon(domain_obj.created_registrar)
-                  );
-                }
-              })(),
+              domain_obj.created_registrar && fieldset(
+                label('Created By:'),
+                Registrar.small_icon(domain_obj.created_registrar)
+              ),
 
-              (function() {
-                if (domain_obj.previous_registrar) {
-                  return fieldset(
-                    label('Previous Registrar:'),
-                    Registrar.small_icon(domain_obj.previous_registrar)
-                  );
-                }
-              })()
+              domain_obj.previous_registrar && fieldset(
+                label('Previous Registrar:'),
+                Registrar.small_icon(domain_obj.previous_registrar)
+              )
             ),
             
-            (function() {
-              if (show_whois_privacy_message) return info_message("Don't want your contact information available to the public? ", a({ href: '#domains/' + domain + '/settings' }, 'Enable Whois privacy.'), " It's free!")
-            })(),
-            
-            div(
-              info_message({ style: 'overflow: scroll; width: 700px; border-color: #aaa; background: #eee; white-space: pre; padding: 10px;' }, (domain_obj.whois || {}).raw || 'Missing')
-            )
+            show_whois_privacy_message && info_message("Don't want your contact information available to the public? ", a({ href: '#domains/' + domain + '/settings' }, 'Enable Whois privacy.'), " It's free!"),
+
+            domain_obj.whois && domain_obj.whois.raw && info_message({ style: 'overflow: scroll; width: 700px; border-color: #aaa; background: #eee; white-space: pre; padding: 10px;' }, domain_obj.whois.raw)
           )
         )
       )
