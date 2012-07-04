@@ -21,6 +21,9 @@ if (devLocalStorage.getItem('badger_api') == 'dev') {
 } else if (devLocalStorage.getItem('badger_api') == 'qa') {
   Badger.api_host = 'https://api-qa.badger.com/';
   Badger.access_token_key = 'badger_access_token_qa';
+} else if (devLocalStorage.getItem('badger_api') == 'demo') {
+  Badger.demo_mode = true;
+  Badger.api_host = null;
 } else if (navigator.userAgent == 'Selenium') {
   Badger.api_host = 'http://test.example/';
   Badger.access_token_key = 'badger_access_token_test';
@@ -38,8 +41,10 @@ with (Hasher()) {
   after_filter('add_dev_mode_bar', function() {
     if (!document.getElementById('dev-bar')) {
       document.body.appendChild(
-        div({ id: 'dev-bar', style: "position: fixed; bottom: 0; right: 0; background: white; color: black; padding: 5px" }, 
+        div({ id: 'dev-bar', style: "position: fixed; bottom: 0; right: 0; background: white; color: black; padding: 5px; z-index: 200" }, 
           (Badger.api_host == 'http://test.example/' ? [b('test'), ' | '] : []),
+          (Badger.demo_mode ? b('demo') : a({ href: curry(set_api_host, 'demo') }, 'demo')), 
+          ' | ',
           (Badger.api_host == 'http://api.badger.dev/' ? b('dev') : a({ href: curry(set_api_host, 'dev') }, 'dev')), 
           ' | ',
           (Badger.api_host == 'https://api-qa.badger.com/' ? b('qa') : a({ href: curry(set_api_host, 'qa') }, 'qa')), 
