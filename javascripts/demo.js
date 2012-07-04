@@ -1,5 +1,11 @@
-if (Badger.demo_mode) {
-  
+with (Hasher()) {
+  initializer(function() {
+    if (Badger.demo_mode) load_badger_demo();
+  });
+}
+
+
+function load_badger_demo() {
   /*
     Override set_route to show 'not supported' page on certain routes
   */
@@ -181,7 +187,7 @@ if (Badger.demo_mode) {
   /*
     Temporary client-side storage of demo data
   */
-  var DemoData = {
+  window.DemoData = {
     available_routes: [
       /^#$/,
       /^#welcome$/,
