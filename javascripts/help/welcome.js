@@ -32,8 +32,8 @@ with (Hasher('Welcome','Application')) {
             li('DNS shortcuts for easy configuration.')
           ),
           
-          a({ href: 'https://demo.badger.com/', target: '_blank', style: 'font-size: 20px; line-height: 35px; padding: 0 40px; margin: 30px 30px 0 0', 'class': 'myButton' }, 'Try Live Demo'), 
-          a({ href: '#account/create', style: 'font-size: 20px; line-height: 35px; padding: 0 40px; margin: 30px 0 0', 'class': 'myButton' }, 'Join the Revolution'),
+          a({ href: 'https://demo.badger.com/', target: '_blank', style: 'font-size: 20px; line-height: 35px; padding: 0 30px; margin: 30px 30px 0 0', 'class': 'myButton' }, 'Try Live Demo'), 
+          a({ href: '#account/create', style: 'font-size: 20px; line-height: 35px; padding: 0 30px; margin: 30px 0 0', 'class': 'myButton' }, 'Join the Revolution'),
           
           div({ style: 'clear: both' })
         )
