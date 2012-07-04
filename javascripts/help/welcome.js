@@ -24,10 +24,10 @@ with (Hasher('Welcome','Application')) {
           p('Working with domains sometimes feels like trying to overthrow a country. Take your first step towards domain independence - get started today and celebrate... your first transfer is FREE!'),
 
           ul({ style: "line-height: 24px" },
-            li('Automatic transfers with no downtime.'),
-            li('DNS shortcuts for easy configuration.'),
-            li('Domains cost ', b('$10 a year'), '.'),
-            li('Free WHOIS privacy and forwarding.')
+            li('Domains cost $10 a year.'),
+            li('Free WHOIS privacy and forwarding.'),
+            li('Automated transfers from Network Solutions, eNom and GoDaddy.'),
+            li('DNS shortcuts for easy configuration.')
           ),
           
           a({ href: '#account/create', style: 'font-size: 30px; line-height: 45px; padding: 0 40px; margin: 30px 0 0', 'class': 'myButton' }, 'Join the Revolution'),

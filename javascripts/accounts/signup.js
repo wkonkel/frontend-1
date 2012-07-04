@@ -64,19 +64,18 @@ with (Hasher('Signup','Application')) {
   });
   
   define('account_create_form', function(invitee, invite_code) {
-    var sidebar = invite_code ?
-        div({ 'class': 'sidebar' },
-            info_message(
-                h3("Welcome to Badger!"),
-                p("We're looking forward to helping you manage your domains here and at other registrars.")
-            )
-        ) :
-        div({ 'class': 'sidebar' },
-            info_message(
-                h3("Already have an account?"),
-                p({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
-            )
-        );
+    var sidebar = div({ 'class': 'sidebar' },
+      invite_code && info_message(
+        h3("Welcome to Badger!"),
+        p("We're looking forward to helping you manage your domains here and at other registrars.")
+      ),
+    
+      info_message(
+        h3("Already have an account?"),
+        p({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
+      )
+    );
+    
     invitee = invitee || {};
 
     return div(
