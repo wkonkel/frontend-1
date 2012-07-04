@@ -17,7 +17,7 @@ with (Hasher('DomainsIndex','Domains')) {
 
         render({ into: domains_div },
 
-          (domains.length > 0) && div({ style: 'margin-bottom: 30px' }, sortable_domains_table(domains, domains_div)),
+          (domains.length > 0) && div({ style: 'margin-bottom: 50px' }, sortable_domains_table(domains, domains_div)),
 
           h2('Add more domains to Badger:'),
           table(tbody(
