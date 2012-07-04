@@ -11,31 +11,28 @@ with (Hasher('Welcome','Application')) {
       // div({ id: 'main' },
       div(
         div({ 'id': 'content-top', style: 'text-align: center' },
-          h1("Happy Domain Independence Day!")
+          h1("Happy Domain Independence Day!"),
+          h2('Free your domains from the tyrants!')
         ),
         
         div({ 'id': 'content', style: "margin: 0", 'class': 'homepage' }, 
           img({ src: 'images/badger-logo-4th.png', style: 'float: right; margin: 20px 50px 20px 20px' }),
 
-          h2('Free your domains from the tyrants! Your first transfer is free!'),
+          h2('Your first transfer is free!'),
+          
+          p('Working with domains sometimes feels like trying to overthrow a country. Take your first step towards domain independence - get started today and celebrate... your first transfer is FREE!'),
 
-          h3('Manage all of your domains in one place.'),
-          p('Link your existing registrar accounts with your Badger account.'),
-        
-          h3('Automatic transfers with no downtime.'),
-          p('We handle all the hard parts like auth codes and DNS migration.'),
+          b('Automatic transfers with no downtime.'),
+          p("We handle all the hard parts like auth codes and DNS migration.  (We'll leave the BBQ to you.)"),
 
-          h3('DNS shortcuts for easy configuration.'),
-          p('Install popular apps quickly without touching DNS.'),
-
-          h3('Register domains for $10 a year.'),
+          b('DNS shortcuts for easy configuration.'),
+          p('Install popular apps like Gmail quickly without touching DNS.'),
+          
+          b('Register domains for $10 a year.'),
           p('Pricing is the same for registrations, transfers and renewals.'),
-
-          h3('Free WHOIS privacy and forwarding.'),
+          
+          b('Free WHOIS privacy and forwarding.'),
           p("Privacy, DNS hosting and email/url forwarding are included."),
-
-          h3("We're developer friendly."),
-          p('We have a RESTful API and an open source frontend.'),
           
           a({ href: '#account/create', 'class': 'myButton' }, 'Get Started')
         )
