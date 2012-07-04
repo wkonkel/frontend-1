@@ -5,7 +5,46 @@ with (Hasher('Welcome','Application')) {
   after_filter('#welcome', function() {
     document.getElementById('content').setAttribute('id','_content');
   });
+
+  route('#july4th/:code', function() {
+    render({ layout: default_layout },
+      // div({ id: 'main' },
+      div(
+        div({ 'id': 'content-top', style: 'text-align: center' },
+          h1("Happy Domain Independence Day!")
+        ),
+        
+        div({ 'id': 'content', style: "margin: 0", 'class': 'homepage' }, 
+          img({ src: 'images/badger-logo-4th.png', style: 'float: right; margin: 20px 50px 20px 20px' }),
+
+          h2('Free your domains from the tyrants! Your first transfer is free!'),
+
+          h3('Manage all of your domains in one place.'),
+          p('Link your existing registrar accounts with your Badger account.'),
+        
+          h3('Automatic transfers with no downtime.'),
+          p('We handle all the hard parts like auth codes and DNS migration.'),
+
+          h3('DNS shortcuts for easy configuration.'),
+          p('Install popular apps quickly without touching DNS.'),
+
+          h3('Register domains for $10 a year.'),
+          p('Pricing is the same for registrations, transfers and renewals.'),
+
+          h3('Free WHOIS privacy and forwarding.'),
+          p("Privacy, DNS hosting and email/url forwarding are included."),
+
+          h3("We're developer friendly."),
+          p('We have a RESTful API and an open source frontend.'),
+          
+          a({ href: '#account/create', 'class': 'myButton' }, 'Get Started')
+        )
+      )      
+    );
     
+    document.title = 'Badger - Domain Independence Day';
+  });
+
   route('#welcome', function() {
     var registrar_app_icon_url = Badger.getAccessToken() ? '#linked_accounts' : "#account/create";
     
