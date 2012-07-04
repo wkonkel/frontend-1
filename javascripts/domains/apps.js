@@ -310,7 +310,7 @@ with (Hasher('DomainApps','Domains')) {
               remove_app_from_domain(app, domain_obj);
               hide_modal();
               $('#domain-menu-item-' + domain_obj.name.replace('.','-')).remove();
-              set_route('#domains/' + domain_obj.name + '/apps');
+              set_route('#domains/' + domain_obj.name);
             });
           }
         }, 'Uninstall ', app.name)
