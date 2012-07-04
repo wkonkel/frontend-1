@@ -9,7 +9,7 @@ function load_badger_demo() {
       $('html').addClass('demo');
       document.body.appendChild(div({ style: 'height: 100px'} ));
       document.body.appendChild(
-        div({ 'id':'demobanner' },
+        div({ 'id': 'demo-banner' },
           div({ 'style':'width: 950px; margin: 0 auto' },
               span({'style':'font-size: 30px; font-family: AdelleBold, Titillium;  margin-bottom: 10px;'}, 'This is a Demo'),
               a({ style:'float: right; margin-top: 15px', href:'https://www.badger.com/#acccount/create', 'class':'myButton'}, "Take me to the Real Thing!"), br(),
