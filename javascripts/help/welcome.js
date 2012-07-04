@@ -21,6 +21,8 @@ with (Hasher('Welcome','Application')) {
 
           h2('Transfer your first domain to Badger for FREE!'),
           
+          p({ style: 'margin-bottom: 10px' }, i("Today, we're giving away ", "1776 free transfers!")),
+          
           p('Working with domains sometimes feels like trying to overthrow a country. Take your first step towards domain independence - get started today and celebrate... your first transfer is FREE!'),
 
           ul({ style: "line-height: 24px" },
