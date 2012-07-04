@@ -7,9 +7,13 @@ function load_badger_demo() {
   with (Hasher('Demo','Application')) {
     initializer(function() {
       $('html').addClass('demo');
+      document.body.appendChild(div({ style: 'height: 100px'} ));
       document.body.appendChild(
-        div({ style: 'position: fixed; bottom: 0; left: 0; width: 100%; background: green; font-size: 35px; text-align: center; height: 60px; line-height: 60px; color: white' },
-          'THIS IS A DEMO.  THESE CHANGES WILL NOT BE SAVED.'
+        div({ 'id':'demobanner' },
+          div({ 'style':'width: 950px; margin: 0 auto' },
+              span({'style':'font-size: 30px; font-family: AdelleBold, Titillium;  margin-bottom: 10px;'}, 'This is a Demo'),
+              a({ style:'float: right; margin-top: 15px', href:'https://www.badger.com/#acccount/create', 'class':'myButton'}, "Take me to the Real Thing!"), br(),
+              "You're logged in with a demo account.", br(), "You can search, register, and set up your domains!")
         )
       )
     });
@@ -37,7 +41,6 @@ function load_badger_demo() {
           h1({ style: 'border: 0px' }, 'Not Supported in Demo'),
           p({ style: 'font-size: 16px' }, reason || ''),
           div({ style: 'margin: 30px' }, img({ style: 'width: 30%', src: 'images/badger-logo-sad-big.png' })),
-          a({ id: 'previous-page-link', 'class': 'myButton large', style: 'margin: 10px', href: hide_modal }, "Take me back!"), br(),
           a({ 'class': 'myButton large', style: 'margin: 10px', onclick: function() { window.location = 'https://www.badger.com/#account/create' } }, "I'm Ready for the Real Thing!")
         )
       );
