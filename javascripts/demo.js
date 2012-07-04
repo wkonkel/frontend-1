@@ -12,7 +12,7 @@ function load_badger_demo() {
         div({ 'id': 'demo-banner' },
           div({ 'style':'width: 950px; margin: 0 auto' },
               span({'style':'font-size: 30px; font-family: AdelleBold, Titillium;  margin-bottom: 10px;'}, 'This is a Demo'),
-              a({ style:'float: right; margin-top: 15px', href:'https://www.badger.com/#acccount/create', 'class':'myButton'}, "Take me to the Real Thing!"), br(),
+              a({ style:'float: right; margin-top: 15px', href:'https://www.badger.com/#account/create', 'class':'myButton'}, "Take me to the Real Thing!"), br(),
               "You're logged in with a demo account.", br(), "You can search, register, and set up your domains!"
           )
         )

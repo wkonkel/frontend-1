@@ -7,7 +7,7 @@ with (Hasher('Welcome','Application')) {
   });
 
   route('#july4th/:code', function(invite_code) {
-    Badger.Session.write({ invite_code: invite_code });
+    Badger.setCookie('invite_code', invite_code);
     render({ layout: default_layout },
       // div({ id: 'main' },
       div(
@@ -21,7 +21,7 @@ with (Hasher('Welcome','Application')) {
 
           h2('Transfer your first domain to Badger for FREE!'),
           
-          p({ style: 'margin-bottom: 10px' }, i("Today, we're giving away ", "1776 free transfers!")),
+          p({ style: 'margin-bottom: 10px' }, i("Today, we're giving away ", "1776 domain transfers!")),
           
           p('Working with domains sometimes feels like trying to overthrow a country. Take your first step towards domain independence - get started today and celebrate... your first transfer is FREE!'),
 
@@ -32,7 +32,8 @@ with (Hasher('Welcome','Application')) {
             li('DNS shortcuts for easy configuration.')
           ),
           
-          a({ href: '#account/create', style: 'font-size: 30px; line-height: 45px; padding: 0 40px; margin: 30px 0 0', 'class': 'myButton' }, 'Join the Revolution'),
+          a({ href: 'https://demo.badger.com/', target: '_blank', style: 'font-size: 20px; line-height: 35px; padding: 0 40px; margin: 30px 30px 0 0', 'class': 'myButton' }, 'Try Live Demo'), 
+          a({ href: '#account/create', style: 'font-size: 20px; line-height: 35px; padding: 0 40px; margin: 30px 0 0', 'class': 'myButton' }, 'Join the Revolution'),
           
           div({ style: 'clear: both' })
         )
