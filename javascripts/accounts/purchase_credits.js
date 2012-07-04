@@ -13,65 +13,59 @@ with (Hasher('Billing','Application')) {
 
       div({ 'class': 'sidebar' },
         info_message(
-          h3("What does a Credit include?"),
-          ul({ style: "padding-left: 20px" },
+          h3("What is included?"),
+          ul(
             li('1 year of registration'),
             li('WHOIS privacy (free)'),
             li('DNS hosting (free)')
           ),
-          p("New registrations, transfers, and renewals each cost 1 Credit.")
-        ),
-        
-        info_message(
-          h3("Why do you use Credits?"),
-          p("Credits allow us to give you discounts, and make domain renewals and registrations faster.")
+          p("New registrations, transfers, and renewals cost the same.")
         )
       ),
 
       form_with_loader({ 'class': 'fancy has-sidebar', id: 'credits-form', action: purchase_credits, loading_message: "Processing purchase..." },
-        div({ id: 'modal-errors' },
-          (necessary_credits ?
-            div({ 'class': 'error-message' }, "You need at least ", necessary_credits,
-                " Credit" + (necessary_credits != 1 ? 's' : '') + " to continue.")
-          : [])
-        ),
+        div({ id: 'modal-errors' }),
 
-        div({ style: 'height: 132px;' },
-          div({ style: 'float: right; width: 300px'}, credits_table()),
-
+        necessary_credits ? [
+          fieldset(
+            label({ 'for': 'first_name-input' }, 'Total cost:'),
+            span({ id: 'static-price', style: 'font-size: 30px' }, '$', necessary_credits * 10),
+            hidden({ name: 'credits', value: necessary_credits })
+          )
+        ] : [
           fieldset({ style: 'padding-top: 18px' },
             label({ 'for': 'credits-input' }, 'How many Credits:'),
-            credits_selector(necessary_credits)
+            credits_selector()
           ),
 
           fieldset(
             label({ 'for': 'first_name-input' }, 'Total cost:'),
-            span({ id: 'static-price', style: 'font-size: 30px' }, '')
+            span({ id: 'static-price', style: 'font-size: 30px' }, '$10')
           )
-        ),
-        
+        ],
+
         saved_card_drop_down_and_fields(),
 
         fieldset({ 'class': 'no-label' },
-          submit({ id: 'purchase-button', value: 'Purchase Credits' })
+          submit({ id: 'purchase-button', value: 'Charge My Credit Card' })
         )
 
       )
     );
 
     // determine which tier to select first
-    var credits = $("#credits-form").find("input[name=credits]").val()
-    if (credits == 1) {
-      $("#credit-tier-1").css({ "background": "#CDEC96", "border-width": "3px" });
-    } else if (credits >= 2 && credits <= 9) {
-      $("#credit-tier-2").css({ "background": "#CDEC96", "border-width": "3px" });
-    } else {
-      $("#credit-tier-10").css({ "background": "#CDEC96", "border-width": "3px" });
-    }
-
-    $("#credits-form").find("input[name=credits]").focus();
-    $("#credits-form").find("input[name=credits]").select();
-    $("input[name=credits]").trigger("keyup");
+    // var credits = $("#credits-form").find("input[name=credits]").val()
+    // if (credits == 1) {
+    //   $("#credit-tier-1").css({ "background": "#CDEC96", "border-width": "3px" });
+    // } else if (credits >= 2 && credits <= 9) {
+    //   $("#credit-tier-2").css({ "background": "#CDEC96", "border-width": "3px" });
+    // } else {
+    //   $("#credit-tier-10").css({ "background": "#CDEC96", "border-width": "3px" });
+    // }
+    // 
+    // $("#credits-form").find("input[name=credits]").focus();
+    // $("#credits-form").find("input[name=credits]").select();
+    // $("input[name=credits]").trigger("keyup");
   });
   
 
@@ -294,20 +288,20 @@ with (Hasher('Billing','Application')) {
         num_credits = 0;
       }
       
-      var price = 0;
-      if ( num_credits == 1) {
-        price = 12;
-        tier = 1;
-      } else if ( num_credits >= 2 && num_credits <= 9 ) {
-        price = 11;
-        tier = 2;
-      } else if ( num_credits >= 10 ) {
-        price = 10;
-        tier = 10;
-      } else {
-        price = 0;
-        tier = -1;
-      }
+      var price = 10;
+      // if ( num_credits == 1) {
+      //   price = 12;
+      //   tier = 1;
+      // } else if ( num_credits >= 2 && num_credits <= 9 ) {
+      //   price = 11;
+      //   tier = 2;
+      // } else if ( num_credits >= 10 ) {
+      //   price = 10;
+      //   tier = 10;
+      // } else {
+      //   price = 0;
+      //   tier = -1;
+      // }
       
       //update the price fields
       $('#price-each').empty().append("$" + price.toString());
@@ -326,14 +320,14 @@ with (Hasher('Billing','Application')) {
       }
 
       //change the tier hilighting if changed
-      if ( tier == -1 ) {
-        $("#credit-tier-" + previous_tier).css({ "background": "#E6F8D8", "border-width": "1px" }); // change back to unselected
-      } else {
-        $("#credit-tier-" + tier).css({ "background": "#CDEC96", "border-width": "3px" }); // the selected color
-        if (tier != previous_tier) {
-          $("#credit-tier-" + previous_tier).css({ "background": "#E6F8D8", "border-width": "1px" }); // change back to unselected
-        }
-      }
+      // if ( tier == -1 ) {
+      //   $("#credit-tier-" + previous_tier).css({ "background": "#E6F8D8", "border-width": "1px" }); // change back to unselected
+      // } else {
+      //   $("#credit-tier-" + tier).css({ "background": "#CDEC96", "border-width": "3px" }); // the selected color
+      //   if (tier != previous_tier) {
+      //     $("#credit-tier-" + previous_tier).css({ "background": "#E6F8D8", "border-width": "1px" }); // change back to unselected
+      //   }
+      // }
       
       pervious_num_credits = num_credits;
       previous_tier = tier;
