@@ -401,7 +401,7 @@ if (Badger.demo_mode) {
   contact();
 
   domain({
-    name: 'badger.com',
+    name: 'example.com',
     registrant_contact: DemoData.contacts[0]
   });
   
