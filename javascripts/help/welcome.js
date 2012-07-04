@@ -28,7 +28,8 @@ with (Hasher('Welcome','Application')) {
           h3("Search for a new domain:"),
           div({style: 'padding-left: 30px'}, 
             //a({ href: get_started, 'class': 'myButton', style: 'font-size: 20px; padding: 9px 30px' }, 'Search for domains')
-            input({ 'class': 'domain-search-box', placeholder: 'e.g. badger.com', onKeyDown: function() { set_route('#search'); $('#form-search input').val(null).focus(); } })
+            input({ 'class': 'domain-search-box', style: 'margin-bottom: 5px', placeholder: 'e.g. badger.com', onKeyDown: function() { set_route('#search'); $('#form-search input').val(null).focus(); } }),
+            span({ style: 'padding: 0 10px' }, " or "), a({ href: '#domains/transfer', 'class': 'myButton'}, "Transfer in Your Domain")
           )
         ),
         

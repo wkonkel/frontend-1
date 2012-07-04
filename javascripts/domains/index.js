@@ -19,10 +19,26 @@ with (Hasher('DomainsIndex','Domains')) {
           render({ into: domains_div },
             h2('Get Started With Badger'),
 
-            ul(
-              li(a({ href: '#search' }, 'Register a new domain')),
-              li(a({ href: '#domains/transfer' }, 'Transfer an existing domain'))
-            ),
+            table(tbody(
+              tr(
+                td({ style: 'vertical-align: top' },
+                  app_store_icon({
+                    name: 'Register a New Domain',
+                    image_src: 'images/apps/dns.png',
+                    href: '#search'
+                  })
+                ),
+
+                td({ style: 'vertical-align: top' },
+                  app_store_icon({
+                    name: 'Transfer in Your Domain',
+                    image_src: 'images/apps/web-forward.png',
+                    href: '#domains/transfer'
+                  })
+                )
+                
+              )
+            )),
             
             h2('Link an Existing Account'),
             LinkedAccounts.add_linked_account_icons(['godaddy', 'networksolutions', 'enom'])
@@ -90,14 +106,7 @@ with (Hasher('DomainsIndex','Domains')) {
           
           var domains_div = div();
           
-          if (domains.length <= 0) {
-            render({ into: domains_div },
-              div('You do not have any domains that are pending transfer.'),
-              ul(
-                li(a({ href: '#domains/transfer' }, 'Transfer domains to Badger'))
-              )
-            );
-          } else {
+          if (domains.length > 0) {
             save_domain_filter_states();
             render({ into: domains_div },
               sortable_pending_transfer_table(domains, domains_div)
@@ -108,6 +117,10 @@ with (Hasher('DomainsIndex','Domains')) {
           render({ into: target_div },
             div({ 'class': 'fancy' },
               domains_nav_table(
+                info_message(
+                  a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: '#domains/transfer' }, 'Begin Transfer'),
+                  "Do you have any domains at another registrar?"
+                ),
                 domains_div
               )
             )
