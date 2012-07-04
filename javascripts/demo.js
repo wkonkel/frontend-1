@@ -22,16 +22,16 @@ if (Badger.demo_mode) {
           break;
         }
       }
-
+      
       if (valid_route) {
         real_set_route(path, options);
       } else {
         render_not_supported_modal();
       }
-    }
+    };
 
     define('render_not_supported_modal', function(reason) {
-      show_modal(
+      return show_modal(
         div({ style: 'text-align: center' },
           h1({ style: 'border: 0px' }, 'Not Supported in Demo'),
           p({ style: 'font-size: 16px' }, reason || ''),
@@ -40,9 +40,7 @@ if (Badger.demo_mode) {
           a({ 'class': 'myButton large', style: 'margin: 10px', onclick: function() { window.location = 'https://www.badger.com/#account/create' } }, "I'm Ready for the Real Thing!")
         )
       );
-      set_route(get_route())
     });
-
 
     // Kill Badger.api, but keep a reference to it around
     var real_api = Badger.api;
