@@ -8,8 +8,8 @@ function load_badger_demo() {
     initializer(function() {
       $('html').addClass('demo');
       document.body.appendChild(
-        div({ style: 'position: fixed; bottom: 0; left: 0; width: 100%; background: green; font-size: 40px; text-align: center; height: 60px; line-height: 60px; color: white' },
-          'THIS IS A DEMO.  NONE OF THIS IS REAL!'
+        div({ style: 'position: fixed; bottom: 0; left: 0; width: 100%; background: green; font-size: 35px; text-align: center; height: 60px; line-height: 60px; color: white' },
+          'THIS IS A DEMO.  THESE CHANGES WILL NOT BE SAVED.'
         )
       )
     });
