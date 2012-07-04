@@ -1,9 +1,4 @@
-with (Hasher()) {
-  initializer(function() {
-    if (Badger.demo_mode) load_badger_demo();
-  });
-}
-
+Hasher.__initializers.unshift(function() { if (Badger.demo_mode) load_badger_demo(); });
 
 function load_badger_demo() {
   /*
