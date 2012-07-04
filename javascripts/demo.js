@@ -151,7 +151,10 @@ if (Badger.demo_mode) {
           }
         };
       }
-    }
+    };
+    
+    Badger.createWebForward = function() { render_not_supported_modal('Web forwards are fully not supported in the demo.') };
+    Badger.createEmailForward = function() { render_not_supported_modal('Email forwards are fully not supported in the demo.') };
 
     Badger.getAccessToken = function() { return '0.example'; };
     Badger.accountInfo = function(callback) { mock_api_callback({ data: DemoData.account }, callback); };
@@ -160,8 +163,8 @@ if (Badger.demo_mode) {
     Badger.getContacts = function(callback) { mock_api_callback({ data: DemoData.contacts }, callback); };
     Badger.getPaymentMethods = function(callback) { mock_api_callback({ data: DemoData.payment_method }, callback) };
 
-    Badger.createContact = function(callback) { render_not_supported_modal('Creating new contacts is not supported right now.') };
-    Badger.updateDomain = function(callback) { render_not_supported_modal('Updating domains is not supported right now.') };
+    Badger.createContact = function(callback) { render_not_supported_modal('Creating new contacts is not supported in the demo.') };
+    Badger.updateDomain = function(callback) { render_not_supported_modal('Updating domains is not supported in the demo.') };
 
     /*
       Kill BadgerCache, and replace it with the mocked out Badger api
