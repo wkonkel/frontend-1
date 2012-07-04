@@ -31,7 +31,7 @@ with (Hasher('Account','Application')) {
             // li(a({ href: '#tickets', 'class': (active_url.match(/^#tickets.*$/) ? 'active' : '') }, 'Support Tickets')),
             li(a({ href: '#account', 'class': (active_url.match(/^#account$/) ? 'active' : '') }, 'Settings')),
             li(a({ href: '#account/profiles', 'class': (active_url.match(/^#account\/profiles.*$/) ? 'active' : '') }, 'Whois Profiles')),
-            li(a({ href: '#account/billing', 'class': (active_url.match(/^#account\/billing$/) ? 'active' : '') }, 'Credits & Billing')),
+            li(a({ href: '#account/billing', 'class': (active_url.match(/^#account\/billing$/) ? 'active' : '') }, 'Billing & Credits')),
             li(a({ href: '#linked_accounts', 'class': (active_url.match(/^#linked_accounts$/) ? 'active' : '') }, 'Linked Accounts')),
             li(a({ href: '#invites', 'class': (active_url.match(/^#invites/) ? 'active' : '') }, 'Invites'))
           )

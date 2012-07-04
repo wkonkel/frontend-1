@@ -6,7 +6,7 @@ with (Hasher('Billing','Application')) {
     );
 
     render(
-      h1('My Account » Credits & Billing History'),
+      h1('My Account » Billing & Credits'),
       div({ style: 'float: right; margin-top: -44px' },
         a({ 'class': 'myButton small', href: '#account/billing/credits' }, 'Purchase Credits')
       ),

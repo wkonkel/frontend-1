@@ -7,7 +7,7 @@ with (Hasher('Billing','Application')) {
       // h1('Purchase Credits'),
       chained_header_with_links(
         { text: 'My Account' },
-        { href: '#account/billing', text: 'Credits & Billing History' },
+        { href: '#account/billing', text: 'Billing & Credits' },
         { text: 'Purchase Credits' }
       ),
 
