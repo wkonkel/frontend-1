@@ -205,6 +205,15 @@ td.expiration-date span.yellow { color: #D8BD0F; }
   border: 0px;
 }
 
+#main #content-top h2 { 
+  font-family: AdelleBold, Titillium;
+  font-size: 28px;
+  text-shadow: 1px 1px 1px #000;
+  font-weight: normal;
+  margin-bottom: 0;
+  border: 0px;
+}
+
 #main #content-top h3 {
   font-family: AdelleBold, Titillium;
   font-size: 20px;

@@ -21,40 +21,46 @@ with (Hasher('Signup','Application')) {
   // }(document));
 
   route('#account/create/:invite_code', function(invite_code) {
-    var target_div = div(spinner('Loading...'));
-    var inviter_message_div = div();
-    render(
-      h1('Create Badger Account'),
-      inviter_message_div,
-      target_div
-    );
-    Badger.getInvite(invite_code, function(response) {
-      //console.log(response);
-      var message;
-      if (response.meta.status == 'ok') {
-        if (response.data.inviter) {
-          message = response.data.inviter.name + ' has invited you to Badger!';
-          if (response.data.domain_credits > 0) {
-            message += " And they've given you " + response.data.domain_credits + " free Credit" + (response.data.domain_credits != 1 ? 's' : '') + "!";
-          }
-        } else if (response.data.domain_credits > 0) {
-          message = " This signup code has " + response.data.domain_credits + " free Credit" + (response.data.domain_credits != 1 ? 's' : '') + "!";
-        }
-        message = success_message(message);
-      } else {
-        message = error_message(response.data.message, ' However, you can still sign up using the form below.');
-      }
-      render({ target: inviter_message_div }, message);
-      render({ target: target_div }, account_create_form(response.data.invitee, invite_code));
-    });
+    Badger.Session.write({ invite_code: invite_code });
+    set_route('#account/create');
   });
   
 
   route('#account/create', function() {
-    render(
-      h1('Create Badger Account'),
-      account_create_form()
-    );
+    var invite_code = Badger.Session.get('invite_code');
+    if (invite_code) {
+      var target_div = div(spinner('Loading...'));
+      var inviter_message_div = div();
+      render(
+        h1('Create Badger Account'),
+        inviter_message_div,
+        target_div
+      );
+      Badger.getInvite(invite_code, function(response) {
+        //console.log(response);
+        var message;
+        if (response.meta.status == 'ok') {
+          if (response.data.inviter) {
+            message = response.data.inviter.name + ' has invited you to Badger!';
+            if (response.data.domain_credits > 0) {
+              message += " And they've given you " + response.data.domain_credits + " free Credit" + (response.data.domain_credits != 1 ? 's' : '') + "!";
+            }
+          } else if (response.data.domain_credits > 0) {
+            message = " This signup code has " + response.data.domain_credits + " free Credit" + (response.data.domain_credits != 1 ? 's' : '') + "!";
+          }
+          message = success_message(message);
+        } else {
+          message = error_message(response.data.message, ' However, you can still sign up using the form below.');
+        }
+        render({ target: inviter_message_div }, message);
+        render({ target: target_div }, account_create_form(response.data.invitee, invite_code));
+      });
+    } else {
+      render(
+        h1('Create Badger Account'),
+        account_create_form()
+      );
+    }
   });
   
   define('account_create_form', function(invitee, invite_code) {

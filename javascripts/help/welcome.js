@@ -6,7 +6,8 @@ with (Hasher('Welcome','Application')) {
     document.getElementById('content').setAttribute('id','_content');
   });
 
-  route('#july4th/:code', function() {
+  route('#july4th/:code', function(invite_code) {
+    Badger.Session.write({ invite_code: invite_code });
     render({ layout: default_layout },
       // div({ id: 'main' },
       div(
@@ -34,7 +35,7 @@ with (Hasher('Welcome','Application')) {
           b('Free WHOIS privacy and forwarding.'),
           p("Privacy, DNS hosting and email/url forwarding are included."),
           
-          a({ href: '#account/create', 'class': 'myButton' }, 'Get Started')
+          div({ style: 'text-align: center' }, a({ href: '#account/create', style: 'font-size: 30px; line-height: 45px; padding: 0 40px; margin: 20px 0', 'class': 'myButton' }, 'Get Started'))
         )
       )      
     );
