@@ -15,40 +15,57 @@ with (Hasher('DomainsIndex','Domains')) {
       callback: function(domains) {
         var domains_div = div();
 
-        if (domains.length <= 0) {
-          render({ into: domains_div },
-            h2('Get Started With Badger'),
+        render({ into: domains_div },
 
-            table(tbody(
-              tr(
-                td({ style: 'vertical-align: top' },
-                  app_store_icon({
-                    name: 'Register a New Domain',
-                    image_src: 'images/apps/dns.png',
-                    href: '#search'
-                  })
-                ),
+          (domains.length > 0) && div({ style: 'margin-bottom: 30px' }, sortable_domains_table(domains, domains_div)),
 
-                td({ style: 'vertical-align: top' },
-                  app_store_icon({
-                    name: 'Transfer in Your Domain',
-                    image_src: 'images/apps/web-forward.png',
-                    href: '#domains/transfer'
-                  })
-                )
-                
+          h2('Add more domains to Badger:'),
+          table(tbody(
+            tr(
+              td({ style: 'vertical-align: top' },
+                app_store_icon({
+                  name: 'Register a New Domain',
+                  image_src: 'images/apps/dns.png',
+                  href: '#search'
+                })
+              ),
+
+              td({ style: 'vertical-align: top' },
+                app_store_icon({
+                  name: 'Transfer in Your Domain',
+                  image_src: 'images/apps/web-forward.png',
+                  href: '#domains/transfer'
+                })
+              ),
+
+              td({ style: 'vertical-align: top' },
+                app_store_icon({
+                  name: 'Link With: GoDaddy',
+                  image_src: 'images/apps/godaddy.png',
+                  href: '#linked_accounts/godaddy/link'
+                })
+              ),
+
+              td({ style: 'vertical-align: top' },
+                app_store_icon({
+                  name: 'Link With: Network Solutions',
+                  image_src: 'images/apps/ns.png',
+                  href: '#linked_accounts/networksolutions/link'
+                })
+              ),
+              
+              td({ style: 'vertical-align: top' },
+                app_store_icon({
+                  name: 'Link With: eNom',
+                  image_src: 'images/apps/enom.png',
+                  href: '#linked_accounts/enom/link'
+                })
               )
-            )),
             
-            h2('Link an Existing Account'),
-            LinkedAccounts.add_linked_account_icons(['godaddy', 'networksolutions', 'enom'])
-            
-          );
-        } else {
-          render({ into: domains_div },
-            sortable_domains_table(domains, domains_div)
-          );
-        }
+            )
+          ))
+
+        );
         
         // render message for incomplete profile (legacy rhinonames contacts) --- CAB
         var update_contact_message_div = div();
