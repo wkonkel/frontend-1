@@ -56,6 +56,8 @@ with (Hasher()) {
       return;
     }
     
+    if (typeof(_gaq) != 'undefined') _gaq.push(['_trackPageview', path]);
+    
     for (var i=0; i < Hasher.routes.length; i++) {
       var route = Hasher.routes[i];
       var matches = path.match(route.regex);
