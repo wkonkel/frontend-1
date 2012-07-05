@@ -126,7 +126,7 @@ with (Hasher('Transfer','Application')) {
           ),
           
           fieldset({ 'class': 'no-label' },
-            submit({ name: 'submit', value: 'Transfer ' + domain_count + ' domain ' + (domain_count != 1 ? 's' : '') + ' for $' + (domain_count*10) })
+            submit({ name: 'submit', value: 'Transfer ' + domain_count + ' domain' + (domain_count != 1 ? 's' : '') + ' for $' + (domain_count*10) })
           )
         )
       );
