@@ -39,7 +39,7 @@ with (Hasher('DomainApps','Domains')) {
             { text: app.name }
           ),
           
-          unauthorized_message('You do not have permission to view this application. Do you own the domain?')
+          unauthorized_message('You do not have permission to view this application.')
         );
       } else {
         var nav_table = function() {
