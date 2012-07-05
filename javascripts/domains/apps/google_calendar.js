@@ -1,6 +1,6 @@
 with (Hasher('GoogleCalendar', 'DomainApps')) {
 
-  var app = register_domain_app({
+  register_domain_app({
     id: 'google_calendar',
     name: 'Google Calendar',
     icon: 'images/apps/google_calendar.png',
@@ -25,7 +25,7 @@ with (Hasher('GoogleCalendar', 'DomainApps')) {
 
 
   route('#domains/:domain/apps/google/calendar', function(domain) {
-    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+    with_domain_nav_for_app(domain, Hasher.domain_apps['google_calendar'], function(nav_table, domain_obj) {
       render(
         h1_for_domain(domain, 'Google Calendar'),
         

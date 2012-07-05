@@ -1,6 +1,6 @@
 with (Hasher('Blogger', 'DomainApps')) {
 
-  var app = register_domain_app({
+  register_domain_app({
     id: 'badger_blogger',
     name: 'Blogger',
     icon: 'images/apps/blogger.png',
@@ -31,7 +31,7 @@ with (Hasher('Blogger', 'DomainApps')) {
   });
 
   route('#domains/:domain/apps/blogger', function(domain) {
-    with_domain_nav_for_app(domain, app, function(nav_table) {
+    with_domain_nav_for_app(domain, Hasher.domain_apps['badger_blogger'], function(nav_table) {
       render(
         h1_for_domain(domain, 'Blogger'),
 

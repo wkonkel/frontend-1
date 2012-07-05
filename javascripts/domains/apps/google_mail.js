@@ -1,6 +1,6 @@
 with (Hasher('GoogleMail', 'DomainApps')) { 
 
-  var app = register_domain_app({
+  register_domain_app({
     id: 'google_mail',
     name: 'Google Mail',
     icon: 'images/apps/gmail.png',
@@ -37,7 +37,7 @@ with (Hasher('GoogleMail', 'DomainApps')) {
   // For more detailed instructions, please see <a href="https://www.badger.com/#knowledge_center/47-Properly-configuring-Google-Mail-on-your-Badger-domain">this Knowledge Center article</a>.
 
   route('#domains/:domain/apps/google/gmail', function(domain) {
-    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+    with_domain_nav_for_app(domain, Hasher.domain_apps['google_mail'], function(nav_table, domain_obj) {
       render(
         h1_for_domain(domain, 'Google Mail'),
         

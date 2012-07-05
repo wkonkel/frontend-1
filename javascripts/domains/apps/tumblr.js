@@ -1,6 +1,6 @@
 with (Hasher('Tumblr', 'DomainApps')) {
 
-  var app = register_domain_app({
+  register_domain_app({
     id: 'badger_tumblr',
     name: 'Tumblr',
     icon: 'images/apps/tumblr.png',
@@ -28,7 +28,7 @@ with (Hasher('Tumblr', 'DomainApps')) {
   });
 
   route('#domains/:domain/apps/tumblr', function(domain) {
-    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+    with_domain_nav_for_app(domain, Hasher.domain_apps['badger_tumblr'], function(nav_table, domain_obj) {
       render(
         h1_for_domain(domain, 'Tumblr'),
         

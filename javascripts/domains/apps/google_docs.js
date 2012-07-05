@@ -1,6 +1,6 @@
 with (Hasher('GoogleDocs', 'DomainApps')) { 
 
-  var app = register_domain_app({
+  register_domain_app({
     id: 'google_docs',
     name: 'Google Docs',
     icon: 'images/apps/googledocs.png',
@@ -23,9 +23,8 @@ with (Hasher('GoogleDocs', 'DomainApps')) {
     }
   });
 
-
   route('#domains/:domain/apps/google/docs', function(domain) {
-    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+    with_domain_nav_for_app(domain, Hasher.domain_apps['google_docs'], function(nav_table, domain_obj) {
       render(
         h1_for_domain(domain, 'Google Docs'),
         

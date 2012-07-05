@@ -1,6 +1,6 @@
 with (Hasher('Posterous', 'DomainApps')) {
 
-  var app = register_domain_app({
+  register_domain_app({
     id: 'badger_posterous',
     name: 'Posterous',
     icon: 'images/apps/posterous.png',
@@ -27,7 +27,7 @@ with (Hasher('Posterous', 'DomainApps')) {
   });
 
   route('#domains/:domain/apps/posterous', function(domain) {
-    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+    with_domain_nav_for_app(domain, Hasher.domain_apps['badger_posterous'], function(nav_table, domain_obj) {
       render(
         h1_for_domain(domain, 'Posterous'),
         

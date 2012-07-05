@@ -1,6 +1,6 @@
 with (Hasher('EmailForwards', 'DomainApps')) {
 
-  var app = register_domain_app({
+  register_domain_app({
     id: 'badger_email_forward',
     name: 'Email Forwarding',
     menu_item: { text: 'Email Forwarding', href: '#domains/:domain/apps/email_forwards', css_class: 'email-forwarding' },
@@ -24,7 +24,7 @@ with (Hasher('EmailForwards', 'DomainApps')) {
   });
   
   route('#domains/:domain/apps/email_forwards', function(domain) {
-    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+    with_domain_nav_for_app(domain, Hasher.domain_apps['badger_email_forward'], function(nav_table, domain_obj) {
       render(
         div({ id: 'email-forwards-wrapper' },
           h1_for_domain(domain, 'Email Forwards'),
@@ -57,8 +57,10 @@ with (Hasher('EmailForwards', 'DomainApps')) {
       );
 
       Badger.getEmailForwards(domain, function(results) {
+        if (results.meta.status != 'ok') return;
+        
         var the_tbody = $('#email-forwards-table-tbody');
-        results.data.map(function(email_forward) {
+        (results.data || []).map(function(email_forward) {
           the_tbody.append(show_email_forward_table_row(domain, email_forward));
         });
       });

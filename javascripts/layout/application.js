@@ -207,6 +207,18 @@ with (Hasher('Application')) {
       return new Date();
     }
   });
+  
+  define('unauthorized_message', function(message) {
+    return div({ style: 'text-align: center' },
+      error_message(
+        h2('Unauthorized Access'),
+        p({ style: 'margin: 10px auto; font-style: italic; font-size: 16px' }, 'Stop right there!'),
+        img({ style: 'width: 15%; height: 15%', src: 'images/badger-logo-sad-big.png' }),
+        
+        p({ style: 'font-size: 18px;' }, message || 'You do not have permission to view this content.')
+      )
+    );
+  });
 }
 
 String.prototype.capitalize_all = function() {

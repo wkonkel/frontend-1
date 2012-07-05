@@ -22,7 +22,7 @@ with (Hasher('DnsApp','DomainApps')) {
     var message_div = div();
     var button_div = div({ style: 'float: right; margin-top: -44px' });
     
-    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+    with_domain_nav_for_app(domain, Hasher.domain_apps['dns'], function(nav_table, domain_obj) {
       render(
         h1_for_domain(domain, 'DNS'),
         nav_table(

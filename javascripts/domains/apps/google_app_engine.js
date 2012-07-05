@@ -1,6 +1,6 @@
 with (Hasher('GoogleAppEngine', 'DomainApps')) {
 
-  var app = register_domain_app({
+  register_domain_app({
     id: 'badger_google_app_engine',
     name: 'Google App Engine',
     icon: 'images/apps/appengine.png',
@@ -28,7 +28,7 @@ with (Hasher('GoogleAppEngine', 'DomainApps')) {
 
   route('#domains/:domain/apps/google_app_engine', function(domain) {
     
-    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+    with_domain_nav_for_app(domain, Hasher.domain_apps['badger_google_app_engine'], function(nav_table, domain_obj) {
       render(
         h1_for_domain(domain, 'Google App Engine'),
         

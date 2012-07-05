@@ -1,6 +1,6 @@
 with (Hasher('GoogleAppsVerification', 'DomainApps')) {
 
-  var app = register_domain_app({
+  register_domain_app({
     id: 'badger_google_apps_verification',
     name: 'Google Apps Verification',
     icon: 'images/apps/googleapps.png',
@@ -10,7 +10,7 @@ with (Hasher('GoogleAppsVerification', 'DomainApps')) {
         { type: 'txt', content: /^(google-site-verification|google_site_verification).*/, content_input: 'google_app_verification_code' }
       ]
     },
-
+  
     install_screen: function(app, domain_obj) {
       return div(
         p('Use this shortcut to verify your domain for Google Apps. Be sure to select ', span({ style: "font-weight: bold" }, 'Add a DNS record to your domain\'s configuration'), ' under ', span({ style: "font-weight: bold" }, 'Alternate methods'), ' as your verification method.'),
@@ -42,7 +42,7 @@ with (Hasher('GoogleAppsVerification', 'DomainApps')) {
       var found_record = domain_has_record(domain_obj, Hasher.domain_apps.badger_google_apps_verification.requires.dns[0])
       if (found_record) {
         
-        with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+        with_domain_nav_for_app(domain, Hasher.domain_apps['badger_google_apps_verification'], function(nav_table, domain_obj) {
           render(
             h1_for_domain(domain, 'Google Verification'),
             

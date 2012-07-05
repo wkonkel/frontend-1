@@ -11,9 +11,10 @@ with (Hasher('Application')) {
       }
     });
   });
-}
+};
 
 with (Hasher('DomainApps','Domains')) {
+  
   define('h1_for_domain', function(domain, current_header) {
     return chained_header_with_links(
       { text: 'Domains', href: '#domains' },
@@ -26,24 +27,43 @@ with (Hasher('DomainApps','Domains')) {
   define('with_domain_nav_for_app', function(domain, app, callback) {
     var active_url = get_route();
     
-    callback(function() {
-      return div(arguments);
+    BadgerCache.getDomain(domain, function(response) {
+      var domain_obj = response.data || {};
       
-      // TODO: Finish domain app nav table --- CAB
-      // return table({ style: 'width: 100%' }, tbody(
-      //   tr(
-      //     td({ style: 'width: 200px; vertical-align: top' },
-      //       ul({ id: 'domains-left-nav' },
-      //         li(a({ href: (app.menu_item), 'class': (active_url.match(new RegExp(app.menu_item)) ? 'active' : '') }, app.name))
-      //         // li(a({ href: curry(show_settings_modal_for_app, app.id, domain), 'class': (active_url.match(new RegExp(app.menu_item)) ? 'active' : '') }, 'Settings'))
-      //       )
-      //     ),
-      //     
-      //     td({ style: 'vertical-align: top'},
-      //       arguments
-      //     )
-      //   )
-      // ));
+      if (!['dns'].includes(app.id) && !(domain_obj.permissions_for_person||[]).includes('modify_dns')) {
+        render(
+          chained_header_with_links(
+            { text: 'Domains', href: '#domains' },
+            { text: domain_obj.name },
+            { text: 'Apps', href: '#domains/' + domain_obj.name },
+            { text: app.name }
+          ),
+          
+          unauthorized_message('You do not have permission to view this application. Do you own the domain?')
+        );
+      } else {
+        var nav_table = function() {
+          return div(arguments);
+
+          // TODO: Finish domain app nav table --- CAB
+          // return table({ style: 'width: 100%' }, tbody(
+          //   tr(
+          //     td({ style: 'width: 200px; vertical-align: top' },
+          //       ul({ id: 'domains-left-nav' },
+          //         li(a({ href: (app.menu_item), 'class': (active_url.match(new RegExp(app.menu_item)) ? 'active' : '') }, app.name))
+          //         // li(a({ href: curry(show_settings_modal_for_app, app.id, domain), 'class': (active_url.match(new RegExp(app.menu_item)) ? 'active' : '') }, 'Settings'))
+          //       )
+          //     ),
+          //     
+          //     td({ style: 'vertical-align: top'},
+          //       arguments
+          //     )
+          //   )
+          // ));
+        };
+
+        callback(nav_table, domain_obj);
+      }
     });
   });
   

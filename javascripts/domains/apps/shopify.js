@@ -1,6 +1,6 @@
 with (Hasher('Shopify', 'DomainApps')) {
 
-  var app = register_domain_app({
+  register_domain_app({
     id: 'badger_shopify',
     name: 'Shopify',
     icon: 'images/apps/shopify.png',
@@ -41,7 +41,7 @@ with (Hasher('Shopify', 'DomainApps')) {
 
   route('#domains/:domain/apps/shopify', function(domain) {
     
-    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+    with_domain_nav_for_app(domain, Hasher.domain_apps['badger_shopify'], function(nav_table, domain_obj) {
       render(
         h1_for_domain(domain, 'Shopify'),
         

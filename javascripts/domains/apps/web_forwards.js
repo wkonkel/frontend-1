@@ -1,6 +1,6 @@
 with (Hasher('WebForwards', 'DomainApps')) {
 
-  var app = register_domain_app({
+  register_domain_app({
     id: 'badger_web_forward',
     name: 'URL Forwarding',
     menu_item: { text: 'URL Forwarding', href: '#domains/:domain/apps/web_forwards', css_class: 'url-forwarding' },
@@ -25,7 +25,7 @@ with (Hasher('WebForwards', 'DomainApps')) {
   });
   
   route('#domains/:domain/apps/web_forwards', function(domain) {
-    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+    with_domain_nav_for_app(domain, Hasher.domain_apps['badger_web_forward'], function(nav_table, domain_obj) {
       render(
         div({ id: 'web-forwards-wrapper' },
           h1_for_domain(domain, 'URL Forwards'),

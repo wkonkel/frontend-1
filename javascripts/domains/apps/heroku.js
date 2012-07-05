@@ -1,6 +1,6 @@
 with (Hasher('Heroku', 'DomainApps')) {
 
-  var app = register_domain_app({
+  register_domain_app({
     id: 'badger_heroku',
     name: 'Heroku',
     icon: 'images/apps/heroku.png',
@@ -55,7 +55,7 @@ with (Hasher('Heroku', 'DomainApps')) {
   });
   
   route('#domains/:domain/apps/heroku', function(domain) {
-    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+    with_domain_nav_for_app(domain, Hasher.domain_apps['badger_heroku'], function(nav_table, domain_obj) {
       render(
         h1_for_domain(domain, 'Heroku'),
         

@@ -1,6 +1,6 @@
 with (Hasher('FlavorsMe', 'DomainApps')) {
 
-  var app = register_domain_app({
+  register_domain_app({
     id: 'badger_flavorsme',
     name: 'Flavors.me',
     icon: 'images/apps/flavorsme.png',
@@ -28,7 +28,7 @@ with (Hasher('FlavorsMe', 'DomainApps')) {
   });
 
   route('#domains/:domain/apps/flavorsme', function(domain) {
-    with_domain_nav_for_app(domain, app, function(nav_table, domain_obj) {
+    with_domain_nav_for_app(domain, Hasher.domain_apps['badger_flavorsme'], function(nav_table, domain_obj) {
       render(
         h1_for_domain(domain, 'Flavors.me'),
         
