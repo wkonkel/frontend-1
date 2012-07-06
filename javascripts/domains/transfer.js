@@ -5,7 +5,7 @@ with (Hasher('Transfer','Application')) {
 
     render(
       chained_header_with_links(
-        { href: '#domains', text: 'My Domains' },
+        { href: '#domains', text: 'Domains' },
         { text: 'Transfer In Domains' }
       ),
       
