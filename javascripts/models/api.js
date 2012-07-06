@@ -155,7 +155,14 @@ var Badger = {
     }
   },
   
-  
+  setInviteCode: function(invite_code) {
+    Badger.setCookie('invite_code', invite_code);
+    //if (typeof(_gaq) != 'undefined') _gaq.push(['_trackPageview', path + '?utm_source.....']);
+  },
+
+  getInviteCode: function() {
+    return Badger.getCookie('invite_code');
+  },
   
   // reads from "badger_access_token" cookie
   getAccessToken: function() {

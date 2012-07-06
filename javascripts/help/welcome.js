@@ -7,7 +7,7 @@ with (Hasher('Welcome','Application')) {
   });
 
   route('#july4th/:code', function(invite_code) {
-    Badger.setCookie('invite_code', invite_code);
+    Badger.setInviteCode(invite_code);
     render({ layout: default_layout },
       // div({ id: 'main' },
       div(

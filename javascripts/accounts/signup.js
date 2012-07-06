@@ -21,13 +21,13 @@ with (Hasher('Signup','Application')) {
   // }(document));
 
   route('#account/create/:invite_code', function(invite_code) {
-    Badger.setCookie('invite_code', invite_code);
+    Badger.setInviteCode(invite_code);
     set_route('#account/create');
   });
   
 
   route('#account/create', function() {
-    var invite_code = Badger.getCookie('invite_code');
+    var invite_code = Badger.getInviteCode();
     if (invite_code) {
       var target_div = div(spinner('Loading...'));
       var inviter_message_div = div();

@@ -35,7 +35,7 @@ with (Hasher('Redeem','Application')) {
   });
 
   define('submit_promotional_code', function(form_data) {
-    Badger.register_code = form_data.code;
+    Badger.setInviteCode(form_data.code);
     set_route('#account/create');
   });
   
