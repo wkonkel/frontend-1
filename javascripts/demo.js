@@ -134,6 +134,9 @@ function load_badger_demo() {
     Badger.updateDomain = function(domain, attrs, callback) {
       var domain_obj = DemoData.find('domain', { name: domain })[0];
       
+      // turn name servers into array
+      if (attrs.name_servers) attrs.name_servers = attrs.name_servers.split(',');
+      
       DemoData.update_attributes(domain_obj, attrs);
       
       setTimeout(function() {
@@ -468,7 +471,7 @@ function load_badger_demo() {
       name: "example.com",
       supported_tld: true,
       permissions_for_person: ["show_private_data","modify_contacts","renew","transfer_out","change_nameservers","modify_dns"],
-      name_servers: ["ns1.badger.com","ns2.badger.com"],
+      name_servers: ['ns1.notbadger.com', 'ns2.notbadger.com'],
       registry_statuses:"clienttransferprohibited",
       current_registrar:"Badger",
       previous_registrar: null,
