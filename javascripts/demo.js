@@ -162,20 +162,21 @@ function load_badger_demo() {
       
       domain_obj.permissions_for_person = ['pending_transfer'];
       mock_api_callback({ status: 'created', data: domain_obj }, callback);
+      set_route('#domains/' + data.name);
       
-      var after_continue = function() {
-        hide_modal();
-        set_route('#domains/' + data.name);
-        
-        // add transfer statuses
-        setTimeout(function() { domain_obj.transfer_in.unlock_domain = 'ok'  }, 1000);
-        setTimeout(function() { domain_obj.transfer_in.disable_privacy = 'ok'; domain_obj.transfer_in.enter_auth_code = 'needed' }, 6000);
-      };
+      // add transfer statuses
+      setTimeout(function() { domain_obj.transfer_in.unlock_domain = 'ok'  }, 1000);
+      setTimeout(function() { domain_obj.transfer_in.disable_privacy = 'ok'; domain_obj.transfer_in.enter_auth_code = 'needed' }, 6000);
       
       show_modal(
         h1('Demo Transfer'),
-        p(b("Note: "), "The only step that requires your input is the ", b("Validate auth code"), " step, enter anything at all there and submit to proceed. The rest of the steps will complete by themselves over time."),
-        div({ style: 'text-align: center' }, a({ 'class': 'myButton large', onClick: after_continue }, 'Continue'))
+        p("For the sake of demonstration, this transfer works a bit differently than normal."),
+        ul(
+          li("The ", b("Unlock Domain"), " and ", b("Disable Privacy"), " steps will complete automatically."),
+          li("On the ", b("Validate auth code"), " step, enter anything and submit to continue."),
+          li("The rest of the steps will complete automatically.")
+        ),
+        div({ style: 'text-align: center' }, a({ 'class': 'myButton large', href: hide_modal }, 'Okay, Awesome!'))
       );
     };
     
