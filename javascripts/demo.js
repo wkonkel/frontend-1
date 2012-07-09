@@ -139,6 +139,15 @@ function load_badger_demo() {
       
       DemoData.update_attributes(domain_obj, attrs);
       
+      // if not using badger nameservers, disallow modifcation of DNS
+      if (!(attrs.name_servers || []).equal_to(['ns1.badger.com', 'ns2.badger.com'])) {
+        var permissions = domain_obj.permissions_for_person;
+        var index_of_modify_dns = permissions.indexOf('modify_dns');
+        if (index_of_modify_dns >= 0) {
+          permissions.splice(index_of_modify_dns,1);
+        }
+      }
+      
       setTimeout(function() {
         mock_api_callback({ status: 'ok', data: domain_obj }, callback);
       }, 250);
@@ -471,7 +480,7 @@ function load_badger_demo() {
       name: "example.com",
       supported_tld: true,
       permissions_for_person: ["show_private_data","modify_contacts","renew","transfer_out","change_nameservers","modify_dns"],
-      name_servers: ['ns1.notbadger.com', 'ns2.notbadger.com'],
+      name_servers: ['ns1.badger.com', 'ns2.badger.com'],
       registry_statuses:"clienttransferprohibited",
       current_registrar:"Badger",
       previous_registrar: null,
@@ -499,6 +508,15 @@ function load_badger_demo() {
       defaults.registrant_contact = attrs['registrant_contact'] || DemoData.tables.contact[0] || create_contact();
     }
     defaults.dns = attrs['dns'] || default_dns_for_domain(defaults);
+    
+    // if not using badger nameservers, disallow modifcation of DNS
+    if (!(defaults.name_servers || []).equal_to(['ns1.badger.com', 'ns2.badger.com'])) {
+      var permissions = defaults.permissions_for_person;
+      var index_of_modify_dns = permissions.indexOf('modify_dns');
+      if (index_of_modify_dns >= 0) {
+        permissions.splice(index_of_modify_dns,1);
+      }
+    }
 
     DemoData.add_row('domain', defaults);
     return defaults;
@@ -695,12 +713,14 @@ function load_badger_demo() {
 
   create_domain({
     name: 'example.com',
-    expires_at: new Date(Date.parse('01-01-2014')).toString('MMMM dd yyyy')
+    expires_at: new Date(Date.parse('01-01-2014')).toString('MMMM dd yyyy'),
+    registrant_contact: DemoData.find('contact', { id: 1 })[0]
   });
   
   var myblog = create_domain({
     name: 'myblog.net',
     expires_at: new Date().add(3).days().toString('MMMM dd yyyy'),
+    registrant_contact: DemoData.find('contact', { id: 1 })[0]
   });
   // install Tumblr app
   myblog.dns.push(create_dns_record(myblog, {
@@ -711,6 +731,7 @@ function load_badger_demo() {
 
   create_domain({
     name: 'johnsmith.com',
+    registrant_contact: DemoData.find('contact', { id: 1 })[0]
   });
   
 }
