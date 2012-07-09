@@ -192,11 +192,11 @@ with (Hasher('DomainShow','DomainApps')) {
   define('display_transfer_status', function(domain_obj) {
     var step_percentage = Domains.compute_transfer_progress_percentage(domain_obj);
 
-    return info_message({ 'class': 'transfer-status', style: 'margin-bottom: 15px;' },
+    return info_message({ id: 'transfer-status', 'class': 'transfer-status', style: 'margin-bottom: 15px;' },
       h1('Transfer Status'),
       
       div({ style: 'height: 46px; padding: 10px; margin: 10px;' },
-        span({ style: 'float: left; font-size: 50px; font-weight: bold; padding: 10px' }, step_percentage + '%'),
+        span({ id: 'progress-bar-percentage', style: 'float: left; font-size: 50px; font-weight: bold; padding: 10px' }, step_percentage + '%'),
         div({ 'class': 'meter green nostripes', style: 'float: right; width: 75%' }, span({ style: 'width: ' + step_percentage + '%' }))
       ),
 
@@ -457,7 +457,7 @@ with (Hasher('DomainShow','DomainApps')) {
       
       // if the transfer steps are no longer present, then the transfer succeeded!
       var new_percentage = Domains.compute_transfer_progress_percentage(domain_obj);
-      var old_percentage = parseInt($("td#progress-bar-percentage").html());
+      var old_percentage = parseInt($("#progress-bar-percentage").html());
       
       if (new_percentage != old_percentage) {
         BadgerCache.flush('domains');
@@ -554,7 +554,7 @@ with (Hasher('DomainShow','DomainApps')) {
     if (!domain_obj.transfer_in) return;
     
     var auto_reload;
-    if (domain_obj.transfer_in.enter_auth_code == 'needed') auto_reload = false; //if we're showing a form, dont reload
+    if (domain_obj.transfer_in.enter_auth_code == 'needed' && domain_obj.transfer_in.unlock_domain == 'ok' && domain_obj.transfer_in.disable_privacy == 'ok') auto_reload = false; // if we're showing a form, dont reload
     else if (domain_obj.transfer_in.unlock_domain != 'ok') auto_reload = true;
     else if (domain_obj.transfer_in.disable_privacy != 'ok') auto_reload = true;
     else if (domain_obj.transfer_in.enter_auth_code != 'ok') auto_reload = true;
