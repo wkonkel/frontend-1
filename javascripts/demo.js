@@ -122,7 +122,7 @@ function load_badger_demo() {
         if (domain_obj) {
           mock_api_callback({ data: domain_obj }, callback);
         } else {
-          mock_api_callback({ data: create_godaddy_domain({ name: domain }) }, callback);
+          mock_api_callback({ data: create_transfer_domain({ name: domain }) }, callback);
         }
       } else if (domain_obj) {
         mock_api_callback({ data: domain_obj }, callback);
@@ -543,11 +543,20 @@ function load_badger_demo() {
     return defaults;
   };
   
+  // create a domain ready for transfer (at another registrar with proper permissions)
+  var create_transfer_domain = function(attrs) {
+    return create_linked_domain({ site: 'GoDaddy' }, {
+      name: attrs.name || 'transfer-domain=' + (DemoData.tables.domain.length + 1) + '.net',
+      permissions_for_person: [],
+      current_registrar: 'GoDaddy'
+    })
+  };
+  
   var create_linked_domain = function(linked_account, attrs) {
     var registrar_name;
-    if (linked_account.site.match(/godaddy/)) registrar_name = 'GoDaddy';
-    else if (linked_account.site.match(/networksolutions/)) registrar_name = 'Network Solutions';
-    else if (linked_account.site.match(/enom/)) registrar_name = 'Enom';
+    if (linked_account.site.match(/godaddy/i)) registrar_name = 'GoDaddy';
+    else if (linked_account.site.match(/networksolutions/i)) registrar_name = 'Network Solutions';
+    else if (linked_account.site.match(/enom/i)) registrar_name = 'Enom';
     
     attrs.current_registrar = registrar_name || 'Another Registrar';
     attrs.permissions_for_person = ['linked_account', 'change_nameservers'];
