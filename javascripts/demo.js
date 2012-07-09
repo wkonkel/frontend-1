@@ -137,16 +137,24 @@ function load_badger_demo() {
       // turn name servers into array
       if (attrs.name_servers) attrs.name_servers = attrs.name_servers.split(',');
       
-      DemoData.update_attributes(domain_obj, attrs);
-      
       // if not using badger nameservers, disallow modifcation of DNS
-      if (!(attrs.name_servers || []).equal_to(['ns1.badger.com', 'ns2.badger.com'])) {
+      var permissions = domain_obj.permissions_for_person;
+      var index_of_modify_dns = permissions.indexOf('modify_dns');
+      
+      if ((attrs.name_servers || []).equal_to(['ns1.badger.com', 'ns2.badger.com'])) {
+        if (index_of_modify_dns < 0) {
+          permissions.push('modify_dns');
+        }
+      } else {
         var permissions = domain_obj.permissions_for_person;
         var index_of_modify_dns = permissions.indexOf('modify_dns');
         if (index_of_modify_dns >= 0) {
           permissions.splice(index_of_modify_dns,1);
         }
       }
+      attrs.permissions_for_person = permissions;
+      
+      DemoData.update_attributes(domain_obj, attrs);
       
       setTimeout(function() {
         mock_api_callback({ status: 'ok', data: domain_obj }, callback);
