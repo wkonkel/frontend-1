@@ -46,7 +46,33 @@ function load_badger_demo() {
         )
       );
     });
-
+    
+    var deduct_or_add_credits_for_demo = function(num_credits) {
+      if (DemoData.account.domain_credits >= num_credits) {
+        DemoData.account.domain_credits -= num_credits;
+        update_credits();
+        return true;
+      } else {
+        var add_credits_and_reload = function(form_data) {
+          DemoData.account.domain_credits += 10;
+          hide_modal();
+          update_credits();
+          set_route(get_route());
+        };
+        
+        show_modal(
+          h1("You Need More Credits!"),
+          
+          div({ style: 'text-align: center' },
+            div({ style: 'margin: 30px' }, img({ style: 'width: 30%', src: 'images/badger-logo-sad-big.png' })),
+            p("Good thing this is just a demo! Go ahead and add some more credits for free! You need credits to register, transfer, and renew domains."),
+            a({ 'class': 'myButton large', href: add_credits_and_reload }, 'Add 10 More Credits!')
+          )
+        );
+        return false;
+      }
+    };
+    
     // Kill Badger.api, but keep a reference to it around
     var real_api = Badger.api;
     Badger.api = function() { 
@@ -63,119 +89,232 @@ function load_badger_demo() {
         }      
       });
     };
-
-
-    // Badger.onLogout = function(callback) { window.location = 'https://www.badger.com' }
-
-    Badger.Session = {
-      inspect: function() {},
-      write: function(sessvars) {},
-      set: function(key,value) {},
-      get: function() {},
-      remove: function() {},
-      clear: function() {}
-    };
-
-    var mock_api_callback = function(options, callback) {
-      callback({
-        meta: { status: options.status || 'ok' },
-        data: options.data || {}
-      });
-    };
-
-    /*
-      If domain not stored in DemoData, return json for an available domain
-    */
-    Badger.getDomain = function(domain, callback) {
-      var domain_obj;
-      for (var i = 0; i < DemoData.domains.length; i++) {
-        domain_obj = DemoData.domains[i];
-        if (domain_obj.name == domain) return mock_api_callback({ data: DemoData.domains[i] }, callback);
-      }
-      mock_api_callback({ data: available_domain(domain) }, callback);
-    };
-
-    /*
-      Mock domain name registration. Create a fake delay to make it less scary
-    */
-    Badger.registerDomain = function(data, callback) {
-      setTimeout(function() {
-        mock_api_callback({ status: 'created' }, callback);
-        domain({ name: data.name });
-        set_route('#domains/' + data.name);
-      }, 450);
-    };
-
-    /*
-      Add the DNS record to the domain found by name
-    */
-    Badger.addRecord = function(name, data, callback) {
-      var domain_obj;
-      for (var i = 0; i < DemoData.domains.length; i++) {
-        domain_obj = DemoData.domains[i];
-        if (domain_obj.name == name) {
-          if (data.subdomain) data.subdomain = data.subdomain + '.' + name;
-          domain_obj.dns.push(dns_record(domain_obj, data));
-          return mock_api_callback({ status: 'ok' }, callback);
-        };
-      }
-    };
-
-    Badger.deleteRecord = function(name, id, callback) {
-      var domain_obj;
-      for (var i = 0; i < DemoData.domains.length; i++) {
-        domain_obj = DemoData.domains[i];
-        if (domain_obj.name == name) {
-          var dns_record_obj;
-          for (var j = 0; j < domain_obj.dns.length; j++) {
-            dns_record_obj = domain_obj.dns[j];
-            if (dns_record_obj.id == id) {
-              domain_obj.dns.splice(j,1); // remove the record
-              return mock_api_callback({ status: 'ok' }, callback);
-            }
-          }
-        };
-      }
-    };
-
-    Badger.updateRecord = function(name, id, data, callback) {
-      var domain_obj;
-      for (var i = 0; i < DemoData.domains.length; i++) {
-        domain_obj = DemoData.domains[i];
-        if (domain_obj.name == name) {
-          var dns_record_obj;
-          for (var j = 0; j < domain_obj.dns.length; j++) {
-            dns_record_obj = domain_obj.dns[j];
-            if (dns_record_obj.id == id) {
-              var old_id = dns_record_obj.id;
-              for (k in data) dns_record_obj[k] = data[k];
-              return mock_api_callback({ status: 'ok' }, callback);
-            }
-          }
-        };
-      }
-    };
     
-    Badger.createWebForward = function() { render_not_supported_modal('Web forwards are fully not supported in the demo.') };
-    Badger.createEmailForward = function() { render_not_supported_modal('Email forwards are fully not supported in the demo.') };
+    var mock_api_callback = function(options, callback) {
+      setTimeout(function() {
+        callback({
+          meta: { status: options.status || 'ok' },
+          data: options.data || {}
+        });
+      }, 100);
+    };
 
     Badger.getAccessToken = function() { return '0.example'; };
     Badger.accountInfo = function(callback) { mock_api_callback({ data: DemoData.account }, callback); };
     Badger.getAccountInfo = Badger.accountInfo;
-    Badger.getDomains = function(callback) { mock_api_callback({ data: DemoData.domains }, callback); };
-    Badger.getContacts = function(callback) { mock_api_callback({ data: DemoData.contacts }, callback); };
+    // Badger.logout = function(callback) { window.location = 'https://www.badger.com' }
+
+    // override the window.name based session storage.
+    Session = {};
+    
+    /*
+      If domain not stored in DemoData, return json for an available domain
+    */
+    Badger.getDomains = function(callback) { mock_api_callback({ data: DemoData.find('domain', 'all') }, callback) };
+    
+    Badger.getDomain = function(domain, callback) {
+      var domain_obj = DemoData.find('domain', { name: domain })[0];
+      
+      // special case for transfer page. the fetched domain
+      // should just have a registrar, unless it's already
+      // stored in DemoData
+      if (get_route().match(/\/transfer$/)) {
+        if (domain_obj) {
+          mock_api_callback({ data: domain_obj }, callback);
+        } else {
+          mock_api_callback({ data: create_godaddy_domain({ name: domain }) }, callback);
+        }
+      } else if (domain_obj) {
+        mock_api_callback({ data: domain_obj }, callback);
+      } else {
+        mock_api_callback({ data: available_domain(domain) }, callback);
+      }
+    };
+    
+    Badger.updateDomain = function(domain, attrs, callback) {
+      var domain_obj = DemoData.find('domain', { name: domain })[0];
+      
+      DemoData.update_attributes(domain_obj, attrs);
+      
+      setTimeout(function() {
+        mock_api_callback({ status: 'ok', data: domain_obj }, callback);
+      }, 250);
+    };
+    
+    /*
+      Set some timeouts to complete transfer steps
+    */
+    Badger.transferDomain = function(data, callback) {
+      var domain_obj = DemoData.find('domain', { name: data.name })[0];
+      
+      // update the local domain with the options on transfer initiation
+      // (auto_renew, import_dns, privacy, registrant_contact_id)
+      DemoData.update_attributes(domain_obj, data);
+      
+      // add transfer statuses
+      domain_obj.transfer_in = {
+        unlock_domain: 'needed',
+        disable_privacy: 'needed',
+        enter_auth_code: null,
+        approve_transfer: 'unknown',
+        can_cancel_transfer: true
+      }
+      
+      domain_obj.permissions_for_person = ['pending_transfer'];
+      mock_api_callback({ status: 'created', data: domain_obj }, callback);
+      
+      var after_continue = function() {
+        hide_modal();
+        set_route('#domains/' + data.name);
+        
+        // add transfer statuses
+        setTimeout(function() { domain_obj.transfer_in.unlock_domain = 'ok'  }, 1000);
+        setTimeout(function() { domain_obj.transfer_in.disable_privacy = 'ok'; domain_obj.transfer_in.enter_auth_code = 'needed' }, 6000);
+      };
+      
+      show_modal(
+        h1('Demo Transfer'),
+        p(b("Note: "), "The only step that requires your input is the ", b("Validate auth code"), " step, enter anything at all there and submit to proceed. The rest of the steps will complete by themselves over time."),
+        div({ style: 'text-align: center' }, a({ 'class': 'myButton large', onClick: after_continue }, 'Continue'))
+      );
+    };
+    
+    Badger.tryAuthCodeForTransfer = function(domain, auth_code, callback) {
+      var domain_obj = DemoData.find('domain', { name: domain })[0];
+      domain_obj.transfer_in.enter_auth_code = 'ok';
+      domain_obj.transfer_in.approve_transfer = 'needed';
+      
+      mock_api_callback({ status: 'ok', data: domain_obj }, callback);
+      
+      setTimeout(function() { domain_obj.transfer_in.approve_transfer = 'ok' }, 1000);
+      
+      var after_transfer_complete = function() {
+        var old_domain_obj = DemoData.destroy(domain_obj);
+        create_domain({ 
+          name: domain,
+          previous_registrar: old_domain_obj.current_registrar
+        });
+      };
+      
+      // to complete transfer, remove transfer_in from domain json
+      setTimeout(after_transfer_complete, 6000);
+    };
+    
+    /*
+      Mock domain name registration. Create a fake delay to make it less scary
+    */
+    Badger.registerDomain = function(data, callback) {
+      if (deduct_or_add_credits_for_demo(data.years)) {
+        mock_api_callback({ status: 'created' }, callback);
+        create_domain({ name: data.name });
+        set_route('#domains/' + data.name);
+      }
+    };
+    
+    /*
+      Add the DNS record to the domain found by name
+    */
+    Badger.addRecord = function(name, data, callback) {
+      var domain_obj = DemoData.find('domain', { name: name })[0];
+      
+      if (domain_obj) {
+        if (data.subdomain) data.subdomain = data.subdomain + '.' + name;
+        domain_obj.dns.push(create_dns_record(domain_obj, data));
+        return mock_api_callback({ status: 'ok' }, callback);
+      }
+    };
+    
+    Badger.deleteRecord = function(name, id, callback) {
+      var domain_obj = DemoData.find('domain', { name: name })[0],
+          dns_record_obj = DemoData.find('record', { id: id })[0];
+          
+      if (dns_record_object && domain_obj) {
+        DemoData.destroy(dns_record_object);
+        mock_api_callback({ status: 'ok' }, callback);
+      }
+    };
+    
+    Badger.updateRecord = function(name, id, data, callback) {
+      var domain_obj = DemoData.find('domain', { name: name })[0],
+          dns_record_obj = DemoData.find('record', { id: id })[0];
+          
+      if (dns_record_object && domain_obj) {
+        DemoData.update_attributes(dns_record_object, data);
+        return mock_api_callback({ status: 'ok' }, callback);
+      }
+    };
+    
+    /*
+      Linked accounts
+    */
+    Badger.getLinkedAccounts = function(callback) { mock_api_callback({ data: DemoData.find('linked_account', 'all') }, callback) }
+    
+    Badger.createLinkedAccount = function(data, callback) {
+      var linked_account_obj = create_linked_account({
+        login: data.login,
+        site: data.site
+      });
+      
+      return mock_api_callback({ data: linked_account_obj, status: 'ok' }, callback);
+    };
+    
+    Badger.getLinkedAccount = function(id, callback) {
+      var linked_account_obj = DemoData.find('linked_account', { id: parseInt(id) })[0];
+      return mock_api_callback({ data: linked_account_obj, status: 'ok' }, callback);
+    };
+    
+    Badger.deleteLinkedAccount = function(id, callback) {
+      var linked_account_obj = DemoData.find('linked_account', { id: parseInt(id) })[0];
+      
+      if (linked_account_obj) {
+        linked_account_obj._linked_domains.forEach(function(d) { DemoData.destroy(d) });
+        DemoData.destroy(linked_account_obj);
+        return mock_api_callback({ status: 'ok' }, callback);
+      }
+    };
+    
+    /*
+      Invites
+    */
+    Badger.getInviteStatus = function(callback) { mock_api_callback({ data: DemoData.find('invite', 'all') }, callback) };
+    
+    Badger.sendInvite = function(data, callback) {
+      // var invite_obj = create_invite(data);
+      return mock_api_callback({ status: 'ok' }, callback);
+    };
+    
+    /*
+      Account update
+    */
+    Badger.updateAccount = function(data, callback) {
+      //override name
+      // data.name = (data.first_name + ' ' + data.last_name).trim();
+      // var updated_account_obj = DemoData.update_attributes(DemoData.account, data);
+      
+      if (data.first_name) DemoData.account.first_name = data.first_name;
+      if (data.last_name) DemoData.account.first_name = data.last_name;
+      if (data.email) DemoData.account.email = data.email;
+      // update name if changed
+      if (data.first_name || data.last_name) DemoData.account.name = (data.first_name + ' ' + data.last_name).trim();
+      
+      return mock_api_callback({ status: 'ok' }, callback);
+      
+      setTimeout(function() { set_route(get_route()); }, 200);
+    };
+    
+    Badger.getContacts = function(callback) { mock_api_callback({ data: DemoData.find('contact', 'all') }, callback); };
     Badger.getPaymentMethods = function(callback) { mock_api_callback({ data: DemoData.payment_method }, callback) };
-
     Badger.createContact = function(callback) { render_not_supported_modal('Creating new contacts is not supported in the demo.') };
-    Badger.updateDomain = function(callback) { render_not_supported_modal('Updating domains is not supported in the demo.') };
+    Badger.getCreditHistory = function(callback) { mock_api_callback({ data: [] }, callback) };
 
+    
     /*
       Kill BadgerCache, and replace it with the mocked out Badger api
     */
+    Badger.flush = function() {};
+    Badger.reload = function() {};
+    Badger.load = function() {};
     BadgerCache = Badger;
-    BadgerCache.flush = function() {};
-    BadgerCache.reload = function() {};
-    BadgerCache.load = function() {};
   }
 
 
@@ -191,8 +330,10 @@ function load_badger_demo() {
       /^#$/,
       /^#welcome$/,
       /^#search$/,
-      /^#domains(\/([-a-z0-9]+\.)+[a-z]{2,}(\/)?(whois|email_forwards|web_forwards)?)?$/,
-      /^#domains(\/[-a-z0-9]+\.)+[a-z]{2,}\/apps/
+      /^#domain/,
+      /^#account(\/\w+)?$/,
+      /^#invites/,
+      /^#linked_accounts/
     ],
 
     account: {
@@ -204,7 +345,6 @@ function load_badger_demo() {
       domain_credits: 4,
       invites_available: 1044,
       confirmed_email: true,
-      linked_accounts: [],
       hide_share_messages: false
     },
 
@@ -213,55 +353,124 @@ function load_badger_demo() {
       name: 'Badger Banking (4111********1111 12/21)'
     },
 
-    contacts: [],
-    domains: [],
-    records: []
+    tables: {
+      contact: [],
+      domain: [],
+      record: [],
+      linked_account: [],
+      invite: []
+    }
   };
 
   DemoData.add_row = function(key, object) {
-    object.id = DemoData[key].length + 1;
-    DemoData[key].push(object);
+    object.id = DemoData.tables[key].length + 1;
+    object._table_name = key; // keep a reference to the table name on the object
+    DemoData.tables[key].push(object);
+    
+    // reload the fake cache
+    if (key == 'contact') {
+      BadgerCache.cached_contacts = { data: DemoData.tables.contact };
+    }
+  };
+  
+  /*
+    Search the cache, like a database query
+  */
+  DemoData.find = function(table, conditions) {
+    if (conditions == 'all') return DemoData.tables[table];
+    var results = [];
+    for (var i = 0; i < DemoData.tables[table].length; i++) {
+      var is_match = true;
+      for (k in conditions) {
+        if (DemoData.tables[table][i][k] != conditions[k]) {
+          is_match = false;
+          break;
+        }
+      }
+      if (is_match) results.push(DemoData.tables[table][i]);
+    }
+    return results;
   };
 
-
+  /*
+    Simulate updating a db object
+  */
+  DemoData.update_attributes = function(obj, updates) {
+    for (k in obj) {
+      if (updates[k]) {
+        // fix booleans
+        if (updates[k] == 'true') updates[k] = true;
+        if (updates[k] == 'false') updates[k] = false;
+        
+        // if it's a model id, load that model
+        var table_match = k.match(/^(\w+|_+)_id$/) || [];
+        if (table_match[1]) updates[k] = DemoData.find(obj._table_name, { id: parseInt(table_match[1]) });
+        
+        obj[k] = updates[k];
+      }
+    }
+    return obj;
+  };
+  
+  /*
+    Destroy an object, removing it from it's table array.
+  */
+  DemoData.destroy = function(obj) {
+    var index_of_obj = -1;
+    for (var i = 0; i < DemoData.tables[obj._table_name].length; i++) {
+      if (obj.id == DemoData.tables[obj._table_name][i].id) {
+        index_of_obj = i;
+        break;
+      }
+    }
+    if (index_of_obj >= 0) {
+      DemoData.tables[obj._table_name].splice(index_of_obj,1);
+      // DemoData.tables[obj._table_name] = DemoData.tables[obj._table_name].compact();
+      return obj;
+    }
+    return false;
+  };
+  
   /*
     Builders
   */
-  var contact = function(attrs) {
+  var create_contact = function(attrs) {
     attrs = attrs || {};
 
     var defaults = {
-      id: DemoData.contacts.length + 1,
-      first_name:"John",
-      last_name:"Doe",
-      organization:null,
-      address:"720 Market St., Suite 300",
-      address2:null,
-      city:"San Francisco",
-      state:"CA",
-      zip:"94102",
-      country:"US",
-      phone:"415-787-5050",
-      email:"warren@rhinonames.com",
-      fax:null
+      id: DemoData.tables.contact.length + 1,
+      first_name: "John",
+      last_name: "Doe",
+      organization: null,
+      address: "720 Market St., Suite 300",
+      address2: null,
+      city: "San Francisco",
+      state: "CA",
+      zip: "94102",
+      country: "US",
+      phone: "415-787-5050",
+      email: "warren@rhinonames.com",
+      fax: null,
+      needs_update: false
     };
 
     for (k in defaults) if (attrs[k]) defaults[k] = attrs[k];
-    DemoData.add_row('contacts', defaults);
+    DemoData.add_row('contact', defaults);
     return defaults;
   }
 
-  var domain = function(attrs) {
+  var create_domain = function(attrs) {
     attrs = attrs || {};
 
     var defaults = {
-      id: DemoData.domains.length + 1,
+      id: DemoData.tables.domain.length + 1,
       name: "example.com",
       supported_tld: true,
       permissions_for_person: ["show_private_data","modify_contacts","renew","transfer_out","change_nameservers","modify_dns"],
       name_servers: ["ns1.badger.com","ns2.badger.com"],
       registry_statuses:"clienttransferprohibited",
       current_registrar:"Badger",
+      previous_registrar: null,
       expires_at:"2013-04-10T02:48:34Z",
       created_at:"1997-01-10T02:48:34Z",
       updated_at:"2011-12-10T02:48:34Z",
@@ -276,17 +485,21 @@ function load_badger_demo() {
       administrator_contact:null,
       technical_contact:null,
       billing_contact:null
+      // transfer_in: {}
     };
 
     for (k in defaults) if (attrs[k]) defaults[k] = attrs[k];
     defaults.whois = { privacy: true, raw: raw_whois_for_domain(defaults) };
-    defaults.registrant_contact = attrs['registrant_contact'] || contact();
+    // if explicitly set to null, don't want a default to be set
+    if (attrs['registrant_contact'] != null) {
+      defaults.registrant_contact = attrs['registrant_contact'] || DemoData.tables.contact[0] || create_contact();
+    }
     defaults.dns = attrs['dns'] || default_dns_for_domain(defaults);
 
-    DemoData.add_row('domains', defaults);
+    DemoData.add_row('domain', defaults);
     return defaults;
   };
-
+  
   var available_domain = function(name) {
     return {
       available: true,
@@ -295,8 +508,69 @@ function load_badger_demo() {
       permissions_for_person: [],
       supported_tld: !!(name.split('.')||[]).slice(-1)[0].match(/com|net|org|info|me/)
     }
-  }
-
+  };
+  
+  var create_linked_account = function(attrs) {
+    attrs = attrs || {};
+    
+    var defaults = {
+      id: DemoData.find('linked_account', 'all').length + 1,
+      person_id: 1,
+      domain_count: 0,
+      site: 'godaddy',
+      login: 'mylogin',
+      status: 'synced',
+      last_synced_at: null,
+      next_sync_at: null,
+      started_syncing_at: null
+    }
+    
+    for (k in defaults) if (attrs[k]) defaults[k] = attrs[k];
+    
+    // add some linked domains
+    if (!attrs.linked_domains) {
+      var linked_permissions = ['']
+      var linked_domains = [
+        create_linked_domain(defaults, { name: 'a-new-hope-' + defaults.id + '.com' }),
+        create_linked_domain(defaults, { name: 'empire-strikes-back-' + defaults.id + '.com' }),
+        create_linked_domain(defaults, { name: 'revenge-of-the-sith-' + defaults.id + '.com' })
+      ];
+      defaults._linked_domains = linked_domains;
+      defaults.domain_count = linked_domains.length;
+    }
+    
+    DemoData.add_row('linked_account', defaults);
+    return defaults;
+  };
+  
+  var create_linked_domain = function(linked_account, attrs) {
+    var registrar_name;
+    if (linked_account.site.match(/godaddy/)) registrar_name = 'GoDaddy';
+    else if (linked_account.site.match(/networksolutions/)) registrar_name = 'Network Solutions';
+    else if (linked_account.site.match(/enom/)) registrar_name = 'Enom';
+    
+    attrs.current_registrar = registrar_name || 'Another Registrar';
+    attrs.permissions_for_person = ['linked_account', 'change_nameservers'];
+    attrs.name_servers = ['ns1.notbadger.com', 'ns2.notbadger.com'];
+    attrs.registrant_contact = null;
+    
+    var domain_obj = create_domain(attrs);
+    domain_obj.dns = [
+      create_dns_record(domain_obj, {
+        record_type: 'a',
+        content: '42.42.42.42',
+        ttl: 1800,
+      }),
+      create_dns_record(domain_obj, {
+        record_type: 'cname',
+        subdomain: 'www.',
+        content: 'realultimatepower.net',
+        ttl: 1800,
+      })
+    ];
+    return domain_obj;
+  };
+  
   var raw_whois_for_domain = function(domain_json) {
     return 'The data contained in this whois database is provided "as is" with' + "\n" + 
     'no guarantee or warranties regarding its accuracy.' + "\n" + 
@@ -352,11 +626,11 @@ function load_badger_demo() {
     "\n";
   }
 
-  var dns_record = function(domain_obj, attrs) {
+  var create_dns_record = function(domain_obj, attrs) {
     attrs = attrs || {};
 
     var defaults = {
-      id: DemoData.records.length + 1,
+      id: DemoData.tables.record.length + 1,
       record_type: null,
       content: null,
       ttl: 1800,
@@ -366,34 +640,34 @@ function load_badger_demo() {
 
     for (k in defaults) if (attrs[k]) defaults[k] = attrs[k];
 
-    DemoData.add_row('records', defaults);
+    DemoData.add_row('record', defaults);
     return defaults;
   };
 
   var default_dns_for_domain = function(domain_obj) {
     return [
-      dns_record(domain_obj, {
+      create_dns_record(domain_obj, {
         record_type: 'soa',
         content: 'ns1.badger.com support@badger.com 1341359095',
         ttl: 1800,
       }),
-      dns_record(domain_obj, {
+      create_dns_record(domain_obj, {
         record_type: 'a',
         content: '50.57.26.208',
         ttl: 1800,
       }),
-      dns_record(domain_obj, {
+      create_dns_record(domain_obj, {
         record_type: 'a',
         content: '50.57.26.208',
         ttl: 1800,
         subdomain: '*.' + domain_obj.name
       }),
-      dns_record(domain_obj, {
+      create_dns_record(domain_obj, {
         record_type: 'ns',
         content: 'ns1.badger.com',
         ttl: 1800,
       }),
-      dns_record(domain_obj, {
+      create_dns_record(domain_obj, {
         record_type: 'ns',
         content: 'ns2.badger.com',
         ttl: 1800,
@@ -404,12 +678,26 @@ function load_badger_demo() {
   /*
     initialize DemoData with defaults
   */
-  contact();
+  create_contact();
 
-  domain({
+  create_domain({
     name: 'example.com',
-    registrant_contact: DemoData.contacts[0]
+    expires_at: new Date(Date.parse('01-01-2014')).toString('MMMM dd yyyy')
   });
   
+  var myblog = create_domain({
+    name: 'myblog.net',
+    expires_at: new Date().add(3).days().toString('MMMM dd yyyy'),
+  });
+  // install Tumblr app
+  myblog.dns.push(create_dns_record(myblog, {
+    content: 'domains.tumblr.com',
+    record_type: 'cname',
+    subdomain: 'blog.' + myblog.name
+  }))
+
+  create_domain({
+    name: 'johnsmith.com',
+  });
   
 }
