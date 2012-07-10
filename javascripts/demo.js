@@ -201,11 +201,11 @@ function load_badger_demo() {
         h1('Demo Transfer'),
         p("For the sake of demonstration, this transfer works a bit differently than normal."),
         ul(
-          li("The ", b("Unlock Domain"), " and ", b("Disable Privacy"), " steps will complete automatically."),
+          li("The ", b("Unlock domain"), " and ", b("Disable privacy"), " steps will complete automatically."),
           li("On the ", b("Validate auth code"), " step, enter anything and submit to continue."),
           li("The rest of the steps will complete automatically.")
         ),
-        div({ style: 'text-align: center' }, a({ 'class': 'myButton large', href: hide_modal }, 'Okay, Awesome!'))
+        div({ style: 'text-align: center' }, a({ 'class': 'myButton large', href: hide_modal }, 'Okay, awesome!'))
       );
     };
     
