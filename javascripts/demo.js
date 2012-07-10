@@ -14,7 +14,14 @@ function load_badger_demo() {
           )
         )
       );
+      
+      setTimeout(replace_contact_us, 500);
     });
+    
+    define('replace_contact_us', function() {
+      var contact_us_element = $('#footer a[href=#contact_us]');
+      contact_us_element.empty().before(a({ href: 'https://www.badger.com/#contact_us', target: '_blank' }, 'Contact Us'));
+    })
 
     /*
       Override set_route to show 'not supported' page on certain routes
