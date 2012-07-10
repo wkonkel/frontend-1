@@ -7,40 +7,44 @@ with (Hasher('Welcome','Application')) {
   });
 
   route('#july4th/:code', function(invite_code) {
-    Badger.setInviteCode(invite_code);
-    render({ layout: default_layout },
-      // div({ id: 'main' },
-      div(
-        div({ 'id': 'content-top', style: 'text-align: center' },
-          h1("Declare your Domain Independence!"),
-          h2('Free your domains from the tyrants!')
-        ),
-        
-        div({ 'id': 'content', style: "margin: 0", 'class': 'homepage' }, 
-          img({ src: 'images/badger-logo-4th.png', style: 'float: right; margin: 20px 50px 20px 20px' }),
-
-          h2('Transfer your first domain to Badger for FREE!'),
-          
-          p({ style: 'margin-bottom: 10px' }, i("Today, we're giving away ", "1776 domain transfers!")),
-          
-          p('Working with domains sometimes feels like trying to overthrow a country. Take your first step towards domain independence - get started today and celebrate... your first transfer is FREE!'),
-
-          ul({ style: "line-height: 24px" },
-            li('Domains cost $10 a year.'),
-            li('Free WHOIS privacy and forwarding.'),
-            li('Automated transfers from Network Solutions, eNom and GoDaddy.'),
-            li('DNS shortcuts for easy configuration.')
-          ),
-          
-          a({ href: 'https://demo.badger.com/', target: '_blank', style: 'font-size: 20px; line-height: 35px; padding: 0 30px; margin: 30px 30px 0 0', 'class': 'myButton' }, 'Try Live Demo'), 
-          a({ href: '#account/create', style: 'font-size: 20px; line-height: 35px; padding: 0 30px; margin: 30px 0 0', 'class': 'myButton' }, 'Join the Revolution'),
-          
-          div({ style: 'clear: both' })
-        )
-      )      
-    );
+    return window.location = '#account/create/' + invite_code;
     
-    document.title = 'Badger - Domain Independence Day';
+    // PROMO ENDED, redirect to normal account create + invite code page --- CAB
+    // Badger.setInviteCode(invite_code);
+    // 
+    // render({ layout: default_layout },
+    //   // div({ id: 'main' },
+    //   div(
+    //     div({ 'id': 'content-top', style: 'text-align: center' },
+    //       h1("Declare your Domain Independence!"),
+    //       h2('Free your domains from the tyrants!')
+    //     ),
+    //     
+    //     div({ 'id': 'content', style: "margin: 0", 'class': 'homepage' }, 
+    //       img({ src: 'images/badger-logo-4th.png', style: 'float: right; margin: 20px 50px 20px 20px' }),
+    // 
+    //       h2('Transfer your first domain to Badger for FREE!'),
+    //       
+    //       p({ style: 'margin-bottom: 10px' }, i("Today, we're giving away ", "1776 domain transfers!")),
+    //       
+    //       p('Working with domains sometimes feels like trying to overthrow a country. Take your first step towards domain independence - get started today and celebrate... your first transfer is FREE!'),
+    // 
+    //       ul({ style: "line-height: 24px" },
+    //         li('Domains cost $10 a year.'),
+    //         li('Free WHOIS privacy and forwarding.'),
+    //         li('Automated transfers from Network Solutions, eNom and GoDaddy.'),
+    //         li('DNS shortcuts for easy configuration.')
+    //       ),
+    //       
+    //       a({ href: 'https://demo.badger.com/', target: '_blank', style: 'font-size: 20px; line-height: 35px; padding: 0 30px; margin: 30px 30px 0 0', 'class': 'myButton' }, 'Try Live Demo'), 
+    //       a({ href: '#account/create', style: 'font-size: 20px; line-height: 35px; padding: 0 30px; margin: 30px 0 0', 'class': 'myButton' }, 'Join the Revolution'),
+    //       
+    //       div({ style: 'clear: both' })
+    //     )
+    //   )      
+    // );
+    // 
+    // document.title = 'Badger - Domain Independence Day';
   });
 
   route('#welcome', function() {
