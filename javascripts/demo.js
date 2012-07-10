@@ -115,6 +115,9 @@ function load_badger_demo() {
     Badger.getDomain = function(domain, callback) {
       var domain_obj = DemoData.find('domain', { name: domain })[0];
       
+      // find dns records on each getDomain request
+      domain_obj.dns = DemoData.find('record', { domain_id: domain_obj.id });
+      
       // special case for transfer page. the fetched domain
       // should just have a registrar, unless it's already
       // stored in DemoData
@@ -253,8 +256,8 @@ function load_badger_demo() {
       var domain_obj = DemoData.find('domain', { name: name })[0],
           dns_record_obj = DemoData.find('record', { id: id })[0];
           
-      if (dns_record_object && domain_obj) {
-        DemoData.destroy(dns_record_object);
+      if (dns_record_obj && domain_obj) {
+        DemoData.destroy(dns_record_obj);
         mock_api_callback({ status: 'ok' }, callback);
       }
     };
@@ -263,8 +266,8 @@ function load_badger_demo() {
       var domain_obj = DemoData.find('domain', { name: name })[0],
           dns_record_obj = DemoData.find('record', { id: id })[0];
           
-      if (dns_record_object && domain_obj) {
-        DemoData.update_attributes(dns_record_object, data);
+      if (dns_record_obj && domain_obj) {
+        DemoData.update_attributes(dns_record_obj, data);
         return mock_api_callback({ status: 'ok' }, callback);
       }
     };
@@ -674,6 +677,7 @@ function load_badger_demo() {
 
     var defaults = {
       id: DemoData.tables.record.length + 1,
+      domain_id: domain_obj.id,
       record_type: null,
       content: null,
       ttl: 1800,
