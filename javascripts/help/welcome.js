@@ -53,26 +53,25 @@ with (Hasher('Welcome','Application')) {
     render({ layout: default_layout },
       // div({ id: 'main' },
       div(
-        div({ 'id': 'content-top' },
-          img({ src: 'images/badger-6.png', style: 'float: right; width: 150px; height: auto; margin: 20px 50px 20px 20px' }),
-          h1("Domain management done ", span({ style: 'letter-spacing: 2px' }, "r"), "ight."),
-          //h3("Badger makes managing your domains easy, wherever they are."),
+        // div({ 'id': 'content-top', style: "text-align: center" },
+        //   h1("Domains for ", span({ style: 'font-size: 140%' }, "$10"), " a year.")
+        // ),
 
-          h3("Link an existing account:"),
-          div({ 'class': 'registrars', style: 'padding-left: 30px' },
-            a({ href: '#linked_accounts/godaddy/link' }, img({ 'class': 'app_store_icon', src: 'images/apps/godaddy.png' }), span('GoDaddy')),
-            a({ href: '#linked_accounts/networksolutions/link' }, img({ 'class': 'app_store_icon', src: 'images/apps/ns.png' }), span('Network Solutions')),
-            a({ href: '#linked_accounts/enom/link' }, img({ 'class': 'app_store_icon', src: 'images/apps/enom.png' }), span('eNom')),
-            a({ href: '#linked_accounts/namecheap/link' }, img({ 'class': 'app_store_icon', src: 'images/apps/namecheap.png' }), span('Namecheap'))
-          ),
-
-          h3("Search for a new domain:"),
-          div({style: 'padding-left: 30px'}, 
-            //a({ href: get_started, 'class': 'myButton', style: 'font-size: 20px; padding: 9px 30px' }, 'Search for domains')
-            input({ 'class': 'domain-search-box', style: 'margin-bottom: 5px', placeholder: 'e.g. badger.com', onKeyDown: function() { set_route('#search'); $('#form-search input').val(null).focus(); } }),
-            span({ style: 'padding: 0 10px' }, " or "), a({ href: '#domains/transfer', 'class': 'myButton'}, "Transfer in Your Domain")
-          )
-        ),
+          // h3("Link an existing account:"),
+          // div({ 'class': 'registrars', style: 'padding-left: 30px' },
+          //   a({ href: '#linked_accounts/godaddy/link' }, img({ 'class': 'app_store_icon', src: 'images/apps/godaddy.png' }), span('GoDaddy')),
+          //   a({ href: '#linked_accounts/networksolutions/link' }, img({ 'class': 'app_store_icon', src: 'images/apps/ns.png' }), span('Network Solutions')),
+          //   a({ href: '#linked_accounts/enom/link' }, img({ 'class': 'app_store_icon', src: 'images/apps/enom.png' }), span('eNom')),
+          //   a({ href: '#linked_accounts/namecheap/link' }, img({ 'class': 'app_store_icon', src: 'images/apps/namecheap.png' }), span('Namecheap'))
+          // ),
+          // 
+          // h3("Search for a new domain:"),
+          // div({style: 'padding-left: 30px'}, 
+          //   //a({ href: get_started, 'class': 'myButton', style: 'font-size: 20px; padding: 9px 30px' }, 'Search for domains')
+          //   input({ 'class': 'domain-search-box', style: 'margin-bottom: 5px', placeholder: 'e.g. badger.com', onKeyDown: function() { set_route('#search'); $('#form-search input').val(null).focus(); } }),
+          //   span({ style: 'padding: 0 10px' }, " or "), a({ href: '#domains/transfer', 'class': 'myButton'}, "Transfer in Your Domain")
+          // )
+        //),
         
         // div({ 'id': 'content-top-right', style: 'float: left' }, 
         //   h2({ style: 'font-size: 26px' }, "Or link your account:"),
@@ -84,7 +83,67 @@ with (Hasher('Welcome','Application')) {
         // ),
         // div({ style: 'clear: both' }),
         
-        div({ 'id': 'content', style: "margin: 0", 'class': 'homepage' }, 
+        div({ 'id': 'content', 'class': 'homepage' }, 
+          img({ src: 'images/badger-6.png', style: 'float: right; width: 150px; height: auto; margin: 50px 20px 20px 20px' }),
+
+          h1({ style: 'font-size: 50px; border-bottom: 0' }, "Domains for ", span({ style: 'font-size: 140%' }, "$10"), " a year:"),
+
+          table(tbody(
+            tr(
+              td({ style: 'vertical-align: top' },
+                Domains.app_store_icon({
+                  name: 'Try Live Demo',
+                  image_src: 'images/apps/badger.png',
+                  href: 'https://demo.badger.com/',
+                  target: '_blank'
+                })
+              ),
+
+              td({ style: 'vertical-align: top' },
+                Domains.app_store_icon({
+                  name: 'Register a New Domain',
+                  image_src: 'images/apps/dns.png',
+                  href: '#search'
+                })
+              ),
+
+              td({ style: 'vertical-align: top' },
+                Domains.app_store_icon({
+                  name: 'Transfer in Your Domain',
+                  image_src: 'images/apps/web-forward.png',
+                  href: '#domains/transfer'
+                })
+              ),
+
+              td({ style: 'vertical-align: top' },
+                Domains.app_store_icon({
+                  name: 'Link With: GoDaddy',
+                  image_src: 'images/apps/godaddy.png',
+                  href: '#linked_accounts/godaddy/link'
+                })
+              ),
+
+              td({ style: 'vertical-align: top' },
+                Domains.app_store_icon({
+                  name: 'Link With: Network Solutions',
+                  image_src: 'images/apps/ns.png',
+                  href: '#linked_accounts/networksolutions/link'
+                })
+              ),
+            
+              td({ style: 'vertical-align: top' },
+                Domains.app_store_icon({
+                  name: 'Link With: eNom',
+                  image_src: 'images/apps/enom.png',
+                  href: '#linked_accounts/enom/link'
+                })
+              )
+          
+            )
+          )),
+
+          h1({ style: "padding-top: 30px" }, "What makes us different?"),
+
           table({ style: 'width: 100%' }, tbody(tr(
             td({ style: 'width: 50%; padding-right: 10px; vertical-align: top'}, 
               h3('Manage all of your domains in one place.'),
