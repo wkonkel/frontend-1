@@ -7,7 +7,7 @@ with (Hasher('Welcome','Application')) {
   });
 
   route('#july4th/:code', function(invite_code) {
-    return window.location = '#account/create/' + invite_code;
+    set_route('#account/create/' + invite_code, { reload_page: true });
     
     // PROMO ENDED, redirect to normal account create + invite code page --- CAB
     // Badger.setInviteCode(invite_code);
