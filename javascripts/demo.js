@@ -1,9 +1,6 @@
 Hasher.__initializers.unshift(function() { if (Badger.demo_mode) load_badger_demo(); });
 
 function load_badger_demo() {
-  /*
-    Override set_route to show 'not supported' page on certain routes
-  */
   with (Hasher('Demo','Application')) {
     initializer(function() {
       $('html').addClass('demo');
@@ -19,6 +16,9 @@ function load_badger_demo() {
       )
     });
 
+    /*
+      Override set_route to show 'not supported' page on certain routes
+    */
     var real_set_route = Hasher.instance['set_route']
     Hasher.instance['set_route'] = function(path, options) {
       var valid_route = false;
@@ -213,7 +213,8 @@ function load_badger_demo() {
         var old_domain_obj = DemoData.destroy(domain_obj);
         create_domain({ 
           name: domain,
-          previous_registrar: old_domain_obj.current_registrar
+          previous_registrar: old_domain_obj.current_registrar,
+          registrant_contact: DemoData.find('contact', { id: 1 })[0]
         });
       };
       
@@ -227,7 +228,10 @@ function load_badger_demo() {
     Badger.registerDomain = function(data, callback) {
       if (deduct_or_add_credits_for_demo(data.years)) {
         mock_api_callback({ status: 'created' }, callback);
-        create_domain({ name: data.name });
+        create_domain({
+          name: data.name,
+          registrant_contact: DemoData.find('contact', { id: 1 })[0]
+        });
         set_route('#domains/' + data.name);
       }
     };
