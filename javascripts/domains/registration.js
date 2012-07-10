@@ -1,30 +1,5 @@
 with (Hasher('Registration','Domains')) {
-  
-  route('#domains/:domain/whois', function(domain) {
-    with_domain_nav(domain, function(nav_table, domain_obj) {
-      var show_whois_privacy_message = (domain_obj.permissions_for_person||[]).includes('modify_contacts') && !(domain_obj.whois && domain_obj.whois.privacy);
-      
-      render(
-        chained_header_with_links(
-          { text: 'Domains', href: '#domains' },
-          { text: domain },
-          { text: 'Public Whois Listing' }
-        ),
-        
-        nav_table(
-          info_message({ style: 'display: ' + (show_whois_privacy_message ? '' : 'none' )  },
-            "Don't want your contact information available to the public? ", a({ href: '#domains/' + domain + '/settings' }, 'Enable Whois privacy.'), " It's free!"
-          ),
-          
-          // hard-code the width, because it will go off the page since we're using pre whitespace
-          info_message({ style: 'overflow: scroll; width: 700px; border-color: #aaa; background: #eee; white-space: pre; padding: 10px' },
-            (domain_obj.whois || {}).raw || 'Missing'
-          )
-        )
-      );
-    });
-  });
-  
+    
   route('#domains/:domain/settings', function(domain) {
     with_domain_nav(domain, function(nav_table, domain_obj) {
       render(
