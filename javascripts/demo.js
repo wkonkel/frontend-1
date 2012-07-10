@@ -825,9 +825,7 @@ function load_badger_demo() {
     content: 'domains.tumblr.com',
     record_type: 'cname',
     subdomain: 'blog.' + myblog.name
-  }))
-  // default web forwarding dns
-  add_default_web_forwarding_dns(myblog);
+  }));
 
   var last_domain = create_domain({
     name: 'johnsmith.com',
