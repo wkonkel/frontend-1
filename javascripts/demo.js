@@ -13,7 +13,7 @@ function load_badger_demo() {
               "You're logged in with a demo account.", br(), "You can search, register, and set up your domains!"
           )
         )
-      )
+      );
     });
 
     /*
@@ -336,6 +336,39 @@ function load_badger_demo() {
       setTimeout(function() { set_route(get_route()); }, 200);
     };
     
+    /*
+      Web and email forwards
+    */
+    Badger.getWebForwards = function(domain, callback) {
+      var domain_obj = DemoData.find('domain', { name: domain })[0];
+      mock_api_callback({ status: 'ok', data: DemoData.find('web_forward', { domain_id: domain_obj.id }) }, callback);
+    };
+    Badger.createWebForward = function(domain, data, callback) {
+      var domain_obj = DemoData.find('domain', { name: domain })[0];
+      mock_api_callback({ status: 'ok', data: create_web_forward(domain_obj, data) }, callback);
+    };
+    Badger.deleteWebForward = function(domain, id, callback) {
+      var domain_obj = DemoData.find('domain', { name: domain })[0],
+          web_forward_obj = DemoData.find('web_forward', { id: id })[0];
+      DemoData.destroy(web_forward_obj);
+      mock_api_callback({ status: 'ok' }, callback);
+    };
+    
+    Badger.getEmailForwards = function(domain, callback) {
+      var domain_obj = DemoData.find('domain', { name: domain })[0];
+      mock_api_callback({ status: 'ok', data: DemoData.find('email_forward', { domain_id: domain_obj.id }) }, callback);
+    };
+    Badger.createEmailForward = function(domain, data, callback) {
+      var domain_obj = DemoData.find('domain', { name: domain })[0];
+      mock_api_callback({ status: 'ok', data: create_email_forward(domain_obj, data) }, callback);
+    };
+    Badger.deleteEmailForward = function(domain, id, callback) {
+      var domain_obj = DemoData.find('domain', { name: domain })[0],
+          email_forward_obj = DemoData.find('email_forward', { id: id })[0];
+      DemoData.destroy(email_forward_obj);
+      mock_api_callback({ status: 'ok' }, callback);
+    };
+    
     Badger.getContacts = function(callback) { mock_api_callback({ data: DemoData.find('contact', 'all') }, callback); };
     Badger.getPaymentMethods = function(callback) { mock_api_callback({ data: DemoData.payment_method }, callback) };
     Badger.createContact = function(callback) { render_not_supported_modal('Creating new contacts is not supported in the demo.') };
@@ -367,7 +400,8 @@ function load_badger_demo() {
       /^#domain/,
       /^#account(\/\w+)?$/,
       /^#invites/,
-      /^#linked_accounts/
+      /^#linked_accounts/,
+      /^#about$/
     ],
 
     account: {
@@ -392,7 +426,9 @@ function load_badger_demo() {
       domain: [],
       record: [],
       linked_account: [],
-      invite: []
+      invite: [],
+      web_forward: [],
+      email_forward: []
     }
   };
 
@@ -585,7 +621,39 @@ function load_badger_demo() {
     DemoData.add_row('linked_account', defaults);
     return defaults;
   };
+
+  var create_web_forward = function(domain_obj, attrs) {
+    attrs = attrs || {};
+    
+    var defaults = {
+      id: DemoData.find('web_forward', 'all').length + 1,
+      domain_id: domain_obj.id,
+      path: "www",
+      destination: "http://www.test.com"
+    }
+    
+    for (k in defaults) if (attrs[k]) defaults[k] = attrs[k];
+
+    DemoData.add_row('web_forward', defaults);
+    return defaults;
+  };
+
+  var create_email_forward = function(domain_obj, attrs) {
+    attrs = attrs || {};
+    
+    var defaults = {
+      id: DemoData.find('email_forward', 'all').length + 1,
+      domain_id: domain_obj.id,
+      username: "admin",
+      destination: "johndoe@generic.com"
+    }
+    
+    for (k in defaults) if (attrs[k]) defaults[k] = attrs[k];
   
+    DemoData.add_row('email_forward', defaults);
+    return defaults;
+  };
+
   // create a domain ready for transfer (at another registrar with proper permissions)
   var create_transfer_domain = function(attrs) {
     return create_linked_domain({ site: 'GoDaddy' }, {
@@ -698,17 +766,6 @@ function load_badger_demo() {
         ttl: 1800,
       }),
       create_dns_record(domain_obj, {
-        record_type: 'a',
-        content: '50.57.26.208',
-        ttl: 1800,
-      }),
-      create_dns_record(domain_obj, {
-        record_type: 'a',
-        content: '50.57.26.208',
-        ttl: 1800,
-        subdomain: '*.' + domain_obj.name
-      }),
-      create_dns_record(domain_obj, {
         record_type: 'ns',
         content: 'ns1.badger.com',
         ttl: 1800,
@@ -720,6 +777,24 @@ function load_badger_demo() {
       }),
     ];
   };
+  
+  var add_default_web_forwarding_dns = function(domain_obj) {
+    domain_obj.dns.push(
+      create_dns_record(domain_obj, {
+        record_type: 'a',
+        content: '50.57.26.208',
+        ttl: 1800,
+      })
+    );
+    domain_obj.dns.push(
+      create_dns_record(domain_obj, {
+        record_type: 'a',
+        content: '50.57.26.208',
+        ttl: 1800,
+        subdomain: '*.' + domain_obj.name
+      })
+    );
+  };
 
   /*
     initialize DemoData with defaults
@@ -729,8 +804,9 @@ function load_badger_demo() {
   var d = create_domain({
     name: 'example.com',
     expires_at: new Date(Date.parse('01-01-2014')).toString('MMMM dd yyyy'),
-    registrant_contact: DemoData.find('contact', { id: 1 })[0]
+    registrant_contact: DemoData.find('contact', { id: 1 })[0],
   });
+  add_default_web_forwarding_dns(d);
   
   var myblog = create_domain({
     name: 'myblog.net',
@@ -743,10 +819,13 @@ function load_badger_demo() {
     record_type: 'cname',
     subdomain: 'blog.' + myblog.name
   }))
+  // default web forwarding dns
+  add_default_web_forwarding_dns(myblog);
 
-  create_domain({
+  var last_domain = create_domain({
     name: 'johnsmith.com',
     registrant_contact: DemoData.find('contact', { id: 1 })[0]
   });
+  add_default_web_forwarding_dns(last_domain);
   
 }
