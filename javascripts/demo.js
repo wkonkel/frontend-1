@@ -157,11 +157,14 @@ function load_badger_demo() {
       }
       attrs.permissions_for_person = permissions;
       
-      DemoData.update_attributes(domain_obj, attrs);
+      // perform updates
+      DemoData.update_attributes(domain_obj, attrs)
+      if (attrs.privacy) {
+        if (typeof(attrs.privacy) == 'string') attrs.privacy = attrs.privacy == 'true' ? true : false;
+        domain_obj.whois.privacy = attrs.privacy;
+      }
       
-      setTimeout(function() {
-        mock_api_callback({ status: 'ok', data: domain_obj }, callback);
-      }, 250);
+      mock_api_callback({ status: 'ok', data: domain_obj }, callback);
     };
     
     /*
@@ -427,8 +430,8 @@ function load_badger_demo() {
     for (k in obj) {
       if (updates[k]) {
         // fix booleans
-        if (updates[k] == 'true') updates[k] = true;
-        if (updates[k] == 'false') updates[k] = false;
+        if (updates[k] === 'true') updates[k] = true;
+        if (updates[k] === 'false') updates[k] = false;
         
         // if it's a model id, load that model
         var table_match = k.match(/^(\w+|_+)_id$/) || [];
