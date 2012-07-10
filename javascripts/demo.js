@@ -9,7 +9,7 @@ function load_badger_demo() {
         div({ 'id': 'demo-banner' },
           div({ 'style':'width: 950px; margin: 0 auto' },
               span({'style':'font-size: 30px; font-family: AdelleBold, Titillium;  margin-bottom: 10px;'}, 'This is a Demo'),
-              a({ style:'float: right; margin-top: 15px', href:'https://www.badger.com/#account/create', 'class':'myButton'}, "Take me to the Real Thing!"), br(),
+              a({ style:'float: right; margin-top: 15px', href:'https://www.badger.com/#domains', 'class':'myButton'}, "Take me to the real thing!"), br(),
               "You're logged in with a demo account.", br(), "You can search, register, and set up your domains!"
           )
         )
@@ -42,7 +42,7 @@ function load_badger_demo() {
           h1({ style: 'border: 0px' }, 'Not Supported in Demo'),
           p({ style: 'font-size: 16px' }, reason || ''),
           div({ style: 'margin: 30px' }, img({ style: 'width: 30%', src: 'images/badger-logo-sad-big.png' })),
-          a({ 'class': 'myButton large', style: 'margin: 10px', onclick: function() { window.location = 'https://www.badger.com/#account/create' } }, "I'm Ready for the Real Thing!")
+          a({ 'class': 'myButton large', style: 'margin: 10px', onclick: function() { window.location = 'https://www.badger.com/#domains' } }, "I'm ready for the real thing!")
         )
       );
     });
