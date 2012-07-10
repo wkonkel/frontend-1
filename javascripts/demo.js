@@ -115,9 +115,6 @@ function load_badger_demo() {
     Badger.getDomain = function(domain, callback) {
       var domain_obj = DemoData.find('domain', { name: domain })[0];
       
-      // find dns records on each getDomain request
-      domain_obj.dns = DemoData.find('record', { domain_id: domain_obj.id });
-      
       // special case for transfer page. the fetched domain
       // should just have a registrar, unless it's already
       // stored in DemoData
@@ -128,6 +125,9 @@ function load_badger_demo() {
           mock_api_callback({ data: create_transfer_domain({ name: domain }) }, callback);
         }
       } else if (domain_obj) {
+        // find dns records on each getDomain request
+        domain_obj.dns = DemoData.find('record', { domain_id: domain_obj.id });
+        
         mock_api_callback({ data: domain_obj }, callback);
       } else {
         mock_api_callback({ data: available_domain(domain) }, callback);
