@@ -162,6 +162,9 @@ function load_badger_demo() {
       if (attrs.privacy) {
         if (typeof(attrs.privacy) == 'string') attrs.privacy = attrs.privacy == 'true' ? true : false;
         domain_obj.whois.privacy = attrs.privacy;
+        
+        // rebuild whois
+        domain_obj.whois.raw = raw_whois_for_domain(domain_obj);
       }
       
       mock_api_callback({ status: 'ok', data: domain_obj }, callback);
@@ -621,6 +624,31 @@ function load_badger_demo() {
   };
   
   var raw_whois_for_domain = function(domain_json) {
+    var contact_string     = "",
+        contact            = DemoData.find('contact', { id: 1 })[0];
+    if (domain_json.whois && !domain_json.whois.privacy) {
+      contact_string = (
+        (contact.first_name + ' ' + contact.last_name).trim() + "\n\t" +
+        (contact.organization ? contact.organization + "\n\t" : "") +
+        contact.address + "\n\t" +
+        (contact.address2 ? contact.address2 + "\n\t" : "") + 
+        contact.city + ", " + contact.state + ", " + contact.zip + ", " + contact.country + "\n\t" +
+        "Email: " + contact.email + "\n\t" +
+        "Phone: " + contact.phone + "\n\t" +
+        (contact.fax ? contact.fax + "\n\t" : "")
+      );
+    } else {
+      contact_string = (
+        'Private Domain Accounts LLC' + "\n\t" + 
+        'Attn: ' + domain_json.name + "\n\t" + 
+        '720 Market St., Suite 300' + "\n\t" + 
+        'San Francisco, CA, 94102, US' + "\n\t" + 
+        'Email: ' + domain_json.name + '+r@privatedomainaccounts.com' + "\n\t" + 
+        'Phone: +1-415-787-5050' + "\n\t" + 
+        'Fax: +1-415-358-4086' + "\n"
+      );
+    }
+    
     return 'The data contained in this whois database is provided "as is" with' + "\n" + 
     'no guarantee or warranties regarding its accuracy.' + "\n" + 
     "\n" + 
@@ -633,42 +661,10 @@ function load_badger_demo() {
        'Updated on: 2012-06-29' + "\n\t" + 
        'Expires on: 2013-06-21' + "\n" + 
     "\n" + 
-    'Registrant:' + "\n" + 
-       'Private Domain Accounts LLC' + "\n\t" + 
-       'Attn: ' + domain_json.name + "\n\t" + 
-       '720 Market St., Suite 300' + "\n\t" + 
-       'San Francisco, CA, 94102, US' + "\n\t" + 
-       'Email: ' + domain_json.name + '+r@privatedomainaccounts.com' + "\n\t" + 
-       'Phone: +1-415-787-5050' + "\n\t" + 
-       'Fax: +1-415-358-4086' + "\n" +
-    "\n" + 
-    'Administrative:' + "\n" + 
-       'Private Domain Accounts LLC' + "\n\t" + 
-       'Attn: ' + domain_json.name + "\n\t" + 
-       '720 Market St., Suite 300' + "\n\t" + 
-       'San Francisco, CA, 94102, US' + "\n\t" + 
-       'Email: ' + domain_json.name + '+a@privatedomainaccounts.com' + "\n\t" + 
-       'Phone: +1-415-787-5050' + "\n\t" + 
-       'Fax: +1-415-358-4086' + "\n" +
-    "\n" + 
-    'Technical:' + "\n" + 
-       'Private Domain Accounts LLC' + "\n\t" + 
-       'Attn: ' + domain_json.name + "\n\t" + 
-       '720 Market St., Suite 300' + "\n\t" + 
-       'San Francisco, CA, 94102, US' + "\n\t" + 
-       'Email: ' + domain_json.name + '+t@privatedomainaccounts.com' + "\n\t" + 
-       'Phone: +1-415-787-5050' + "\n\t" + 
-       'Fax: +1-415-358-4086' + "\n" +
-    "\n" + 
-    'Billing:' + "\n" + 
-       'Private Domain Accounts LLC' + "\n\t" + 
-       'Attn: ' + domain_json.name + "\n\t" + 
-       '720 Market St., Suite 300' + "\n\t" + 
-       'San Francisco, CA, 94102, US' + "\n\t" + 
-       'Email: ' + domain_json.name + '+b@privatedomainaccounts.com' + "\n\t" + 
-       'Phone: +1-415-787-5050' + "\n\t" + 
-       'Fax: +1-415-358-4086' + "\n" +
-    "\n" + 
+    'Registrant:' + "\n\t" + contact_string + "\n" + 
+    'Administrative:' + "\n\t" + contact_string + "\n" + 
+    'Technical:' + "\n\t" + contact_string + "\n" + 
+    'Billing:' + "\n\t" + contact_string + "\n" + 
     'Name Servers:' + "\n\t" +
        'ns1.badger.com' + "\n\t" + 
        'ns2.badger.com' + "\n" +
@@ -730,7 +726,7 @@ function load_badger_demo() {
   */
   create_contact();
 
-  create_domain({
+  var d = create_domain({
     name: 'example.com',
     expires_at: new Date(Date.parse('01-01-2014')).toString('MMMM dd yyyy'),
     registrant_contact: DemoData.find('contact', { id: 1 })[0]
