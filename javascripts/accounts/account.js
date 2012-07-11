@@ -33,7 +33,8 @@ with (Hasher('Account','Application')) {
             li(a({ href: '#account/profiles', 'class': (active_url.match(/^#account\/profiles.*$/) ? 'active' : '') }, 'Whois Profiles')),
             li(a({ href: '#account/billing', 'class': (active_url.match(/^#account\/billing$/) ? 'active' : '') }, 'Billing & Credits')),
             li(a({ href: '#linked_accounts', 'class': (active_url.match(/^#linked_accounts$/) ? 'active' : '') }, 'Linked Accounts')),
-            li(a({ href: '#invites', 'class': (active_url.match(/^#invites/) ? 'active' : '') }, 'Invites'))
+            li(a({ href: '#invites', 'class': (active_url.match(/^#invites/) ? 'active' : '') }, 'Invites')),
+            li(a({ href: '#rewards', 'class': (active_url.match(/^#rewards/) ? 'active' : '') }, 'Rewards'))
           )
         ),
         
