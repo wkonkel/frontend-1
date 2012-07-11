@@ -529,6 +529,22 @@ var Badger = {
   getInvite: function(invite_code, callback) {
     Badger.api('/account/invites/' + invite_code, callback);
   },
+  
+  getReferralCodes: function(callback) {
+    Badger.api('/account/referral_codes', callback);
+  },
+  
+  getReferralCode: function(slug, callback) {
+    Badger.api('/account/referral_codes/' + slug, callback);
+  },
+  
+  createReferralCode: function(data, callback) {
+    Badger.api('/account/referral_codes', 'POST', data, callback);
+  },
+  
+  updateReferralCode: function(slug, updates, callback) {
+    Badger.api('/account/referral_codes/' + slug, 'PUT', data, callback);
+  },
 
   remoteWhois: function(domain, callback) {
     Badger.api("/domains/remote_whois", "POST", { domain: domain }, callback);
