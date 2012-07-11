@@ -58,8 +58,9 @@ with (Hasher('Rewards','Application')) {
                 label('My Referral Code:'),
                 input({ style: 'width: 150px;', name: 'slug', value: default_slug, onKeyUp: function(e) { document.getElementById('link-preview').value = (url_base + e.target.value); } }),
                 ul({ style: 'font-size: 12px; line-height: 20px; margin: 0px;' },
-                  li('Length must be at least 6 characters.'),
-                  li('Code can only contain alphanumeric characters (A-Z and 0-9).')
+                  li('Length must be at least 6 characters'),
+                  li('Code can only contain the characters: A-Z, 0-9, and _'),
+                  li('Code must begin and end with the characters A-Z and 0-9')
                 )
               ),
               fieldset({ 'class': 'no-label' },
