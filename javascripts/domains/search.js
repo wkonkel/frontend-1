@@ -7,6 +7,11 @@ with (Hasher('Search','Application')) {
         div({ id: 'search-results-wrapper', style: 'display: none' },
           h1('Search Results'),
           div({ 'class': 'sidebar' },
+            !Badger.getAccessToken() && info_message(
+              h3("Register for ", span({ style: 'font-size: 150%' }, "$10"), " a year."),
+              p("We are an ICANN accreddited registrar.  If you'd like to see how our site works without logging in, ", a({ href: 'https://demo.badger.com/'}, 'try our demo'), '.')
+            ),
+
             info_message(
               h3("Already own a domain?"),
               p('We can automatically transfer your domains to Badger.'),
@@ -23,7 +28,8 @@ with (Hasher('Search','Application')) {
             table({ id: 'search-results', 'class': 'fancy-table' }, tbody())
           )
         )
-      )
+      ),
+      div({ style: 'clear: both' })
     );
     
     // refocus the search box
