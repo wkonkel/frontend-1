@@ -545,6 +545,14 @@ var Badger = {
   updateReferralCode: function(slug, updates, callback) {
     Badger.api('/account/referral_codes/' + slug, 'PUT', data, callback);
   },
+  
+  getRewards: function(callback) {
+    Badger.api('/account/rewards', callback);
+  },
+  
+  getReward: function(id, callback) {
+    Badger.api('/account/rewards/' + id, callback);
+  },
 
   remoteWhois: function(domain, callback) {
     Badger.api("/domains/remote_whois", "POST", { domain: domain }, callback);
