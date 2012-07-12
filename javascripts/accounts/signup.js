@@ -25,7 +25,6 @@ with (Hasher('Signup','Application')) {
     set_route('#account/create');
   });
   
-
   route('#account/create', function() {
     var invite_code = Badger.getInviteCode();
     if (invite_code) {
@@ -87,13 +86,13 @@ with (Hasher('Signup','Application')) {
     
         fieldset(
           label({ 'for': 'first_name-input' }, 'First and last name:'),
-          text({ 'class': 'short right-margin', id: 'first_name-input', name: 'first_name', value: (invitee.first_name || ''), placeholder: 'John' }),
-          text({ 'class': 'short', name: 'last_name', value: (invitee.last_name || ''), placeholder: 'Doe' })
+          text({ 'class': 'short right-margin', id: 'first_name-input', name: 'first_name', value: (invitee.first_name || Hasher.request_data.params.first_name || ''), placeholder: 'John' }),
+          text({ 'class': 'short', name: 'last_name', value: (invitee.last_name || Hasher.request_data.params.last_name || ''), placeholder: 'Doe' })
         ),
 
         fieldset(
           label({ 'for': 'email-input' }, 'Email address:'),
-          input({ id: 'email-input', name: 'email', style: 'width: 275px', value: (invitee.email || ''), placeholder: 'john.doe@badger.com' })
+          input({ id: 'email-input', name: 'email', style: 'width: 275px', value: (invitee.email || Hasher.request_data.params.email ||  ''), placeholder: 'john.doe@badger.com' })
         ),
     
         fieldset(
