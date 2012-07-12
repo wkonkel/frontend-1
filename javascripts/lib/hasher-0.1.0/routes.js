@@ -26,6 +26,30 @@ with (Hasher()) {
       }
     }
   });
+  
+  define('query_string', function() {
+    tmp_arr = window.location.hash.split('?');
+    return (tmp_arr.length > 1) ? tmp_arr.slice(-1)[0] : '';
+  });
+  
+  define('query_params', function(url) {
+    var params = {},
+        key_val_pairs = query_string().split('&');
+    for (var i=0; i<key_val_pairs.length; i++) {
+      key_val_pair = key_val_pairs[i].split('=');
+      if (key_val_pair.length == 2) params[key_val_pair[0]] = key_val_pair[1];
+    }
+    return params;
+  });
+  
+  // get the path, query string, and query params in a hash
+  define('request_data', function() {
+    return {
+      path: window.location.hash.split('?')[0],
+      query_string: query_string(),
+      params: query_params()
+    };
+  });
 
   // return the current route as a string from browser bar
   define('get_route', function() {
@@ -41,7 +65,7 @@ with (Hasher()) {
     }
     
     if (!options) options = {};
-
+    
     if (!options.skip_updating_browser_bar) {
       if (options.replace) {
         window.location.replace(window.location.href.split('#')[0] + path);
@@ -58,9 +82,11 @@ with (Hasher()) {
     
     if (typeof(_gaq) != 'undefined') _gaq.push(['_trackPageview', path]);
     
+    Hasher.request_data = request_data();
+    
     for (var i=0; i < Hasher.routes.length; i++) {
       var route = Hasher.routes[i];
-      var matches = path.match(route.regex);
+      var matches = Hasher.request_data.path.match(route.regex);
       if (matches) {
         // scroll to the top of newly loaded page --- CAB
         window.scrollTo(0, 0);
@@ -72,7 +98,7 @@ with (Hasher()) {
       }
     }
 
-    alert('404 not found: ' + path);
+    alert('404 not found: ' + Hasher.request_data);
   });
   
   define('reload_page_with_route', function(path) {
