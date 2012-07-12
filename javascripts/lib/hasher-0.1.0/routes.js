@@ -3,6 +3,8 @@ Hasher.routes = [];
 with (Hasher()) {
   // check for new routes on the browser bar every 100ms
   initializer(function() {
+    Hasher.request_data = request_data();
+    
     var callback = function() {
       setTimeout(callback, 100);
       var hash = get_route();
@@ -45,8 +47,8 @@ with (Hasher()) {
   // get the path, query string, and query params in a hash
   define('request_data', function() {
     return {
-      path: window.location.hash.split('?')[0],
-      query_string: query_string(),
+      path: window.location.href.slice(window.location.href.indexOf('#')).split('?')[0],
+      query_string: (query_string().length > 0 ? ('?' + query_string()) : ''),
       params: query_params()
     };
   });
@@ -82,6 +84,7 @@ with (Hasher()) {
     
     if (typeof(_gaq) != 'undefined') _gaq.push(['_trackPageview', path]);
     
+    // rebuild request data
     Hasher.request_data = request_data();
     
     for (var i=0; i < Hasher.routes.length; i++) {
@@ -92,13 +95,17 @@ with (Hasher()) {
         window.scrollTo(0, 0);
         
         if (!route.context.run_filters('before')) return;
-        route.callback.apply(null, matches.slice(1));
+        if (Hasher.request_data.query_string.length > 0) {
+          route.callback.apply(null, [(Hasher.request_data.path + Hasher.request_data.query_string)]);
+        } else {
+          route.callback.apply(null, matches.slice(1));
+        }
         if (!route.context.run_filters('after')) return;
         return;
       }
     }
 
-    alert('404 not found: ' + Hasher.request_data);
+    alert('404 not found: ' + path);
   });
   
   define('reload_page_with_route', function(path) {
