@@ -36,11 +36,13 @@ with (Hasher('Signup','Application')) {
         inviter_message_div,
         target_div
       );
+      
       Badger.getInvite(invite_code, function(response) {
-        //console.log(response);
-        var message;
+        var message = "";
         if (response.meta.status == 'ok') {
-          if (response.data.inviter) {
+          if (response.data.slug) {
+            message = response.data.person.name + " has referred you to Badger! Your first registration or transfer is only $5!";
+          } else if (response.data.inviter) {
             message = response.data.inviter.name + ' has invited you to Badger!';
             if (response.data.domain_credits > 0) {
               message += " And they've given you " + response.data.domain_credits + " free Credit" + (response.data.domain_credits != 1 ? 's' : '') + "!";
