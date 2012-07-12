@@ -32,8 +32,7 @@ with (Hasher('Search','Application')) {
 
   define('search_box', function(domain) {
     return form({ id: "form-search", action: Search.search_box_changed },
-      input({ id: 'form-search-input', type: 'text', value: '', placeholder: 'Type to search for domains', events: {
-        // click: Search.set_search_route,
+      input({ id: 'form-search-input', type: 'text', value: '', placeholder: 'Type to search for domains', autofocus: 'true', events: {
         change: Search.search_box_changed,
         keyup: Search.search_box_changed,
         keypress: function(e) {
@@ -44,21 +43,19 @@ with (Hasher('Search','Application')) {
   });
 
 
-
-  define('set_search_route', function() {
-    if (get_route() != '#search') {
-      set_route('#search');
-      this.last_search_value = null;
-    }
-  });
-  
   define('search_box_changed', function() {
-    set_search_route();
-
     var current_value = $('#form-search-input').val().toLowerCase().replace(/[^a-zA-Z0-9\-\.]/g,'').split('.')[0];
     
     var search_callback = function() {
       Badger.domainSearch(current_value, true, function(resp) {
+        // allow search from homepage
+        if (get_route() == '#welcome') {
+          var previous_value = $('#form-search-input').val();
+          set_route('#search');
+          $('#form-search-input').val(previous_value);
+          this.last_search_value = null;
+        }
+        
         $('#search-instructions').remove();
         $('#search-help').remove();
         $('#search-results-wrapper').show();

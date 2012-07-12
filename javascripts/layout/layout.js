@@ -1,5 +1,10 @@
 with (Hasher('Application')) {
 
+  // empty this before every page load
+  before_filter(function() {
+    $('#after-content').html('');
+  })
+
   // define('update_sidebar', function() {
   //   if ($('#sidebar')) {
   //     var request_uri = get_route();
@@ -79,10 +84,11 @@ with (Hasher('Application')) {
       header(),
 
       div({ id: 'wrapper' },
-        div({ id: 'main', 'class': 'whitebg' },
-          div({ 'id': 'content' }, 
+        div({ id: 'main' },
+          div({ 'class': 'content' }, 
             yield
-          )
+          ),
+          div({ id: 'after-content' })
         )
       ),
       
@@ -91,21 +97,6 @@ with (Hasher('Application')) {
       chatbar()
     ];
   });
-
-
-  layout('no_bg_layout', function(yield) {
-    // var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
-    return [
-      header(),
-
-      div({ id: 'wrapper' }, yield),
-      
-      footer(),
-      
-      chatbar()
-    ];
-  });
-
 
 
   define('chatbar', function() {
@@ -122,7 +113,7 @@ with (Hasher('Application')) {
       div({ 'class': 'inner' },
         h2({ id: 'logo' }, a({ href: '#welcome'}, 'Badger')),
 
-        a({ href: '#search', 'class': 'myButton', style: 'margin: 8px 0 0 20px; padding: 4px 14px; font-size: 16px' }, 'Search for a new domain'),
+        //a({ href: '#search', 'class': 'myButton', style: 'margin: 8px 0 0 20px; padding: 4px 14px; font-size: 16px' }, 'Search for a new domain'),
       
         Badger.getAccessToken() ? 
           user_nav()
