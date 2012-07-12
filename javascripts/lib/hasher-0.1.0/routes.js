@@ -29,14 +29,14 @@ with (Hasher()) {
     }
   });
   
-  define('query_string', function() {
+  define('get_query_string', function() {
     tmp_arr = window.location.hash.split('?');
     return (tmp_arr.length > 1) ? tmp_arr.slice(-1)[0] : '';
   });
   
   define('query_params', function(url) {
     var params = {},
-        key_val_pairs = query_string().split('&');
+        key_val_pairs = get_query_string().split('&');
     for (var i=0; i<key_val_pairs.length; i++) {
       key_val_pair = key_val_pairs[i].split('=');
       if (key_val_pair.length == 2) params[key_val_pair[0]] = key_val_pair[1];
@@ -46,11 +46,13 @@ with (Hasher()) {
   
   // get the path, query string, and query params in a hash
   define('request_data', function() {
-    return {
+    var data = {
       path: window.location.href.slice(window.location.href.indexOf('#')).split('?')[0],
-      query_string: (query_string().length > 0 ? ('?' + query_string()) : ''),
+      query_string: (get_query_string().length > 0 ? ('?' + get_query_string()) : ''),
       params: query_params()
     };
+    if (data.path == '/') data.path = '#';
+    return data;
   });
 
   // return the current route as a string from browser bar
