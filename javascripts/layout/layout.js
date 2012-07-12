@@ -122,7 +122,7 @@ with (Hasher('Application')) {
       div({ 'class': 'inner' },
         h2({ id: 'logo' }, a({ href: '#welcome'}, 'Badger')),
 
-        search_box(),
+        a({ href: '#search', 'class': 'myButton', style: 'margin: 8px 0 0 20px; padding: 4px 14px; font-size: 16px' }, 'Search for a new domain'),
       
         Badger.getAccessToken() ? 
           user_nav()
@@ -237,19 +237,6 @@ with (Hasher('Application')) {
   // });
   // after_filter('update_invites_available_count', update_invites_available_count);
   
-
-  define('search_box', function(domain) {
-    return form({ id: "form-search", action: Search.search_box_changed },
-      input({ id: 'form-search-input', type: 'text', value: '', placeholder: 'Search for domains', events: {
-        // click: Search.set_search_route,
-        change: Search.search_box_changed,
-        keyup: Search.search_box_changed,
-        keypress: function(e) {
-          if (Search.key_is_valid_for_domain_name(e)) stop_event(e);
-        }
-      }})
-    );
-  });
 
   ////////////////
   // dom helpers

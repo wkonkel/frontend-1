@@ -2,23 +2,26 @@ with (Hasher('Search','Application')) {
   route('#search', function() {
     render(
       div(
-        h1('Search Results'),
-        div({ 'class': 'sidebar' },
-          info_message(
-            h3("Already own a domain?"),
-            p('We can automatically transfer your domains to Badger.'),
-            div({ 'class': 'centered-button' }, a({ 'class': 'myButton small', href: '#domains/transfer' }, 'Transfer a Domain'))
-          )
-          
-          // info_message(
-          //   h3("Need lots of domains?"),
-          //   p('Register many domains at once with our ', a({ href: function() { Badger.Session.write({ current_transfer_action: 'register' }); set_route('#domains/transfer'); } }, 'Bulk Register Tool'), '.')
-          // )
-        ),
+        div({ style: 'text-align: center; margin: 40px 0 '}, search_box()),
         
-        div({ 'class': 'has-sidebar' },
-          p({ id: 'search-help', 'class': 'success-message', style: "font-size: 18px; margin: 0 0 25px; text-align: center" }, 'Start typing in the search box above and results will appear here.'),
-          table({ id: 'search-results', 'class': 'fancy-table' }, tbody())
+        div({ id: 'search-results-wrapper', style: 'display: none' },
+          h1('Search Results'),
+          div({ 'class': 'sidebar' },
+            info_message(
+              h3("Already own a domain?"),
+              p('We can automatically transfer your domains to Badger.'),
+              div({ 'class': 'centered-button' }, a({ 'class': 'myButton small', href: '#domains/transfer' }, 'Transfer a Domain'))
+            )
+          
+            // info_message(
+            //   h3("Need lots of domains?"),
+            //   p('Register many domains at once with our ', a({ href: function() { Badger.Session.write({ current_transfer_action: 'register' }); set_route('#domains/transfer'); } }, 'Bulk Register Tool'), '.')
+            // )
+          ),
+        
+          div({ 'class': 'has-sidebar' },
+            table({ id: 'search-results', 'class': 'fancy-table' }, tbody())
+          )
         )
       )
     );
@@ -26,6 +29,21 @@ with (Hasher('Search','Application')) {
     // refocus the search box
     $('#form-search-input').focus();
   });
+
+  define('search_box', function(domain) {
+    return form({ id: "form-search", action: Search.search_box_changed },
+      input({ id: 'form-search-input', type: 'text', value: '', placeholder: 'Type to search for domains', events: {
+        // click: Search.set_search_route,
+        change: Search.search_box_changed,
+        keyup: Search.search_box_changed,
+        keypress: function(e) {
+          if (Search.key_is_valid_for_domain_name(e)) stop_event(e);
+        }
+      }})
+    );
+  });
+
+
 
   define('set_search_route', function() {
     if (get_route() != '#search') {
@@ -38,11 +56,12 @@ with (Hasher('Search','Application')) {
     set_search_route();
 
     var current_value = $('#form-search-input').val().toLowerCase().replace(/[^a-zA-Z0-9\-\.]/g,'').split('.')[0];
-
+    
     var search_callback = function() {
       Badger.domainSearch(current_value, true, function(resp) {
         $('#search-instructions').remove();
         $('#search-help').remove();
+        $('#search-results-wrapper').show();
         var most_recent_result = $('#search-results tbody tr:first td:first').text();
         if (resp.data.domains[0][0].indexOf(most_recent_result) == 0) {
           $('#search-results tbody tr:first').remove();
