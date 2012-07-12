@@ -42,7 +42,7 @@ with (Hasher('Rewards','Application')) {
             p('Earn points toward free domains by referring people to Badger! Here is how it works:'),
             ul(
               li("Create a referral code and invite people - their first ", b("registration"), " or ", b("transfer"), " is only ", b("$5.")),
-              li("You receive ", b("10 points"), " for each domain registered or transferred by referrals."),
+              li("You receive ", b("10 points"), " for each domain registered or transferred by users you have referred."),
               li(b("100 points = 1 free domain."))
             ),
             p("Get started by creating your referral code:"),
