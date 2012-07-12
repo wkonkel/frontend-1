@@ -95,11 +95,7 @@ with (Hasher()) {
         window.scrollTo(0, 0);
         
         if (!route.context.run_filters('before')) return;
-        if (Hasher.request_data.query_string.length > 0) {
-          route.callback.apply(null, [(Hasher.request_data.path + Hasher.request_data.query_string)]);
-        } else {
-          route.callback.apply(null, matches.slice(1));
-        }
+        route.callback.apply(null, matches.slice(1));
         if (!route.context.run_filters('after')) return;
         return;
       }
