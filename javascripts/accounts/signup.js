@@ -22,7 +22,8 @@ with (Hasher('Signup','Application')) {
 
   route('#account/create/:invite_code', function(invite_code) {
     Badger.setInviteCode(invite_code);
-    set_route('#account/create');
+    // set route, and pass along query params
+    set_route('#account/create' + Hasher.request_data.query_string);
   });
   
   route('#account/create', function() {
@@ -122,7 +123,13 @@ with (Hasher('Signup','Application')) {
     $('#signup-errors').empty();
     Badger.createAccount(data, function(response) {
       if (response.meta.status == 'ok') {
-        set_route('#', { reload_page: true });
+        // if a domain name provided via query_param, redirect to that domain page
+        // after creating the account
+        if (Hasher.request_data.params.domain && Hasher.request_data.params.domain.length > 0) {
+          set_route('#domains/' + Hasher.request_data.params.domain, { reload_page: true });
+        } else {
+          set_route('#', { reload_page: true });
+        }
       } else {
         $('#signup-errors').empty().append(error_message(response));
         hide_form_submit_loader();
