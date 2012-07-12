@@ -22,7 +22,7 @@ with (Hasher('Rewards','Application')) {
     */
     BadgerCache.getAccountInfo(function(response) {
       var referral_codes = response.data.referral_codes || [],
-          url_base = 'https://www.badger.com/';
+          url_base = Badger.api_host.replace(/api/,'www'); // for the sake of local and qa development
           
       if (referral_codes.length > 0) {
         var referral_code = referral_codes[0],
