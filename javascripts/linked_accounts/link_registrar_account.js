@@ -25,8 +25,8 @@ with (Hasher('LinkRegistrarAccount','Application')) {
       
       div({ 'class': 'sidebar' },
         info_message(
-          h3("Why link your " + registrar_name + " account?"),
-          p("Linking your account automates the transfer process. Let us do the work for you.")
+          h3("Is this permanent?"),
+          p("No. You can unlink your account at any time on the Linked Accounts page.")
         )
       ),
       
@@ -36,8 +36,13 @@ with (Hasher('LinkRegistrarAccount','Application')) {
           div({ style: "float: left; margin: auto 20px 20px auto" },
             img({ 'class': "app_store_icon", src: registrar_logo })
           ),
-          p("To link your " + registrar_name + " account with Badger, enter your " + registrar_name + " login credentials below."),
-          p("Syncing your account may take up to five minutes.  When transferring domains, temporary changes may be made to your account information.")
+          p("Why link your " + registrar_name + " account with Badger?"),
+          ul({ style: "margin-left: 100px" },
+            li("Control all your " + registrar_name + " and Badger domains in one place with our fast, ad-free site."),
+            li("Linked domains can be transferred into Badger", b(" automatically"), ".  We'll handle the hard parts like auth codes."),
+            li("Easily configure your domain to support services like Gmail with Badger Apps.")
+          ),
+          p("To link your " + registrar_name + " account with Badger, enter your " + registrar_name + " login credentials below.")
         ),
 
         div({ id: 'account-link-errors' }),
