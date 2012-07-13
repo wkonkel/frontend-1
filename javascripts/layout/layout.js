@@ -193,6 +193,7 @@ with (Hasher('Application')) {
       $(user_nav).prepend(span(a({ href: '#invites', id: 'user_nav_invites_available' }, 'Invites')));
       $(user_nav).prepend(span({ id: 'user_nav_span', style: "display: none" }, a({ href: '#account/billing', id: 'user_nav_credits' }, 'Credits')));  // updated by update_my_domains_count after_filter
       $(user_nav).prepend(span(a({ href: '#domains', id: 'user-nav-domains' }, 'Domains')));  // updated by update_credits after_filter
+      $(user_nav).prepend(span(a({ href: '#search' }, 'Search')));
     });
 
     return user_nav;
