@@ -5,7 +5,7 @@ with (Hasher('Search','Application')) {
       div({ 'class': 'sidebar' },
         !Badger.getAccessToken() && info_message(
           h3("Domains cost ", span({ style: 'font-size: 150%' }, "$10"), " a year."),
-          p("We are an ICANN accreddited registrar.  If you'd like to see how our site works without logging in, ", a({ href: 'https://demo.badger.com/'}, 'try our demo'), '.')
+          p("Privacy and DNS are included and the renewals cost the same.")
         ),
 
         info_message(
