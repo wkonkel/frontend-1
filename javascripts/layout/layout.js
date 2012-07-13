@@ -295,7 +295,7 @@ with (Hasher('Application')) {
     var options = shift_options_from_args(arguments);
     
     // override the styling, but allow other attributes to be set
-    options.style = 'left: 0px; top: 160px; position: relative; text-align: center;';
+    options.style = 'left: 0px; top: 115px; position: relative; text-align: center;';
         
     return div(options,
       img({ src: 'images/spinner.gif' }),
