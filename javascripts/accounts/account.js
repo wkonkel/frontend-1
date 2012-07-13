@@ -8,7 +8,7 @@ with (Hasher('Account','Application')) {
         account_settings
       )
     );
-//;
+    
     BadgerCache.getAccountInfo(function(response) {
       render({ into: account_settings },
         change_account_form(response.data)
