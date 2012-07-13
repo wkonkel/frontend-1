@@ -7,10 +7,11 @@ with (Hasher('Rewards','Application')) {
         { text: 'My Account' },
         { text: 'Rewards' }
       ),
-      
+
       div({ 'class': 'fancy' },
         Account.account_nav_table(
-          referral_code_div
+          // referral_code_div
+          p('Not quite ready yet!')
         )
       )
     );
