@@ -10,8 +10,7 @@ with (Hasher('Rewards','Application')) {
 
       div({ 'class': 'fancy' },
         Account.account_nav_table(
-          // referral_code_div
-          p('Not quite ready yet!')
+          referral_code_div
         )
       )
     );
@@ -30,37 +29,73 @@ with (Hasher('Rewards','Application')) {
             rewards = response.data.rewards || [],
             referral_stats = response.data.referral_stats || {},
             rewards_div = div();
+            
+        // calculate the number of points to show by the progress bar
+        var free_domains_earned = (referral_stats.points_redeemed / 100),
+            points_to_display = ((referral_stats.points_earned - referral_stats.points_redeemed) == 100 ? 100 : referral_stats.points_earned % 100);
         
         render({ into: referral_code_div },
-          info_message({ style: 'text-align: center; border: none; background: #F1F1F1' },
-            h2({ style: 'margin: 0px' }, 'My Referral Code'),
-            input({ 'class': 'fancy', style: 'font-size: 20px; text-align: center; width: 450px; color: #707070; cursor: pointer', readonly: true, value: (url_base + referral_code), onClick: function(e) { e.target.select() } })
-          ),
-
-          div({ id: 'referral-status', style: 'margin: 20px auto;' },
-            table({ style: 'width: 100%' }, tbody(
-              tr(
-                td({ style: 'text-align: center' },
-                  p({ 'class': 'rewards-points' }, (referral_stats.points_earned||0)+''),
-                  span({ style: 'margin: auto;' }, 'Points Earned')
+          div({ 'class': 'sidebar' },
+            info_message(
+              h3('Accomplishments'),
+              table({ 'class': 'rewards-stats' },tbody(
+                tr(
+                  td({ 'class': 'metric' }, referral_stats.points_earned+''),
+                  td('Points earned to date.')
                 ),
-                td({ style: 'width: 80%' },
-                  div({ 'class': 'meter small green nostripes', style: 'margin: 15px; height: 20px;' },
-                    span({ style: 'height: 20px; width: ' + (referral_stats.points_earned||0)+'' + '%' })
+                tr(
+                  td({ 'class': 'metric' }, free_domains_earned+''),
+                  td('Free domains earned.')
+                ),
+                tr(
+                  td({ 'class': 'metric' }, referral_stats.people_referred+''),
+                  td('People referred to Badger.')
+                ),
+                tr(
+                  td({ 'class': 'metric' }, referral_stats.domains_registered+''),
+                  td('Domains registered or transferred by your referrals.')
+                )
+              ))
+            )
+          ),
+          
+          div({ 'class': 'has-sidebar' },
+            subtle_info_message({ style: 'text-align: center;' },
+              h2({ style: 'margin: 0px' }, 'My Referral Code'),
+              input({ 'class': 'fancy', style: 'font-size: 20px; text-align: center; width: 400px; color: #707070; cursor: pointer', readonly: true, value: (url_base + referral_code), onClick: function(e) { e.target.select() } })
+            ),
+
+            (points_to_display >= 100) && info_message({ style: 'text-align: center' },
+              h2('Congratulations!'),
+              p("You have earned enough points to earn a free domain. Keep up the good work, and we will keep rewarding you! Isn't that a sweet deal?"),
+              a({ 'class': 'myButton large', href: redeem_reward_points }, 'Get my free domain!')
+            ),
+
+            subtle_info_message({ id: 'referral-status', style: 'margin: 10px auto 50px auto;' },
+              table({ style: 'width: 100%' }, tbody(
+                tr(
+                  td({ style: 'text-align: center' },
+                    p({ 'class': 'rewards-points' }, (points_to_display)+''),
+                    span({ style: 'margin: auto;' }, 'Point' + (points_to_display > 1 ? 's' : '') + ' Earned')
+                  ),
+                  td({ style: 'width: 80%' },
+                    div({ 'class': 'meter small green nostripes', style: 'margin: 15px; height: 20px;' },
+                      span({ style: 'height: 20px; width: ' + (points_to_display)+'' + '%' })
+                    )
                   )
                 )
-              )
-            ))
-          ),
+              ))
+            ),
 
-          rewards_div
+            rewards_div
+          )
         );
         
         render({ into: rewards_div },
           table({ 'class': 'fancy-table' }, tbody(
             tr({ 'class': 'table-header' },
               th({ style: 'width: 8%; text-align: center' }, 'Points'),
-              th({ style: 'width: 75%' }, 'Action'),
+              th({ style: 'width: 65%' }, ''),
               th('Completed On')
             ),
             rewards.map(function(reward) {
@@ -88,13 +123,9 @@ with (Hasher('Rewards','Application')) {
             div({ id: 'referral-code-create-errors' }),
             
             div({ id: 'referral-code-create-div', style: '' },
-              fieldset(
-                label('Referral Link Preview:'),
-                input({ id: 'link-preview', style: 'width: 350px; color: #AAA;', readonly: true, value: url_base + default_slug })
-              ),
               fieldset({ 'for': 'slug' },
                 label('My Referral Code:'),
-                input({ style: 'width: 150px;', name: 'slug', value: default_slug, onKeyUp: function(e) { document.getElementById('link-preview').value = (url_base + e.target.value); } }),
+                input({ style: 'width: 150px;', name: 'slug', value: default_slug }),
                 ul({ style: 'font-size: 12px; line-height: 20px; margin: 0px;' },
                   li('Length must be at least 6 characters'),
                   li('Code can only contain the characters: A-Z, 0-9, and _'),
@@ -129,5 +160,10 @@ with (Hasher('Rewards','Application')) {
         hide_form_submit_loader();
       }
     });
+  });
+  
+  // the actual logic and redemption happens on the backend
+  define('redeem_reward_points', function() {
+    Badger.redeemRewardPoints(function(response) { set_route(get_route()); });
   });
 }

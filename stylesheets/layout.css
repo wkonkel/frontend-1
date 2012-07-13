@@ -188,6 +188,16 @@ input.fancy[type=text], input.fancy[type=password] { margin-top: 4px; padding: 5
 }
 .status-message { border: 1px solid #e2c8c2; background: #fff9f7; padding: 14px 20px; border-radius: 10px; margin-bottom: 10px; }
 
+.subtle-info-message {
+  background: #F1F1F1;
+  padding: 14px 20px;
+  margin-bottom: 10px;
+  
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+}
+
 .info-message ul, .success-message ul, .status-message ul, .error-message ul { margin: 10px 0 0 0; }
 
 .invite-extra-info { margin: 5px 10px; width: 450px; }
@@ -415,6 +425,12 @@ input.fancy[type=text], input.fancy[type=password] { margin-top: 4px; padding: 5
   margin: 15px auto;
   color: #2BC253;
   text-shadow: 0px 0px 5px #90DD1C;
+}
+table.rewards-stats td.metric {
+  width: 25%;
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 40px;
 }
 
 .legal-indent { margin-left: 50px; }

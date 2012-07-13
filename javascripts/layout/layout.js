@@ -190,7 +190,8 @@ with (Hasher('Application')) {
     BadgerCache.getAccountInfo(function(response) {
       //$(user_nav).prepend(span(a({ href: '#account/settings'}, response.data.name)));
       $(user_nav).prepend(span({ id: 'use_nav_name' }, a({ href: '#account' }, response.data.name)));
-      $(user_nav).prepend(span(a({ href: '#invites', id: 'user_nav_invites_available' }, 'Invites')));
+      $(user_nav).prepend(span(a({ href: '#rewards' }, 'Rewards')));
+      // $(user_nav).prepend(span(a({ href: '#invites', id: 'user_nav_invites_available' }, 'Invites')));
       $(user_nav).prepend(span({ id: 'user_nav_span', style: "display: none" }, a({ href: '#account/billing', id: 'user_nav_credits' }, 'Credits')));  // updated by update_my_domains_count after_filter
       $(user_nav).prepend(span(a({ href: '#domains', id: 'user-nav-domains' }, 'Domains')));  // updated by update_credits after_filter
       $(user_nav).prepend(span(a({ href: '#search' }, 'Search')));
@@ -288,6 +289,13 @@ with (Hasher('Application')) {
       options['class'] = 'info-message';
       return div(options, arguments);
     }
+  });
+  
+  define('subtle_info_message', function() {
+    var arguments = flatten_to_array(arguments);
+    var options = shift_options_from_args(arguments);
+    options['class'] = 'subtle-info-message';
+    return div(options, arguments);
   });
   
   define('spinner', function() {

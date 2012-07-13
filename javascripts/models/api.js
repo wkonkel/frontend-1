@@ -546,6 +546,8 @@ var Badger = {
     Badger.api('/account/referral_codes/' + slug, 'PUT', data, callback);
   },
   
+  redeemRewardPoints: function(callback) {
+    Badger.api('/account/rewards/redeem_points', 'POST', callback);
   },
 
   remoteWhois: function(domain, callback) {
