@@ -42,7 +42,7 @@ with (Hasher('LinkRegistrarAccount','Application')) {
             li("Linked domains can be transferred into Badger", b(" automatically"), ".  We'll handle the hard parts like auth codes."),
             li("Easily configure your domain to support services like Gmail with Badger Apps.")
           ),
-          p("To link your " + registrar_name + " account with Badger, enter your " + registrar_name + " login credentials below.")
+          p("To link your " + registrar_name + " account, enter your login credentials below.")
         ),
 
         div({ id: 'account-link-errors' }),
