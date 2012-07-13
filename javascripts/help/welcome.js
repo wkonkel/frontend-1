@@ -104,6 +104,9 @@ with (Hasher('Welcome','Application')) {
       )
     );
     
+    // refocus the search box
+    $('#form-search-input').focus();
+    
     document.title = 'Badger'
     
   });
