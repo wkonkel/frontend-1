@@ -36,12 +36,19 @@ with (Hasher('Posterous', 'DomainApps')) {
 
           p("Posterous DNS settings have successfully been installed into Badger DNS."),
           div(
-            span("Last steps before you're all set:"), br(),
+            span("Last steps before you're all set:"), br(), br(),
             span("1. Log in to ", a({ href: "http://posterous.com/", target: '_blank' }, "Posterous"), "."), br(),
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/posterous/1.png' }), br(), br(),
             span("2. Click on ", strong("Manage Spaces"), "."), br(),
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/posterous/2.png' }), br(), br(),
             span("3. Under the appropriate Space, click on the gear icon, then click on ", strong ("Space Settings"), "."), br(),
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/posterous/3.png' }), br(), br(),
             span("4. Click ", strong("Edit"), " beside your Space."), br(),
-            span("5.  Under ", strong("Setup a custom domain I already own"), ", enter your domain, " + domain + ", then click on ", strong("Save Settings"), "."), br()
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/posterous/4.png' }), br(), br(),
+            span("5.  Under ", strong("Setup a custom domain I already own"), ", click on ", strong("Setup my domain »"), "."), br(),
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/posterous/5.png' }), br(), br(),
+            span("6.  Enter your domain, " + domain + ", into the box provided and then click on ", strong("Save Settings"), "."), br(),
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/posterous/6.png' }), br()
           ),
           p (span("For more information, ", a({ href: 'http://posterous.uservoice.com/knowledgebase/articles/36303-setting-up-posterous-spaces-with-a-third-party-reg', target: '_blank' }, 'click here'), "."))
         )

@@ -40,12 +40,19 @@ with (Hasher('Blogger', 'DomainApps')) {
               
           p("Blogger DNS settings have successfully been installed into Badger DNS."),
           div(
-            span("Last steps before you're all set:"), br(),
+            span("Last steps before you're all set:"), br(), br(),
             span("1. Log in to ", a({ href: "http://www.blogger.com", target: '_blank' }, "Blogger"), "."), br(),
-            span("2. Go to the ", strong("Settings|Basic"), " tab."), br(),
-            span("3. Under ", strong("Publishing"), ", click ", strong("+ Add a custom domain"), "."), br(),
-            span("4. Click on ", strong("Switch to advanced settings"), "."), br(),
-            span("5. Enter your domain, " + domain + ", into the box provided and click ", strong("Save"), "."), br()
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/blogger/1.png' }), br(), br(),
+            span("2. Click on the name of your blog."), br(),
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/blogger/2.png' }), br(), br(),
+            span("3. Go to the ", strong("Settings » Basic"), " tab."), br(),
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/blogger/3.png' }), br(), br(),
+            span("4. Under ", strong("Publishing"), ", click ", strong("+ Add a custom domain"), "."), br(),
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/blogger/4.png' }), br(), br(),
+            span("5. Click on ", strong("Switch to advanced settings"), "."), br(),
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/blogger/5.png' }), br(), br(),
+            span("6. Enter your domain, " + domain + ", into the box provided and click ", strong("Save"), "."), br(),
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/blogger/6.png' }), br()
           ),
           p("Once everything is set up and saved, your Blogger URL will automatically redirect to " + domain + "."),
           p (span("For more information, ", a({ href: 'http://support.google.com/blogger/bin/static.py?hl=en&ts=1233381&page=ts.cs', target: '_blank' }, 'click here'), "."))
