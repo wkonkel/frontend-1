@@ -71,7 +71,7 @@ with (Hasher('Welcome','Application')) {
     );
     
     render({ into: 'before-content' }, 
-      div({ style: 'text-align: center; margin: 40px 0 '}, Search.search_box())
+      div({ style: 'text-align: center; margin: 30px 0 '}, Search.search_box())
     );
 
     render({ into: 'after-content' },

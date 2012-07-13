@@ -29,7 +29,7 @@ with (Hasher('Search','Application')) {
     );
 
     render({ into: 'before-content' },
-      div({ style: 'text-align: center; margin: 40px 0 '}, search_box())
+      div({ style: 'text-align: center; margin: 30px 0 '}, search_box())
     )
     
     // refocus the search box
