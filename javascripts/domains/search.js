@@ -1,36 +1,36 @@
 with (Hasher('Search','Application')) {
   route('#search', function() {
     render(
-      div(
-        div({ style: 'text-align: center; margin: 40px 0 '}, search_box()),
-        
-        div({ id: 'search-results-wrapper', style: 'display: none' },
-          h1('Search Results'),
-          div({ 'class': 'sidebar' },
-            !Badger.getAccessToken() && info_message(
-              h3("Register for ", span({ style: 'font-size: 150%' }, "$10"), " a year."),
-              p("We are an ICANN accreddited registrar.  If you'd like to see how our site works without logging in, ", a({ href: 'https://demo.badger.com/'}, 'try our demo'), '.')
-            ),
+      h1('Search Results'),
+      div({ 'class': 'sidebar' },
+        !Badger.getAccessToken() && info_message(
+          h3("Domains cost ", span({ style: 'font-size: 150%' }, "$10"), " a year."),
+          p("We are an ICANN accreddited registrar.  If you'd like to see how our site works without logging in, ", a({ href: 'https://demo.badger.com/'}, 'try our demo'), '.')
+        ),
 
-            info_message(
-              h3("Already own a domain?"),
-              p('We can automatically transfer your domains to Badger.'),
-              div({ 'class': 'centered-button' }, a({ 'class': 'myButton small', href: '#domains/transfer' }, 'Transfer a Domain'))
-            )
-          
-            // info_message(
-            //   h3("Need lots of domains?"),
-            //   p('Register many domains at once with our ', a({ href: function() { Badger.Session.write({ current_transfer_action: 'register' }); set_route('#domains/transfer'); } }, 'Bulk Register Tool'), '.')
-            // )
-          ),
-        
-          div({ 'class': 'has-sidebar' },
-            table({ id: 'search-results', 'class': 'fancy-table' }, tbody())
-          )
+        info_message(
+          h3("Already own a domain?"),
+          p('We can automatically transfer your domains to Badger.'),
+          div({ 'class': 'centered-button' }, a({ 'class': 'myButton small', href: '#domains/transfer' }, 'Transfer a Domain'))
         )
+      
+        // info_message(
+        //   h3("Need lots of domains?"),
+        //   p('Register many domains at once with our ', a({ href: function() { Badger.Session.write({ current_transfer_action: 'register' }); set_route('#domains/transfer'); } }, 'Bulk Register Tool'), '.')
+        // )
       ),
+    
+      div({ 'class': 'has-sidebar' },
+        div({ id: 'search-instructions', style: 'font-style: italic' }, "Not sure what to search for? Try typing your name!"),
+        table({ id: 'search-results', 'class': 'fancy-table' }, tbody())
+      ),
+      
       div({ style: 'clear: both' })
     );
+
+    render({ into: 'before-content' },
+      div({ style: 'text-align: center; margin: 40px 0 '}, search_box())
+    )
     
     // refocus the search box
     $('#form-search-input').focus();
@@ -63,7 +63,6 @@ with (Hasher('Search','Application')) {
         }
         
         $('#search-instructions').remove();
-        $('#search-help').remove();
         $('#search-results-wrapper').show();
         var most_recent_result = $('#search-results tbody tr:first td:first').text();
         if (resp.data.domains[0][0].indexOf(most_recent_result) == 0) {

@@ -10,8 +10,6 @@ with (Hasher('Welcome','Application')) {
     render(
       div({ 'class': 'homepage' }, 
       
-        div({ style: 'text-align: center; margin: 40px 0 '}, Search.search_box()),
-      
         h1({ style: 'font-size: 50px; border-bottom: 0; text-align: center; margin-bottom: 50px' }, "Domains for ", span({ style: 'font-size: 140%' }, "$10"), " a year."),
 
         img({ src: 'images/badger-6.png', style: 'float: right; width: 150px; height: auto; margin: -40px 20px 20px 20px' }),
@@ -72,6 +70,10 @@ with (Hasher('Welcome','Application')) {
       )
     );
     
+    render({ into: 'before-content' }, 
+      div({ style: 'text-align: center; margin: 40px 0 '}, Search.search_box())
+    );
+
     render({ into: 'after-content' },
       div({ 'class': 'content homepage', style: 'min-height: 0' }, 
 

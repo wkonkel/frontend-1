@@ -2,6 +2,7 @@ with (Hasher('Application')) {
 
   // empty this before every page load
   before_filter(function() {
+    $('#before-content').html('');
     $('#after-content').html('');
   })
 
@@ -85,6 +86,7 @@ with (Hasher('Application')) {
 
       div({ id: 'wrapper' },
         div({ id: 'main' },
+          div({ id: 'before-content' }),
           div({ 'class': 'content' }, 
             yield
           ),

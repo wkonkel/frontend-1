@@ -2,6 +2,17 @@ with (Hasher('DomainShow','DomainApps')) {
   
   // show the apps on this domain
   route('#domains/:domain', function(domain) {
+
+    // initial render since with_domain_nav is async
+    render(
+      chained_header_with_links(
+        { text: 'Domains', href: '#domains' },
+        { text: domain },
+        { text: 'Overview' }
+      )
+    );
+
+
     with_domain_nav(domain, function(nav_table, domain_obj) {
       
       /*
