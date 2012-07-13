@@ -81,9 +81,9 @@ html.demo { background: transparent url(../images/v2/white_plaster_demo.png) rep
 
   background: #f1f1f1;
   background: -webkit-gradient(linear, left top, left bottom, from(#FDAF5C), to(#C98A47));
-  background: -moz-linear-gradient(top,  #f8f8f8,  #bbbbbb);
-  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#f8f8f8', endColorstr='#bbbbbb'); /* ie7 */
-  -ms-filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#f8f8f8', endColorstr='#bbbbbb'); /* ie8 */
+  background: -moz-linear-gradient(top,  #FDAF5C,  #C98A47);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#FDAF5C', endColorstr='#C98A47'); /* ie7 */
+  -ms-filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#FDAF5C', endColorstr='#C98A47'); /* ie8 */
 }
 
 #form-search input { 
