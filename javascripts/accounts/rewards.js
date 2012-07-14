@@ -65,18 +65,18 @@ with (Hasher('Rewards','Application')) {
               input({ 'class': 'fancy', style: 'font-size: 20px; text-align: center; width: 400px; color: #707070; cursor: pointer', readonly: true, value: (url_base + referral_code), onClick: function(e) { e.target.select() } })
             ),
 
-            (points_to_display >= 100) && info_message({ style: 'text-align: center' },
+            (referral_stats.points_earned >= 100) && info_message({ style: 'text-align: center' },
               h2('Congratulations!'),
               p("You have earned enough points to earn a free domain. Keep up the good work, and we will keep rewarding you! Isn't that a sweet deal?"),
               a({ 'class': 'myButton large', href: redeem_reward_points }, 'Get my free domain!')
             ),
 
             subtle_info_message({ id: 'referral-status', style: 'margin: 10px auto 50px auto;' },
+              h3({ style: 'text-align: center' },'Progress Toward Free Domain'),
               table({ style: 'width: 100%' }, tbody(
                 tr(
                   td({ style: 'text-align: center' },
-                    p({ 'class': 'rewards-points' }, (points_to_display)+''),
-                    span({ style: 'margin: auto;' }, 'Point' + (points_to_display > 1 ? 's' : '') + ' Earned')
+                    p({ 'class': 'rewards-points' }, (points_to_display) + '%')
                   ),
                   td({ style: 'width: 80%' },
                     div({ 'class': 'meter small green nostripes', style: 'margin: 15px; height: 20px;' },
@@ -86,7 +86,7 @@ with (Hasher('Rewards','Application')) {
                 )
               ))
             ),
-
+            
             rewards_div
           )
         );
@@ -164,6 +164,11 @@ with (Hasher('Rewards','Application')) {
   
   // the actual logic and redemption happens on the backend
   define('redeem_reward_points', function() {
-    Badger.redeemRewardPoints(function(response) { set_route(get_route()); });
+    Badger.redeemRewardPoints(function(response) {
+      console.log(response);
+      
+      BadgerCache.flush('account_info');
+      set_route(get_route());
+    });
   });
 }
