@@ -32,7 +32,7 @@ with (Hasher('Rewards','Application')) {
             
         // calculate the number of points to show by the progress bar
         var free_domains_earned = (referral_stats.points_redeemed / 100),
-            points_to_display = ((referral_stats.points_earned - referral_stats.points_redeemed) == 100 ? 100 : referral_stats.points_earned % 100);
+            points_to_display = ((referral_stats.points_earned - referral_stats.points_redeemed) >= 100 ? 100 : referral_stats.points_earned % 100);
         
         render({ into: referral_code_div },
           div({ 'class': 'sidebar' },
@@ -65,7 +65,7 @@ with (Hasher('Rewards','Application')) {
               input({ 'class': 'fancy', style: 'font-size: 20px; text-align: center; width: 400px; color: #707070; cursor: pointer', readonly: true, value: (url_base + referral_code), onClick: function(e) { e.target.select() } })
             ),
 
-            (referral_stats.points_earned >= 100) && info_message({ style: 'text-align: center' },
+            (points_to_display >= 100) && info_message({ style: 'text-align: center' },
               h2('Congratulations!'),
               p("You have earned enough points to earn a free domain. Keep up the good work, and we will keep rewarding you! Isn't that a sweet deal?"),
               a({ 'class': 'myButton large', href: redeem_reward_points }, 'Get my free domain!')
