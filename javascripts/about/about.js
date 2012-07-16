@@ -89,7 +89,7 @@ with (Hasher('About', 'Application')) {
           td(
             img({ 'class': 'profile', src: profile_image_src })
           ),
-          td(
+          td({ style: 'width: 100%' },
             form({ 'class': 'fancy content' },
               Object.keys(options).map(function(key) {
                 return fieldset({ style: 'margin-left: 255px' },

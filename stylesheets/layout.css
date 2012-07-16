@@ -263,9 +263,8 @@ input.fancy[type=text], input.fancy[type=password] { margin-top: 4px; padding: 5
   -ms-filter: fliph; /*IE*/
   filter: fliph; /*IE*/
 }
-.bio .content { margin-left: -40px; }
+.bio .content { margin-left: -40px; height: auto; }
 .bio .content fieldset { line-height: 25px; }
-.bio .content fieldset.about-me { line-height: 20px; }
 
 .app_store_container { float: left; width: 90px; padding: 10px 10px 20px 10px; border: 1px solid transparent; }
 .app_store_container_small { float: left; width: 0px; padding: 5px 5px 5px 5px; }
