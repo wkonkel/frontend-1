@@ -31,12 +31,14 @@ with (Hasher('Rewards','Application')) {
             rewards_div = div();
             
         // calculate the number of points to show by the progress bar
-        var free_domains_earned = (referral_stats.points_redeemed / 100),
-            points_to_display = ((referral_stats.points_earned - referral_stats.points_redeemed) >= 100 ? 100 : referral_stats.points_earned % 100);
-        
+        var total_free_domains_earned = (referral_stats.points_redeemed / 100),
+            points_to_display = ((referral_stats.points_earned - referral_stats.points_redeemed) >= 100 ? 100 : referral_stats.points_earned % 100),
+            free_domains_earned_now = Math.floor((referral_stats.points_earned - referral_stats.points_redeemed) / 100);
+            
+            
         render({ into: referral_code_div },
           div({ 'class': 'sidebar' },
-            info_message(
+            subtle_info_message(
               h3('Accomplishments'),
               table({ 'class': 'rewards-stats' },tbody(
                 tr(
@@ -44,8 +46,12 @@ with (Hasher('Rewards','Application')) {
                   td((referral_stats.points_earned == 1 ? 'Point' : 'Points') + ' earned to date.')
                 ),
                 tr(
-                  td({ 'class': 'metric' }, free_domains_earned+''),
-                  td('Free ' + (free_domains_earned == 1 ? 'domain' : 'domains') + ' earned.')
+                  td({ 'class': 'metric' }, total_free_domains_earned+''),
+                  td('Free ' + (total_free_domains_earned == 1 ? 'domain' : 'domains') + ' earned.')
+                ),
+                tr(
+                  td({ 'class': 'metric' }, referral_stats.domains_linked+''),
+                  td((referral_stats.domains_linked == 1 ? 'Domain' : 'Domains') + ' added through a linked account.')
                 ),
                 tr(
                   td({ 'class': 'metric' }, referral_stats.people_referred+''),
@@ -53,7 +59,11 @@ with (Hasher('Rewards','Application')) {
                 ),
                 tr(
                   td({ 'class': 'metric' }, referral_stats.domains_registered+''),
-                  td((referral_stats.domains_registered == 1 ? 'Domain' : 'Domains') + ' registered or transferred by your referrals.')
+                  td((referral_stats.domains_registered == 1 ? 'Domain' : 'Domains') + ' registered by your referrals.')
+                ),
+                tr(
+                  td({ 'class': 'metric' }, referral_stats.domains_transferred+''),
+                  td((referral_stats.domains_transferred == 1 ? 'Domain' : 'Domains') + ' transferred by your referrals.')
                 )
               ))
             )
@@ -61,14 +71,14 @@ with (Hasher('Rewards','Application')) {
           
           div({ 'class': 'has-sidebar' },
             subtle_info_message({ style: 'text-align: center;' },
-              h2({ style: 'margin: 0px' }, 'My Referral Code'),
+              h3({ style: 'margin: 0px' }, 'My Referral Code'),
               input({ 'class': 'fancy', style: 'font-size: 20px; text-align: center; width: 400px; color: #707070; cursor: pointer', readonly: true, value: (url_base + referral_code), onClick: function(e) { e.target.select() } })
             ),
 
             (points_to_display >= 100) && info_message({ style: 'text-align: center' },
-              h2('Congratulations!'),
-              p("You have earned enough points to earn a free domain. Keep up the good work, and we will keep rewarding you! Isn't that a sweet deal?"),
-              a({ 'class': 'myButton large', href: redeem_reward_points }, 'Get my free domain!')
+              h3('Congratulations!'),
+              p("You earned ", b(free_domains_earned_now+''), " free ", (free_domains_earned_now == 1 ? 'domain' : 'domains'), "!"),
+              a({ 'class': 'myButton large', href: redeem_reward_points }, 'Redeed Domain Credits')
             ),
 
             subtle_info_message({ id: 'referral-status', style: 'margin: 10px auto 50px auto;' },
@@ -108,7 +118,7 @@ with (Hasher('Rewards','Application')) {
           ))
         );
       } else {
-        var default_slug = response.data.name.replace(/\s+/,'').toLowerCase();
+        var default_slug = response.data.suggested_slug;
         
         render({ into: referral_code_div },
           form_with_loader({ 'class': 'fancy', action: create_referral_code },
