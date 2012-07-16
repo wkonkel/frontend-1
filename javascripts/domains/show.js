@@ -282,6 +282,7 @@ with (Hasher('DomainShow','DomainApps')) {
           'You need to unlock this domain at ' + domain_obj.current_registrar + '.',
           render_help_link('needs_unlock', domain_obj.current_registrar)
         ),
+        'trying':   div('This domain cannot be transferred within 60 days of registration.  Once 60 days has elapsed, this transfer will resume.'),
         'unknown':  div('We are checking on the lock status of this domain.')
         
       }[domain_obj.transfer_in.unlock_domain],
@@ -289,6 +290,7 @@ with (Hasher('DomainShow','DomainApps')) {
       icon:{
         'ok':       'check',
         'pending':  'spin',
+        'trying':   'spin',
         'needed':   'error',
         'unknown':  'spin'
       }[domain_obj.transfer_in.unlock_domain]
