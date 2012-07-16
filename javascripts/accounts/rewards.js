@@ -41,11 +41,11 @@ with (Hasher('Rewards','Application')) {
               table({ 'class': 'rewards-stats' },tbody(
                 tr(
                   td({ 'class': 'metric' }, referral_stats.points_earned+''),
-                  td('Points earned to date.')
                   td((referral_stats.points_earned == 1 ? 'Point' : 'Points') + ' earned to date.')
                 ),
                 tr(
                   td({ 'class': 'metric' }, free_domains_earned+''),
+                  td('Free ' + (free_domains_earned == 1 ? 'domain' : 'domains') + ' earned.')
                 ),
                 tr(
                   td({ 'class': 'metric' }, referral_stats.people_referred+''),
