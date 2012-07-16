@@ -20,7 +20,7 @@ with (Hasher('Rewards','Application')) {
       If the user has no referral codes, render the referral code create screen.
       Otherwise, render the rewards page, with referral code and completed actions table.
     */
-    BadgerCache.getAccountInfo(function(response) {
+    Badger.accountInfo(function(response) {
       var referral_codes = response.data.referral_codes || [],
           url_base = Badger.api_host.replace(/api/,'www'); // for the sake of local and qa development
           
@@ -42,18 +42,18 @@ with (Hasher('Rewards','Application')) {
                 tr(
                   td({ 'class': 'metric' }, referral_stats.points_earned+''),
                   td('Points earned to date.')
+                  td((referral_stats.points_earned == 1 ? 'Point' : 'Points') + ' earned to date.')
                 ),
                 tr(
                   td({ 'class': 'metric' }, free_domains_earned+''),
-                  td('Free domains earned.')
                 ),
                 tr(
                   td({ 'class': 'metric' }, referral_stats.people_referred+''),
-                  td('People referred to Badger.')
+                  td((referral_stats.people_referred == 1 ? 'Person' : 'People') + ' referred to Badger.')
                 ),
                 tr(
                   td({ 'class': 'metric' }, referral_stats.domains_registered+''),
-                  td('Domains registered or transferred by your referrals.')
+                  td((referral_stats.domains_registered == 1 ? 'Domain' : 'Domains') + ' registered or transferred by your referrals.')
                 )
               ))
             )
