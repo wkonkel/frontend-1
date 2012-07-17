@@ -2,7 +2,7 @@ with (Hasher('Billing','Application')) {
   after_filter('update_price_for_discount', function() {
     Account.if_referral_signup_discount(function() {
       var price_span = $('#static-price'),
-          original_price = parseInt($('#static-price').html().slice(1));
+          original_price = parseInt(($('#static-price').html()||"").slice(1)) || 0;
 
       // cross out the old price
       price_span.css('text-decoration', 'line-through');
