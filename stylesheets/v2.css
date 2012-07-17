@@ -36,8 +36,7 @@ html.demo { background: transparent url(../images/v2/white_plaster_demo.png) rep
 
 
 /* header position */
-#header { position: fixed; left: 0; top: 0; width: 100%; height: 45px; z-index: 2; }
-#header.loggedin { height: 70px; }
+#header { position: fixed; left: 0; top: 0; width: 100%; height: 70px; z-index: 2; }
 #main { padding-top: 70px; width: 970px; margin: 0 auto; }
 
 /* header styling */
@@ -88,12 +87,12 @@ html.demo { background: transparent url(../images/v2/white_plaster_demo.png) rep
   right: 5px;
   top: 48px;
 }
-#header.loggedin #left-topnav, #header.loggedin #right-topnav { 
+/*#header.loggedin #left-topnav, #header.loggedin #right-topnav { 
   display: block;
 }
 #left-topnav, #right-topnav { 
   display: none;
-}
+}*/
 
 #left-topnav a, #right-topnav a { 
   color: #eee;

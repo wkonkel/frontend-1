@@ -119,7 +119,7 @@ with (Hasher('Application')) {
         //a({ href: '#search', 'class': 'myButton', style: 'margin: 8px 0 0 20px; padding: 4px 14px; font-size: 16px' }, 'Search for a new domain'),
         Search.search_box(),
         
-        left_topnav(),
+        Badger.getAccessToken() ? left_topnav() : unauthed_left_topnav(),
         right_topnav(),
       
         Badger.getAccessToken() ? user_nav() : unauthed_user_nav()
@@ -183,8 +183,16 @@ with (Hasher('Application')) {
   
   define('left_topnav', function() {
     return div({ 'id': 'left-topnav'},
-      a({ 'class': 'navlink last', href: '#domains', id: 'user-nav-domains' }, 'Domains')
+      a({ 'class': 'navlink', href: '#domains', id: 'user-nav-domains' }, 'Domains'),
+      a({ 'class': 'navlink last', href: Chat.show_chat }, 'Chatroom')
       //a({ 'class': 'navlink last', href: '#rewards'}, '20 Reward Points')
+    );
+  });
+  
+  define('unauthed_left_topnav', function() {
+    return div({ 'id': 'left-topnav'},
+      a({ 'class': 'navlink', href: 'https://demo.badger.com/', target: '_blank' }, 'Try Demo'),
+      a({ 'class': 'navlink last', href: Chat.show_chat }, 'Chatroom')
     );
   });
 
