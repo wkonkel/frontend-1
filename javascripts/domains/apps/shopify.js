@@ -49,11 +49,21 @@ with (Hasher('Shopify', 'DomainApps')) {
           domain_app_settings_button('badger_shopify', domain),
           p("Shopify DNS settings have successfully been installed into Badger DNS."),
           div(
-            span("Last steps before you're all set:"), br(),
+            span("Last steps before you're all set:"), br(), br(),
             span("1. Log in to ", a({ href: "http://www.shopify.com/", target: '_blank' }, "Shopify"), '.'), br(),
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/Shopify/1.png' }), br(), br(),
             span("2. Click on ", strong("Preferences "), "then click on ", strong("DNS & Domains"), '.'), br(),
-            span("3. Click on ", strong("Add a domain you already own"), ", add www." + domain + ", then click ", strong("Claim this domain"), "."), br(),
-            span("4. Click on ", strong("Add a domain you already own"), ", add " + domain + ", then click ", strong("Claim this domain"), "."), br()
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/Shopify/2.png' }), br(), br(),
+            span("3. Under Domain Manager, click on ", strong("Add a domain you already own"), "."), br(),
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/Shopify/3.png' }), br(), br(),
+            span("4. Add", strong(" 'www." + domain + "'"), " then click ", strong("Claim this domain"), "."), br(),
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/Shopify/4.png' }), br(), br(),
+            span("5. Add", strong(" '" + domain + "'"), " then click ", strong("Claim this domain"), "."), br(),
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/Shopify/5.png' }), br(), br(),
+            span("6. Beside either", strong(" '" + domain + "'"), " or ", strong("'www." + domain + "'"), ", click on ", strong("make this my primary domain"), "."), br(),
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/Shopify/6.png' }), br(), br(),
+            span("7. Make sure the ", strong("always redirect customers here?"), " box is checked, and you're all set!"), br(),
+            img({ src: 'https://dl.dropbox.com/u/57131205/Badger/Shopify/7.png' }), br()
           ),
           p (span("For more information, ", a({ href: 'http://wiki.shopify.com/Using_Your_Own_Domains', target: '_blank' }, 'click here'), "."))
         )
