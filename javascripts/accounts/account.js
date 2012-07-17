@@ -21,6 +21,16 @@ with (Hasher('Account','Application')) {
     return (permissions || []).indexOf(which) >= 0;
   });
 
+  define('if_referral_signup_discount', function(callback) {
+    BadgerCache.getAccountInfo(function(response) {
+      var rewards_list = response.data.rewards.map(function(reward) { return reward.name }).unique();
+      if (rewards_list.includes('signup_through_referral')) {
+        BadgerCache.flush('account_info');
+        callback(response);
+      }
+    });
+  });
+
   define('account_nav_table', function() {
     var active_url = get_route();
     

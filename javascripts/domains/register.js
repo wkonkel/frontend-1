@@ -21,8 +21,8 @@ with (Hasher('Register','Application')) {
             option({ value: 4 }, '4 years'),
             option({ value: 5 }, '5 years'),
             option({ value: 10 }, '10 years')
-          ),
-          span({ 'class': 'big-text' }, ' @ $10 per year')
+          )
+          // span({ 'class': 'big-text' }, ' @ $10 per year')
         ),
 
         fieldset(
@@ -60,7 +60,7 @@ with (Hasher('Register','Application')) {
         ),
 
         fieldset({ 'class': 'no-label' },
-          submit({ id: 'register-button', value: 'Register ' + Domains.truncate_domain_name(domain) + ' for $10' })
+          submit({ id: 'register-button', value: 'Register ' + Domains.truncate_domain_name(domain) })
         )
       )
     );

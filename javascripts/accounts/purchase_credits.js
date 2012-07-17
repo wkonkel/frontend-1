@@ -1,4 +1,18 @@
 with (Hasher('Billing','Application')) {
+  after_filter('update_price_for_discount', function() {
+    Account.if_referral_signup_discount(function() {
+      var price_span = $('#static-price'),
+          original_price = parseInt($('#static-price').html().slice(1));
+
+      // cross out the old price
+      price_span.css('text-decoration', 'line-through');
+
+      // insert new price next to it
+      price_span.after(
+        span({ style: 'margin-left: 10px; font-size: 30px; font-style: italic;' }, '$' + (original_price - 5))
+      );
+    });
+  });
 
   route('#account/billing/credits', function() {
     var necessary_credits = Badger.Session.get('necessary_credits') || 0;

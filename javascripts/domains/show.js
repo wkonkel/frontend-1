@@ -14,7 +14,6 @@ with (Hasher('DomainShow','DomainApps')) {
 
 
     with_domain_nav(domain, function(nav_table, domain_obj) {
-      
       /*
         Three States:
         1. Domain.current_registrar =~ /unknown/i
@@ -80,7 +79,7 @@ with (Hasher('DomainShow','DomainApps')) {
             }
             // update the register domains button
             $("select[name=years]").change(function(e) {
-              $('#register-button').val('Register ' + domain + ' for $' + (this.value*10));
+              // $('#register-button').val('Register ' + domain + ' for $' + (this.value * 10));
               $('#expiration-date').html(
                 (parseInt(this.value)).years().fromNow().toString("MMMM dd yyyy")
               );
@@ -111,22 +110,7 @@ with (Hasher('DomainShow','DomainApps')) {
         ),
 
         nav_table(
-          // div({ 'class': 'sidebar', style: 'float: right' },
-          //   info_message(
-          //     h3('Make things easier!'),
-          //     p("Domain apps make it easy to use your domain with popular services.")
-          //   ),
-          //   
-          //   info_message(
-          //     h3("Don't see the app you are looking for?"),
-          //     p("We are always looking for new apps to add, if you have a suggestion ", a({ href: '#contact_us', target: '_blank' }, "let us know!"))
-          //   )
-          // ),
-          
-          (function() {
-            if ((domain_obj.permissions_for_person || []).includes('pending_transfer')) return display_transfer_status(domain_obj);
-          })(),
-          
+          (domain_obj.permissions_for_person||[]).includes('pending_transfer') && display_transfer_status(domain_obj),
           
           render_all_application_icons({
             domain_obj: domain_obj,

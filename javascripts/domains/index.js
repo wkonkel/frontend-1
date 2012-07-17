@@ -16,8 +16,9 @@ with (Hasher('DomainsIndex','Domains')) {
         var domains_div = div();
 
         render({ into: domains_div },
-
           (domains.length > 0) && div({ style: 'margin-bottom: 50px' }, sortable_domains_table(domains, domains_div)),
+          
+          
 
           h2('Add more domains to Badger:'),
           table(tbody(
@@ -61,11 +62,11 @@ with (Hasher('DomainsIndex','Domains')) {
                   href: '#linked_accounts/enom/link'
                 })
               )
-            
             )
           ))
-
         );
+        
+        
         
         // render message for incomplete profile (legacy rhinonames contacts) --- CAB
         var update_contact_message_div = div();
@@ -83,12 +84,25 @@ with (Hasher('DomainsIndex','Domains')) {
           });
         });
         
+        // render message for $5 domain
+        var discounted_domain_message_div = div();
+        if (domains.length <= 0) {
+          Account.if_referral_signup_discount(function(response) {
+            render({ into: discounted_domain_message_div },
+              success_message(
+                span(response.data.referrer.name + ' welcomes you to Badger with a $5 domain!')
+              )
+            );
+          });
+        }
+        
         render({ into: target_div },
           div({ 'class': 'fancy' },
             update_contact_message_div,
             
             domains_nav_table(
               transfer_linked_domains_message(domains),
+              discounted_domain_message_div,
               domains_div
             )
           )
