@@ -70,7 +70,10 @@ html.demo { background: transparent url(../images/v2/white_plaster_demo.png) rep
 #header a.navlink { margin-right: 6px; border-right: 1px solid #777; padding-right: 6px  }
 #header a.navlink.last { margin-right: 0; border-right: 0; padding-right: 0 }
 #user-nav #user_nav_a:hover { text-decoration: none; }
-#user-nav #user_nav_flyout { 
+#user-nav.flyout { box-shadow: 0 0 5px rgba(0, 0, 0, 0.4); }
+#user-nav #user_nav_flyout { display: none; }
+#user-nav.flyout #user_nav_flyout {
+  display: block;
   border-top: 1px solid #ccc;
   padding-top: 5px;
   margin: 5px 0;

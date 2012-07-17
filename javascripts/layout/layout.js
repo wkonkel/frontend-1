@@ -214,12 +214,12 @@ with (Hasher('Application')) {
   define('user_nav_flyout_mouseout', function() {
     if (this.usernav_timeout) clearTimeout(this.usernav_timeout);
     this.usernav_timeout = setTimeout(function() {
-      $('#user_nav_flyout').hide();
+      $('#user-nav').removeClass('flyout');
     }, 500);
   });
   
   define('user_nav_flyout_mouseover', function() {
-    $('#user_nav_flyout').show();
+    $('#user-nav').addClass('flyout');
     if (this.usernav_timeout) {
       clearTimeout(this.usernav_timeout);
       delete this.usernav_timeout;
@@ -234,7 +234,7 @@ with (Hasher('Application')) {
     BadgerCache.getAccountInfo(function(response) {
       render({ into: 'user-nav'}, 
         a({ href: '#account', id: 'user_nav_a' }, span({ id: 'use_nav_name' }, response.data.name), span({ 'class': 'downarrow' }, '▼')),
-        div({ style: 'display: none', id: 'user_nav_flyout' }, 
+        div({ id: 'user_nav_flyout' }, 
           a({ href: '#account/billing' }, 'Billing'),
           a({ href: '#rewards' }, 'Rewards'),
           a({ href: '#invites', id: 'user_nav_invites_available' }, 'Invites'),
