@@ -70,9 +70,9 @@ with (Hasher('Welcome','Application')) {
       )
     );
     
-    render({ into: 'before-content' }, 
-      div({ style: 'text-align: center; margin: 30px 0 '}, Search.search_box())
-    );
+    // render({ into: 'before-content' }, 
+    //   div({ style: 'text-align: center; margin: 30px 0 '}, Search.search_box())
+    // );
 
     render({ into: 'after-content' },
       div({ 'class': 'content homepage', style: 'min-height: 0' }, 

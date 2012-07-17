@@ -28,9 +28,9 @@ with (Hasher('Search','Application')) {
       div({ style: 'clear: both' })
     );
 
-    render({ into: 'before-content' },
-      div({ style: 'text-align: center; margin: 30px 0 '}, search_box())
-    )
+    // render({ into: 'before-content' },
+    //   div({ style: 'text-align: center; margin: 30px 0 '}, search_box())
+    // )
     
     // refocus the search box
     $('#form-search-input').focus();
@@ -52,15 +52,14 @@ with (Hasher('Search','Application')) {
   define('search_box_changed', function() {
     var current_value = $('#form-search-input').val().toLowerCase().replace(/[^a-zA-Z0-9\-\.]/g,'').split('.')[0];
     
+    if (this.last_search_value == current_value) return;
+    
+    if (get_route() != '#search') set_route('#search');
+    
     var search_callback = function() {
       Badger.domainSearch(current_value, true, function(resp) {
-        // allow search from homepage
-        if (get_route() == '#welcome') {
-          var previous_value = $('#form-search-input').val();
-          set_route('#search');
-          $('#form-search-input').val(previous_value);
-          this.last_search_value = null;
-        }
+        // only if we're still on #search
+        if (get_route() != '#search') return;
         
         $('#search-instructions').remove();
         $('#search-results-wrapper').show();

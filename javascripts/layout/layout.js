@@ -111,18 +111,18 @@ with (Hasher('Application')) {
   });
 
   define('header', function() {
-    return div({ id: 'header' },
+    return div({ id: 'header', 'class': (Badger.getAccessToken() && 'loggedin') },
       div({ 'class': 'inner' },
         h2({ id: 'logo' }, a({ href: '#welcome'}, 'Badger')),
+        //h2({ id: 'logo' }, img({ src: 'images/badger-4.png', style: 'height: 40px'}), span({ style: "color: #fff; font-size: 13px" }, '3 Domains')),
 
         //a({ href: '#search', 'class': 'myButton', style: 'margin: 8px 0 0 20px; padding: 4px 14px; font-size: 16px' }, 'Search for a new domain'),
+        Search.search_box(),
+        
+        left_topnav(),
+        right_topnav(),
       
-        Badger.getAccessToken() ? 
-          user_nav()
-        : div({ id: 'user-nav' },
-          span(a({ href: '#account/login' }, 'Login')),
-          a({ href: '#account/create' }, 'Create Account')
-        )
+        Badger.getAccessToken() ? user_nav() : unauthed_user_nav()
       )
     );
   });
@@ -180,21 +180,66 @@ with (Hasher('Application')) {
       )
     )
   });
+  
+  define('left_topnav', function() {
+    return div({ 'id': 'left-topnav'},
+      a({ 'class': 'navlink last', href: '#domains', id: 'user-nav-domains' }, 'Domains')
+      //a({ 'class': 'navlink last', href: '#rewards'}, '20 Reward Points')
+    );
+  });
 
+  define('right_topnav', function() {
+    return div({ 'id': 'right-topnav'},
+      a({ 'class': 'navlink', href: '#account/billing', id: 'user_nav_credits', style: 'display: none' }, 'Credits'),
+      a({ 'class': 'navlink last', href: '#domains/transfer'}, 'Shopping Cart' /*, span({ 'class': 'unread-alert' }, '3')*/) 
+      //a({ 'class': 'navlink last', href: '#domains'}, 'Balance', span({ 'class': 'another-alert' }, '$5.00'))
+    );
+  });
+  
+  define('unauthed_user_nav', function() {
+    return div({ id: 'user-nav', 'class': 'unauthed' },
+      a({ 'class': 'navlink', href: '#account/login' }, 'Login'),
+      a({ 'class': 'navlink last' , href: '#account/create' }, 'Create Account')
+    );
+  });
 
+  define('user_nav_flyout_mouseout', function() {
+    if (this.usernav_timeout) clearTimeout(this.usernav_timeout);
+    this.usernav_timeout = setTimeout(function() {
+      $('#user_nav_flyout').hide();
+    }, 500);
+  });
+  
+  define('user_nav_flyout_mouseover', function() {
+    $('#user_nav_flyout').show();
+    if (this.usernav_timeout) {
+      clearTimeout(this.usernav_timeout);
+      delete this.usernav_timeout;
+    }
+  });
+  
   define('user_nav', function() {
-    var user_nav = div({ id: 'user-nav' },
-      a({ href: Badger.logout }, 'Logout')
+    var user_nav = div({ id: 'user-nav', onMouseOver: user_nav_flyout_mouseover, onMouseOut: user_nav_flyout_mouseout },
+      a({ href: function() {} }, 'Loading... ▼')
     );
     
     BadgerCache.getAccountInfo(function(response) {
-      //$(user_nav).prepend(span(a({ href: '#account/settings'}, response.data.name)));
-      $(user_nav).prepend(span({ id: 'use_nav_name' }, a({ href: '#account' }, response.data.name)));
-      $(user_nav).prepend(span(a({ href: '#rewards' }, 'Rewards')));
-      // $(user_nav).prepend(span(a({ href: '#invites', id: 'user_nav_invites_available' }, 'Invites')));
-      $(user_nav).prepend(span({ id: 'user_nav_span', style: "display: none" }, a({ href: '#account/billing', id: 'user_nav_credits' }, 'Credits')));  // updated by update_my_domains_count after_filter
-      $(user_nav).prepend(span(a({ href: '#domains', id: 'user-nav-domains' }, 'Domains')));  // updated by update_credits after_filter
-      $(user_nav).prepend(span(a({ href: '#search' }, 'Search')));
+      render({ into: 'user-nav'}, 
+        a({ href: '#account', id: 'user_nav_a' }, span({ id: 'use_nav_name' }, response.data.name), span({ 'class': 'downarrow' }, '▼')),
+        div({ style: 'display: none', id: 'user_nav_flyout' }, 
+          a({ href: '#account/billing' }, 'Billing'),
+          a({ href: '#rewards' }, 'Rewards'),
+          a({ href: '#invites', id: 'user_nav_invites_available' }, 'Invites'),
+          a({ href: '#account' }, 'Settings'),
+          a({ href: Badger.logout }, 'Logout')
+        )
+      );
+
+      
+      // //$(user_nav).prepend(span(a({ href: '#account/settings'}, response.data.name)));
+      // // $(user_nav).prepend(span(a({ href: '#invites', id: 'user_nav_invites_available' }, 'Invites')));
+      // $(user_nav).prepend(span(a({ href: '#domains', id: 'user-nav-domains' }, 'Domains')));  // updated by update_credits after_filter
+      // $(user_nav).prepend(span(a({ href: '#search' }, 'Search')));
     });
 
     return user_nav;
@@ -205,7 +250,7 @@ with (Hasher('Application')) {
     if (refresh) BadgerCache.flush('account_info');
     BadgerCache.getAccountInfo(function(response) {
       $('#user_nav_credits').html(response.data.domain_credits == 1 ? '1 Credit' : response.data.domain_credits + ' Credits');
-      response.data.domain_credits > 0 ? $('#user_nav_span').show() : $('#user_nav_span').hide();
+      response.data.domain_credits > 0 ? $('#user_nav_credits').show() : $('#user_nav_credits').hide();
     });
   });
 
