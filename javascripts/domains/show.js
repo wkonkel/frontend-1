@@ -2,16 +2,18 @@ with (Hasher('DomainShow','DomainApps')) {
   
   // show the apps on this domain
   route('#domains/:domain', function(domain) {
-
+    var target_div = div(spinner('Loading...'));
+    
     // initial render since with_domain_nav is async
     render(
       chained_header_with_links(
         { text: 'Domains', href: '#domains' },
         { text: domain },
-        { text: 'Overview' }
-      )
+        { text: 'Applications' }
+      ),
+      
+      target_div
     );
-
 
     with_domain_nav(domain, function(nav_table, domain_obj) {
       /*
@@ -27,16 +29,6 @@ with (Hasher('DomainShow','DomainApps')) {
           data.
       */
       if ((domain_obj.current_registrar||'').match(/^unknown$/i)) {
-        render(
-          chained_header_with_links(
-            { text: 'Domains', href: '#domains' },
-            { text: domain },
-            { text: 'Overview' }
-          ),
-          
-          spinner('Loading domain...')
-        );
-        
         setTimeout(function() {
           var domain_route = '#domains/' + domain;
           if (get_route() == domain_route) {
@@ -48,13 +40,7 @@ with (Hasher('DomainShow','DomainApps')) {
         return;
       } else if (domain_obj.available) {
         if (domain_obj.can_register) {
-          render(
-            chained_header_with_links(
-              { text: 'Domains', href: '#domains' },
-              { text: domain },
-              { text: 'Overview' }
-            ),
-            
+          render({ into: target_div },
             div({ 'class': 'sidebar' },
               success_message(
                 h3("This domain is available!"),
@@ -90,25 +76,13 @@ with (Hasher('DomainShow','DomainApps')) {
           
           return;
         } else {
-          return render(
-            chained_header_with_links(
-              { text: 'Domains', href: '#domains' },
-              { text: domain },
-              { text: 'Overview' }
-            ),
-            
+          return render({ into: target_div },
             error_message("This domain is not currently registered! Unfortunately, we do not support this top level domain quite yet. Check back later!")
           );
         }
       }
       
-      render(
-        chained_header_with_links(
-          { text: 'Domains', href: '#domains' },
-          { text: domain },
-          { text: 'Overview' }
-        ),
-
+      render({ into: target_div },
         nav_table(
           (domain_obj.permissions_for_person||[]).includes('pending_transfer') && display_transfer_status(domain_obj),
           
