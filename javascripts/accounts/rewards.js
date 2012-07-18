@@ -1,19 +1,31 @@
 with (Hasher('Rewards','Application')) {
+  define('show_rewards_nav_links', function() {
+    $('#user-nav a#rewards').show();
+    $('#domains-left-nav li#rewards').show();
+  });
+  
   route('#rewards', function() {
     var referral_code_div = div(spinner('Loading...'));
     
-    render(
-      chained_header_with_links(
-        { text: 'My Account' },
-        { text: 'Rewards' }
-      ),
+    BadgerCache.getDomains(function(response) {
+      var show_rewards = response.data.length > 0;
+      
+      render(
+        chained_header_with_links(
+          { text: 'My Account' },
+          { text: 'Rewards' }
+        ),
 
-      div({ 'class': 'fancy' },
-        Account.account_nav_table(
-          referral_code_div
+        div({ 'class': 'fancy' },
+          Account.account_nav_table(
+            show_rewards ? referral_code_div : [
+              p("In order to participate in the rewards program, you must have at least 1 domain in your account.")
+            ]
+          )
         )
-      )
-    );
+      );
+    });
+    
     
     /*
       Get the referral codes from account info.
@@ -175,8 +187,6 @@ with (Hasher('Rewards','Application')) {
   // the actual logic and redemption happens on the backend
   define('redeem_reward_points', function() {
     Badger.redeemRewardPoints(function(response) {
-      console.log(response);
-      
       BadgerCache.flush('account_info');
       set_route(get_route());
     });

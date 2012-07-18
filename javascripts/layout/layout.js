@@ -6,6 +6,27 @@ with (Hasher('Application')) {
     $('#after-content').html('');
   })
 
+  // rewards links are hidden until user has a domain on their account
+  after_filter('show_rewards_links', function() {
+    if (!Badger.getAccessToken()) {
+      return;
+    } else if (Badger.Session.get('show_rewards')) {
+      Rewards.show_rewards_nav_links();
+    } else {
+      BadgerCache.getDomains(function(response) {
+        var badger_domain_count = 0;
+        for (var i=0; i < (response.data||[]).length; i++) {
+          if ((response.data[i].current_registrar||'').match(/badger/i)) badger_domain_count++;
+        }
+        if (badger_domain_count > 0) {
+          Badger.Session.write({ show_rewards: true });
+          Rewards.show_rewards_nav_links();
+        }
+      });
+    }
+  });
+  
+
   // define('update_sidebar', function() {
   //   if ($('#sidebar')) {
   //     var request_uri = get_route();
@@ -236,7 +257,7 @@ with (Hasher('Application')) {
         a({ href: '#account', id: 'user_nav_a' }, span({ id: 'use_nav_name' }, response.data.name), span({ 'class': 'downarrow' }, '▼')),
         div({ id: 'user_nav_flyout' }, 
           a({ href: '#account/billing' }, 'Billing'),
-          a({ href: '#rewards' }, 'Rewards'),
+          a({ style: 'display: none;', id: 'rewards', href: '#rewards' }, 'Rewards'),
           a({ href: '#invites', id: 'user_nav_invites_available' }, 'Invites'),
           a({ href: '#account' }, 'Settings'),
           a({ href: Badger.logout }, 'Logout')
