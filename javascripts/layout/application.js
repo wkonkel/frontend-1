@@ -15,6 +15,10 @@ with (Hasher('Application')) {
     });
   });
   
+  // clear session after loggin in and out
+  Badger.onLogin(Badger.Session.clear);
+  Badger.onLogout(Badger.Session.clear);
+  
   define('require_person', function() {
     if (!Badger.getAccessToken()) {
       Badger.setCookie('badger_url_after_auth', get_route());

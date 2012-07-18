@@ -1,13 +1,17 @@
 with (Hasher('Welcome','Application')) {
-
   after_filter('show_referred_message', function() {
-    if (Hasher.request_data.params.referred_by) {
+    if (Badger.Session.get('referred_by')) {
       render({ into: 'before-content' }, 
         div({ style: 'margin-top: 30px' }, 
-          success_message('You have been referred to Badger by ', b(Hasher.request_data.params.referred_by.replace(/\+/,' ')), '! Your first registration or transfer is only $5.')
+          success_message('You have been referred to Badger by ', b(Badger.Session.get('referred_by')), '! Your first registration or transfer is only $5.')
         )
       );
     }
+  });
+  
+  route('#welcome/:referral_code', function(referral_code) {
+    Badger.Session.write({ referral_code: referral_code, referred_by: (Hasher.request_data.params.referred_by||'').replace(/\+/,' ') });
+    set_route('#welcome');
   });
   
   route('#july4th/:code', function(invite_code) {

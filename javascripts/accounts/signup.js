@@ -27,7 +27,7 @@ with (Hasher('Signup','Application')) {
   });
   
   route('#account/create', function() {
-    var invite_code = Badger.getInviteCode();
+    var invite_code = Badger.getInviteCode() || Badger.Session.get('referral_code');
     if (invite_code) {
       var target_div = div(spinner('Loading...'));
       var inviter_message_div = div();
@@ -41,7 +41,8 @@ with (Hasher('Signup','Application')) {
         var message = "";
         if (response.meta.status == 'ok') {
           if (response.data.slug) {
-            message = response.data.person.name + " has referred you to Badger! Your first registration or transfer is only $5!";
+            // already showing this message on the home page
+            // message = response.data.person.name + " has referred you to Badger! Your first registration or transfer is only $5!";
           } else if (response.data.inviter) {
             message = response.data.inviter.name + ' has invited you to Badger!';
             if (response.data.domain_credits > 0) {
@@ -54,7 +55,8 @@ with (Hasher('Signup','Application')) {
         } else {
           message = error_message(response.data.message, ' However, you can still sign up using the form below.');
         }
-        render({ target: inviter_message_div }, message);
+        
+        if (message.length > 0) render({ target: inviter_message_div }, message);
         render({ target: target_div }, account_create_form(response.data.invitee, invite_code));
       });
     } else {
