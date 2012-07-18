@@ -1,4 +1,14 @@
 with (Hasher('Welcome','Application')) {
+
+  after_filter('show_referred_message', function() {
+    if (Hasher.request_data.params.referred_by) {
+      render({ into: 'before-content' }, 
+        div({ style: 'margin-top: 30px' }, 
+          success_message('You have been referred to Badger by ', b(Hasher.request_data.params.referred_by.replace(/\+/,' ')), '! Your first registration or transfer is only $5.')
+        )
+      );
+    }
+  });
   
   route('#july4th/:code', function(invite_code) {
     set_route('#account/create/' + invite_code, { reload_page: true });
