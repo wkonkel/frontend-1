@@ -78,7 +78,7 @@ with (Hasher('Rewards','Application')) {
             (points_to_display >= 100) && info_message({ style: 'text-align: center' },
               h3('Congratulations!'),
               p("You earned ", b(free_domains_earned_now+''), " free ", (free_domains_earned_now == 1 ? 'domain' : 'domains'), "!"),
-              a({ 'class': 'myButton large', href: redeem_reward_points }, 'Redeed Domain Credits')
+              a({ 'class': 'myButton large', href: redeem_reward_points }, 'Redeem Domain Credits')
             ),
 
             subtle_info_message({ id: 'referral-status', style: 'margin: 10px auto 50px auto;' },
