@@ -365,6 +365,16 @@ with (Hasher('Application')) {
     );
   });
   
+  // like spinner, but wrapped in a modal
+  define('show_spinner_modal', function(message) {
+    show_modal({ style: 'height: 150px; text-align: center;' },
+      div({ style: 'padding: 65px;' },
+        img({ src: 'images/spinner.gif' }), br(),
+        span({ style: 'font-style: italic' }, message)
+      )
+    )
+  });
+  
   // this will return a form, and when the submit button is clicked, it will hide the form content,
   // and display a loader div
   define('form_with_loader', function() {

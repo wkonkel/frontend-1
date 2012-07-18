@@ -1,5 +1,5 @@
 with (Hasher('DomainShow','DomainApps')) {
-  
+
   // show the apps on this domain
   route('#domains/:domain', function(domain) {
     var target_div = div(spinner('Loading...'));
@@ -8,8 +8,7 @@ with (Hasher('DomainShow','DomainApps')) {
     render(
       chained_header_with_links(
         { text: 'Domains', href: '#domains' },
-        { text: domain },
-        { text: 'Applications' }
+        { text: domain }
       ),
       
       target_div
@@ -101,16 +100,23 @@ with (Hasher('DomainShow','DomainApps')) {
   });
   
   route('#domains/:domain/whois', function(domain) {
+    var target_div = div(spinner('Loading...'));
+    
+    render(
+      chained_header_with_links(
+        { text: 'Domains', href: '#domains' },
+        { text: domain },
+        { text: 'Registration' }
+      ),
+
+      target_div
+    );
+    
     with_domain_nav(domain, function(nav_table, domain_obj) {
-      var show_whois_privacy_message = (domain_obj.permissions_for_person||[]).includes('modify_contacts') && !(domain_obj.whois && domain_obj.whois.privacy);
+      var show_whois_privacy_message = (domain_obj.permissions_for_person||[]).includes('modify_contacts') && !(domain_obj.whois && domain_obj.whois.privacy),
+          show_extend_registration = (domain_obj.permissions_for_person||[]).includes('modify_contacts');
       
-      render(
-        chained_header_with_links(
-          { text: 'Domains', href: '#domains' },
-          { text: domain },
-          { text: 'Whois' }
-        ),
-        
+      render({ into: target_div },
         nav_table(
           div({ 'class': 'has-sidebar' },
             form({ 'class': 'fancy', style: 'margin-bottom: 20px' },
@@ -145,18 +151,83 @@ with (Hasher('DomainShow','DomainApps')) {
               )
             ),
             
+            show_extend_registration && div(
+              form({ id: 'registration-renewal-form', 'class': 'fancy', action: curry(renew_domain, domain_obj), loading_message: 'Extending registration...' },
+                h1({ style: 'margin-top: 35px;' }, 'Extend Registration'),
+                div({ id: 'errors' }),
+                Billing.show_num_credits_added({ delete_var: true }),
+                
+                input({ type: "hidden", value: domain, name: "domain" }),
+
+                fieldset(
+                  label({ 'for': 'years' }, 'Years:'),
+                  select({ name: 'years' },
+                    option({ value: 1 }, "1"),
+                       option({ value: 2 }, "2"),
+                       option({ value: 3 }, "3"),
+                       option({ value: 4 }, "4"),
+                       option({ value: 5 }, "5"),
+                    option({ value: 6 }, "6"),
+                    option({ value: 7 }, "7"),
+                    option({ value: 8 }, "8"),
+                    option({ value: 9 }, "9"),
+                       option({ value: 10 }, "10")
+                  )
+                ),
+
+                fieldset(
+                  label('New Expiration Date:'),
+                  span({ id: 'expiration-date', 'class': 'big-text' }, date(domain_obj.expires_at).toString("MMMM dd, yyyy"))
+                ),
+
+                fieldset({ 'class': 'no-label' },
+                  submit({ name: 'Submit', value: 'Renew Domain' })
+                )
+              )
+            ),
+            
+            h1({ style: 'margin-top: 35px; border 0px' }, 'Public WHOIS'),
+            
             show_whois_privacy_message && info_message("Don't want your contact information available to the public? ", a({ href: '#domains/' + domain + '/settings' }, 'Enable Whois privacy.'), " It's free!"),
 
-            domain_obj.whois && domain_obj.whois.raw && info_message({ style: 'overflow: scroll; width: 700px; border-color: #aaa; background: #eee; white-space: pre; padding: 10px;' }, domain_obj.whois.raw)
+            domain_obj.whois && domain_obj.whois.raw && info_message({ style: 'overflow: scroll; width: 700px; border-color: #aaa; background: #eee; white-space: pre; padding: 10px; border-radius: 0px' }, domain_obj.whois.raw)
           )
         )
-      )
+      );
+      
+      // update expiration date on extend registration form
+      $('select').change(function() {
+        var new_expiration_date = date(domain_obj.expires_at).add(parseInt(this.value)).years();
+        $("#expiration-date").html(new_expiration_date.toString("MMMM dd, yyyy"));
+      });
+      $('select').trigger('change');
     });
-    
   });
   
-  
-  
+  define('renew_domain', function(domain_obj, form_data) {
+    show_spinner_modal('Renewing registration...');
+    
+    Badger.renewDomain(form_data.domain, form_data.years, function(response) {
+      hide_modal();
+      
+      if (response.meta.status == "ok") {
+        BadgerCache.flush('domains');
+        set_route("#domains/" + form_data.domain + "/whois");
+        update_credits(true);
+      } else {
+        if (response.data && response.data.extra) {
+          Badger.Session.write({
+            years: form_data.years,
+            necessary_credits: response.data.extra.necessary_credits,
+            redirect_url: get_route()
+          });
+          set_route("#account/billing/credits");
+        }
+        
+        $("#errors").html(error_message(response));
+      }
+    });
+  });
   
   define('display_transfer_status', function(domain_obj) {
     var step_percentage = Domains.compute_transfer_progress_percentage(domain_obj);
