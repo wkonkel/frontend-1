@@ -87,10 +87,10 @@ with (Hasher('DomainsIndex','Domains')) {
         // render message for $5 domain
         var discounted_domain_message_div = div();
         if (domains.length <= 0) {
-          Account.if_referral_signup_discount(function(response) {
+          Account.if_referral_signup_discount(function(account_info) {
             render({ into: discounted_domain_message_div },
               success_message(
-                span(response.data.referrer.name + ' welcomes you to Badger with a $5 domain!')
+                span(account_info.referrer.name + ' welcomes you to Badger with a $5 domain!')
               )
             );
           });
