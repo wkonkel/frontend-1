@@ -1,17 +1,29 @@
 with (Hasher('Billing','Application')) {
   after_filter('update_price_for_discount', function() {
     Account.if_referral_signup_discount(function() {
-      var price_span = $('#static-price'),
-          original_price = parseInt(($('#static-price').html()||"").slice(1)) || 0;
-
-      // cross out the old price
-      price_span.css('text-decoration', 'line-through');
-
-      // insert new price next to it
-      price_span.after(
-        span({ style: 'margin-left: 10px; font-size: 30px; font-style: italic;' }, '$' + (original_price - 5))
-      );
+      $("input#credits-input").keyup(function(e) {
+        if (e.target.value <= 0) {
+          $('span#static-price').empty().html('$0');
+        } else {
+          $('span#static-price').empty().html(
+            span(
+              span({ style: 'text-decoration: line-through;' },'$' + (e.target.value*10)),
+              span({ style: 'font-size: 30px; font-style: italic; margin-left: 10px' },'$' + ((e.target.value*10) - 5))
+            )
+          );
+        }
+      });
+      $("input#credits-input").trigger('keyup');
     });
+  });
+  
+  define('update_discount_price', function() {
+    var price_span = $('#static-price'),
+        original_price = parseInt(($('#static-price').html()||"").slice(1)) || 0;
+    
+    if (original_price <= 0) return;
+    if ((parseInt($("input#credits-input").val())||0) == 0) return;
+    
   });
 
   route('#account/billing/credits', function() {
@@ -66,6 +78,7 @@ with (Hasher('Billing','Application')) {
 
       )
     );
+    
 
     // determine which tier to select first
     // var credits = $("#credits-form").find("input[name=credits]").val()
@@ -332,6 +345,9 @@ with (Hasher('Billing','Application')) {
       } else {
         $("#savings").hide();
       }
+      
+      // update discount field
+      // update_discount_price();
 
       //change the tier hilighting if changed
       // if ( tier == -1 ) {
