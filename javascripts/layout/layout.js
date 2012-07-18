@@ -249,13 +249,14 @@ with (Hasher('Application')) {
   
   define('user_nav', function() {
     var user_nav = div({ id: 'user-nav', onMouseOver: user_nav_flyout_mouseover, onMouseOut: user_nav_flyout_mouseout },
-      a({ href: function() {} }, 'Loading... ▼')
+      a({ href: function() {} }, 'Loading...', span({ 'class': 'downarrow' }, '▼'))
     );
     
     BadgerCache.getAccountInfo(function(response) {
       render({ into: 'user-nav'}, 
         a({ href: '#account', id: 'user_nav_a' }, span({ id: 'use_nav_name' }, response.data.name), span({ 'class': 'downarrow' }, '▼')),
-        div({ id: 'user_nav_flyout' }, 
+        div({ id: 'user_nav_flyout' },
+          a({ href: '#linked_accounts' }, 'Linked Accounts'),
           a({ href: '#account/billing' }, 'Billing'),
           a({ style: 'display: none;', id: 'rewards', href: '#rewards' }, 'Rewards'),
           a({ href: '#invites', id: 'user_nav_invites_available' }, 'Invites'),
