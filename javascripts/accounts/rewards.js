@@ -81,7 +81,7 @@ with (Hasher('Rewards','Application')) {
               div({ style: 'font-size: 20px; margin-top: 10px;' },
                 span({ style: 'width: 25%; font-weight: bold; margin-right: 10px' },'My Referral Link:'),
                 // clicking the input field selects the text inside, and resizes the box
-                input({ 'class': 'fancy', id: 'referral-link', style: 'width: 40%; margin: 0px; color: #707070; cursor: pointer', readonly: true, value: (url_base + referral_code), onclick: function() { this.select(); this.style.width = ((this.value.length + 3) * 8) + 'px'; } })
+                input({ 'class': 'fancy', id: 'referral-link', style: 'width: 40%; margin: 0px; color: #707070; cursor: pointer', readonly: true, value: (url_base + referral_code), onclick: function() { this.select(); this.style.width = ((this.value.length + 5) * 8) + 'px'; } })
               )
             )
           )
@@ -135,7 +135,7 @@ with (Hasher('Rewards','Application')) {
         
         // show the referral code create form
         !show_create_referral_code_form && div({ style: 'text-align: center; margin-top: 30px;' },
-          a({ 'class': 'myButton', href: '#rewards/history' }, 'Show Rewards Ristory')
+          a({ 'class': 'myButton', href: '#rewards/history' }, 'Show Rewards History')
         )
       );
       
