@@ -158,6 +158,9 @@ with (Hasher('Register','Application')) {
           BadgerCache.flush('domains');
           BadgerCache.getDomains(update_my_domains_count);
           
+          // reload the user nav, show rewards if necessary
+          reload_account_navs();
+          
           // cleanup session variables
           Badger.Session.remove('credits_added', 'years');
           

@@ -77,6 +77,15 @@ with (Hasher('Application')) {
       }
     });
   });
+  
+  define('reload_account_navs', function() {
+    BadgerCache.flush('account_info');
+    Badger.Session.remove('show_rewards');
+    
+    with_user_nav_content(function(nav_content) {
+      $('#user-nav').html(nav_content);
+    });
+  });
 
   after_filter('update_my_domains_count', update_my_domains_count);
 
@@ -245,8 +254,17 @@ with (Hasher('Application')) {
       a({ href: function() {} }, 'Loading...', span({ 'class': 'downarrow' }, '▼'))
     );
     
+    with_user_nav_content(function(content) {
+      render({ into: 'user-nav' }, content);
+    });
+
+    return user_nav;
+  });
+
+  // pulled this out so that it can be rendered in later as an update
+  define('with_user_nav_content', function(callback) {
     BadgerCache.getAccountInfo(function(response) {
-      render({ into: 'user-nav'}, 
+      callback([
         a({ href: '#account', id: 'user_nav_a' }, span({ id: 'use_nav_name' }, response.data.name), span({ 'class': 'downarrow' }, '▼')),
         div({ id: 'user_nav_flyout' },
           a({ href: '#linked_accounts' }, 'Linked Accounts'),
@@ -256,16 +274,13 @@ with (Hasher('Application')) {
           a({ href: '#account' }, 'Settings'),
           a({ href: Badger.logout }, 'Logout')
         )
-      );
-
-      
-      // //$(user_nav).prepend(span(a({ href: '#account/settings'}, response.data.name)));
-      // // $(user_nav).prepend(span(a({ href: '#invites', id: 'user_nav_invites_available' }, 'Invites')));
-      // $(user_nav).prepend(span(a({ href: '#domains', id: 'user-nav-domains' }, 'Domains')));  // updated by update_credits after_filter
-      // $(user_nav).prepend(span(a({ href: '#search' }, 'Search')));
+      ]);
     });
-
-    return user_nav;
+      
+    // //$(user_nav).prepend(span(a({ href: '#account/settings'}, response.data.name)));
+    // // $(user_nav).prepend(span(a({ href: '#invites', id: 'user_nav_invites_available' }, 'Invites')));
+    // $(user_nav).prepend(span(a({ href: '#domains', id: 'user-nav-domains' }, 'Domains')));  // updated by update_credits after_filter
+    // $(user_nav).prepend(span(a({ href: '#search' }, 'Search')));
   });
 
   define('update_credits', function(refresh) {
