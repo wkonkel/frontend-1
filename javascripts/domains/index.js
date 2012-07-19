@@ -18,52 +18,8 @@ with (Hasher('DomainsIndex','Domains')) {
         render({ into: domains_div },
           (domains.length > 0) && div({ style: 'margin-bottom: 50px' }, sortable_domains_table(domains, domains_div)),
           
-          
-
           h2('Add more domains to Badger:'),
-          table(tbody(
-            tr(
-              td({ style: 'vertical-align: top' },
-                app_store_icon({
-                  name: 'Register a New Domain',
-                  image_src: 'images/apps/dns.png',
-                  href: '#search'
-                })
-              ),
-
-              td({ style: 'vertical-align: top' },
-                app_store_icon({
-                  name: 'Transfer in Your Domain',
-                  image_src: 'images/apps/web-forward.png',
-                  href: '#domains/transfer'
-                })
-              ),
-
-              td({ style: 'vertical-align: top' },
-                app_store_icon({
-                  name: 'Link With: GoDaddy',
-                  image_src: 'images/apps/godaddy.png',
-                  href: '#linked_accounts/godaddy/link'
-                })
-              ),
-
-              td({ style: 'vertical-align: top' },
-                app_store_icon({
-                  name: 'Link With: Network Solutions',
-                  image_src: 'images/apps/ns.png',
-                  href: '#linked_accounts/networksolutions/link'
-                })
-              ),
-              
-              td({ style: 'vertical-align: top' },
-                app_store_icon({
-                  name: 'Link With: eNom',
-                  image_src: 'images/apps/enom.png',
-                  href: '#linked_accounts/enom/link'
-                })
-              )
-            )
-          ))
+          add_more_domains_icons()
         );
         
         

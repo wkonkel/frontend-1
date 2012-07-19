@@ -6,20 +6,6 @@ with (Hasher('Application')) {
     $('#after-content').html('');
   })
 
-  // rewards links are hidden until user has a domain on their account
-  before_filter('show_rewards_links', function() {
-    if (Badger.getAccessToken() && !Badger.Session.get('show_rewards')) {
-      BadgerCache.getDomains(function(response) {
-        var badger_domain_count = 0;
-        for (var i=0; i < (response.data||[]).length; i++) {
-          if ((response.data[i].current_registrar||'').match(/badger/i)) badger_domain_count++;
-        }
-        if (badger_domain_count > 0) Badger.Session.write({ show_rewards: true });
-      });
-    }
-  });
-  
-
   // define('update_sidebar', function() {
   //   if ($('#sidebar')) {
   //     var request_uri = get_route();
@@ -269,7 +255,7 @@ with (Hasher('Application')) {
         div({ id: 'user_nav_flyout' },
           a({ href: '#linked_accounts' }, 'Linked Accounts'),
           a({ href: '#account/billing' }, 'Billing'),
-          a({ style: 'display: ' + (Badger.Session.get('show_rewards') ? '' : 'none;'), href: '#rewards' }, 'Rewards'),
+          a({ href: '#rewards' }, 'Rewards'),
           a({ href: '#invites', id: 'user_nav_invites_available' }, 'Invites'),
           a({ href: '#account' }, 'Settings'),
           a({ href: Badger.logout }, 'Logout')

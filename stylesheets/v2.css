@@ -416,6 +416,21 @@ td.expiration-date span.yellow { color: #D8BD0F; }
 #domains-left-nav a.active {  background: #bbb url(../images/v2/domains-left-nav-bg.png) no-repeat right center; margin-right: 10px; border: 0px; width: 174px; }
 
 
+/*
+  The rewards description table on #rewards
+*/
+div.reward-description { cursor: pointer; padding: 10px; text-align: center; /*border-bottom: 1px solid #D6D6D6;*/ }
+div.reward-description:hover { background: #FFFFDF; }
+div.reward-description div.icon { display: inline-block; text-align: center; width: 100px; float: left;  }
+div.reward-description div.icon img { max-width: 60px; margin-top: 15px; }
+div.reward-description div.description { display: inline-block; width: 450px; text-align: left; }
+div.reward-description div.description p.main { font-size: 25px; margin-bottom: 15px; font-weight: bold; }
+div.reward-description div.description p.sub { color: gray; margin-left: 15px; }
+div.reward-description div.points { display: inline-block; text-align: center; width: 25%; }
+div.reward-description div.points p.number { font-size: 40px; font-weight: bold; margin-bottom: auto; }
+div.reward-description div.points p.sub { font-size: 12px; color: gray; }
+  
+
 .sidebar { float: right; width: 240px; }
 .has-sidebar { margin-right: 260px; }
 .sidebar h3 { font-size: 16px; font-weight: normal; margin: 0; }

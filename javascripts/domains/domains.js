@@ -88,6 +88,54 @@ with (Hasher('Domains','Application')) {
     return domains_nav_table;
   });
   
+  define('add_more_domains_icons', function() {
+    return div((arguments[0] || {}),
+      table(tbody(
+        tr(
+          td({ style: 'vertical-align: top' },
+            app_store_icon({
+              name: 'Register a New Domain',
+              image_src: 'images/apps/dns.png',
+              href: '#search'
+            })
+          ),
+
+          td({ style: 'vertical-align: top' },
+            app_store_icon({
+              name: 'Transfer in Your Domain',
+              image_src: 'images/apps/web-forward.png',
+              href: '#domains/transfer'
+            })
+          ),
+
+          td({ style: 'vertical-align: top' },
+            app_store_icon({
+              name: 'Link With: GoDaddy',
+              image_src: 'images/apps/godaddy.png',
+              href: '#linked_accounts/godaddy/link'
+            })
+          ),
+
+          td({ style: 'vertical-align: top' },
+            app_store_icon({
+              name: 'Link With: Network Solutions',
+              image_src: 'images/apps/ns.png',
+              href: '#linked_accounts/networksolutions/link'
+            })
+          ),
+          
+          td({ style: 'vertical-align: top' },
+            app_store_icon({
+              name: 'Link With: eNom',
+              image_src: 'images/apps/enom.png',
+              href: '#linked_accounts/enom/link'
+            })
+          )
+        )
+      ))
+    );
+  })
+  
   define('save_domain_filter_states_and_set_route', function(route) {
     save_domain_filter_states();
     set_route(route);
