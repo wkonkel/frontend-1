@@ -45,8 +45,8 @@ with (Hasher('Rewards','Application')) {
           form_with_loader({ 'class': 'fancy', action: create_referral_code },
             info_message(
               h2('Start earning free domains'),
-              p("First, you need to create a ", b("referral code"), ". Creating a refereffal code will give you a unique ", b('referral link'), " that you can share with your friends to earn rewards."),
-              p("For example, if I make my referral code ", b('badgerlicious'), ", I will be given the referral link ", b('www.badger.com/badgerlicious'), "."),
+              p("First, you need to create a ", b("referral code"), ". Creating a referral code will give you a unique ", b('referral link'), " that you can share with your friends to earn rewards."),
+              p("For example, if you make your referral code ", b('badgerlicious'), ", you will be given the referral link ", b('www.badger.com/badgerlicious'), "."),
 
               p(b("WARNING:"), " Once you create a referral code, it ", b("CANNOT"), " be changed."),
 
