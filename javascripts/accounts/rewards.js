@@ -1,31 +1,21 @@
 with (Hasher('Rewards','Application')) {
-  define('show_rewards_nav_links', function() {
-    $('#user-nav a#rewards').show();
-    $('#domains-left-nav li#rewards').show();
-  });
-  
   route('#rewards', function() {
     var referral_code_div = div(spinner('Loading...'));
     
-    BadgerCache.getDomains(function(response) {
-      var show_rewards = response.data.length > 0;
-      
-      render(
-        chained_header_with_links(
-          { text: 'My Account' },
-          { text: 'Rewards' }
-        ),
+    render(
+      chained_header_with_links(
+        { text: 'My Account' },
+        { text: 'Rewards' }
+      ),
 
-        div({ 'class': 'fancy' },
-          Account.account_nav_table(
-            show_rewards ? referral_code_div : [
-              p("In order to participate in the rewards program, you must have at least 1 domain in your account.")
-            ]
-          )
+      div({ 'class': 'fancy' },
+        Account.account_nav_table(
+          Badger.Session.get('show_rewards') ? referral_code_div : [
+            p("In order to participate in the rewards program, you must have at least 1 domain in your account.")
+          ]
         )
-      );
-    });
-    
+      )
+    );
     
     /*
       Get the referral codes from account info.
@@ -34,7 +24,7 @@ with (Hasher('Rewards','Application')) {
     */
     Badger.accountInfo(function(response) {
       var referral_codes = response.data.referral_codes || [],
-          url_base = Badger.api_host.replace(/api/,'www'); // for the sake of local and qa development
+          url_base = Badger.api_host.replace(/api/,'www').split('//')[1]; // for the sake of local and qa development
           
       if (referral_codes.length > 0) {
         var referral_code = referral_codes[0],
@@ -83,7 +73,7 @@ with (Hasher('Rewards','Application')) {
           
           div({ 'class': 'has-sidebar' },
             subtle_info_message({ style: 'text-align: center;' },
-              h3({ style: 'margin: 0px' }, 'My Referral Code'),
+              h3({ style: 'margin: 0px' }, 'My Referral Link'),
               input({ 'class': 'fancy', style: 'font-size: 20px; text-align: center; width: 400px; color: #707070; cursor: pointer', readonly: true, value: (url_base + referral_code), onClick: function(e) { e.target.select() } })
             ),
 
