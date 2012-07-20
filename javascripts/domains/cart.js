@@ -1,6 +1,6 @@
-with (Hasher('Transfer','Application')) {
+with (Hasher('Cart','Application')) {
   
-  route('#domains/transfer', function() {
+  route('#cart', function() {
     var domains = (Badger.Session.remove('domains') || []).unique().sort();
 
     render(
@@ -213,7 +213,7 @@ with (Hasher('Transfer','Application')) {
   define('redirect_to_transfer_for_domain', function(domains) {
     // prepopulate the domains array with this one
     Badger.Session.write({ domains: typeof(domains) == 'string' ? [domains] : domains.unique() });
-    set_route('#domains/transfer');
+    set_route('#cart');
   });
   
   define('row_id_for_domain', function(domain) {

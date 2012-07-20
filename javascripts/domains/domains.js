@@ -104,7 +104,7 @@ with (Hasher('Domains','Application')) {
             app_store_icon({
               name: 'Transfer in Your Domain',
               image_src: 'images/apps/web-forward.png',
-              href: '#domains/transfer'
+              href: '#cart'
             })
           ),
 

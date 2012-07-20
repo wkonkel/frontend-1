@@ -11,12 +11,12 @@ with (Hasher('Search','Application')) {
         info_message(
           h3("Already own a domain?"),
           p('We can automatically transfer your domains to Badger.'),
-          div({ 'class': 'centered-button' }, a({ 'class': 'myButton small', href: '#domains/transfer' }, 'Transfer a Domain'))
+          div({ 'class': 'centered-button' }, a({ 'class': 'myButton small', href: '#cart' }, 'Transfer a Domain'))
         )
       
         // info_message(
         //   h3("Need lots of domains?"),
-        //   p('Register many domains at once with our ', a({ href: function() { Badger.Session.write({ current_transfer_action: 'register' }); set_route('#domains/transfer'); } }, 'Bulk Register Tool'), '.')
+        //   p('Register many domains at once with our ', a({ href: function() { Badger.Session.write({ current_transfer_action: 'register' }); set_route('#cart'); } }, 'Bulk Register Tool'), '.')
         // )
       ),
     
@@ -53,7 +53,6 @@ with (Hasher('Search','Application')) {
     var current_value = $('#form-search-input').val().toLowerCase().replace(/[^a-zA-Z0-9\-\.]/g,'').split('.')[0];
     
     if (this.last_search_value == current_value) return;
-    if (current_value.length == 0) return;
     
     if (get_route() != '#search') set_route('#search');
     
@@ -105,8 +104,7 @@ with (Hasher('Search','Application')) {
       results.map(function(domain) {
         var tld = domain[0].split('.')[1];
         return td({ 'class': (domain[1] ? 'tld-available' : 'tld-taken') }, 
-          //a({ href: '#domains/'+domain[0] }, tld)
-          a({ href: curry(Transfer.redirect_to_transfer_for_domain,domain[0]) }, tld)
+          a({ href: '#domains/'+domain[0] }, tld)
         );
       })
     );

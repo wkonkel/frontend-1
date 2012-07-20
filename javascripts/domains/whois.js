@@ -11,7 +11,7 @@ with (Hasher('Whois', 'Application')) {
                 info_message(
                     h3("Already own a domain?"),
                     p('We can automatically transfer your domains to Badger.'),
-                    div({ 'class': 'centered-button' }, a({ 'class': 'myButton small', href: '#domains/transfer' }, 'Transfer a Domain'))
+                    div({ 'class': 'centered-button' }, a({ 'class': 'myButton small', href: '#cart' }, 'Transfer a Domain'))
                 )
 
             ),
