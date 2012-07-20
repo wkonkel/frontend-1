@@ -197,7 +197,7 @@ with (Hasher('Domains','Application')) {
     // just return now if no linked domains
     if (linked_domains.length > 0) {
       return info_message({ id: 'auto-transfer-message' },
-        a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: curry(Transfer.redirect_to_transfer_for_domain, linked_domains.map(function(d) { return d.name })) }, 'Begin Transfer'),
+        a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: curry(Cart.redirect_to_transfer_for_domain, linked_domains.map(function(d) { return d.name })) }, 'Begin Transfer'),
         span({ id: 'count', style: 'font-weight: bold' }, linked_domains.length), " of these domains can be transferred to Badger automatically!"
       );
     }

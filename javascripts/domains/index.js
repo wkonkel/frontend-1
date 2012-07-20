@@ -300,7 +300,7 @@ with (Hasher('DomainsIndex','Domains')) {
 //       return tr({ 'class': 'table-header' },
 //         td({ colSpan: 3 }, 
 //           info_message(
-//             a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: curry(Transfer.redirect_to_transfer_for_domain, linked_domains.map(function(d) { return d.name })) }, 'Begin Transfer'),
+//             a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: curry(Cart.redirect_to_transfer_for_domain, linked_domains.map(function(d) { return d.name })) }, 'Begin Transfer'),
 //             "You have ", b(linked_domains.length, " domains"), " that can be automatically transferred to Badger!"
 //           )
 //         )
