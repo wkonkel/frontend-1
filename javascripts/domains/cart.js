@@ -216,7 +216,7 @@ with (Hasher('Cart','Application')) {
   define('generate_row_for_domain', function(domain) {
     update_domain_info(domain);
     return tr({ id: row_id_for_domain(domain), 'class': 'domain-row' },
-      td(domain),
+      td(Domains.truncate_domain_name(domain)),
       td({ 'class': 'registrar_domain' }, img({ 'class': 'ajax_loader', style: "padding-left: 20px", src: 'images/ajax-loader.gif'})),
       td({ 'class': 'expires_domain' }),
       td({ style: 'width: 16px' }, img({ 'class': 'domain_row_trash_icon', src: 'images/trash.gif', onClick: curry(remove_domain_from_table, domain) }))
@@ -292,17 +292,32 @@ with (Hasher('Cart','Application')) {
     cart_size > 0 ? cart_size_span.show() : cart_size_span.hide();
   });
 
+  // if the domain was added to the cart, 
+  // there is no need to update the domain info.
   define('update_domain_info', function(domain) {
     var item_id = '#' + row_id_for_domain(domain);
 
-    Badger.getDomain(domain, function(response) {
-      var domain_info = response.data;
+    console.log(item_id);
+
+    var update_row_with_domain_obj = function(response) {
+      // if a domain_obj is passed in instead of an API response,
+      // mock out an API response with the provided data.
+      var domain_obj;
+      if (response.data && response.meta) {
+        domain_obj = response.data;
+      } else {
+        domain_obj = response;
+        response = {
+          data: domain_obj,
+          meta: { link: [], status: 'ok' }
+        };
+      }
       
       if (response.meta.status == 'not_found') {
         show_error_for_domain(domain, 'Invalid domain format');
       } else if (response.meta.status != 'ok') {
         show_error_for_domain(domain, response.data.message || 'Error: Internal server error');
-      } else if (domain_info.available) {
+      } else if (domain_obj.available) {
         if ($(item_id + ' .registrar_domain').length > 0) {
           set_background_color_if_valid(domain, true);
           add_hidden_field_for_domain(domain, false);
@@ -311,28 +326,38 @@ with (Hasher('Cart','Application')) {
         }
 
         // domain info is complete, available for registration
-        BadgerCart.push_domain(domain_info);
+        BadgerCart.push_domain(domain_obj);
         update_shopping_cart_size();
-      } else if (!domain_info.supported_tld) {
+      } else if (!domain_obj.supported_tld) {
         show_error_for_domain(domain, "Extension ." + domain.split('.').pop() + " is not currently supported.");
-      } else if (domain_info.current_registrar == 'Unknown') {
+      } else if (domain_obj.current_registrar == 'Unknown') {
         // not done loading, try again in a few seconds if the dialog is still open
         if ($('#transfer-domains-table')) setTimeout(curry(update_domain_info, domain), 2000);
       } else {
         if ($(item_id + ' .registrar_domain').length > 0) {
           set_background_color_if_valid(domain, true);
           add_hidden_field_for_domain(domain, true);
-          $(item_id + ' .registrar_domain').html(domain_info.current_registrar);
-          $(item_id + ' .expires_domain').html(domain_info.expires_at.slice(0,10));
+          $(item_id + ' .registrar_domain').html(domain_obj.current_registrar);
+          $(item_id + ' .expires_domain').html(domain_obj.expires_at.slice(0,10));
         }
         
         // domain info is complete, registered at another registrar
-        BadgerCart.push_domain(domain_info);
+        BadgerCart.push_domain(domain_obj);
         update_shopping_cart_size();
       }
 
       update_continue_button_count();
-    });
+    };
+    
+    // if this domain is already in the cart, don't issue API call, 
+    // read the stored info.
+    var cart_domain_obj = BadgerCart.find_domain({ name: domain });
+    if (cart_domain_obj) {
+      // needs a small timeout, otherwise too fast (best fix ever)
+      setTimeout(curry(update_row_with_domain_obj, cart_domain_obj), 100);
+    } else {
+      Badger.getDomain(domain, update_row_with_domain_obj);
+    }
   });
   
   define('add_hidden_field_for_domain', function(domain, is_a_transfer) {
