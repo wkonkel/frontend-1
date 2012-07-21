@@ -40,38 +40,29 @@ with (Hasher('DomainShow','DomainApps')) {
       } else if (domain_obj.available) {
         if (domain_obj.can_register) {
           render({ into: target_div },
-            div({ 'class': 'sidebar' },
-              success_message(
-                h3("This domain is available!"),
-                p("Quickly, register it before somebody else does!")
-              )
-            ),
-            
-            div({ 'class': 'has-sidebar' },
-              // render an info message into this div if Credits were just added to the account in order
-              // to proceed with the registration.
-              Billing.show_num_credits_added(),
-              
-              Register.full_form(domain)
+            success_message({ style: 'text-align: center' },
+              h3("This domain is available!"),
+              p("Quickly, register it before somebody else does!"),
+              a({ 'class': 'myButton large', style: 'margin-top: 20px;', href: curry(Cart.add_domain_to_cart, domain) }, 'Add to Cart')
             )
           );
           
-          // update the expiration date and button as years selector changed
-          if (domain_obj.available && domain_obj.can_register) {
-            // if the number of years was already set, pick it off from session variables
-            if (years = Badger.Session.remove('years')) {
-              $("select[name=years] option[value=" + years + "]").attr('selected', true);
-            }
-            // update the register domains button
-            $("select[name=years]").change(function(e) {
-              // $('#register-button').val('Register ' + domain + ' for $' + (this.value * 10));
-              $('#expiration-date').html(
-                (parseInt(this.value)).years().fromNow().toString("MMMM dd yyyy")
-              );
-            });
-
-            $("select[name=years]").trigger('change');
-          }
+          // // update the expiration date and button as years selector changed
+          // if (domain_obj.available && domain_obj.can_register) {
+          //   // if the number of years was already set, pick it off from session variables
+          //   if (years = Badger.Session.remove('years')) {
+          //     $("select[name=years] option[value=" + years + "]").attr('selected', true);
+          //   }
+          //   // update the register domains button
+          //   $("select[name=years]").change(function(e) {
+          //     // $('#register-button').val('Register ' + domain + ' for $' + (this.value * 10));
+          //     $('#expiration-date').html(
+          //       (parseInt(this.value)).years().fromNow().toString("MMMM dd yyyy")
+          //     );
+          //   });
+          // 
+          //   $("select[name=years]").trigger('change');
+          // }
           
           return;
         } else {

@@ -1,4 +1,20 @@
 with (Hasher('Cart','Application')) {
+  // use this wrapper so that we can easily show a confirmation
+  // message when adding domains to the cart
+  define('add_domain_to_cart', function(domain_name) {
+    
+    if (BadgerCart.find_domain({ name: domain_name })) {
+      show_modal(
+        h2('Hey!'),
+        p('This domain is already in your cart.')
+      );
+    } else {
+      // BadgerCart.push_domain({ name: domain_name });
+      update_domain_info(domain_name);
+      show_spinner_modal('Adding domain to cart...');
+    }
+  });
+  
   route('#cart', function() {
     var domains = BadgerCart.get_domains();
   
@@ -297,8 +313,6 @@ with (Hasher('Cart','Application')) {
   define('update_domain_info', function(domain) {
     var item_id = '#' + row_id_for_domain(domain);
 
-    console.log(item_id);
-
     var update_row_with_domain_obj = function(response) {
       // if a domain_obj is passed in instead of an API response,
       // mock out an API response with the provided data.
@@ -328,6 +342,7 @@ with (Hasher('Cart','Application')) {
         // domain info is complete, available for registration
         BadgerCart.push_domain(domain_obj);
         update_shopping_cart_size();
+        hide_modal();
       } else if (!domain_obj.supported_tld) {
         show_error_for_domain(domain, "Extension ." + domain.split('.').pop() + " is not currently supported.");
       } else if (domain_obj.current_registrar == 'Unknown') {
@@ -344,6 +359,7 @@ with (Hasher('Cart','Application')) {
         // domain info is complete, registered at another registrar
         BadgerCart.push_domain(domain_obj);
         update_shopping_cart_size();
+        hide_modal();
       }
 
       update_continue_button_count();
