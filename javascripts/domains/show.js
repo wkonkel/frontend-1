@@ -42,8 +42,8 @@ with (Hasher('DomainShow','DomainApps')) {
           render({ into: target_div },
             success_message({ style: 'text-align: center' },
               h3("This domain is available!"),
-              p("Quickly, register it before somebody else does!"),
-              a({ 'class': 'myButton large', style: 'margin-top: 20px;', href: curry(Cart.add_domain_to_cart, domain) }, 'Add to Cart')
+              p({ style: 'margin: 0px;' }, "Quickly, register it before somebody else does!"),
+              a({ 'class': 'myButton large', style: 'margin-top: 30px;', href: curry(Cart.add_domain_to_cart, domain) }, 'Add ' + Domains.truncate_domain_name(domain) + ' to Cart')
             )
           );
           
@@ -75,6 +75,12 @@ with (Hasher('DomainShow','DomainApps')) {
       render({ into: target_div },
         nav_table(
           (domain_obj.permissions_for_person||[]).includes('pending_transfer') && display_transfer_status(domain_obj),
+          
+          // if this domain is not a badger registration, bluntly advertise that it can be transfered!
+          !(domain_obj.permissions_for_person||[]).includes('modify_dns') && info_message({ style: 'text-align: center' },
+            p({ style: 'margin: 0px;' }, 'Do you own this domain, and want to transfer it to us? If so, add it to your cart!'),
+            a({ 'class': 'myButton', style: 'margin-top: 10px;', href: curry(Cart.add_domain_to_cart, domain) }, 'Add ' + Domains.truncate_domain_name(domain) + ' to Cart')
+          ),
           
           render_all_application_icons({
             domain_obj: domain_obj,

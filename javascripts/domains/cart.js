@@ -5,8 +5,10 @@ with (Hasher('Cart','Application')) {
     
     if (BadgerCart.find_domain({ name: domain_name })) {
       show_modal(
-        h2('Hey!'),
-        p('This domain is already in your cart.')
+        div({ style: 'text-align: center' },
+          h2('Hey!'),
+          p('This domain is already in your cart.')
+        )
       );
     } else {
       // BadgerCart.push_domain({ name: domain_name });
