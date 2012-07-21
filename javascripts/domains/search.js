@@ -104,7 +104,7 @@ with (Hasher('Search','Application')) {
       results.map(function(domain) {
         var tld = domain[0].split('.')[1];
         
-        return td({ 'class': (domain[0] ? 'tld-available' : 'tld-taken') },
+        return td({ 'class': (domain[1] ? 'tld-available' : 'tld-taken') },
           a({ href: curry(Cart.add_domain_to_cart, domain[0]) }, tld)
         );
       })
