@@ -263,6 +263,13 @@ with (Hasher('Cart','Application')) {
     remove_hidden_field_for_domain(domain);
     // remove_domain_from_cart(domain);
     update_continue_button_count();
+    
+    // remove the domain from the cart
+    var domain_obj = BadgerCart.find_domain({ name: domain });
+    if (domain_obj) {
+      domain_obj.remove_from_cart();
+      update_shopping_cart_size();
+    }
   });
 
   define('update_continue_button_count', function() {
@@ -276,6 +283,13 @@ with (Hasher('Cart','Application')) {
     } else {
       button.hide();
     }
+  });
+  
+  define('update_shopping_cart_size', function() {
+    var cart_size = BadgerCart.get_domains().length,
+        cart_size_span = $('#shopping-cart-size');
+    cart_size_span.html(BadgerCart.get_domains().length);
+    cart_size > 0 ? cart_size_span.show() : cart_size_span.hide();
   });
 
   define('update_domain_info', function(domain) {
@@ -298,6 +312,7 @@ with (Hasher('Cart','Application')) {
 
         // domain info is complete, available for registration
         BadgerCart.push_domain(domain_info);
+        update_shopping_cart_size();
       } else if (!domain_info.supported_tld) {
         show_error_for_domain(domain, "Extension ." + domain.split('.').pop() + " is not currently supported.");
       } else if (domain_info.current_registrar == 'Unknown') {
@@ -313,6 +328,7 @@ with (Hasher('Cart','Application')) {
         
         // domain info is complete, registered at another registrar
         BadgerCart.push_domain(domain_info);
+        update_shopping_cart_size();
       }
 
       update_continue_button_count();

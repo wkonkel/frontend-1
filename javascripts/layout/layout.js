@@ -206,9 +206,9 @@ with (Hasher('Application')) {
   });
 
   define('right_topnav', function() {
-    return div({ 'id': 'right-topnav'},
+    return div({ 'id': 'right-topnav' },
       a({ 'class': 'navlink', href: '#account/billing', id: 'user_nav_credits', style: 'display: none' }, 'Credits'),
-      a({ 'class': 'navlink last', href: '#cart'}, 'Shopping Cart' /*, span({ 'class': 'unread-alert' }, '3')*/) 
+      a({ 'class': 'navlink last', href: '#cart'}, 'Shopping Cart', span({ id: 'shopping-cart-size', 'class': 'another-alert', style: 'display: ' + (BadgerCart.get_domains().length > 0 ? '' : 'none') }, BadgerCart.get_domains().length))
       //a({ 'class': 'navlink last', href: '#domains'}, 'Balance', span({ 'class': 'another-alert' }, '$5.00'))
     );
   });
