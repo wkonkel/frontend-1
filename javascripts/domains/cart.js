@@ -239,7 +239,9 @@ with (Hasher('Cart','Application')) {
           
           domain_obj.remove_from_cart();
         }
+
         possibly_show_close_button_on_register_screen(domain_count);
+        update_shopping_cart_size()
       });
     });
 
@@ -263,6 +265,7 @@ with (Hasher('Cart','Application')) {
         }
 
         possibly_show_close_button_on_register_screen(domain_count);
+        update_shopping_cart_size();
       });
     });
   });
@@ -338,6 +341,13 @@ with (Hasher('Cart','Application')) {
     } else {
       button.hide();
     }
+  });
+
+  define('update_shopping_cart_size', function() {
+    var cart_size = BadgerCart.get_domains().length,
+      cart_size_span = $('#shopping-cart-size');
+    cart_size_span.html(BadgerCart.get_domains().length);
+    cart_size > 0 ? cart_size_span.show() : cart_size_span.hide();
   });
   
   define('update_shopping_cart_size', function() {
