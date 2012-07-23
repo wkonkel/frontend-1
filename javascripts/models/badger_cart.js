@@ -2,7 +2,11 @@
 // uses Badger.Session
 var BadgerCart = {
   _cart_domains_storage_key: '_cart_storage',
-  
+
+  // callbacks, override these in the application
+  after_add: function() {},
+  after_remove: function() {},
+
   // Return cart status in a hash.
   contents: function() {
     var domains = this.get_domains();
@@ -29,10 +33,13 @@ var BadgerCart = {
     
     var domain_obj;
     for (var i=0; i<arguments.length; i++) {
-      if (typeof(arguments[i]) == 'string' && !this.find_domain({ name: arguments[i] }))
+      if (typeof(arguments[i]) == 'string' && !this.find_domain({ name: arguments[i] })) {
         cart_domains.push({ name: arguments[i] });
-      else if (!this.find_domain({ name: arguments[i].name }))
+        BadgerCart.after_add();
+      } else if (!this.find_domain({ name: arguments[i].name })) {
         cart_domains.push(arguments[i]);
+        BadgerCart.after_add();
+      }
     }
 
     // save domains session storage
@@ -74,6 +81,8 @@ var BadgerCart = {
       for (var i=0; i<Object.keys(this).length; i++) {
         if (domains[i].name == this.name) {
           var destroyed_obj = domains.splice(i,1);
+          BadgerCart.after_remove();
+
           // write to session storage
           Badger.Session.set(BadgerCart._cart_domains_storage_key, domains);
           return destroyed_obj;

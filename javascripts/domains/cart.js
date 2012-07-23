@@ -1,21 +1,25 @@
 with (Hasher('Cart','Application')) {
   // use this wrapper so that we can easily show a confirmation
   // message when adding domains to the cart
-  define('add_domain_to_cart', function(domain_name) {
-    
+  define('add_domain', function(domain_name) {
+    $('.popup-notification').remove();
+
     if (BadgerCart.find_domain({ name: domain_name })) {
-      show_modal(
-        div({ style: 'text-align: center' },
-          h2('Hey!'),
-          p('This domain is already in your cart.')
-        )
-      );
+      // if domain already in cart, show a different message
+      notification_on_element('shopping-cart-nav-button', domain_name + ' already in cart');
     } else {
-      // BadgerCart.push_domain({ name: domain_name });
-      update_domain_info(domain_name);
-      show_spinner_modal('Adding domain to cart...');
+      notification_on_element('shopping-cart-nav-button', domain_name + ' added to cart');
+
+      _add_domain_to_cart(domain_name);
     }
   });
+  
+  // for instance, if you want to add all of the domains in a linked account, use this.
+  define('add_many_domains_to_cart', function(domains) {
+    // add all domains to cart. duplicates will be ignored.
+    for (var i=0; i<domains.length; i++) _add_domain_to_cart(domains[i]);
+  });
+
   
   route('#cart', function() {
     var domains = BadgerCart.get_domains();
@@ -105,13 +109,6 @@ with (Hasher('Cart','Application')) {
     render(
       confirm_transfer_header,
   
-      // div({ 'class': 'sidebar' },
-      //   info_message(
-      //     h3("How do transfers work?"),
-      //     p("Transferring your domain into Badger extends its current registration by one year.")
-      //   )
-      // ),
-      
       Billing.show_num_credits_added({ delete_var: true }),
       
       form_with_loader({ 'class': 'fancy has-sidebar', action: register_or_transfer_all_domains, loading_message: 'Processing...' },
@@ -232,7 +229,8 @@ with (Hasher('Cart','Application')) {
   });
   
   define('generate_row_for_domain', function(domain) {
-    update_domain_info(domain);
+    _add_domain_to_cart(domain);
+    
     return tr({ id: row_id_for_domain(domain), 'class': 'domain-row' },
       td(Domains.truncate_domain_name(domain)),
       td({ 'class': 'registrar_domain' }, img({ 'class': 'ajax_loader', style: "padding-left: 20px", src: 'images/ajax-loader.gif'})),
@@ -310,9 +308,7 @@ with (Hasher('Cart','Application')) {
     cart_size > 0 ? cart_size_span.show() : cart_size_span.hide();
   });
 
-  // if the domain was added to the cart, 
-  // there is no need to update the domain info.
-  define('update_domain_info', function(domain) {
+  define('_add_domain_to_cart', function(domain) {
     var item_id = '#' + row_id_for_domain(domain);
 
     var update_row_with_domain_obj = function(response) {
@@ -349,7 +345,7 @@ with (Hasher('Cart','Application')) {
         show_error_for_domain(domain, "Extension ." + domain.split('.').pop() + " is not currently supported.");
       } else if (domain_obj.current_registrar == 'Unknown') {
         // not done loading, try again in a few seconds if the dialog is still open
-        if ($('#transfer-domains-table')) setTimeout(curry(update_domain_info, domain), 2000);
+        if ($('#transfer-domains-table')) setTimeout(curry(_add_domain_to_cart, domain), 2000);
       } else {
         if ($(item_id + ' .registrar_domain').length > 0) {
           set_background_color_if_valid(domain, true);
@@ -366,21 +362,20 @@ with (Hasher('Cart','Application')) {
 
       update_continue_button_count();
     };
-    
-    // if this domain is already in the cart, don't issue API call, 
+
+    // if this domain is already in the cart, don't issue API call,
     // read the stored info.
-    var cart_domain_obj = BadgerCart.find_domain({ name: domain });
     if (cart_domain_obj) {
       // needs a small timeout, otherwise too fast (best fix ever)
       setTimeout(curry(update_row_with_domain_obj, cart_domain_obj), 100);
     } else {
       Badger.getDomain(domain, update_row_with_domain_obj);
     }
+    var cart_domain_obj = BadgerCart.find_domain({ name: domain });
   });
   
   define('add_hidden_field_for_domain', function(domain, is_a_transfer) {
     $('#hidden_tag_anchor').after(input({ type: "hidden", name: is_a_transfer ? "transfer_domains[]" : "new_domains[]", value: domain, id: row_id_for_domain(domain + '-hidden') }));
-    // add_domain_to_cart(domain);
   });
 
   define('remove_hidden_field_for_domain', function(domain) {
@@ -539,7 +534,7 @@ with (Hasher('Cart','Application')) {
 //   });
 // 
 //   define('generate_row_for_domain', function(domain) {
-//     update_domain_info(domain);
+//     _add_domain_to_cart(domain);
 //     return tr({ id: row_id_for_domain(domain), 'class': 'domain-row' },
 //       td(domain),
 //       td({ 'class': 'registrar_domain' }, img({ 'class': 'ajax_loader', style: "padding-left: 20px", src: 'images/ajax-loader.gif'})),
@@ -582,7 +577,7 @@ with (Hasher('Cart','Application')) {
 //     $('#continue-transfer-btn').val(num == 0 ? 'Cancel' : ('Continue with ' + num + ' domain' + (num == 1 ? '' : 's')));
 //   });
 // 
-//   define('update_domain_info', function(domain) {
+//   define('_add_domain_to_cart', function(domain) {
 //     var item_id = '#' + row_id_for_domain(domain);
 // 
 //     Badger.getDomain(domain, function(response) {
@@ -602,7 +597,7 @@ with (Hasher('Cart','Application')) {
 //         show_error_for_domain(domain, "Extension ." + domain.split('.').pop() + " is not currently supported.");
 //       } else if (domain_info.current_registrar == 'Unknown') {
 //         // not done loading, try again in a few seconds if the dialog is still open
-//         if ($('#transfer-domains-table')) setTimeout(curry(update_domain_info, domain), 2000);
+//         if ($('#transfer-domains-table')) setTimeout(curry(_add_domain_to_cart, domain), 2000);
 //       } else {
 //         set_background_color_if_valid(domain, true);
 //         add_hidden_field_for_domain(domain, true);
@@ -875,7 +870,7 @@ with (Hasher('Cart','Application')) {
 //   //
 //   //
 //   // define('update_all_domains_info', function(domain) {
-//   //   Cart.domains.map(update_domain_info);
+//   //   Cart.domains.map(_add_domain_to_cart);
 //   // });
 //   //
 //   //

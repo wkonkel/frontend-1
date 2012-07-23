@@ -39,7 +39,39 @@ with (Hasher('Application')) {
       set_route('#welcome');
     }
   });
-  
+
+  /*
+  * Insert a notification underneath the specified element
+  * */
+  define('notification_on_element', function(element, text) {
+    // if element an id, find the element
+    if (typeof(element) == 'string') {
+      if (element[0] != '#') element = '#' + element;
+    }
+    element = $(element);
+    notification_element = $(success_message(text));
+
+    // generate a unique id for the message, so that it can be closed later
+    var _unique_id = date().getTime();
+
+    // configure the location of the notification based off of the provided element
+    notification_element.css({
+      'position': 'relative',
+      'display': 'inline',
+      'float': 'left',
+      'margin-top': element.height() * 2,
+      'left': element.position().left - notification_element.width() + (element.width() / 2) + 50
+    });
+
+    // set timeout to close the message automatically
+    setTimeout(function() {
+      $('#' + _unique_id).remove();
+    }, 2000);
+
+    // first, remove any existing notifications, then append the new one
+    return element.after(span({ 'class': 'popup-notification', 'id': _unique_id }, notification_element[0]));
+  });
+
   /*
     Poll until response returns true.
     
@@ -51,7 +83,7 @@ with (Hasher('Application')) {
                         if returns true, breaks poll, otherwise it will
                         continue until until the timeout.
                         NOTE: this function must take a callback as it's
-                        last paremeter (TODO allow synchronous)
+                        last parameter (TODO allow synchronous)
     @on_timeout:      The function to be called when timeout is reached.
                         data about the poll is passed as an argument.
     @on_finish:       The function to be called when the action is finished
@@ -64,10 +96,10 @@ with (Hasher('Application')) {
                   note: the method MUST accept a callback
                   as it's last (or only) argument, AND the
                   curried method must NOT have the callback.
-    @on_ok      The callback for 'ok' and 'created' resonses to
+    @on_ok      The callback for 'ok' and 'created' responses to
                   @method. The API response, as well as data about
                   the poll are passed to this as arguments.
-    @on_error   The callback for 'ok' and 'created' resonses to
+    @on_error   The callback for 'ok' and 'created' responses to
                   @method. The API response, as well as data about
                   the poll are passed to this as arguments.
     
