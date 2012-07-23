@@ -1,15 +1,17 @@
 with (Hasher('Cart','Application')) {
   // use this wrapper so that we can easily show a confirmation
   // message when adding domains to the cart
-  define('add_domain', function(domain_name) {
+  define('add_domain', function(domain_name, options) {
     $('.popup-notification').remove();
+
+    options = options || {};
+    options.show_notification = options.show_notification || true;
 
     if (BadgerCart.find_domain({ name: domain_name })) {
       // if domain already in cart, show a different message
-      notification_on_element('shopping-cart-nav-button', domain_name + ' already in cart');
+      if (options.show_notification) notification_on_element('shopping-cart-nav-button', error_message(domain_name + ' already in cart'));
     } else {
-      notification_on_element('shopping-cart-nav-button', domain_name + ' added to cart');
-
+      if (options.show_notification) notification_on_element('shopping-cart-nav-button', success_message(domain_name + ' added to cart'));
       _add_domain_to_cart(domain_name);
     }
   });

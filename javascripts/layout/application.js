@@ -44,12 +44,14 @@ with (Hasher('Application')) {
   * Insert a notification underneath the specified element
   * */
   define('notification_on_element', function(element, text) {
+    var arguments = flatten_to_array(arguments);
+
     // if element an id, find the element
     if (typeof(element) == 'string') {
       if (element[0] != '#') element = '#' + element;
     }
     element = $(element);
-    notification_element = $(success_message(text));
+    notification_element = $(div(arguments.slice(1)));
 
     // generate a unique id for the message, so that it can be closed later
     var _unique_id = date().getTime();
