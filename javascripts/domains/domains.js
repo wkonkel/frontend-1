@@ -23,8 +23,7 @@ with (Hasher('Domains','Application')) {
       var base_url = '#domains/' + domain;
       
       var permissions = domain_obj.permissions_for_person || [];
-      var show_overview = domain_obj.dns,
-          show_transfer_out = !domain_obj.locked && permissions.includes('transfer_out'),
+      var show_transfer_out = !domain_obj.locked && permissions.includes('transfer_out'),
           show_whois = !domain_obj.available && !(domain_obj.current_registrar||'').match(/^unknown$/i),
           show_settings = permissions.includes('renew');
       
@@ -33,7 +32,7 @@ with (Hasher('Domains','Application')) {
           tr(
             td({ style: 'width: 200px; vertical-align: top' },
               ul({ id: 'domains-left-nav' },
-                show_overview && li(a({ href: base_url, 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}$/i) ? 'active' : '') }, 'Applications')),
+                li(a({ href: base_url, 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}$/i) ? 'active' : '') }, 'Applications')),
                 show_whois && li(a({ href: (base_url + '/whois'), 'class': (active_url.match(/^#domains\/.+?\/whois$/) ? 'active' : '') }, 'Registration')),
                 // show_apps && li(a({ href: (base_url + '/history'), 'class': (active_url.match(/^#domains\/apps$/i) ? 'active' : '') }, 'History')),
                 show_settings && li(a({ href: (base_url + '/settings'), 'class': (active_url.match(/^#domains\/.+?\/settings$/) ? 'active' : '') }, 'Settings')),
