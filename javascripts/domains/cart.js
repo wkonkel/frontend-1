@@ -9,20 +9,57 @@ with (Hasher('Cart','Application')) {
 
     if (BadgerCart.find_domain({ name: domain_name })) {
       // if domain already in cart, show a different message
-      if (options.show_notification) notification_on_element('shopping-cart-nav-button', error_message(domain_name + ' already in cart'));
+      if (options.show_notification) {
+        notification_on_element('shopping-cart-nav-button', {
+          show_duration: 2000,
+          content: error_message(domain_name + ' already in cart')
+        });
+      }
     } else {
-      if (options.show_notification) notification_on_element('shopping-cart-nav-button', success_message(domain_name + ' added to cart'));
+      if (options.show_notification) {
+        notification_on_element('shopping-cart-nav-button', {
+          show_duration: 2000,
+          content: success_message('adding ' + domain_name + ' to cart...')
+        });
+      }
       _add_domain_to_cart(domain_name);
+
+      BadgerCart.after_add = function() {
+        $('.popup-notification').remove();
+        notification_on_element('shopping-cart-nav-button', {
+          show_duration: 2000,
+          content: success_message(domain_name + ' added to cart')
+        });
+      }
     }
   });
   
   // for instance, if you want to add all of the domains in a linked account, use this.
   define('add_many_domains_to_cart', function(domains) {
-    // add all domains to cart. duplicates will be ignored.
-    for (var i=0; i<domains.length; i++) _add_domain_to_cart(domains[i]);
+    var before_cart_size = BadgerCart.contents().domains.length;
+
+    // filter out domains already in cart
+    domains = domains.filter(function(domain) {
+      return !BadgerCart.find_domain({ name: domain });
+    });
+
+    // if no domains left after the filter, show a message
+    if (domains.length <= 0) {
+      $('.popup-notification').remove();
+      notification_on_element('shopping-cart-nav-button', {
+        content: error_message('all domains already in cart')
+      });
+    } else {
+      for (var i=0; i<domains.length; i++) add_domain(domains[i], { show_notification: false });
+
+      // show a notification for adding domains to cart
+      $('.popup-notification').remove();
+      notification_on_element('shopping-cart-nav-button', {
+        content: success_message('adding ' + domains.length + ' ' + (domains.length == 1 ? 'domain' : 'domains') + ' to cart...')
+      });
+    }
   });
 
-  
   route('#cart', function() {
     var domains = BadgerCart.get_domains();
   
@@ -347,7 +384,7 @@ with (Hasher('Cart','Application')) {
         show_error_for_domain(domain, "Extension ." + domain.split('.').pop() + " is not currently supported.");
       } else if (domain_obj.current_registrar == 'Unknown') {
         // not done loading, try again in a few seconds if the dialog is still open
-        if ($('#transfer-domains-table')) setTimeout(curry(_add_domain_to_cart, domain), 2000);
+        if ($('#transfer-domains-table')) setTimeout(curry(_add_domain_to_cart, domain), 1500);
       } else {
         if ($(item_id + ' .registrar_domain').length > 0) {
           set_background_color_if_valid(domain, true);

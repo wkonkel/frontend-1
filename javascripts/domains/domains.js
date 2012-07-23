@@ -189,15 +189,14 @@ with (Hasher('Domains','Application')) {
     Let the user know that they can transfer linked account domains to Badger!
   */
   define('transfer_linked_domains_message', function(domains, options) {
-    var linked_domains = [];
-    for (var i=0; i < domains.length; i++) {
-      if ((domains[i].permissions_for_person.indexOf('linked_account') >= 0) && domains[i].supported_tld) linked_domains.push(domains[i]);
-    }
+    var linked_domains = domains.filter(function(domain) {
+      return (domain.permissions_for_person.includes('linked_account')) && domain.supported_tld && !BadgerCart.find_domain({ name: domain.name });
+    });
     
     // just return now if no linked domains
     if (linked_domains.length > 0) {
       return info_message({ id: 'auto-transfer-message' },
-        a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: curry(Cart.redirect_to_transfer_for_domain, linked_domains.map(function(d) { return d.name })) }, 'Begin Transfer'),
+        a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', onclick: function(e) { $(this.parent).toggle(); }, href: curry(Cart.add_many_domains_to_cart, linked_domains.map(function(d) { return d.name })) }, 'Add ' + linked_domains.length + ' Domains to Cart'),
         span({ id: 'count', style: 'font-weight: bold' }, linked_domains.length), " of these domains can be transferred to Badger automatically!"
       );
     }

@@ -7,6 +7,20 @@ var BadgerCart = {
   after_add: function() {},
   after_remove: function() {},
 
+  _execute_after_add: function() {
+    if (BadgerCart.after_add) {
+      BadgerCart.after_add();
+      BadgerCart.after_add = function() {};
+    }
+  },
+
+  _execute_after_remove: function() {
+    if (BadgerCart.after_add) {
+      BadgerCart.after_add();
+      BadgerCart.after_add = function() {};
+    }
+  },
+
   // Return cart status in a hash.
   contents: function() {
     var domains = this.get_domains();
@@ -35,10 +49,10 @@ var BadgerCart = {
     for (var i=0; i<arguments.length; i++) {
       if (typeof(arguments[i]) == 'string' && !this.find_domain({ name: arguments[i] })) {
         cart_domains.push({ name: arguments[i] });
-        BadgerCart.after_add();
+        BadgerCart._execute_after_add();
       } else if (!this.find_domain({ name: arguments[i].name })) {
         cart_domains.push(arguments[i]);
-        BadgerCart.after_add();
+        BadgerCart._execute_after_add();
       }
     }
 
@@ -81,7 +95,7 @@ var BadgerCart = {
       for (var i=0; i<Object.keys(this).length; i++) {
         if (domains[i].name == this.name) {
           var destroyed_obj = domains.splice(i,1);
-          BadgerCart.after_remove();
+          BadgerCart._execute_after_remove();
 
           // write to session storage
           Badger.Session.set(BadgerCart._cart_domains_storage_key, domains);
