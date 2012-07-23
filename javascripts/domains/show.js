@@ -81,8 +81,8 @@ with (Hasher('DomainShow','DomainApps')) {
             p({ style: 'margin: 0px;' }, 'Do you own this domain, and want to transfer it to us? If so, add it to your cart!'),
             a({ 'class': 'myButton', style: 'margin-top: 10px;', href: curry(Cart.add_domain, domain) }, 'Add ' + Domains.truncate_domain_name(domain) + ' to Cart')
           ),
-          
-          render_all_application_icons({
+
+          Badger.getAccessToken() && render_all_application_icons({
             domain_obj: domain_obj,
             apps_per_row: 6,
             filter: function(app_id) {
