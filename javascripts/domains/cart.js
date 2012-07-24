@@ -488,25 +488,27 @@ with (Hasher('Cart','Application')) {
       form_data: form_data,
       message_area: $('#errors').first(),
       callback: (function() {
-        with(Badger.Session.get('transfer_domains', 'new_domains', 'domains', 'domain_count')) {
-          BadgerCache.getAccountInfo(function(account_info) {
-            if (account_info.data.domain_credits < domain_count) {
-              // Billing.purchase_modal(curry(register_or_transfer_all_domains, form_data), domain_count - account_info.data.domain_credits);
-              // Billing.purchase_modal(curry(confirm_transfers, form_data), domain_count - account_info.data.domain_credits);
 
-              Badger.Session.write({
-                form_data: form_data,
-                necessary_credits: domain_count - account_info.data.domain_credits,
-                redirect_url: '#cart/processing'
-              });
+        var domain_count = BadgerCart.get_domains().length;
 
-              set_route('#account/billing/credits');
-            } else {
-              Badger.Session.write({ form_data: form_data });
-              set_route('#cart/processing');
-            }
-          });
-        }
+        // TODO update this to work properly when years can be adjusted for each domain in cart
+        BadgerCache.getAccountInfo(function(account_info) {
+          if (account_info.data.domain_credits < domain_count) {
+            // Billing.purchase_modal(curry(register_or_transfer_all_domains, form_data), domain_count - account_info.data.domain_credits);
+            // Billing.purchase_modal(curry(confirm_transfers, form_data), domain_count - account_info.data.domain_credits);
+
+            Badger.Session.write({
+              form_data: form_data,
+              necessary_credits: domain_count - account_info.data.domain_credits,
+              redirect_url: '#cart/processing'
+            });
+
+            set_route('#account/billing/credits');
+          } else {
+            Badger.Session.write({ form_data: form_data });
+            set_route('#cart/processing');
+          }
+        });
       })
     });
   });
