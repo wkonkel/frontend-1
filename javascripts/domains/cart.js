@@ -124,7 +124,7 @@ with (Hasher('Cart','Application')) {
 
           div({ style: "margin-top: 20px; text-align: right "},
             input({ type: 'hidden', name: 'hidden_tag_anchor', id: 'hidden_tag_anchor', value: '' }),
-            submit({ id: 'continue-transfer-btn', 'class': 'myButton', style: 'display: none', name: 'cancel', value: "Continue Transfer" })
+            submit({ id: 'continue-transfer-btn', 'class': 'myButton', style: 'display: none', name: 'cancel', value: "Proceed to Checkout" })
           )
         )
       );
@@ -144,7 +144,6 @@ with (Hasher('Cart','Application')) {
 
     render(
       h1('Shopping Cart'),
-
       target_div
     );
   });
@@ -172,11 +171,11 @@ with (Hasher('Cart','Application')) {
         transfer_domains = BadgerCart.get_transfer_domains(),
         domain_count = domains.length;
     
-    // build the appropriate header
-    var confirm_transfer_header = (domain_count && domain_count > 0) ? h1('Confirm Transfer of ', domain_count, ' Domain' + (domain_count != 1 ? 's' : '')) : h1('Confirm Transfer');
-  
     render(
-      confirm_transfer_header,
+      chained_header_with_links(
+        { text: 'Shopping Cart', href: '#cart' },
+        { text: 'Confirm Purchase of ' + domain_count + ' Domains' }
+      ),
   
       Billing.show_num_credits_added({ delete_var: true }),
       
@@ -207,7 +206,7 @@ with (Hasher('Cart','Application')) {
         ),
         
         fieldset({ 'class': 'no-label' },
-          submit({ name: 'submit', value: 'Transfer ' + domain_count + ' domain' + (domain_count != 1 ? 's' : '') + ' for $' + (domain_count * 10) })
+          submit({ name: 'submit', value: 'Purchase ' + domain_count + ' domain' + (domain_count != 1 ? 's' : '') + ' for $' + (domain_count * 10) })
         )
       )
     );
@@ -223,8 +222,11 @@ with (Hasher('Cart','Application')) {
         form_data = Badger.Session.get('form_data');
     
     render(
-      h1('Processing Transfer of ' + domain_count + ' Domain' + (domain_count != 1 ? 's' : '')),
-      
+      chained_header_with_links(
+        { text: 'Shopping Cart', href: '#cart' },
+        { text: 'Processing ' + domain_count + ' Domains' }
+      ),
+
       div({ 'class': 'sidebar' },
         info_message(
           h3('Processing Transfers'),
@@ -351,7 +353,7 @@ with (Hasher('Cart','Application')) {
     remove_hidden_field_for_domain(domain);
     // remove_domain_from_cart(domain);
     update_continue_button_count();
-    
+
     // remove the domain from the cart
     var domain_obj = BadgerCart.find_domain({ name: domain });
     if (domain_obj) {
@@ -363,9 +365,7 @@ with (Hasher('Cart','Application')) {
   define('update_continue_button_count', function() {
     var num = $('#transfer-domains-table .success-row').length,
         button = $('#continue-transfer-btn');
-    
-    button.val('Continue with ' + num + ' domain' + (num == 1 ? '' : 's'));
-    
+
     if (num > 0) {
       button.show();
     } else {
