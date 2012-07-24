@@ -2,10 +2,8 @@ with (Hasher('Cart','Application')) {
   // use this wrapper so that we can easily show a confirmation
   // message when adding domains to the cart
   define('add_domain', function(domain_name, options) {
-    $('.popup-notification').remove();
-
     options = options || {};
-    options.show_notification = options.show_notification || true;
+    if (options.show_notification) $('.popup-notification').remove();
 
     if (BadgerCart.find_domain({ name: domain_name })) {
       // if domain already in cart, show a different message
@@ -21,16 +19,16 @@ with (Hasher('Cart','Application')) {
           show_duration: 2000,
           content: success_message('adding ' + domain_name + ' to cart...')
         });
+
+        BadgerCart.after_add = function() {
+          $('.popup-notification').remove();
+          notification_on_element('shopping-cart-nav-button', {
+            show_duration: 2000,
+            content: success_message(domain_name + ' added to cart')
+          });
+        }
       }
       _add_domain_to_cart(domain_name);
-
-      BadgerCart.after_add = function() {
-        $('.popup-notification').remove();
-        notification_on_element('shopping-cart-nav-button', {
-          show_duration: 2000,
-          content: success_message(domain_name + ' added to cart')
-        });
-      }
     }
   });
   
@@ -61,61 +59,93 @@ with (Hasher('Cart','Application')) {
   });
 
   route('#cart', function() {
-    var domains = BadgerCart.get_domains();
-  
-    render(
-      h1('Shopping Cart'),
+    var domains = BadgerCart.get_domains(),
+        target_div = div(spinner('Loading...'));
 
-      div({ 'class': 'sidebar' },
-        info_message(
-          h3("Waiting for the expiration?"),
-          p("No need. Transferring your domain to Badger extends the current registration by one year.")
-        )
-      ),
+    // add domains to cart if passed on query string
+    var query_string_domains = [];
+    if (Hasher.request_data.params.domain) {
+      query_string_domains.push(Hasher.request_data.params.domain);
+    } else if (Hasher.request_data.params.domains) {
+      Hasher.request_data.params.domains.split(',').forEach(function(domain_name) {
+        query_string_domains.push(domain_name);
+      });
+    }
+    query_string_domains.filter(function(domain_name) {
+      return !BadgerCart.find_domain({ name: domain_name });
+    });
 
-      form_with_loader({ 'class': 'has-sidebar', action: confirm_transfers, loading_message: 'Processing...' },
-        div({ id: 'errors' }),
-
-        table({ 'class': 'fancy-table', id: 'transfer-domains-table' },
-          tbody(
-            tr({ 'class': 'table-header' },
-              th('Name'),
-              th('Registrar'),
-              th('Expires'),
-              th()
-            ),
-            
-            // generate rows for domains
-            domains.map(function(d) { return generate_row_for_domain(d.name) }),
-            
-            tr({ id: 'add-domain-to-table-row' },
-              td(
-                textarea({ 
-                  name: 'domains', 
-                  id: 'add_domain_to_table_text', 
-                  placeholder: 'e.g. badger.com',
-                  onKeydown: function(e) { if ((e.charCode || e.keyCode) == 13) { stop_event(e); process_new_domains(); } },
-                  onPaste: function(e) { setTimeout(process_new_domains,0); },
-                  style: 'width: 150px; height: 20px; line-height: 20px; border: 1px solid #bbb; padding: 3px; margin: 3px 5px 3px 0; resize: none;'
-                }),
-                submit({ 
-                  style: 'background: url(images/add.gif); width: 16px; height:16px; border: 0; border: 0; margin: 0; padding: 0; text-indent: -1000px', 
-                  onClick: function(e) { 
-                    stop_event(e); 
-                    process_new_domains();
-                  }
-                })
-              ),
-              td({ colSpan: '3' })
-            )
+    if (query_string_domains.length <= 0) {
+      render({ into: target_div },
+        div({ 'class': 'sidebar' },
+          info_message(
+            h3("Waiting for the expiration?"),
+            p("No need. Transferring your domain to Badger extends the current registration by one year.")
           )
         ),
 
-        div({ style: "margin-top: 20px; text-align: right "},
-          input({ type: 'hidden', name: 'hidden_tag_anchor', id: 'hidden_tag_anchor', value: '' }),
-          submit({ id: 'continue-transfer-btn', 'class': 'myButton', style: 'display: none', name: 'cancel', value: "Continue Transfer" })
+        form_with_loader({ 'class': 'has-sidebar', action: confirm_transfers, loading_message: 'Processing...' },
+          div({ id: 'errors' }),
+
+          table({ 'class': 'fancy-table', id: 'transfer-domains-table' },
+            tbody(
+              tr({ 'class': 'table-header' },
+                th('Name'),
+                th('Registrar'),
+                th('Expires'),
+                th()
+              ),
+
+              // generate rows for domains
+              domains.map(function(d) { return generate_row_for_domain(d.name) }),
+
+              tr({ id: 'add-domain-to-table-row' },
+                td(
+                  textarea({
+                    name: 'domains',
+                    id: 'add_domain_to_table_text',
+                    placeholder: 'e.g. badger.com',
+                    onKeydown: function(e) { if ((e.charCode || e.keyCode) == 13) { stop_event(e); process_new_domains(); } },
+                    onPaste: function(e) { setTimeout(process_new_domains,0); },
+                    style: 'width: 150px; height: 20px; line-height: 20px; border: 1px solid #bbb; padding: 3px; margin: 3px 5px 3px 0; resize: none;'
+                  }),
+                  submit({
+                    style: 'background: url(images/add.gif); width: 16px; height:16px; border: 0; border: 0; margin: 0; padding: 0; text-indent: -1000px',
+                    onClick: function(e) {
+                      stop_event(e);
+                      process_new_domains();
+                    }
+                  })
+                ),
+                td({ colSpan: '3' })
+              )
+            )
+          ),
+
+          div({ style: "margin-top: 20px; text-align: right "},
+            input({ type: 'hidden', name: 'hidden_tag_anchor', id: 'hidden_tag_anchor', value: '' }),
+            submit({ id: 'continue-transfer-btn', 'class': 'myButton', style: 'display: none', name: 'cancel', value: "Continue Transfer" })
+          )
         )
-      )
+      );
+    } else {
+      query_string_domains.forEach(function(domain_name) {
+        Cart.add_domain(domain_name, { show_notification: false });
+      });
+
+      var wait_until_domains_added_interval = setInterval(function() {
+        if (BadgerCart.contents().domains.length == query_string_domains.length) {
+          clearInterval(wait_until_domains_added_interval);
+          set_route('#cart');
+        }
+      }, 200);
+    }
+
+
+    render(
+      h1('Shopping Cart'),
+
+      target_div
     );
   });
   

@@ -14,7 +14,7 @@ with (Hasher('Application')) {
       set_route('#', { reload_page: true });
     });
   });
-  
+
   define('require_person', function() {
     if (!Badger.getAccessToken()) {
       Badger.setCookie('badger_url_after_auth', get_route());
@@ -49,6 +49,12 @@ with (Hasher('Application')) {
     }
     element = $(element);
     notification_element = $(div(options.content));
+
+    // if the element cannot be found, just return
+    if (!element || element.length == 0) {
+      console.log('element not found!');
+      return;
+    };
 
     // generate a unique id for the message, so that it can be closed later
     var _unique_id = date().getTime();
