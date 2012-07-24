@@ -38,47 +38,49 @@ with (Hasher('Application')) {
 
   /*
   * Insert a notification underneath the specified element
+  *
+  * TODO this doesn't really work. Leaving it for reference
   * */
-  define('notification_on_element', function(element, options) {
-    // do nothing if not content is provided
-    if (!options.content) return;
-
-    // if element an id, find the element
-    if (typeof(element) == 'string') {
-      if (element[0] != '#') element = '#' + element;
-    }
-    element = $(element);
-    notification_element = $(div(options.content));
-
-    // if the element cannot be found, just return
-    if (!element || element.length == 0) {
-      console.log('element not found!');
-      return;
-    };
-
-    // generate a unique id for the message, so that it can be closed later
-    var _unique_id = date().getTime();
-
-    // configure the location of the notification based off of the provided element
-    notification_element.css({
-      'position': 'relative',
-      'display': 'inline',
-      'float': 'left',
-      'margin-top': element.height() * 2,
-      'left': element.position().left - notification_element.width() + (element.width() / 2) + 50
-    });
-
-    // set timeout to close the message automatically, unless set to -1, then show forever (until closed manually)
-    options.show_duration = options.show_duration || 2000;
-    if (options.show_duration > 0) {
-      setTimeout(function() {
-        $('#' + _unique_id).remove();
-      }, options.show_duration);
-    }
-
-    // first, remove any existing notifications, then append the new one
-    return element.after(span({ 'class': 'popup-notification', 'id': _unique_id }, notification_element[0]));
-  });
+//  define('notification_on_element', function(element, options) {
+//    // do nothing if not content is provided
+//    if (!options.content) return;
+//
+//    // if element an id, find the element
+//    if (typeof(element) == 'string') {
+//      if (element[0] != '#') element = '#' + element;
+//    }
+//    element = $(element);
+//    notification_element = $(div(options.content));
+//
+//    // if the element cannot be found, just return
+//    if (!element || element.length == 0) {
+//      console.log('element not found!');
+//      return;
+//    };
+//
+//    // generate a unique id for the message, so that it can be closed later
+//    var _unique_id = date().getTime();
+//
+//    // configure the location of the notification based off of the provided element
+//    notification_element.css({
+//      'position': 'relative',
+//      'display': 'inline',
+//      'float': 'left',
+//      'margin-top': element.height() * 2,
+//      'left': element.position().left - notification_element.width() + (element.width() / 2) + 50
+//    });
+//
+//    // set timeout to close the message automatically, unless set to -1, then show forever (until closed manually)
+//    options.show_duration = options.show_duration || 2000;
+//    if (options.show_duration > 0) {
+//      setTimeout(function() {
+//        $('#' + _unique_id).remove();
+//      }, options.show_duration);
+//    }
+//
+//    // first, remove any existing notifications, then append the new one
+//    return element.after(span({ 'class': 'popup-notification', 'id': _unique_id }, notification_element[0]));
+//  });
 
   /*
     Poll until response returns true.
