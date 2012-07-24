@@ -444,13 +444,13 @@ with (Hasher('Cart','Application')) {
 
     // if this domain is already in the cart, don't issue API call,
     // read the stored info.
+    var cart_domain_obj = BadgerCart.find_domain({ name: domain });
     if (cart_domain_obj) {
       // needs a small timeout, otherwise too fast (best fix ever)
       setTimeout(curry(update_row_with_domain_obj, cart_domain_obj), 100);
     } else {
       Badger.getDomain(domain, update_row_with_domain_obj);
     }
-    var cart_domain_obj = BadgerCart.find_domain({ name: domain });
   });
   
   define('add_hidden_field_for_domain', function(domain, is_a_transfer) {
