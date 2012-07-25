@@ -47,7 +47,7 @@ with (Hasher()) {
   // get the path, query string, and query params in a hash
   define('request_data', function() {
     var data = {
-      path: window.location.hash.length > 0 ? window.location.hash : '#',
+      path: (window.location.hash.length > 0 ? window.location.hash : '#').split('?')[0],
       query_string: (get_query_string().length > 0 ? ('?' + get_query_string()) : ''),
       params: query_params()
     };
