@@ -105,7 +105,7 @@ with (Hasher('DomainsIndex','Domains')) {
             div({ 'class': 'fancy' },
               domains_nav_table(
                 info_message(
-                  a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: '#domains/transfer' }, 'Begin Transfer'),
+                  a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: '#cart' }, 'Begin Transfer'),
                   "Do you have any domains at another registrar?"
                 ),
                 domains_div
@@ -300,7 +300,7 @@ with (Hasher('DomainsIndex','Domains')) {
 //       return tr({ 'class': 'table-header' },
 //         td({ colSpan: 3 }, 
 //           info_message(
-//             a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: curry(Transfer.redirect_to_transfer_for_domain, linked_domains.map(function(d) { return d.name })) }, 'Begin Transfer'),
+//             a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: curry(Cart.redirect_to_transfer_for_domain, linked_domains.map(function(d) { return d.name })) }, 'Begin Transfer'),
 //             "You have ", b(linked_domains.length, " domains"), " that can be automatically transferred to Badger!"
 //           )
 //         )
@@ -325,7 +325,7 @@ with (Hasher('DomainsIndex','Domains')) {
 //         div("It looks like you don't have any domains registered with us yet. You should probably:"),
 //         ul(
 //           li(a({ href: function() { set_route('#search'); $('#form-search-input').focus(); } }, "Search for a new domain")), // --- This is really confusing without a redirect to #search CAB
-//           li(a({ href: '#domains/transfer' }, "Transfer a domain from another registrar"))
+//           li(a({ href: '#cart' }, "Transfer a domain from another registrar"))
 //         ),
 //         div("Then this page will be a lot more fun.")
 //       ];
@@ -341,7 +341,7 @@ with (Hasher('DomainsIndex','Domains')) {
 //        )
 //      ),
 //       // div({ style: 'float: right; margin-top: -44px' },
-//       //   a({ 'class': 'myButton small', href: '#domains/transfer' }, 'Transfer in a Domain')
+//       //   a({ 'class': 'myButton small', href: '#cart' }, 'Transfer in a Domain')
 //       // ),
 //       
 //       domain_index_nav_table(

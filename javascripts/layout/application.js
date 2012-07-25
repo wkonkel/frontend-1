@@ -14,11 +14,7 @@ with (Hasher('Application')) {
       set_route('#', { reload_page: true });
     });
   });
-  
-  // clear session after loggin in and out
-  Badger.onLogin(Badger.Session.clear);
-  Badger.onLogout(Badger.Session.clear);
-  
+
   define('require_person', function() {
     if (!Badger.getAccessToken()) {
       Badger.setCookie('badger_url_after_auth', get_route());
@@ -39,7 +35,53 @@ with (Hasher('Application')) {
       set_route('#welcome');
     }
   });
-  
+
+  /*
+  * Insert a notification underneath the specified element
+  *
+  * TODO this doesn't really work. Leaving it for reference
+  * */
+//  define('notification_on_element', function(element, options) {
+//    // do nothing if not content is provided
+//    if (!options.content) return;
+//
+//    // if element an id, find the element
+//    if (typeof(element) == 'string') {
+//      if (element[0] != '#') element = '#' + element;
+//    }
+//    element = $(element);
+//    notification_element = $(div(options.content));
+//
+//    // if the element cannot be found, just return
+//    if (!element || element.length == 0) {
+//      console.log('element not found!');
+//      return;
+//    };
+//
+//    // generate a unique id for the message, so that it can be closed later
+//    var _unique_id = date().getTime();
+//
+//    // configure the location of the notification based off of the provided element
+//    notification_element.css({
+//      'position': 'relative',
+//      'display': 'inline',
+//      'float': 'left',
+//      'margin-top': element.height() * 2,
+//      'left': element.position().left - notification_element.width() + (element.width() / 2) + 50
+//    });
+//
+//    // set timeout to close the message automatically, unless set to -1, then show forever (until closed manually)
+//    options.show_duration = options.show_duration || 2000;
+//    if (options.show_duration > 0) {
+//      setTimeout(function() {
+//        $('#' + _unique_id).remove();
+//      }, options.show_duration);
+//    }
+//
+//    // first, remove any existing notifications, then append the new one
+//    return element.after(span({ 'class': 'popup-notification', 'id': _unique_id }, notification_element[0]));
+//  });
+
   /*
     Poll until response returns true.
     
@@ -51,7 +93,7 @@ with (Hasher('Application')) {
                         if returns true, breaks poll, otherwise it will
                         continue until until the timeout.
                         NOTE: this function must take a callback as it's
-                        last paremeter (TODO allow synchronous)
+                        last parameter (TODO allow synchronous)
     @on_timeout:      The function to be called when timeout is reached.
                         data about the poll is passed as an argument.
     @on_finish:       The function to be called when the action is finished
@@ -64,10 +106,10 @@ with (Hasher('Application')) {
                   note: the method MUST accept a callback
                   as it's last (or only) argument, AND the
                   curried method must NOT have the callback.
-    @on_ok      The callback for 'ok' and 'created' resonses to
+    @on_ok      The callback for 'ok' and 'created' responses to
                   @method. The API response, as well as data about
                   the poll are passed to this as arguments.
-    @on_error   The callback for 'ok' and 'created' resonses to
+    @on_error   The callback for 'ok' and 'created' responses to
                   @method. The API response, as well as data about
                   the poll are passed to this as arguments.
     

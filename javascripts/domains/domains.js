@@ -23,8 +23,7 @@ with (Hasher('Domains','Application')) {
       var base_url = '#domains/' + domain;
       
       var permissions = domain_obj.permissions_for_person || [];
-      var show_overview = domain_obj.dns,
-          show_transfer_out = !domain_obj.locked && permissions.includes('transfer_out'),
+      var show_transfer_out = !domain_obj.locked && permissions.includes('transfer_out'),
           show_whois = !domain_obj.available && !(domain_obj.current_registrar||'').match(/^unknown$/i),
           show_settings = permissions.includes('renew');
       
@@ -33,9 +32,8 @@ with (Hasher('Domains','Application')) {
           tr(
             td({ style: 'width: 200px; vertical-align: top' },
               ul({ id: 'domains-left-nav' },
-                show_overview && li(a({ href: base_url, 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}$/i) ? 'active' : '') }, 'Applications')),
+                li(a({ href: base_url, 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}$/i) ? 'active' : '') }, 'Applications')),
                 show_whois && li(a({ href: (base_url + '/whois'), 'class': (active_url.match(/^#domains\/.+?\/whois$/) ? 'active' : '') }, 'Registration')),
-                // show_apps && li(a({ href: (base_url + '/history'), 'class': (active_url.match(/^#domains\/apps$/i) ? 'active' : '') }, 'History')),
                 show_settings && li(a({ href: (base_url + '/settings'), 'class': (active_url.match(/^#domains\/.+?\/settings$/) ? 'active' : '') }, 'Settings')),
                 show_transfer_out && li(a({ href: (base_url + '/transfer-out'), 'class': (active_url.match(/^#domains\/.+?\/transfer-out$/) ? 'active' : '') }, 'Transfer Out'))
               )
@@ -104,7 +102,7 @@ with (Hasher('Domains','Application')) {
             app_store_icon({
               name: 'Transfer in Your Domain',
               image_src: 'images/apps/web-forward.png',
-              href: '#domains/transfer'
+              href: '#cart'
             })
           ),
 
@@ -189,15 +187,14 @@ with (Hasher('Domains','Application')) {
     Let the user know that they can transfer linked account domains to Badger!
   */
   define('transfer_linked_domains_message', function(domains, options) {
-    var linked_domains = [];
-    for (var i=0; i < domains.length; i++) {
-      if ((domains[i].permissions_for_person.indexOf('linked_account') >= 0) && domains[i].supported_tld) linked_domains.push(domains[i]);
-    }
+    var linked_domains = domains.filter(function(domain) {
+      return (domain.permissions_for_person.includes('linked_account')) && domain.supported_tld && !BadgerCart.find_domain({ name: domain.name });
+    });
     
     // just return now if no linked domains
     if (linked_domains.length > 0) {
       return info_message({ id: 'auto-transfer-message' },
-        a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', href: curry(Transfer.redirect_to_transfer_for_domain, linked_domains.map(function(d) { return d.name })) }, 'Begin Transfer'),
+        a({ 'class': 'myButton small', style: 'float: right; margin-top: -4px', onclick: function(e) { $(this.parent).toggle(); }, href: curry(Cart.add_many_domains_to_cart, linked_domains.map(function(d) { return d.name })) }, 'Add ' + linked_domains.length + ' Domains to Cart'),
         span({ id: 'count', style: 'font-weight: bold' }, linked_domains.length), " of these domains can be transferred to Badger automatically!"
       );
     }

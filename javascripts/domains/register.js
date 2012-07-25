@@ -228,7 +228,7 @@ with (Hasher('Register','Application')) {
     //   if (current_credits >= needed_credits) {
     //     if (checked_extensions.length > 1) {
     //       form_data.new_domains = checked_extensions;
-    //       Transfer.register_or_transfer_all_domains(form_data);
+    //       Cart.register_or_transfer_all_domains(form_data);
     //     } else {
     //       register_domain(domain, available_extensions, form_data);
     //     }

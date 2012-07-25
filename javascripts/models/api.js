@@ -72,7 +72,7 @@ var Badger = {
       }
     }
   },
-
+  
   api: function() {
     // parse arguments: url, [http_method], [params], [callback]
     var args = Array.prototype.slice.call(arguments, 0);

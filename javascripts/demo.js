@@ -408,7 +408,8 @@ function load_badger_demo() {
       /^#account(\/\w+)?$/,
       /^#invites/,
       /^#linked_accounts/,
-      /^#about$/
+      /^#about$/,
+      /^#cart$/
     ],
 
     account: {

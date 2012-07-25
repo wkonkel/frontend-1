@@ -64,15 +64,6 @@ with (Hasher('Application')) {
     });
   });
   
-  define('reload_account_navs', function() {
-    BadgerCache.flush('account_info');
-    Badger.Session.remove('show_rewards');
-    
-    with_user_nav_content(function(nav_content) {
-      $('#user-nav').html(nav_content);
-    });
-  });
-
   after_filter('update_my_domains_count', update_my_domains_count);
 
   define('check_if_domain_should_be_added_to_sidebar', function(request_uri) {
@@ -206,9 +197,9 @@ with (Hasher('Application')) {
   });
 
   define('right_topnav', function() {
-    return div({ 'id': 'right-topnav'},
+    return div({ 'id': 'right-topnav' },
       a({ 'class': 'navlink', href: '#account/billing', id: 'user_nav_credits', style: 'display: none' }, 'Credits'),
-      a({ 'class': 'navlink last', href: '#domains/transfer'}, 'Shopping Cart' /*, span({ 'class': 'unread-alert' }, '3')*/) 
+      a({ id: 'shopping-cart-nav-button', 'class': 'navlink last', href: '#cart'}, 'Shopping Cart', span({ id: 'shopping-cart-size', 'class': 'another-alert', style: 'display: ' + (BadgerCart.get_domains().length > 0 ? '' : 'none') }, BadgerCart.get_domains().length))
       //a({ 'class': 'navlink last', href: '#domains'}, 'Balance', span({ 'class': 'another-alert' }, '$5.00'))
     );
   });

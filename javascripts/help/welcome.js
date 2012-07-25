@@ -51,7 +51,7 @@ with (Hasher('Welcome','Application')) {
               Domains.app_store_icon({
                 name: 'Transfer in Your Domain',
                 image_src: 'images/apps/web-forward.png',
-                href: '#domains/transfer'
+                href: '#cart'
               })
             ),
 
@@ -221,8 +221,8 @@ with (Hasher('Welcome','Application')) {
 //         // p({ style: "margin-top: 5px; margin-bottom: 18px" }, u('We currently support .com, .net, .org, .info and .me'), '. We will be adding .name, .biz, .us and .co.uk in the next week or two with many more to follow.'),
 // 
 //         h3({ style: "margin: 0" }, "Already have a domain?"),
-//         //p({ style: "margin-top: 5px; margin-bottom: 18px" }, "Read about out ", a({ href: '#faqs/how-were-different' }, "how we're different"), ".  Or, you can jump right in and ", a({ href: Transfer.show }, "transfer a domain"), ".")
-//         p({ style: "margin-top: 5px; margin-bottom: 18px" }, "You can jump right in and ", a({ href: Transfer.show }, "transfer a domain"), ".")              
+//         //p({ style: "margin-top: 5px; margin-bottom: 18px" }, "Read about out ", a({ href: '#faqs/how-were-different' }, "how we're different"), ".  Or, you can jump right in and ", a({ href: Cart.show }, "transfer a domain"), ".")
+//         p({ style: "margin-top: 5px; margin-bottom: 18px" }, "You can jump right in and ", a({ href: Cart.show }, "transfer a domain"), ".")              
 //       )
 //     ),
 
@@ -296,7 +296,7 @@ with (Hasher('Welcome','Application')) {
   // div({style: 'padding-left: 30px'}, 
   //   //a({ href: get_started, 'class': 'myButton', style: 'font-size: 20px; padding: 9px 30px' }, 'Search for domains')
   //   input({ 'class': 'domain-search-box', style: 'margin-bottom: 5px', placeholder: 'e.g. badger.com', onKeyDown: function() { set_route('#search'); $('#form-search input').val(null).focus(); } }),
-  //   span({ style: 'padding: 0 10px' }, " or "), a({ href: '#domains/transfer', 'class': 'myButton'}, "Transfer in Your Domain")
+  //   span({ style: 'padding: 0 10px' }, " or "), a({ href: '#cart', 'class': 'myButton'}, "Transfer in Your Domain")
   // )
 //),
 

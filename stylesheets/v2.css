@@ -116,7 +116,7 @@ html.demo { background: transparent url(../images/v2/white_plaster_demo.png) rep
   -webkit-border-radius: 3px;
 }
 
-#right-topnav .another-alert { 
+#right-topnav .another-alert {
   background: green; 
   color: white; 
   padding: 1px 4px;
@@ -125,7 +125,6 @@ html.demo { background: transparent url(../images/v2/white_plaster_demo.png) rep
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
 }
-
 
 
 #user-nav #user_nav_flyout a { display: block; }
