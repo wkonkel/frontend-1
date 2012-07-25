@@ -1,9 +1,11 @@
 with (Hasher('Welcome','Application')) {
   after_filter('show_referred_message', function() {
-    if (Badger.Session.get('referred_by')) {
+    var referral_info = Badger.Session.get('referral_info') || {};
+
+    if (!Badger.getAccessToken() && referral_info.referred_by) {
       render({ into: 'before-content' }, 
         div({ style: 'margin-top: 30px' }, 
-          success_message('You have been referred to Badger by ', b(Badger.Session.get('referred_by')), '! Your first registration or transfer is only $5.')
+          success_message('You have been referred to Badger by ', b(referral_info.referred_by), '! Your first registration or transfer is only $5.')
         )
       );
     }
