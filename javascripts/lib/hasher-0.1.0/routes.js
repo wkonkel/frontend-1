@@ -39,11 +39,11 @@ with (Hasher()) {
         key_val_pairs = get_query_string().split('&');
     for (var i=0; i<key_val_pairs.length; i++) {
       key_val_pair = key_val_pairs[i].split('=');
-      if (key_val_pair.length == 2) params[key_val_pair[0]] = key_val_pair[1];
+      if (key_val_pair.length == 2) params[key_val_pair[0]] = decodeURIComponent(key_val_pair[1]);
     }
     return params;
   });
-  
+
   // get the path, query string, and query params in a hash
   define('request_data', function() {
     var data = {
@@ -51,7 +51,9 @@ with (Hasher()) {
       query_string: (get_query_string().length > 0 ? ('?' + get_query_string()) : ''),
       params: query_params()
     };
-    if (data.path == '/') data.path = '#';
+
+
+
     return data;
   });
 

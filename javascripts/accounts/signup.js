@@ -82,6 +82,7 @@ with (Hasher('Signup','Application')) {
     );
     
     invitee = invitee || {};
+    var referral_info = Badger.Session.get('referral_info') || {};
 
     return div(
       sidebar,
@@ -90,13 +91,13 @@ with (Hasher('Signup','Application')) {
     
         fieldset(
           label({ 'for': 'first_name-input' }, 'First and last name:'),
-          text({ 'class': 'short right-margin', id: 'first_name-input', name: 'first_name', value: (invitee.first_name || Hasher.request_data.params.first_name || ''), placeholder: 'John' }),
-          text({ 'class': 'short', name: 'last_name', value: (invitee.last_name || Hasher.request_data.params.last_name || ''), placeholder: 'Doe' })
+          text({ 'class': 'short right-margin', id: 'first_name-input', name: 'first_name', value: (invitee.first_name || referral_info.first_name || ''), placeholder: 'John' }),
+          text({ 'class': 'short', name: 'last_name', value: (invitee.last_name || referral_info.last_name || ''), placeholder: 'Doe' })
         ),
 
         fieldset(
           label({ 'for': 'email-input' }, 'Email address:'),
-          input({ id: 'email-input', name: 'email', style: 'width: 275px', value: (invitee.email || Hasher.request_data.params.email ||  ''), placeholder: 'john.doe@badger.com' })
+          input({ id: 'email-input', name: 'email', style: 'width: 275px', value: (invitee.email || referral_info.email ||  ''), placeholder: 'john.doe@badger.com' })
         ),
     
         fieldset(
@@ -116,7 +117,7 @@ with (Hasher('Signup','Application')) {
         fieldset({ 'class': 'no-label' },
           input({ 'class': 'myButton', type: 'submit', value: 'Continue »' })
         ),
-        input({ type: 'hidden', name: 'invite_code', id: 'invite_code', value: invite_code })
+        input({ type: 'hidden', name: 'invite_code', id: 'invite_code', value: invite_code || referral_info.referral_code })
       )
     );
     $('input[name="first_name"]').focus();
@@ -126,13 +127,9 @@ with (Hasher('Signup','Application')) {
     $('#signup-errors').empty();
     Badger.createAccount(data, function(response) {
       if (response.meta.status == 'ok') {
-        // if a domain name provided via query_param, redirect to that domain page
-        // after creating the account
-        if (Hasher.request_data.params.domain && Hasher.request_data.params.domain.length > 0) {
-          set_route('#domains/' + Hasher.request_data.params.domain, { reload_page: true });
-        } else {
-          set_route('#', { reload_page: true });
-        }
+        // remove the referral code data from session storage
+        Badger.Session.remove('referral_info');
+        set_route('#', { reload_page: true });
       } else {
         $('#signup-errors').empty().append(error_message(response));
         hide_form_submit_loader();

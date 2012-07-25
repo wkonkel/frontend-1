@@ -15,6 +15,25 @@ with (Hasher('Application')) {
     });
   });
 
+  // load referral query parameters
+  initializer(function() {
+    var params = Hasher.request_data.params,
+        existing_referral_info = Badger.Session.get('referral_info') || {};
+
+    var referral_info = {
+      referral_code: params.referral_code || existing_referral_info.referral_code,
+      referred_by: (params.referred_by || existing_referral_info.referred_by || "").replace(/\+/,' '),
+      domains: params.domains || existing_referral_info.domains,
+
+      // the person being referred to badger
+      first_name: params.first_name || existing_referral_info.first_name,
+      last_name: params.last_name || existing_referral_info.last_name,
+      email: params.email || existing_referral_info.email,
+    };
+
+    Badger.Session.write({ referral_info: referral_info });
+  });
+
   define('require_person', function() {
     if (!Badger.getAccessToken()) {
       Badger.setCookie('badger_url_after_auth', get_route());
