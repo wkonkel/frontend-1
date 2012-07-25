@@ -78,7 +78,7 @@ with (Hasher('Search','Application')) {
     if (current_value && this.last_search_value && (this.last_search_value.indexOf(current_value) == 0)) {
       this.backspace_search_timeout = setTimeout(search_callback, 750);
     } else if (current_value && (this.last_search_value != current_value)) {
-      this.search_timeout = setTimeout(search_callback, 100);
+      this.search_timeout = setTimeout(search_callback, 0);
     }
 
     this.last_search_value = current_value;
