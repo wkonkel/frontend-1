@@ -99,13 +99,19 @@ with (Hasher('Search','Application')) {
     var available_extensions = $.grep(results, function(ext) {
       return ext[1];
     });
+
+    var add_domain_and_go_to_cart = function(domain) {
+      Cart.add_domain(domain);
+      set_route('#cart');
+    };
+
     return tr(
       td(results[0][0].split('.')[0]),
       results.map(function(domain) {
         var tld = domain[0].split('.')[1];
         
         return td({ 'class': (domain[1] ? 'tld-available' : 'tld-taken') },
-          a({ href: domain[1] ? curry(Cart.add_domain, domain[0]) : curry(set_route, '#domains/' + domain[0]) }, tld)
+          a({ href: domain[1] ? curry(add_domain_and_go_to_cart, domain[0]) : curry(set_route, '#domains/' + domain[0]) }, tld)
         );
       })
     );
