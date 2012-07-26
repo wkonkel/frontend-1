@@ -34,7 +34,7 @@ with (Hasher('Cart','Application')) {
         )
       ),
 
-      form_with_loader({ 'class': 'has-sidebar', action: confirm_transfers, loading_message: 'Processing...' },
+      form_with_loader({ 'class': 'has-sidebar', action: curry(set_route, '#cart/confirm'), loading_message: 'Processing...' },
         div({ id: 'errors' }),
 
         table({ 'class': 'fancy-table', id: 'transfer-domains-table' },
@@ -184,20 +184,8 @@ with (Hasher('Cart','Application')) {
       )
     );
 
-//    define('possibly_show_close_button_on_register_screen', function(domain_count) {
-//      var domain_name = (domain_count == 1) ? $("#transfer-domains-table tr[id$=-domain] td")[0].innerHTML : null;
-//
-//      if ($('#transfer-domains-table .success-row, #transfer-domains-table .error-row').length == domain_count) {
-//        $('#transfer-domains-table').after(
-//          div({ style: 'margin-top: 10px; text-align: right' },
-//            a({ href: curry(close_transfer, domain_name), 'class': 'myButton' }, 'View My Domains')
-//          )
-//        );
-//      }
-//    });
-
-
-    // wait for all of the transfers and registrations to finish
+    // wait for all of the transfers and registrations to finish.
+    // the method below is invoked each time a registration or transfer request finishes.
     var num_domains_processed = 0;
     var show_continue_button_if_finished = function() {
       if (++num_domains_processed >= cart_domains.length) {
@@ -372,10 +360,6 @@ with (Hasher('Cart','Application')) {
 
   define('remove_hidden_field_for_domain', function(domain) {
     $('#' + row_id_for_domain(domain + '-hidden')).remove();
-  });
-
-  define('confirm_transfers', function(form_data) {
-    set_route('#cart/confirm');
   });
 
   define('register_or_transfer_all_domains', function(form_data) {
