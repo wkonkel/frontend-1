@@ -152,7 +152,8 @@ with (Hasher('DomainShow','DomainApps')) {
               form({ id: 'registration-renewal-form', 'class': 'fancy', action: curry(renew_domain, domain_obj), loading_message: 'Extending registration...' },
                 h1({ style: 'margin-top: 35px;' }, 'Extend Registration'),
                 div({ id: 'errors' }),
-                Billing.show_num_credits_added({ delete_var: true }),
+
+                // Billing.show_num_credits_added({ delete_var: true }),
                 
                 input({ type: "hidden", value: domain, name: "domain" }),
 
