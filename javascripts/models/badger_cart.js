@@ -3,7 +3,7 @@
 var BadgerCart = {
   _cart_domains_storage_key: '_cart_storage',
 
-  // callbacks, override these in the application
+// callbacks, override these in the application
   after_add: function() {},
   after_remove: function() {},
 
@@ -85,15 +85,10 @@ var BadgerCart = {
 
   // Append helper methods to domains objects, like update_attributes
   append_helper_methods_to_object: function(obj) {
-    // update attributes
-    obj.update_attributes = function(attrs) {
-      for (k in attrs) if (this[k]) this[k] = attrs[k];
-    };
-    
-    obj.remove_from_cart = function() {
+    obj.remove_from_cart = obj.remove_from_cart || function() {
       var domains = BadgerCart.get_domains();
-      for (var i=0; i<Object.keys(this).length; i++) {
-        if (domains[i].name == this.name) {
+      for (var i=0; i<domains.length; i++) {
+        if (domains[i].name == obj.name) {
           var destroyed_obj = domains.splice(i,1);
           BadgerCart._execute_after_remove();
 
@@ -102,6 +97,15 @@ var BadgerCart = {
           return destroyed_obj;
         }
       }
+    };
+
+    // add default purchase options if needed
+    obj.purchase_options = obj.purchase_options || {
+      years: 1,
+      registrant_contact_id: null,
+      privacy: true,
+      auto_renew: true,
+      import_dns: true
     };
   },
   
