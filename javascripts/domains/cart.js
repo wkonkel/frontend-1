@@ -79,27 +79,37 @@ with (Hasher('Cart','Application')) {
   });
 
   route('#cart/confirm', function() {
-    var domains = BadgerCart.get_domains();
+    var cart_contents = BadgerCart.contents();
 
     render(
       chained_header_with_links(
         { text: 'Shopping Cart', href: '#cart' },
-        { text: 'Confirm Purchase of ' + domains.length + ' ' + (domains.length == 1 ? 'Domain' : 'Domains') }
+        { text: 'Confirm Purchase of ' + cart_contents.domains.length + ' ' + (cart_contents.domains.length == 1 ? 'Domain' : 'Domains') }
       ),
 
-      form_with_loader({ 'class': 'fancy has-sidebar', action: register_or_transfer_all_domains, loading_message: 'Processing...' },
-        div({ id: 'errors' }),
-
-        fieldset({ style: 'line-height: 25px' },
-          label('Domains:'),
-          div(
-            ul({ style: 'border: 1px solid #ccc; float: left; margin-top: 0px; padding: 5px 20px 5px 30px; max-height: 60px; overflow: auto; line-height: 18px' },
-              domains.map(function(domain_obj){
+      div ({ 'class': 'sidebar' },
+        info_message(
+          cart_contents.new_domains.length > 0 && div({ style: 'margin-bottom: 10px' },
+            b('Domains to be Registered:'),
+            ul(
+              cart_contents.new_domains.map(function(domain_obj){
+                return li(domain_obj.name);
+              })
+            )
+          ),
+          cart_contents.transfer_domains.length > 0 && div(
+            b('Domains to be Transferred:'),
+            ul(
+              cart_contents.transfer_domains.map(function(domain_obj){
                 return li(domain_obj.name);
               })
             )
           )
-        ),
+        )
+      ),
+
+      form_with_loader({ 'class': 'fancy has-sidebar', action: register_or_transfer_all_domains, loading_message: 'Processing...' },
+        div({ id: 'errors' }),
 
         Contact.selector_with_all_form_fields({ name: 'registrant_contact_id' }),
 
@@ -114,7 +124,7 @@ with (Hasher('Cart','Application')) {
         ),
 
         fieldset({ 'class': 'no-label' },
-          submit({ name: 'submit', value: 'Purchase ' + domains.length + ' domain' + (domains.length != 1 ? 's' : '') + ' for $' + (domains.length * 10) })
+          submit({ name: 'submit', value: 'Purchase ' + cart_contents.domains.length + ' domain' + (cart_contents.domains.length != 1 ? 's' : '') + ' for $' + (cart_contents.domains.length * 10) })
         )
       )
     );
@@ -230,7 +240,7 @@ with (Hasher('Cart','Application')) {
     if (!BadgerCart.find_domain({ name: domain.name })) {
       BadgerCart.push_domain(domain);
       update_shopping_cart_size();
-      update_domains_in_cart();
+      process_new_domains();
     }
   });
 
@@ -245,10 +255,10 @@ with (Hasher('Cart','Application')) {
   * */
   define('update_domains_in_cart', function(callback) {
     var cart_domains = BadgerCart.get_domains(),
-      num_domains_updated = 0;
+        num_domains_in_cart = cart_domains.length,
+        num_domains_updated = 0;
 
     $('#continue-transfer-btn').hide();
-
     cart_domains.forEach(function(cart_domain) {
       update_row_for_domain_in_cart(cart_domain, function(updated_domain_obj) {
         if (updated_domain_obj.available || (updated_domain_obj.current_registrar && !updated_domain_obj.current_registrar.match(/^unknown$/i))) {
@@ -295,14 +305,13 @@ with (Hasher('Cart','Application')) {
           show_error_for_domain(domain_obj.name, response.data.message || 'Error: Internal server error');
         } else if (!server_domain_obj.supported_tld) {
           show_error_for_domain(server_domain_obj.name, "Extension ." + server_domain_obj.name.split('.').pop() + " is not currently supported.");
-        } else if (server_domain_obj.current_registrar && server_domain_obj.current_registrar.match(/^unknown$/)) {
-          // not done loading, try again in a few seconds
-          setTimeout(curry(update_row_for_domain_in_cart, server_domain_obj, callback), 1500);
         } else {
-          return update_row_for_domain_in_cart(server_domain_obj, callback);
+          // not done loading, try again in a few seconds
+          return setTimeout(curry(update_row_for_domain_in_cart, server_domain_obj, callback), 1500);
         }
       });
     }
+
     callback(domain_obj);
   });
 
