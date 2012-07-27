@@ -79,7 +79,7 @@ with (Hasher('DomainShow','DomainApps')) {
           // if this domain is not a badger registration, bluntly advertise that it can be transfered!
           !(domain_obj.permissions_for_person||[]).includes('modify_dns') && !(domain_obj.permissions_for_person||[]).includes('pending_transfer') && info_message({ style: 'text-align: center' },
             p({ style: 'margin: 0px;' }, 'Do you own this domain, and want to transfer it to us? If so, add it to your cart!'),
-            a({ 'class': 'myButton', style: 'margin-top: 10px;', href: function() { Cart.add_domain(domain); set_route('#cart') } }, 'Add ' + Domains.truncate_domain_name(domain) + ' to Cart')
+            a({ 'class': 'myButton', style: 'margin-top: 10px;', href: function() { Cart.add_domain(domain); set_route('#cart'); } }, 'Add ' + Domains.truncate_domain_name(domain) + ' to Cart')
           ),
 
           Badger.getAccessToken() && render_all_application_icons({

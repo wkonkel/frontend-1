@@ -241,6 +241,7 @@ with (Hasher('Cart','Application')) {
 
   /*
   * Updates all of the domains in the cart. This should be called every time a new domain is added to the cart.
+  * Also updates the rows on the #cart page with info
   *
   * When all of the domains are updated, callback will be executed, with the updated domains passed as the only
   * argument.
@@ -289,7 +290,7 @@ with (Hasher('Cart','Application')) {
         $(item_id + ' .registrar_domain').html('<i>Register at Badger</i>');
         $(item_id + ' .expires_domain').html('<i>Available!</i>');
       }
-    } else if (!domain_obj._skip_get_domain) {
+    } else {
       Badger.getDomain(domain_obj.name, function(response) {
         var server_domain_obj = response.data;
 
@@ -300,10 +301,9 @@ with (Hasher('Cart','Application')) {
         } else if (!server_domain_obj.supported_tld) {
           show_error_for_domain(server_domain_obj.name, "Extension ." + server_domain_obj.name.split('.').pop() + " is not currently supported.");
         } else if (server_domain_obj.current_registrar && server_domain_obj.current_registrar.match(/^unknown$/)) {
-          // not done loading, try again in a few seconds if the dialog is still open
-          if ($('#transfer-domains-table')) setTimeout(curry(update_row_for_domain_in_cart, server_domain_obj, callback), 1500);
+          // not done loading, try again in a few seconds
+          setTimeout(curry(update_row_for_domain_in_cart, server_domain_obj, callback), 1500);
         } else {
-          server_domain_obj._skip_get_domain = true; // don't get stuck in a loop if not on the #cart page
           return update_row_for_domain_in_cart(server_domain_obj, callback);
         }
       });
