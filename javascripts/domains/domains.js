@@ -192,7 +192,7 @@ with (Hasher('Domains','Application')) {
     });
 
     var add_domains_to_cart_and_redirect = function() {
-      for (var i=0; i<linked_domains.length; i++) Cart.add_domain(linked_domains[i].name);
+      for (var i=0; i<linked_domains.length; i++) Cart.add_domain(linked_domains[i]);
       set_route('#cart');
     };
 

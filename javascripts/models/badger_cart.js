@@ -39,7 +39,7 @@ var BadgerCart = {
   // Add a domain name to the cart.
   // If a domain is added with the domain name alone, 
   // it explicitly needs to be updated later.
-  push_domain: function(domain_name) {
+  push_domain: function(domain_obj) {
     if (arguments.length <= 0) return this.get_domains();
     
     var arguments = this._flatten_arguments_to_array(arguments);
@@ -47,7 +47,7 @@ var BadgerCart = {
     
     var domain_obj;
     for (var i=0; i<arguments.length; i++) {
-      if (typeof(arguments[i]) == 'string' && !this.find_domain({ name: arguments[i] })) {
+      if (typeof(arguments[i]) == 'string' && arguments[i].length > 0 && !this.find_domain({ name: arguments[i] })) {
         cart_domains.push({ name: arguments[i] });
         BadgerCart._execute_after_add();
       } else if (!this.find_domain({ name: arguments[i].name })) {

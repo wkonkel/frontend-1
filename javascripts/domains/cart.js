@@ -7,7 +7,7 @@ with (Hasher('Cart','Application')) {
    * */
   before_filter('add_query_string_domains_to_cart', function() {
     var domain_names = (Hasher.request_data.params.domains||"").split(',');
-    for (var i=0; i<domain_names.length; i++) add_domain(domain_names[i]);
+    for (var i=0; i<domain_names.length; i++) if ((domain_names[i]||"").length > 0) add_domain(domain_names[i]);
   });
 
   route('#cart', function() {
@@ -209,9 +209,14 @@ with (Hasher('Cart','Application')) {
    * Example: add domain test.com to cart
    * Cart.add_domain('test.com');
    * */
-  define('add_domain', function(domain_name) {
-    if (!BadgerCart.find_domain({ name: domain_name })) {
-      BadgerCart.push_domain(domain_name);
+  define('add_domain', function(domain) {
+    if (typeof(domain) == 'string') {
+      if (domain.length <= 0) return;
+      domain = { name: domain };
+    }
+
+    if (!BadgerCart.find_domain({ name: domain.name })) {
+      BadgerCart.push_domain(domain);
       update_shopping_cart_size();
       update_domains_in_cart();
     }
