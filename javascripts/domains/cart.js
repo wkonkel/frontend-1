@@ -61,7 +61,16 @@ with (Hasher('Cart','Application')) {
 
         div({ style: "margin-top: 20px; text-align: right "},
           input({ type: 'hidden', name: 'hidden_tag_anchor', id: 'hidden_tag_anchor', value: '' }),
-          submit({ id: 'continue-transfer-btn', 'class': 'myButton', style: 'display: none', name: 'cancel', value: "Proceed to Checkout" })
+          a({
+            id: 'continue-transfer-btn',
+            'class': 'myButton',
+            style: 'display: none',
+            name: 'cancel',
+            onClick: function() {
+              if (!Badger.getAccessToken()) set_route('#account/create');
+              else set_route('#cart/confirm');
+            }
+          }, "Proceed to Checkout")
         )
       )
     );
