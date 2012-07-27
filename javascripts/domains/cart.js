@@ -113,19 +113,20 @@ with (Hasher('Cart','Application')) {
 
   route('#cart/processing', function() {
     var cart_domains = BadgerCart.get_domains(),
+      num_domains_in_cart = cart_domains.length, // need to remember the initial length
       new_domains = BadgerCart.get_new_domains(),
       transfer_domains = BadgerCart.get_transfer_domains();
 
     render(
       chained_header_with_links(
         { text: 'Shopping Cart', href: '#cart' },
-        { text: 'Processing ' + cart_domains.length + ' ' + (cart_domains.length == 1 ? 'Domain' : 'Domains') }
+        { text: 'Processing ' + num_domains_in_cart + ' ' + (num_domains_in_cart == 1 ? 'Domain' : 'Domains') }
       ),
 
       div({ 'class': 'sidebar' },
         info_message(
           h3('Processing Transfers'),
-          p('It will only take a few moments to initiate the domain transfer' + (cart_domains.length != 1 ? 's' : '') + '.')
+          p('It will only take a few moments to initiate the domain transfer' + (num_domains_in_cart != 1 ? 's' : '') + '.')
         )
       ),
 
@@ -154,7 +155,7 @@ with (Hasher('Cart','Application')) {
     // the method below is invoked each time a registration or transfer request finishes.
     var num_domains_processed = 0;
     var show_continue_button_if_finished = function() {
-      if (++num_domains_processed >= cart_domains.length) {
+      if (++num_domains_processed >= num_domains_in_cart) {
         $('a#close-cart-button').show();
         BadgerCache.flush('domains');
         BadgerCache.getDomains(function() { update_my_domains_count(); });
