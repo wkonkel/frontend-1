@@ -240,7 +240,7 @@ with (Hasher('Cart','Application')) {
     if (!BadgerCart.find_domain({ name: domain.name })) {
       BadgerCart.push_domain(domain);
       update_shopping_cart_size();
-      process_new_domains();
+      update_domains_in_cart();
     }
   });
 
