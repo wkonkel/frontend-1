@@ -78,7 +78,9 @@ with (Hasher('Cart','Application')) {
         { text: 'Confirm Purchase of ' + domains.length + ' ' + (domains.length == 1 ? 'Domain' : 'Domains') }
       ),
 
-      div({ 'class': 'fancy', style: 'display: inline-block; width: 60%; vertical-align: top;' },
+      form_with_loader({ 'class': 'fancy has-sidebar', action: register_or_transfer_all_domains, loading_message: 'Processing...' },
+        div({ id: 'errors' }),
+
         fieldset({ style: 'line-height: 25px' },
           label('Domains:'),
           div(
@@ -90,46 +92,22 @@ with (Hasher('Cart','Application')) {
           )
         ),
 
-        Contact.selector_with_all_form_fields({ name: 'registrant_contact_id' })
-      ),
+        Contact.selector_with_all_form_fields({ name: 'registrant_contact_id' }),
 
-      div({ 'class': 'fancy', style: 'display: inline-block; width: 40%; vertical-align: top;' },
-        'fdsa'
+        fieldset({ style: 'line-height: 25px' },
+          label('Free options:'),
+          div(
+            checkbox({ name: 'privacy', value: true, checked: 'checked' }), 'Enable whois privacy'
+          ),
+          div(
+            checkbox({ name: 'auto_renew', value: true, checked: 'checked' }), 'Auto-renew on expiration date'
+          )
+        ),
+
+        fieldset({ 'class': 'no-label' },
+          submit({ name: 'submit', value: 'Purchase ' + domains.length + ' domain' + (domains.length != 1 ? 's' : '') + ' for $' + (domains.length * 10) })
+        )
       )
-
-
-
-
-//      form_with_loader({ 'class': 'fancy has-sidebar', action: register_or_transfer_all_domains, loading_message: 'Processing...' },
-//        div({ id: 'errors' }),
-//
-//        fieldset({ style: 'line-height: 25px' },
-//          label('Domains:'),
-//          div(
-//            ul({ style: 'border: 1px solid #ccc; float: left; margin-top: 0px; padding: 5px 20px 5px 30px; max-height: 60px; overflow: auto; line-height: 18px' },
-//              domains.map(function(domain_obj){
-//                return li(domain_obj.name);
-//              })
-//            )
-//          )
-//        ),
-//
-//        Contact.selector_with_all_form_fields({ name: 'registrant_contact_id' }),
-//
-//        fieldset({ style: 'line-height: 25px' },
-//          label('Free options:'),
-//          div(
-//            checkbox({ name: 'privacy', value: true, checked: 'checked' }), 'Enable whois privacy'
-//          ),
-//          div(
-//            checkbox({ name: 'auto_renew', value: true, checked: 'checked' }), 'Auto-renew on expiration date'
-//          )
-//        ),
-//
-//        fieldset({ 'class': 'no-label' },
-//          submit({ name: 'submit', value: 'Purchase ' + domains.length + ' domain' + (domains.length != 1 ? 's' : '') + ' for $' + (domains.length * 10) })
-//        )
-//      )
     );
   });
 
