@@ -144,7 +144,9 @@ with (Hasher('Cart','Application')) {
             })
           )
         ),
-        a({ id: 'close-cart-button', href: curry(set_route, '#domains'), 'class': 'myButton', style: 'display: none; float: right; margin: 15px auto;' }, 'View My Domains')
+        div({ style: 'text-align: right' },
+          a({ id: 'close-cart-button', href: curry(set_route, '#domains'), 'class': 'myButton', style: 'display: none; margin: 15px auto;' }, 'View My Domains')
+        )
       )
     );
 
@@ -257,7 +259,7 @@ with (Hasher('Cart','Application')) {
   * Updates the domain rows on the table, if on #cart page.
   * */
   define('update_row_for_domain_in_cart', function(domain_obj, callback) {
-    if (domain_obj.current_registrar && !domain_obj.current_registrar.match(/^unknown$/i)) {
+    if (domain_obj.expires_at && domain_obj.current_registrar && !domain_obj.current_registrar.match(/^unknown$/i)) {
       var item_id = '#' + row_id_for_domain(domain_obj.name);
       if ($(item_id + ' .registrar_domain').length > 0) {
         set_background_color_if_valid(domain_obj.name, true);
