@@ -16,7 +16,7 @@ with (Hasher('Application')) {
   });
 
   // load referral query parameters
-  initializer(function() {
+  before_filter(function() {
     var params = Hasher.request_data.params,
         existing_referral_info = Badger.Session.get('referral_info') || {};
 
