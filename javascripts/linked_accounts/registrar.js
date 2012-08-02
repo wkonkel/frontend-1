@@ -69,6 +69,10 @@ with (Hasher('Registrar','Application')) {
     start_modal_spin('Removing Linked Account...');
     
     Badger.deleteLinkedAccount(data.id, function (response) {
+
+      // if facebook account, run FB.logout()
+      if (data.site.match(/facebook/i)) FB.logout();
+
       if (response.meta.status == 'ok') {
         BadgerCache.flush('domains');
         BadgerCache.flush('linked_accounts');

@@ -105,7 +105,7 @@ with (Hasher('LinkedAccounts','Application')) {
           app_store_icon({
             name: 'Facebook',
             image_src: 'images/apps/facebook.png',
-            href: curry(link_social_account, 'facebook'),
+            href: link_facebook_account,
             size: options.size || 'normal'
           })
         )
@@ -191,7 +191,21 @@ with (Hasher('LinkedAccounts','Application')) {
       a({ href: curry(Registrar.remove_link, linked_account) }, img({ src: 'images/icon-no-light.gif' }))
     );
   });
-  
+
+  // proprietary FB account link
+  define('link_facebook_account', function() {
+    FB.login(function(fb_response) {
+      if (fb_response.status == 'connected') {
+        FB.api('/me', function(fb_user_response) {
+          Badger.createLinkedAccount({ site: 'facebook', 'login': fb_user_response.username, 'access_token': fb_response.authResponse.access_token }, function(response) {
+            BadgerCache.reload('linked_accounts');
+            set_route(get_route());
+          });
+        });
+      }
+    }, true);
+  });
+
   define('link_social_account', function(site, callback) {
     var auth_url;
     if (site == 'facebook') auth_url = Badger.api_host + "auth/facebook?state=" + Badger.getAccessToken();
