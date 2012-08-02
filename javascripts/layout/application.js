@@ -6,14 +6,22 @@ with (Hasher('Application')) {
     // an API call was made that requires auth
     Badger.onRequireAuth(require_person);
 
-    Badger.onLogin(function() {
-      set_route('#', { reload_page: true });
-    });
-
     // remove Facebook account info used for account create.
     // TODO: create a LinkedAccount::Facebook using the access token: FB.getAuthResponse().accessToken
     Badger.onLogin(function() {
-      Badger.Session.clear('facebook_info');
+      if (Badger.Session.remove('facebook_info')) {
+        FB.getLoginStatus(function(fb_login_response) {
+          if (fb_login_response.status != 'connected') return;
+          FB.api('/me', function(fb_user_response) {
+            Badger.createLinkedAccount({ site: 'facebook', login: fb_user_response.username,  access_token: fb_login_response.authResponse.accessToken }, function(response) {
+              console.log(response);
+              set_route('#', { reload_page: true });
+            });
+          });
+        });
+      } else {
+        set_route('#', { reload_page: true });
+      }
     });
 
     Badger.onLogout(function() {

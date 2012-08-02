@@ -40,8 +40,7 @@ with (Hasher('FacebookSDK','Application')) {
       FacebookSDK.facebook_sdk_loaded = true;
 
       FB.init({
-        appId      : get_facebook_app_id(), // App ID -- prod: 252117218197771 -- dev: 252117218197771
-        // channelUrl : '//'+window.location.hostname+'/channel', // Path to your Channel File
+        appId      : get_facebook_app_id(),
         status     : true, // check login status
         cookie     : true, // enable cookies to allow the server to access the session
         xfbml      : true  // parse XFBML
