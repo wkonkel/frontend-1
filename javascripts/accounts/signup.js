@@ -65,7 +65,7 @@ with (Hasher('Signup','Application')) {
       if (response.status == 'connected') {
         FB.api('/me', function(fb_response) {
           // filter out unnecessary values from response
-          var allowed_keys = ['first_name', 'last_name', 'email'];
+          var allowed_keys = ['first_name', 'last_name', 'email', 'username'];
           fb_response = select_keys(fb_response, function(k,v) {
             return allowed_keys.includes(k);
           });
@@ -74,7 +74,7 @@ with (Hasher('Signup','Application')) {
           set_route('#account/create');
         });
       }
-    });
+    }, { scope: 'email' });
   });
 
   define('account_create_form', function(invitee, invite_code) {

@@ -203,7 +203,7 @@ with (Hasher('LinkedAccounts','Application')) {
           });
         });
       }
-    }, true);
+    }, { scope: 'email' });
   });
 
   define('link_social_account', function(site, callback) {
