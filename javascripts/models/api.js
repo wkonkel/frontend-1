@@ -190,8 +190,8 @@ var Badger = {
   logout_callbacks: [],
   
   // given email+password, returns an access token
-  login: function(email, password, callback) {
-    Badger.api("/account/access_token", { email: email, password: password }, function(response) {
+  login: function(options, callback) {
+    Badger.api("/account/access_token", options, function(response) {
       if ((response.meta.status == 'ok') && response.data.access_token) {
         Badger.setAccessToken(response.data.access_token);
         for (var i=0; i < Badger.login_callbacks.length; i++) Badger.login_callbacks[i].call(null);
@@ -199,7 +199,7 @@ var Badger = {
       if (callback) callback(response);
     });
   },
-  
+
   // erases local cookie
   logout: function(callback) {
     if (callback) callback();

@@ -10,6 +10,12 @@ with (Hasher('Application')) {
       set_route('#', { reload_page: true });
     });
 
+    // remove Facebook account info used for account create.
+    // TODO: create a LinkedAccount::Facebook using the access token: FB.getAuthResponse().accessToken
+    Badger.onLogin(function() {
+      Badger.Session.clear('facebook_info');
+    });
+
     Badger.onLogout(function() {
       set_route('#', { reload_page: true });
     });
@@ -40,7 +46,7 @@ with (Hasher('Application')) {
       set_route('#account/create', { replace: true });
     }
   });
-  
+
   route('#', function() {
     if (Badger.getAccessToken()) {
       var next_url = Badger.getCookie('badger_url_after_auth');
@@ -284,6 +290,40 @@ with (Hasher('Application')) {
       )
     );
   });
+
+  /*
+   * Return JSON object, rejecting key/value pairs for which the comparison function is true;
+   * */
+  define('reject_keys', function(obj, comparison) {
+    var new_obj = {};
+    for (k in obj) {
+      if (typeof(obj[k]) !== 'function' && !comparison(k,obj[k])) new_obj[k] = obj[k];
+    }
+    return new_obj;
+  });
+
+  /*
+   * Return JSON object, rejecting key/value pairs for which the comparison function is false;
+   * */
+  define('select_keys', function(obj, comparison) {
+    var new_obj = {};
+    for (k in obj) {
+      if (typeof(obj[k]) !== 'function' && comparison(k,obj[k])) new_obj[k] = obj[k];
+    }
+    return new_obj;
+  });
+
+  /*
+   * Convert a JSON object to a query string
+   * */
+  define('to_param',function(obj) {
+    if (Object.keys(obj).length <= 0) return "";
+    var query_string = "";
+    for(k in obj) {
+      if (typeof(obj[k]) !== 'function') query_string += (k + '=' + obj[k] + '&');
+    }
+    return query_string.slice(0,-1);
+  });
 }
 
 String.prototype.capitalize_all = function() {
@@ -358,4 +398,4 @@ Array.prototype.stable_sort = function(compare) {
 
 Date.prototype.valid = function() {
   return isFinite(this);
-}
+};

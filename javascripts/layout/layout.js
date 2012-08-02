@@ -1,10 +1,9 @@
 with (Hasher('Application')) {
-
   // empty this before every page load
   before_filter(function() {
     $('#before-content').html('');
     $('#after-content').html('');
-  })
+  });
 
   // define('update_sidebar', function() {
   //   if ($('#sidebar')) {
@@ -175,12 +174,18 @@ with (Hasher('Application')) {
             img({ src: 'images/icann.png' })
           ),
 
-          div({ style: 'clear: both'})
+          div({ style: 'clear: both'}),
+
+          div({ style: 'margin: 20px; min-height: 200px;' },
+            TwitterSDK.share_button({ style: 'padding: 5px; width: 100px; display: inline-block;' }),
+            TwitterSDK.follow_button({ style: 'padding: 5px; display: inline-block;' }),
+            FacebookSDK.like_button({ style: 'padding: 5px;' })
+          )
         )
       )
     )
   });
-  
+
   define('left_topnav', function() {
     return div({ 'id': 'left-topnav'},
       a({ 'class': 'navlink', href: '#domains', id: 'user-nav-domains' }, 'Domains'),
@@ -458,7 +463,13 @@ with (Hasher('Application')) {
     }
   });
   
-  // easily define pretty looking icons to throw in tables, etc.
+  /*
+  *  Easily define pretty looking icons to throw in tables, etc.
+  *
+  *  Options Hash:
+  *  @name - the name to display under the icon.
+  *  @image_src - the source of the image for the icon.
+  * */
   define('app_store_icon', function() {
     var arguments = flatten_to_array(arguments);
     var options = shift_options_from_args(arguments);

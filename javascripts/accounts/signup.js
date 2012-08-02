@@ -1,24 +1,9 @@
 with (Hasher('Signup','Application')) {
 
-  // /*
-  //   Load client-side Facebook API
-  //   for this page only.
-  // */
-  // window.fbAsyncInit = function() {
-  //   FB.init({
-  //     appId      : '175882215854335',
-  //     status     : true,
-  //     cookie     : true,
-  //     xfbml      : true,
-  //     oauth      : true,
-  //   });
-  // };
-  // (function(d){
-  //   var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-  //   js = d.createElement('script'); js.id = id; js.async = true;
-  //   js.src = "//connect.facebook.net/en_US/all.js";
-  //   d.getElementsByTagName('head')[0].appendChild(js);
-  // }(document));
+  // select the first empty input field on page load
+  after_filter(function() {
+    $($('.content input[value=]')[0]).focus();
+  });
 
   route('#account/create/:invite_code', function(invite_code) {
     Badger.setInviteCode(invite_code);
@@ -66,9 +51,41 @@ with (Hasher('Signup','Application')) {
       );
     }
   });
-  
+
+  /*
+  * Prompt the user to authenticate with Facebook, then make authenticated call to Facebook API to fetch
+  * basic contact info, which is stored in a session variable 'facebook_info'.
+  * */
+  define('get_authenticated_facebook_info', function() {
+    show_spinner_modal('Linking with Facebook...');
+
+    FB.login(function(response) {
+      hide_modal();
+
+      if (response.status == 'connected') {
+        FB.api('/me', function(fb_response) {
+          // filter out unnecessary values from response
+          var allowed_keys = ['first_name', 'last_name', 'email'];
+          fb_response = select_keys(fb_response, function(k,v) {
+            return allowed_keys.includes(k);
+          });
+
+          Badger.Session.set('facebook_info', fb_response);
+          set_route('#account/create');
+        });
+      }
+    });
+  });
+
   define('account_create_form', function(invitee, invite_code) {
     var sidebar = div({ 'class': 'sidebar' },
+      info_message(
+        h3("Have a Facebook Account?"),
+        div({ 'class': 'centered-button' },
+          div({ 'class': 'requires-facebook' }, a({ 'class': 'myButton small', href: get_authenticated_facebook_info }, 'Sign Up with Facebook'))
+        )
+      ),
+
       info_message(
         h3("Don't want to sign up yet?"),
         p("Experience how Badger works as you search, register, transfer and configure domains in a simulated environment."),
@@ -82,7 +99,8 @@ with (Hasher('Signup','Application')) {
     );
     
     invitee = invitee || {};
-    var referral_info = Badger.Session.get('referral_info') || {};
+    var referral_info = Badger.Session.get('referral_info') || {},
+        facebook_info = Badger.Session.get('facebook_info') || {};
 
     return div(
       sidebar,
@@ -91,13 +109,13 @@ with (Hasher('Signup','Application')) {
     
         fieldset(
           label({ 'for': 'first_name-input' }, 'First and last name:'),
-          text({ 'class': 'short right-margin', id: 'first_name-input', name: 'first_name', value: (invitee.first_name || referral_info.first_name || ''), placeholder: 'John' }),
-          text({ 'class': 'short', name: 'last_name', value: (invitee.last_name || referral_info.last_name || ''), placeholder: 'Doe' })
+          text({ 'class': 'short right-margin', id: 'first_name-input', name: 'first_name', value: (invitee.first_name || facebook_info.first_name || referral_info.first_name || ''), placeholder: 'John' }),
+          text({ 'class': 'short', name: 'last_name', value: (invitee.last_name || facebook_info.last_name  || referral_info.last_name|| ''), placeholder: 'Doe' })
         ),
 
         fieldset(
           label({ 'for': 'email-input' }, 'Email address:'),
-          input({ id: 'email-input', name: 'email', style: 'width: 275px', value: (invitee.email || referral_info.email ||  ''), placeholder: 'john.doe@badger.com' })
+          input({ id: 'email-input', name: 'email', style: 'width: 275px', value: (invitee.email || facebook_info.email || referral_info.email ||  ''), placeholder: 'john.doe@badger.com' })
         ),
     
         fieldset(
@@ -117,7 +135,7 @@ with (Hasher('Signup','Application')) {
         fieldset({ 'class': 'no-label' },
           input({ 'class': 'myButton', type: 'submit', value: 'Continue »' })
         ),
-        input({ type: 'hidden', name: 'invite_code', id: 'invite_code', value: invite_code || referral_info.referral_code })
+        input({ type: 'hidden', name: 'invite_code', id: 'invite_code', value: invite_code || referral_info.referral_code || '' })
       )
     );
     $('input[name="first_name"]').focus();
@@ -136,8 +154,6 @@ with (Hasher('Signup','Application')) {
       }
     });
   });
-
-
 
   route('#confirm_email/:code', function(code) {
     if (!Badger.getAccessToken()) {

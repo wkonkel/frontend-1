@@ -1,5 +1,5 @@
 with (Hasher('Signup','Application')) {
-  
+
   route('#account/login', function() {
     render(
       div(
@@ -11,9 +11,17 @@ with (Hasher('Signup','Application')) {
             p("It only takes a minute to create a Badger account, and it's free!"),
             div({ 'class': 'centered-button' } , a({ href: '#account/create', 'class': 'myButton small' }, "Create Account"))
           )
+
+//          Note: the backend for this feature is disabled right now. it's a bit risky, security wise --- CAB
+//
+//          info_message(
+//            h3("Login with Facebook"),
+//            p("If you haven't already, login and link a Facebook account. Once you do, logging in is easy!"),
+//            div({ 'class': 'centered-button'}, a({ 'class': 'myButton small', href: process_facebook_login }, 'Login with Facebook'))
+//          )
         ),
 
-        form_with_loader({ 'class': 'fancy has-sidebar', action: process_login, loading_message: "Logging in..." },
+        form_with_loader({ 'class': 'fancy has-sidebar', action: process_login, loading_message: "Logging in...", style: 'min-height: 275px;' },
           div({ id: 'signup-errors' }),
         
           fieldset(
@@ -42,11 +50,25 @@ with (Hasher('Signup','Application')) {
 
   define('process_login', function(form) {
     $('#signup-errors').empty();
-    Badger.login(form.email, form.password, function(response) {
+    Badger.login({ email: form.email, password: form.password }, function(response) {
       if (response.meta.status != 'ok') {
         $('#signup-errors').empty().append(error_message(response));
         hide_form_submit_loader();
       }
+    });
+  });
+
+  define('process_facebook_login', function() {
+    $('#signup-errors').empty();
+
+    FB.login(function(fb_response) {
+      fb_response.authResponse = fb_response.authResponse || {};
+      Badger.login({ facebook_access_token: fb_response.authResponse.accessToken }, function(response) {
+        if (response.meta.status != 'ok') {
+          $('#signup-errors').html(error_message(response));
+          hide_form_submit_loader();
+        }
+      });
     });
   });
 
@@ -87,7 +109,7 @@ with (Hasher('Signup','Application')) {
   
   define('login', function(form) {
     $('#signup-errors').empty();
-    Badger.login(form.email, form.password, function(response) {
+    Badger.login({ email: form.email, password: form.password }, function(response) {
       if (response.meta.status == 'ok') {
         if (Badger.back_url != "") {
           set_route(Badger.back_url);
