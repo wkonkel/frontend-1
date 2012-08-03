@@ -125,7 +125,7 @@ with (Hasher('FacebookSDK','Application')) {
                 div({ 'class': 'centered-button' },
                   img({ src: fb_profile_image_src }),
                   p({ style: '' }, 'Logged in as ', b(fb_account_info.name)),
-                  a({ onclick: curry(fb.logout, function() { set_route(get_route()) }) }, "That's not me!")
+                  a({ onclick: curry(fb.logout, function() { Badger.Session.remove('facebook_info'); set_route(get_route()) }) }, "That's not me!")
                 )
               );
             });
