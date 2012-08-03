@@ -64,7 +64,9 @@ with (Hasher('FacebookSDK','Application')) {
       timed_out = elapsed_time >= timeout;
       if (timed_out || FacebookSDK.facebook_sdk_loaded) {
         clearInterval(wait_for_fb);
-        return callback((!timed_out && FacebookSDK.facebook_sdk_loaded) ? FB : null);
+        return callback(((!timed_out && FacebookSDK.facebook_sdk_loaded) ? FB : null), {
+          timed_out: timed_out
+        });
       }
       elapsed_time += interval;
     }, interval);
@@ -107,12 +109,11 @@ with (Hasher('FacebookSDK','Application')) {
       div({ style: 'text-align: center; margin-left: -5px;' }, img({ src: 'images/spinner.gif' }))
     );
 
-    show_spinner_modal('Connecting with Facebook...');
+    FacebookSDK.after_load(function(fb, response) {
+      if (response.timed_out) return render({ into: facebook_div }, '');
 
-    FacebookSDK.after_load(function(fb) {
       var callback = function(fb_login_response) {
         if (!fb_login_response || fb_login_response.status != 'connected') {
-          hide_modal();
           render({ into: facebook_div },
             div({ 'class': 'centered-button' }, a({ href: get_authenticated_info }, img({ src: 'images/linked_accounts/facebook.png', style: 'width: 100%; height: 100%' })))
           );
@@ -124,16 +125,7 @@ with (Hasher('FacebookSDK','Application')) {
                 div({ 'class': 'centered-button' },
                   img({ src: fb_profile_image_src }),
                   p({ style: '' }, 'Logged in as ', b(fb_account_info.name)),
-                  a({ href: function() {
-                      show_spinner_modal('Connecting with Facebook...');
-                      fb.logout(function() {
-                        fb.login(function() {
-                          hide_modal();
-                          set_route(get_route());
-                        });
-                      });
-                    }
-                  }, "That's not me!")
+                  a({ onclick: curry(fb.logout, function() { set_route(get_route()) }) }, "That's not me!")
                 )
               );
             });
