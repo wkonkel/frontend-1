@@ -59,18 +59,20 @@ with (Hasher('Signup','Application')) {
   define('get_authenticated_facebook_info', function() {
     show_spinner_modal('Linking with Facebook...');
 
+    var facebook_info = {};
+
     FB.login(function(response) {
       hide_modal();
-
       if (response.status == 'connected') {
+        facebook_info.access_token = response.authResponse.accessToken;
+        facebook_info.user_id = response.authResponse.userID;
+
         FB.api('/me', function(fb_response) {
           // filter out unnecessary values from response
           var allowed_keys = ['first_name', 'last_name', 'email', 'username'];
-          fb_response = select_keys(fb_response, function(k,v) {
-            return allowed_keys.includes(k);
-          });
-
-          Badger.Session.set('facebook_info', fb_response);
+          fb_response = select_keys(fb_response, function(k,v) { return allowed_keys.includes(k) });
+          for (k in fb_response) facebook_info[k] = fb_response[k];
+          Badger.Session.set('facebook_info', facebook_info);
           set_route('#account/create');
         });
       }

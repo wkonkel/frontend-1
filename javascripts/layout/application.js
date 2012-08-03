@@ -9,15 +9,10 @@ with (Hasher('Application')) {
     // remove Facebook account info used for account create.
     // TODO: create a LinkedAccount::Facebook using the access token: FB.getAuthResponse().accessToken
     Badger.onLogin(function() {
-      if (Badger.Session.remove('facebook_info')) {
-        FB.getLoginStatus(function(fb_login_response) {
-          if (fb_login_response.status != 'connected') return;
-          FB.api('/me', function(fb_user_response) {
-            Badger.createLinkedAccount({ site: 'facebook', login: fb_user_response.username,  access_token: fb_login_response.authResponse.accessToken }, function(response) {
-              console.log(response);
-              set_route('#', { reload_page: true });
-            });
-          });
+      var facebook_info = Badger.Session.remove('facebook_info');
+      if (facebook_info) {
+        Badger.createLinkedAccount({ site: 'facebook', login: facebook_info.username,  access_token: facebook_info.access_token }, function(response) {
+          set_route('#', { reload_page: true });
         });
       } else {
         set_route('#', { reload_page: true });
