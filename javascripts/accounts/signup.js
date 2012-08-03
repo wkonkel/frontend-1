@@ -52,40 +52,11 @@ with (Hasher('Signup','Application')) {
     }
   });
 
-  /*
-  * Prompt the user to authenticate with Facebook, then make authenticated call to Facebook API to fetch
-  * basic contact info, which is stored in a session variable 'facebook_info'.
-  * */
-  define('get_authenticated_facebook_info', function() {
-    show_spinner_modal('Linking with Facebook...');
-
-    var facebook_info = {};
-
-    FB.login(function(response) {
-      hide_modal();
-      if (response.status == 'connected') {
-        facebook_info.access_token = response.authResponse.accessToken;
-        facebook_info.user_id = response.authResponse.userID;
-
-        FB.api('/me', function(fb_response) {
-          // filter out unnecessary values from response
-          var allowed_keys = ['first_name', 'last_name', 'email', 'username'];
-          fb_response = select_keys(fb_response, function(k,v) { return allowed_keys.includes(k) });
-          for (k in fb_response) facebook_info[k] = fb_response[k];
-          Badger.Session.set('facebook_info', facebook_info);
-          set_route('#account/create');
-        });
-      }
-    }, { scope: 'email' });
-  });
-
   define('account_create_form', function(invitee, invite_code) {
     var sidebar = div({ 'class': 'sidebar' },
       info_message(
         h3("Have a Facebook Account?"),
-        div({ 'class': 'centered-button' },
-          div({ 'class': 'requires-facebook' }, a({ 'class': 'myButton small', href: get_authenticated_facebook_info }, 'Sign Up with Facebook'))
-        )
+        FacebookSDK.connect_button()
       ),
 
       info_message(
@@ -99,12 +70,12 @@ with (Hasher('Signup','Application')) {
       //   p({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
       // )
     );
-    
+
     invitee = invitee || {};
     var referral_info = Badger.Session.get('referral_info') || {},
         facebook_info = Badger.Session.get('facebook_info') || {};
 
-    return div(
+    return div({ style: 'min-height: 350px;' },
       sidebar,
       form_with_loader({ 'class': 'fancy has-sidebar', action: create_person, loading_message: "Creating account..." },
         div({ id: 'signup-errors' }),
