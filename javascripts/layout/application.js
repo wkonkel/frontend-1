@@ -4,7 +4,7 @@ with (Hasher('Application')) {
     if (Badger.getAccessToken()) BadgerCache.load();
   
     // an API call was made that requires auth
-    Badger.onRequireAuth(require_person);
+    Badger.onRequireAuth(curry(set_route, '#account/create'));
 
     // remove Facebook account info used for account create.
     Badger.onLogin(function() {
@@ -42,22 +42,9 @@ with (Hasher('Application')) {
     Badger.Session.write({ referral_info: referral_info });
   });
 
-  define('require_person', function() {
-    if (!Badger.getAccessToken()) {
-      Badger.setCookie('badger_url_after_auth', get_route());
-      set_route('#account/create', { replace: true });
-    }
-  });
-
   route('#', function() {
     if (Badger.getAccessToken()) {
-      var next_url = Badger.getCookie('badger_url_after_auth');
-      if (next_url) {
-        Badger.setCookie('badger_url_after_auth', null);
-      } else {
-        next_url = '#domains';
-      }
-      set_route(next_url);
+      set_route('#domains');
     } else {
       set_route('#welcome');
     }

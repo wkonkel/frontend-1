@@ -1,7 +1,5 @@
 with (Hasher('LinkRegistrarAccount','Application')) {
   
-  before_filter(require_person);
-
   route("#linked_accounts/:registrar/link", function(registrar) {
     if (registrar == "godaddy") {
       render_registrar_link_form(registrar, "GoDaddy", "images/apps/godaddy.png");
