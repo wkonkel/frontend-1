@@ -55,8 +55,8 @@ with (Hasher('Signup','Application')) {
   define('account_create_form', function(invitee, invite_code) {
     var sidebar = div({ 'class': 'sidebar' },
       info_message(
-        h3("Have a Facebook Account?"),
-        FacebookSDK.connect_button()
+        h3('Connect with Facebook'),
+        FacebookSDK.connect_button({ style: 'text-align: center;' })
       ),
 
       info_message(
