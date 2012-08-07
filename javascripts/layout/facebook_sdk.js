@@ -130,7 +130,8 @@ with (Hasher('FacebookSDK','Application')) {
         'class': 'fb-login-button',
         'data-show-faces': 'false',
         'data-width': '200',
-        'data-max-rows': '1'
+        'data-max-rows': '1',
+        'scope': 'email'
       })
     );
   });
