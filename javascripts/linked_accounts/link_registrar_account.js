@@ -1,5 +1,10 @@
 with (Hasher('LinkRegistrarAccount','Application')) {
-  
+
+  // redirect to account create if not logged in
+  before_filter(function() {
+    if (!Badger.getAccessToken()) set_route('#account/create');
+  });
+
   route("#linked_accounts/:registrar/link", function(registrar) {
     if (registrar == "godaddy") {
       render_registrar_link_form(registrar, "GoDaddy", "images/apps/godaddy.png");
