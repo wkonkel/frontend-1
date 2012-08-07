@@ -123,8 +123,9 @@ var Badger = {
       head.removeChild(script);
 
       if (response && response.meta && response.meta.status == 'unauthorized') {
-        // if we passed in an access token that isn't valid, probably best to log them out all the way
-        Badger.getAccessToken() ? Badger.logout() : Badger.requireAuth();
+        // if we passed in an access token that isn't valid, probably best to log them out all the way.
+        // if user was not logged in, and tried to make an authorized API call, direct them to #account/create
+        Badger.getAccessToken() ? Badger.logout() : window.location = '#account/create';
       } else {
         callback.call(null,response);
       }
@@ -174,11 +175,6 @@ var Badger = {
     Badger.setCookie('badger_access_token', token);
   },
 
-  onRequireAuth: function(callback) {
-    Badger.require_auth_callbacks.push(callback);
-  },
-  require_auth_callbacks: [],
-  
   onLogin: function(callback) {
     Badger.login_callbacks.push(callback);
   },
@@ -207,10 +203,6 @@ var Badger = {
     if (Badger.getAccessToken()) Badger.setAccessToken(null);
   },
 
-  requireAuth: function() {
-    for (var i=0; i < Badger.require_auth_callbacks.length; i++) Badger.require_auth_callbacks[i].call(null);
-  },
-  
   accountInfo: function(callback) {
     Badger.api("/account/info", callback);
   },

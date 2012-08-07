@@ -1,11 +1,6 @@
 with (Hasher('Application')) {
 
   initializer(function() {
-    if (Badger.getAccessToken()) BadgerCache.load();
-  
-    // an API call was made that requires auth
-    Badger.onRequireAuth(require_person);
-
     // remove Facebook account info used for account create.
     Badger.onLogin(function() {
       var facebook_info = Badger.Session.remove('facebook_info');
