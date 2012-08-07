@@ -120,10 +120,7 @@ with (Hasher('Signup','Application')) {
       if (response.meta.status == 'ok') {
         // remove the referral code data from session storage
         Badger.Session.remove('referral_info');
-
-        // if domains in the cart prior to account creation, redirect to #cart after login.
-        // otherwise, just go to #domains.
-        set_route((BadgerCart.get_domains().length > 0 ? '#cart' : '#domains'), { reload_page: true });
+        set_route('#', { reload_page: true });
       } else {
         $('#signup-errors').empty().append(error_message(response));
         hide_form_submit_loader();
