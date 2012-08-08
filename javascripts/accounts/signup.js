@@ -1,5 +1,10 @@
 with (Hasher('Signup','Application')) {
 
+  // don't even let people be on this page if they are logged in.
+  before_filter(function() {
+    if (Badger.getAccessToken()) set_route('#');
+  });
+
   // select the first empty input field on page load
   after_filter(function() {
     $($('.content input[value=]')[0]).focus();

@@ -1,5 +1,10 @@
 with (Hasher('Signup','Application')) {
 
+  // don't even let people be on this page if they are logged in.
+  before_filter(function() {
+    if (Badger.getAccessToken()) set_route('#');
+  });
+
   route('#account/login', function() {
     render(
       div(
