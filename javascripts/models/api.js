@@ -135,13 +135,22 @@ var Badger = {
   },
   
   jsonp_callbacks: {},
-  
-  setCookie: function(name,value) {
-    if (value) {
-      document.cookie = name+"="+value+"; path=/";
-    } else {
-      document.cookie = name+"=; path=/; expires=Thu, 01-Jan-1970 00:00:01 GMT";
-    }
+
+  /*
+  * Set a cookie.
+  *
+  * Options:
+  * @expires_at:  the date at which the cookie is to expire.
+  *
+  * Examples:
+  *   Badger.setCookie('key','value', { expires_at: date().add(5).days() });
+  *   Badger.setCookie('key','value');
+  * */
+  setCookie: function(name,value,options) {
+    options = options || {};
+    var cookie = (value ? name+"="+value+"; path=/;" : name+"=; path=/;");
+    if (options.expires_at) cookie += "expires="+options.expires_at.toGMTString();
+    document.cookie = cookie;
   },
   
   getCookie: function(name) {
