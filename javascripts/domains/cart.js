@@ -330,7 +330,6 @@ with (Hasher('Cart','Application')) {
     // add a purchase_options hash to each cart domain. for now, each hash has the same info, but it will be
     // domain specific in the near future
     cart_domains.forEach(function(cart_domain) {
-      cart_domain.purchase_options.registrant_contact_id = parseInt(form_data.registrant_contact_id) || -1;
       cart_domain.purchase_options.auto_renew = form_data.auto_renew == 'true' ? true : false;
       cart_domain.purchase_options.privacy = form_data.privacy == 'true' ? true : false;
       // cart_domain.purchase_options.import_dns = form_data.import_dns == 'true' ? true : false;
@@ -345,6 +344,11 @@ with (Hasher('Cart','Application')) {
       form_data: form_data,
       message_area: $('#errors').first(),
       callback: (function() {
+        // update the registrant contact id after a contact is created
+        cart_domains.forEach(function(cart_domain) {
+          cart_domain.purchase_options.registrant_contact_id = parseInt(form_data.registrant_contact_id) || -1;
+        });
+
         BadgerCache.getAccountInfo(function(account_info) {
           if (account_info.data.domain_credits < num_credits_needed) {
             Badger.Session.write({
