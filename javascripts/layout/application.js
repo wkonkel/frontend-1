@@ -45,8 +45,7 @@ with (Hasher('Application')) {
     Badger.Session.write({ referral_info: referral_info });
 
     // as per the affiliate program specs, we must keep the last used affiliate code around in a cookie for 180 days.
-    var referral_info = Badger.Session.get('referral_info');
-    if (!Badger.getCookie('affiliate_code') && referral_info && referral_info.referral_code) {
+    if (referral_info.referral_code) {
       Badger.getReferralCode(referral_info.referral_code, function(response) {
         if (response.meta.status == 'ok' && response.data.person.is_affiliate) {
           Badger.setCookie('affiliate_code', referral_info.referral_code, { expires_at: date().add(180).days() });
