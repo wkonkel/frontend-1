@@ -323,7 +323,6 @@ with (Hasher('Application')) {
     $.smoothScroll(0);
   });
   
-  
   define('logged_in', function(route) {
     return !!Badger.getAccessToken();
   });
@@ -331,14 +330,14 @@ with (Hasher('Application')) {
   define('info_message', function() {
     var arguments = flatten_to_array(arguments);
     var options = shift_options_from_args(arguments);
-    options.class = options.class || 'info-message';
+    options['class'] = options['class'] || 'info-message';
     return div(options, arguments);
   });
 
   define('error_message', function(response) {
     var arguments = flatten_to_array(arguments);
     var options = shift_options_from_args(arguments);
-    options.class = 'error-message';
+    options['class'] = 'error-message';
     return info_message(options, div(
       response.data ? [
         response.data.message,
@@ -350,7 +349,7 @@ with (Hasher('Application')) {
   define('success_message', function(response) {
     var arguments = flatten_to_array(arguments);
     var options = shift_options_from_args(arguments);
-    options.class = 'success-message';
+    options['class'] = 'success-message';
     return info_message(options, div(
       response.data ? response.data.message : arguments
     ));
@@ -359,7 +358,7 @@ with (Hasher('Application')) {
   define('subtle_info_message', function() {
     var arguments = flatten_to_array(arguments);
     var options = shift_options_from_args(arguments);
-    options.class = 'subtle-info-message';
+    options['class'] = 'subtle-info-message';
     return info_message(options, arguments);
   });
   
