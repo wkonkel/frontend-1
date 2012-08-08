@@ -327,40 +327,40 @@ with (Hasher('Application')) {
   define('logged_in', function(route) {
     return !!Badger.getAccessToken();
   });
-  
+
+  define('info_message', function() {
+    var arguments = flatten_to_array(arguments);
+    var options = shift_options_from_args(arguments);
+    options.class = options.class || 'info-message';
+    return div(options, arguments);
+  });
+
   define('error_message', function(response) {
-    return div({ 'class': 'error-message' },
-      div(
-        response.data ? [
-          response.data.message,
-          !response.data.errors ? "" : ": " + response.data.errors.map(function(error) { return error.reason ? error.reason : error.field.replace(/_/g, ' ').capitalize_first() + " " + error.code.replace(/_/g, ' ');}).join(', ')
-        ] : arguments
-      )
-    )
+    var arguments = flatten_to_array(arguments);
+    var options = shift_options_from_args(arguments);
+    options.class = 'error-message';
+    return info_message(options, div(
+      response.data ? [
+        response.data.message,
+        !response.data.errors ? "" : ": " + response.data.errors.map(function(error) { return error.reason ? error.reason : error.field.replace(/_/g, ' ').capitalize_first() + " " + error.code.replace(/_/g, ' ');}).join(', ')
+      ] : arguments
+    ));
   });
 
   define('success_message', function(response) {
-    return div({ 'class': 'success-message' },
-      div( response.data ? response.data.message : arguments )
-    )
+    var arguments = flatten_to_array(arguments);
+    var options = shift_options_from_args(arguments);
+    options.class = 'success-message';
+    return info_message(options, div(
+      response.data ? response.data.message : arguments
+    ));
   });
 
-  define('info_message', function() {
-    if (arguments[0].data && arguments[0].data.message) {
-      return div({ 'class': 'info_message' }, arguments[0].data.message);
-    } else {
-      var arguments = flatten_to_array(arguments);
-      var options = shift_options_from_args(arguments);
-      options['class'] = 'info-message';
-      return div(options, arguments);
-    }
-  });
-  
   define('subtle_info_message', function() {
     var arguments = flatten_to_array(arguments);
     var options = shift_options_from_args(arguments);
-    options['class'] = 'subtle-info-message';
-    return div(options, arguments);
+    options.class = 'subtle-info-message';
+    return info_message(options, arguments);
   });
   
   define('spinner', function() {

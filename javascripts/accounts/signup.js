@@ -67,16 +67,11 @@ with (Hasher('Signup','Application')) {
     FacebookSDK.after_load(function() {
       var fb_info = Badger.Session.get('facebook_info');
       if (fb_info) {
-//        div({ 'class': 'centered-button' },
-//          img({ src: fb_info.profile_image_src }),
-//          p({ style: '' }, 'Logged in as ', b(fb_info.name)),
-//          a({ onclick: fb.logout }, "That's not me!")
-//        )
         render({ into: facebook_account_link_div },
-          success_message({ style: 'display: block; height: 50px;' },
+          success_message({ style: 'display: block; height: 50px; padding: 10px;' },
             div({ style: 'float: left; margin-right: 15px;' }, img({ src: fb_info.profile_image_src })),
-            p({ style: 'margin: 0px;' }, 'Hello there, ', b(fb_info.first_name), '! You are logged in with your Facebook profile.'),
-            p("That's not me! ", a({ onclick: FB.logout, style: 'cursor: pointer;' }, "Log out."))
+            p({ style: 'margin: 0px;' }, 'This form was filled using your Facebook account.'),
+            p(b("That's not me! "), a({ onclick: FB.logout, style: 'cursor: pointer;' }, "Log out."))
           )
         );
       } else {

@@ -230,18 +230,20 @@ with (Hasher('DomainShow','DomainApps')) {
   define('display_transfer_status', function(domain_obj) {
     var step_percentage = Domains.compute_transfer_progress_percentage(domain_obj);
 
-    return info_message({ id: 'transfer-status', 'class': 'transfer-status', style: 'margin-bottom: 15px;' },
-      h1('Transfer Status'),
-      
-      div({ style: 'height: 46px; padding: 10px; margin: 10px;' },
-        span({ id: 'progress-bar-percentage', style: 'float: left; font-size: 50px; font-weight: bold; padding: 10px' }, step_percentage + '%'),
-        div({ 'class': 'meter green nostripes', style: 'float: right; width: 75%' }, span({ style: 'width: ' + step_percentage + '%' }))
-      ),
+    return info_message({ id: 'transfer-status', style: 'margin-bottom: 15px;' },
+      div({ 'class': 'transfer-status' },
+        h1('Transfer Status'),
 
-      div({ style: "margin-bottom: 40px", id: 'transfer-steps' }, detail_information_rows(domain_obj)),
-      
-      div({ id: 'cancel-transfer-button-div', style: 'text-align: right; margin-top: 15px' },
-        cancel_transfer_button(domain_obj)
+        div({ style: 'height: 46px; padding: 10px; margin: 10px;' },
+          span({ id: 'progress-bar-percentage', style: 'float: left; font-size: 50px; font-weight: bold; padding: 10px' }, step_percentage + '%'),
+          div({ 'class': 'meter green nostripes', style: 'float: right; width: 75%' }, span({ style: 'width: ' + step_percentage + '%' }))
+        ),
+
+        div({ style: "margin-bottom: 40px", id: 'transfer-steps' }, detail_information_rows(domain_obj)),
+
+        div({ id: 'cancel-transfer-button-div', style: 'text-align: right; margin-top: 15px' },
+          cancel_transfer_button(domain_obj)
+        )
       )
     );
   });
@@ -493,7 +495,10 @@ with (Hasher('DomainShow','DomainApps')) {
       var domain_obj = domain_response.data;
 
       // if it completed, set a timeout to reload page, after which the apps should be displayed
-      if (!domain_obj.transfer_in) return on_transfer_complete(domain_name);
+      if (!domain_obj.transfer_in) {
+        BadgerCache.flush('domains');
+        set_route('#domains/' + domain_name);
+      }
       
       // if the transfer steps are no longer present, then the transfer succeeded!
       var new_percentage = Domains.compute_transfer_progress_percentage(domain_obj);
@@ -513,16 +518,6 @@ with (Hasher('DomainShow','DomainApps')) {
       // update the cancel button with the latest domain info
       update_cancel_transfer_button_href(domain_obj);
     });
-  });
-  
-  define('on_transfer_complete', function(domain_name) {
-    BadgerCache.flush('domains');
-    set_route('#domains/' + domain_name);
-    
-    // show a share transfer modal.
-    // the argument 1 is provided to make it a single domain share.
-    // this will all be reworked at some point, leaving it as is for now --- CAB
-    // Share.show_share_transfer_modal(1);
   });
   
   define('update_cancel_transfer_button_href', function(domain_obj) {
