@@ -58,31 +58,54 @@ with (Hasher('Signup','Application')) {
   });
 
   define('account_create_form', function(invitee, invite_code) {
-    var sidebar = div({ 'class': 'sidebar' },
-      info_message(
-        h3('Connect with Facebook'),
-        FacebookSDK.connect_button({ style: 'text-align: center;' })
-      ),
-
-      info_message(
-        h3("Don't want to sign up yet?"),
-        p("Experience how Badger works as you search, register, transfer and configure domains in a simulated environment."),
-        div({ 'class': 'centered-button' }, a({ 'class': 'myButton small', href: 'https://demo.badger.com/', target: '_blank' }, 'Try Live Demo'))
-      )
-    
-      // info_message(
-      //   h3("Already have an account?"),
-      //   p({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
-      // )
-    );
-
     invitee = invitee || {};
     var referral_info = Badger.Session.get('referral_info') || {},
         facebook_info = Badger.Session.get('facebook_info') || {};
 
+    var facebook_account_link_div = div();
+
+    FacebookSDK.after_load(function() {
+      var fb_info = Badger.Session.get('facebook_info');
+      if (fb_info) {
+//        div({ 'class': 'centered-button' },
+//          img({ src: fb_info.profile_image_src }),
+//          p({ style: '' }, 'Logged in as ', b(fb_info.name)),
+//          a({ onclick: fb.logout }, "That's not me!")
+//        )
+        render({ into: facebook_account_link_div },
+          success_message({ style: 'display: block; height: 50px;' },
+            div({ style: 'float: left; margin-right: 15px;' }, img({ src: fb_info.profile_image_src })),
+            p({ style: 'margin: 0px;' }, 'Hello there, ', b(fb_info.first_name), '! You are logged in with your Facebook profile.'),
+            p("That's not me! ", a({ onclick: FB.logout, style: 'cursor: pointer;' }, "Log out."))
+          )
+        );
+      } else {
+        $('#facebook-connect-button-div').show();
+      }
+    });
+
     return div({ style: 'min-height: 350px;' },
-      sidebar,
+      div({ 'class': 'sidebar' },
+        info_message({ id: 'facebook-connect-button-div', style: 'display: none;' },
+          h3("Have a Facebook Account?"),
+          div({ 'class': 'centered-button' }, FacebookSDK.login_button())
+        ),
+
+        info_message(
+          h3("Don't want to sign up yet?"),
+          p("Experience how Badger works as you search, register, transfer and configure domains in a simulated environment."),
+          div({ 'class': 'centered-button' }, a({ 'class': 'myButton small', href: 'https://demo.badger.com/', target: '_blank' }, 'Try Live Demo'))
+        )
+
+        // info_message(
+        //   h3("Already have an account?"),
+        //   p({ 'class': 'centered-button' } , a({ href: '#account/login', 'class': 'myButton small' }, "Login"))
+        // )
+      ),
+
       form_with_loader({ 'class': 'fancy has-sidebar', action: create_person, loading_message: "Creating account..." },
+        facebook_account_link_div,
+
         div({ id: 'signup-errors' }),
     
         fieldset(

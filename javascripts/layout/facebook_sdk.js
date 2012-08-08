@@ -66,11 +66,12 @@ with (Hasher('FacebookSDK','Application')) {
   // after render, reload any facebook elements (like buttons, login buttons, etc.)
   // only reloads buttons in content (not always present elements, like in header and footer)
   // NOTE: while we don't't actually use XFBML, the parse method is still in that module. Awesome.
-  after_filter('parse_facebook_elements', function() {
+  define('parse_facebook_elements', function() {
     FacebookSDK.after_load(function(fb) {
       $('.content').each(function() { fb.XFBML.parse(this) });
     });
   });
+  after_filter(parse_facebook_elements);
 
   /*
   * Execute callback when the FB sdk has been loaded.
@@ -125,6 +126,7 @@ with (Hasher('FacebookSDK','Application')) {
   });
 
   define('login_button', function(options) {
+    setTimeout(parse_facebook_elements, 100);
     return div(options||{},
       div({
         'class': 'fb-login-button',
@@ -138,6 +140,7 @@ with (Hasher('FacebookSDK','Application')) {
 
   // auto-parsed by FB library
   define('like_button', function(options) {
+    setTimeout(parse_facebook_elements, 100);
     return div(options || {},
       div({
         'class': 'fb-like',
