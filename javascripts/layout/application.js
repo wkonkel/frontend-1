@@ -6,8 +6,8 @@ with (Hasher('Application')) {
     // an API call was made that requires auth
     Badger.onRequireAuth(curry(set_route, '#account/create'));
 
-    // remove Facebook account info used for account create.
     Badger.onLogin(function() {
+      // remove Facebook account info, create linked facebook account server-side
       var facebook_info = Badger.Session.remove('facebook_info');
       if (facebook_info) {
         Badger.createLinkedAccount({ site: 'facebook', login: facebook_info.username,  access_token: facebook_info.access_token }, function(response) {
@@ -16,6 +16,9 @@ with (Hasher('Application')) {
       } else {
         set_route('#', { reload_page: true });
       }
+
+      // clear out referral info
+      Badger.Session.remove('referral_info');
     });
 
     Badger.onLogout(function() {
@@ -40,6 +43,16 @@ with (Hasher('Application')) {
     };
 
     Badger.Session.write({ referral_info: referral_info });
+
+    // as per the affiliate program specs, we must keep the last used affiliate code around in a cookie for 180 days.
+    var referral_info = Badger.Session.get('referral_info');
+    if (!Badger.getCookie('affiliate_code') && referral_info && referral_info.referral_code) {
+      Badger.getReferralCode(referral_info.referral_code, function(response) {
+        if (response.meta.status == 'ok' && response.data.person.is_affiliate) {
+          Badger.setCookie('affiliate_code', referral_info.referral_code, { expires_at: date().add(180).days() });
+        }
+      });
+    }
   });
 
   route('#', function() {

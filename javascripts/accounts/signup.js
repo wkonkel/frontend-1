@@ -141,8 +141,6 @@ with (Hasher('Signup','Application')) {
     $('#signup-errors').empty();
     Badger.createAccount(data, function(response) {
       if (response.meta.status == 'ok') {
-        // remove the referral code data from session storage
-        Badger.Session.remove('referral_info');
         set_route((BadgerCart.get_domains().length > 0 ? '#cart' : '#domains'), { reload_page: true });
       } else {
         $('#signup-errors').empty().append(error_message(response));
