@@ -274,35 +274,13 @@ var Badger = {
 
   getDomains: function(callback) {
     Badger.api("/domains", function(response) {
-      var response_data = (response.data || []).map(function(domain_obj) {
-        // quick and dirty replacement of registrar names with RhinoNames
-        if (domain_obj.legacy_rhinonames_domain && (domain_obj.current_registrar || "").match(/wild\s*west/i)) domain_obj.current_registrar   = "RhinoNames"
-        if (domain_obj.legacy_rhinonames_domain && (domain_obj.previous_registrar || "").match(/wild\s*west/i)) domain_obj.previous_registrar = "RhinoNames"
-        if (domain_obj.legacy_rhinonames_domain && (domain_obj.created_registrar || "").match(/wild\s*west/i)) domain_obj.created_registrar   = "RhinoNames"
-        if (domain_obj.legacy_rhinonames_domain && (domain_obj.updated_registrar || "").match(/wild\s*west/i)) domain_obj.updated_registrar   = "RhinoNames"
-        
-        return domain_obj;
-      });
-      
-      response.data = response_data;
-      
       callback(response);
     });
   },
   
   getDomainsForLinkedAccount: function(linked_account_id, callback) {
     Badger.api("/domains", { linked_account_id: linked_account_id }, function (response) {
-      var response_data = (response.data || []).map(function(domain_obj) {
-        // quick and dirty replacement of registrar names with RhinoNames
-        if (domain_obj.legacy_rhinonames_domain && (domain_obj.current_registrar || "").match(/wild\s*west/i)) domain_obj.current_registrar   = "RhinoNames"
-        if (domain_obj.legacy_rhinonames_domain && (domain_obj.previous_registrar || "").match(/wild\s*west/i)) domain_obj.previous_registrar = "RhinoNames"
-        if (domain_obj.legacy_rhinonames_domain && (domain_obj.created_registrar || "").match(/wild\s*west/i)) domain_obj.created_registrar   = "RhinoNames"
-        if (domain_obj.legacy_rhinonames_domain && (domain_obj.updated_registrar || "").match(/wild\s*west/i)) domain_obj.updated_registrar   = "RhinoNames"
-        
-        return domain_obj;
-      });
-      
-      callback(response_data);
+      callback(response.data);
     });
   },
 
@@ -313,11 +291,6 @@ var Badger = {
     }
     
     Badger.api("/domains/" + name, params, function(response) {
-      if (response.data.legacy_rhinonames_domain && (response.data.current_registrar || "").match(/wild\s*west/i)) response.data.current_registrar   = "RhinoNames"
-      if (response.data.legacy_rhinonames_domain && (response.data.previous_registrar || "").match(/wild\s*west/i)) response.data.previous_registrar = "RhinoNames"
-      if (response.data.legacy_rhinonames_domain && (response.data.created_registrar || "").match(/wild\s*west/i)) response.data.created_registrar   = "RhinoNames"
-      if (response.data.legacy_rhinonames_domain && (response.data.updated_registrar || "").match(/wild\s*west/i)) response.data.updated_registrar   = "RhinoNames"
-      
       callback(response);
     });
   },
