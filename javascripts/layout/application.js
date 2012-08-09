@@ -1,5 +1,9 @@
 with (Hasher('Application')) {
 
+  before_filter(function() {
+    if (get_route() == '#domains/transfer') set_route('#cart');
+  });
+
   initializer(function() {
     if (Badger.getAccessToken()) BadgerCache.load();
   
