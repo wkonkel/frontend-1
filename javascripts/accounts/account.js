@@ -23,10 +23,10 @@ with (Hasher('Account','Application')) {
 
   define('if_referral_signup_discount', function(callback) {
     BadgerCache.getAccountInfo(function(response) {
-      var signup_reward;
-      var rewards = response.data.rewards||[];
+      var signup_reward,
+          rewards = response.data.rewards||[];
       for (var i=0; i<rewards.length; i++) {
-        if (rewards[i].name == 'signup_through_referral' && !rewards[i].redeemed) signup_reward = rewards[i];
+        if (rewards[i].name == 'signup_through_referral' && !rewards[i].redeemed && !(response.data.referrer||{}).is_affiliate) signup_reward = rewards[i];
         break;
       }
       if (signup_reward) {
