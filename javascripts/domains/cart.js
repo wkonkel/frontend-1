@@ -252,7 +252,7 @@ with (Hasher('Cart','Application')) {
       update_row_for_domain_in_cart(cart_domain, function(updated_domain_obj) {
         if (updated_domain_obj.available || (updated_domain_obj.current_registrar && !updated_domain_obj.current_registrar.match(/^unknown$/i))) {
           // update the domain object in the cart with the updated attributes
-          for (k in updated_domain_obj) cart_domain[k] = updated_domain_obj[k];
+          for (var k in updated_domain_obj) cart_domain[k] = updated_domain_obj[k];
 
           if (++num_domains_updated == cart_domains.length) {
             $('#continue-transfer-btn').show();
