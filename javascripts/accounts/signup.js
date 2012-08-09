@@ -139,6 +139,10 @@ with (Hasher('Signup','Application')) {
 
   define('create_person', function(data) {
     $('#signup-errors').empty();
+
+    // if an affiliate code was saved, post it with the account create, so that the affiliate receives their kickback.
+    data.invite_code = data.invite_code || Badger.getCookie('affiliate_code');
+
     Badger.createAccount(data, function(response) {
       if (response.meta.status == 'ok') {
         set_route((BadgerCart.get_domains().length > 0 ? '#cart' : '#domains'), { reload_page: true });
