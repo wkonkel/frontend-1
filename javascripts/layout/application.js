@@ -26,8 +26,10 @@ with (Hasher('Application')) {
     });
   });
 
-  // load referral query parameters
+  // handle query params if query string is present, then set_route to clear them from the URL
   before_filter(function() {
+    if (!Hasher.request_data.query_string || Hasher.request_data.query_string.length <= 0) return;
+
     var params = Hasher.request_data.params,
         existing_referral_info = Badger.Session.get('referral_info') || {};
 
@@ -48,10 +50,15 @@ with (Hasher('Application')) {
     if (referral_info.referral_code) {
       Badger.getReferralCode(referral_info.referral_code, function(response) {
         if (response.meta.status == 'ok' && response.data.person.is_affiliate) {
-          Badger.setCookie('affiliate_code', referral_info.referral_code, { expires_at: date().add(180).days() });
+          Badger.setCookie('affiliate_code', referral_info.referral_code, { expires_at: date().add(30).days() });
         }
       });
     }
+
+    // add domains to cart
+    ((params.domains||"").split(',')).forEach(function(domain_name) { Cart.add_domain(domain_name) });
+
+    set_route(Hasher.request_data.path);
   });
 
   route('#', function() {

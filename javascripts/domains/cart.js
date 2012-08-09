@@ -1,15 +1,4 @@
 with (Hasher('Cart','Application')) {
-  /*
-   * If there are domain names on a query string parameter,
-   * pick them off and add them to the cart.
-   *
-   * Example URL: https://www.badger.com/#cart?domains=test.com,awesome.net
-   * */
-  before_filter('add_query_string_domains_to_cart', function() {
-    var domain_names = (Hasher.request_data.params.domains||"").split(',');
-    for (var i=0; i<domain_names.length; i++) if ((domain_names[i]||"").length > 0) add_domain(domain_names[i]);
-  });
-
   route('#cart', function() {
     render(
       h1('Shopping Cart'),
