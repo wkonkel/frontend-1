@@ -17,16 +17,16 @@ with (Hasher('Domains','Application')) {
   */
   define('with_domain_nav', function(domain, callback) {
     BadgerCache.getDomain(domain, function(response) {
-      var domain_obj = response.data || {};
-      
+      var domain_obj = response.data||{};
+
       var active_url = get_route();
       var base_url = '#domains/' + domain;
-      
+
       var permissions = domain_obj.permissions_for_person || [];
       var show_transfer_out = !domain_obj.locked && permissions.includes('transfer_out'),
           show_whois = !domain_obj.available && !(domain_obj.current_registrar||'').match(/^unknown$/i),
           show_settings = permissions.includes('renew');
-      
+
       var nav_table = function() {
         return table({ style: 'width: 100%' }, tbody(
           tr(
@@ -38,15 +38,15 @@ with (Hasher('Domains','Application')) {
                 show_transfer_out && li(a({ href: (base_url + '/transfer-out'), 'class': (active_url.match(/^#domains\/.+?\/transfer-out$/) ? 'active' : '') }, 'Transfer Out'))
               )
             ),
-            
+
             td({ style: 'vertical-align: top'},
               arguments
             )
           )
         ));
       }
-      
-      callback(nav_table, domain_obj);
+
+      callback(nav_table, response.meta.status != 'ok' ? null : domain_obj);
     });
   });
   

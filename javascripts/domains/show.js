@@ -27,7 +27,11 @@ with (Hasher('DomainShow','DomainApps')) {
           Either with us, or another registrar. Show the registration
           data.
       */
-      if ((domain_obj.current_registrar||'').match(/^unknown$/i)) {
+      if (!domain_obj) {
+        return render({ into: target_div },
+          error_message(domain + ' is not a valid domain name.')
+        );
+      } else if ((domain_obj.current_registrar||'').match(/^unknown$/i)) {
         setTimeout(function() {
           var domain_route = '#domains/' + domain;
           if (get_route() == domain_route) {
