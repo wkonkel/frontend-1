@@ -52,7 +52,7 @@ with (Hasher('Search','Application')) {
   define('search_box_changed', function() {
     var current_value = $('#form-search-input').val().toLowerCase().replace(/[^a-zA-Z0-9\-\.]/g,'').split('.')[0];
     
-    if (this.last_search_value == current_value) return;
+    if ((current_value == '') || (this.last_search_value == current_value)) return;
     
     if (get_route() != '#search') set_route('#search');
     
