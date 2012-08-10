@@ -417,7 +417,7 @@ with (Hasher('DomainApps','Domains')) {
       var subdomain_matches;
       if (record.subdomain && record.subdomain.test) {//regexp
         var subdomain = (tmp_record.subdomain||'').split('.')[0];
-        subdomain_matches = record.subdomain.test(subdomain.toLowerCase());;
+        subdomain_matches = record.subdomain.test(subdomain.toLowerCase()) && !record.subdomain.test(/mail/i); // special case for conflicting Gmail CNAME record
       } else {
         subdomain_matches = !!(sanitize_domain(tmp_record.subdomain) == sanitize_domain(record.subdomain));
       }
