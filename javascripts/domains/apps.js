@@ -30,7 +30,7 @@ with (Hasher('DomainApps','Domains')) {
     BadgerCache.getDomain(domain, function(response) {
       var domain_obj = response.data || {};
       
-      if (!['dns'].includes(app.id) && !(domain_obj.permissions_for_person||[]).includes('modify_dns')) {
+      if (!['dns'].includes(app.id) && !(domain_obj.permissions_for_person||[]).includes('modify_dns') && !(domain_obj.permissions_for_person||[]).includes('change_nameservers')) {
         render(
           chained_header_with_links(
             { text: 'Domains', href: '#domains' },
@@ -89,6 +89,8 @@ with (Hasher('DomainApps','Domains')) {
         } else {
           if ((app.id == 'badger_dns') || (app.id == 'remote_dns')) {
             href = curry(DnsApp.change_name_servers_modal, domain_obj);
+          } else if (app.install_href) {
+            href = app.install_href.replace(/:domain/, domain_obj.name);
           } else {
             href = curry(show_modal_install_app, app, domain_obj);
           }
@@ -360,6 +362,8 @@ with (Hasher('DomainApps','Domains')) {
   });
   
   define('app_is_installed_on_domain', function(app, domain_obj) {
+    if (app.is_installed) return app.is_installed.call(null, domain_obj);
+
     // dns? require badger nameservers
     // if (app.requires && app.requires.dns) app.requires.name_servers = ['ns1.badger.com','ns2.badger.com'];
 
