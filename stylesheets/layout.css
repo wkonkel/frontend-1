@@ -222,6 +222,11 @@ input.fancy[type=text], input.fancy[type=password] { margin-top: 4px; padding: 5
 /* adding css for ie browser */
 .has-placeholder { color: #777777; }
 
+/* fix placeholders for Firefox. NOTE: These can't be combined. */
+::-webkit-input-placeholder { color: #777777; }
+:-moz-placeholder { color: #777777; }
+
+
 #modal-dialog.ie-browser { background:transparent; filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#80000000,endColorstr=#80000000); zoom: 1; }
 .ie-browser #footer { background:transparent; filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#30000000,endColorstr=#30000000); zoom: 1; }
 .ie-browser #user-nav { background:transparent; filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#40000000,endColorstr=#40000000); zoom: 1; }
