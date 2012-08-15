@@ -22,7 +22,6 @@ with (Hasher('Rewards','Application')) {
       if (points_to_display >= 100) {
         var free_domains_earned = Math.floor((referral_stats.points_earned - referral_stats.points_redeemed) / 100);
         
-        var free_domains_earned_now = 
         render({ into: 'before-content' },
           info_message({ style: 'text-align: center; margin-top: 20px;' },
             p({ style: 'font-size: 20px;' },"You have earned ", b(free_domains_earned+''), " free ", (free_domains_earned == 1 ? 'domain' : 'domains'), "! Good work, we're all so proud of you."),
@@ -167,7 +166,9 @@ with (Hasher('Rewards','Application')) {
   
   // the actual logic and redemption happens on the backend
   define('redeem_reward_points', function() {
+    show_spinner_modal('Redeeming points...');
     Badger.redeemRewardPoints(function(response) {
+      hide_modal();
       BadgerCache.flush('account_info');
       set_route(get_route());
     });
