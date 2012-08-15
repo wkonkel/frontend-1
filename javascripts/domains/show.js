@@ -221,33 +221,6 @@ with (Hasher('DomainShow','DomainApps')) {
     });
   });
 
-  route('#domains/:domain/share', function(domain) {
-    render(spinner('Loading...'));
-    with_domain_nav(domain, function(nav_table, domain_obj) {
-      render(
-        chained_header_with_links(
-          { text: 'Domains', href: '#domains' },
-          { text: domain_obj.name },
-          { text: 'Share' }
-        ),
-
-        nav_table(
-          div({ 'class': 'sidebar'},
-            info_message(
-              h3('Spread the Word!'),
-              p("Love our service? Refer people to us and earn rewards! ", a({ href: '#rewards' }, 'Learn more.'))
-            )
-          ),
-
-          div({ 'class': 'has-sidebar' },
-            Share.message_form('I love managing my domain, ' + domain + ', with Badger!')
-          )
-        )
-      );
-    });
-  });
-
-
 
 
 

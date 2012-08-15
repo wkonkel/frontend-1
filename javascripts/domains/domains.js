@@ -33,12 +33,18 @@ with (Hasher('Domains','Application')) {
             td({ style: 'width: 200px; vertical-align: top' },
               ul({ id: 'domains-left-nav' },
                 li(a({ href: base_url, 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}$/i) ? 'active' : '') }, 'Applications')),
-                show_whois && li(a({ href: (base_url + '/share'), 'class': (active_url.match(/^#domains\/.+?\/share$/) ? 'active' : '') }, 'Share')),
                 show_whois && li(a({ href: (base_url + '/whois'), 'class': (active_url.match(/^#domains\/.+?\/whois$/) ? 'active' : '') }, 'Registration')),
                 show_settings && li(a({ href: (base_url + '/settings'), 'class': (active_url.match(/^#domains\/.+?\/settings$/) ? 'active' : '') }, 'Settings')),
                 show_transfer_out && li(a({ href: (base_url + '/transfer-out'), 'class': (active_url.match(/^#domains\/.+?\/transfer-out$/) ? 'active' : '') }, 'Transfer Out'))
+              ),
+
+
+              div({ style: 'margin: 15px 5px; display: inline-block;'},
+                share_icon({ onclick: Share.facebook_share_modal, image_src: 'images/apps/facebook.png' }),
+                share_icon({ onclick: Share.twitter_share_modal, image_src: 'images/apps/twitter.png' })
               )
             ),
+
 
             td({ style: 'vertical-align: top'},
               arguments
@@ -50,7 +56,11 @@ with (Hasher('Domains','Application')) {
       callback(nav_table, response.meta.status != 'ok' ? null : domain_obj);
     });
   });
-  
+
+  define('share_icon', function(options) {
+    return a({ style: 'cursor: pointer;', onclick: options.onclick }, img({ src: options.image_src, style: 'width: 30px; margin-right: 10px; border-radius: 5px;' }));
+  });
+
   define('domains_nav_table', function() {
     var registrar_filters_div = div();
     
