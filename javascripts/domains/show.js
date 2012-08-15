@@ -78,21 +78,25 @@ with (Hasher('DomainShow','DomainApps')) {
 
       // if this domain is not a badger registration, bluntly advertise that it can be transferred!
       // show different message for linked domains
-      var add_to_cart_message = div();
-      if ((domain_obj.permissions_for_person||[]).includes('linked_account')) {
-        render({ into: add_to_cart_message },
-          info_message({ style: 'text-align: center' },
-            p({ style: 'margin: 0px;' }, 'Ready to make the switch? Add your domain to the cart to transfer it from ', domain_obj.current_registrar, '!'),
-            a({ 'class': 'myButton', style: 'margin-top: 10px;', href: function() { Cart.add_domain(domain_obj); set_route('#cart'); } }, 'Add ' + Domains.truncate_domain_name(domain) + ' to Cart')
-          )
-        );
-      } else if (domain_obj.supported_tld && !(domain_obj.permissions_for_person||[]).includes('modify_dns') && !(domain_obj.permissions_for_person||[]).includes('change_nameservers') && !(domain_obj.permissions_for_person||[]).includes('pending_transfer')) {
-        render({ into: add_to_cart_message },
-          info_message({ style: 'text-align: center' },
-            p({ style: 'margin: 0px;' }, 'Do you own this domain, and want to transfer it to us? If so, add it to your cart!'),
-            a({ 'class': 'myButton', style: 'margin-top: 10px;', href: function() { Cart.add_domain(domain_obj); set_route('#cart'); } }, 'Add ' + Domains.truncate_domain_name(domain) + ' to Cart')
-          )
-        );
+      var add_to_cart_message = div(),
+          permissions = (domain_obj.permissions_for_person||[]);
+
+      if (!permissions.includes('pending_transfer')) {
+        if (permissions.includes('linked_account')) {
+          render({ into: add_to_cart_message },
+            info_message({ style: 'text-align: center' },
+              p({ style: 'margin: 0px;' }, 'Ready to make the switch? Add your domain to the cart to transfer it from ', domain_obj.current_registrar, '!'),
+              a({ 'class': 'myButton', style: 'margin-top: 10px;', href: function() { Cart.add_domain(domain_obj); set_route('#cart'); } }, 'Add ' + Domains.truncate_domain_name(domain) + ' to Cart')
+            )
+          );
+        } else if (domain_obj.supported_tld && !permissions.includes('modify_dns') && !permissions.includes('change_nameservers')) {
+          render({ into: add_to_cart_message },
+            info_message({ style: 'text-align: center' },
+              p({ style: 'margin: 0px;' }, 'Do you own this domain, and want to transfer it to us? If so, add it to your cart!'),
+              a({ 'class': 'myButton', style: 'margin-top: 10px;', href: function() { Cart.add_domain(domain_obj); set_route('#cart'); } }, 'Add ' + Domains.truncate_domain_name(domain) + ' to Cart')
+            )
+          );
+        }
       }
 
       render({ into: target_div },
