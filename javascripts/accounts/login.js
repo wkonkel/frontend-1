@@ -74,7 +74,7 @@ with (Hasher('Signup','Application')) {
           hide_form_submit_loader();
         }
       });
-    }, { scope: 'email' });
+    }, { scope: 'email, publish_stream' });
   });
 
   route('#account/forgot-password', function() {

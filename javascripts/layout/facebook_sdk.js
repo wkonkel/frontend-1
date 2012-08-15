@@ -44,8 +44,7 @@ with (Hasher('FacebookSDK','Application')) {
             FB.api('/me/picture', function(profile_image_src) {
               // filter out unnecessary values from response
               var allowed_keys = ['first_name', 'last_name', 'name', 'email', 'username'];
-              fb_api_response = select_keys(fb_api_response, function(k,v) { return allowed_keys.includes(k) });
-              for (k in fb_api_response) fb_info[k] = fb_api_response[k];
+              for (k in fb_api_response) if (allowed_keys.indexOf(k) >= 0) fb_info[k] = fb_api_response[k];
 
               // add profile image src to info hash.
               fb_info.profile_image_src = profile_image_src;
@@ -133,7 +132,7 @@ with (Hasher('FacebookSDK','Application')) {
         'data-show-faces': 'false',
         'data-width': '200',
         'data-max-rows': '1',
-        'scope': 'email'
+        'scope': 'email,publish_stream'
       })
     );
   });
