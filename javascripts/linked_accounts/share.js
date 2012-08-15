@@ -37,12 +37,12 @@ with (Hasher('Share','Application')) {
           if (fb_response.status == 'connected') {
             Badger.api('/facebook/share_message', 'POST', { facebook_access_token: fb_response.authResponse.accessToken, message: message }, function(response) {
               hide_modal();
-              if (response.meta.status != 'ok') $('#errors').html(error_message(response));
+              if (response.meta.status != 'ok') $('#errors').html('Unable to share message: ', response.data.message);
             });
           } else {
             hide_modal();
           }
-        });
+        }, { scope: 'email, publish_stream' });
       });
     }
   });
