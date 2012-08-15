@@ -1,125 +1,202 @@
 with (Hasher('Share','Application')) {
-  
-  route('#linked_accounts/share/:domain_name', function(domain_name) {
-    var target_div = div({ 'class': 'fancy has-sidebar' }, spinner('Loading...'));
-    
-    render(
-      h1(a({ href: '#domains' }, 'My Domains'), ' » ', a({ href: '#domains/' + domain_name }, domain_name.toLowerCase()), ' » Share'),
-      
-      div({ 'class': 'sidebar' },
-        info_message(
-          h3('Spread the Word!'),
-          p('Let your friends know about the great domain you now control at Badger.')
+
+  define('message_form', function(default_message) {
+    return div(
+      div({ id: 'errors' }),
+
+      form({ 'class': 'fancy', style: 'margin-left: -130px;' },
+        fieldset(
+          label('Message:'),
+          textarea({ id: 'share-message', style: 'width: 300px;' }, default_message||'')
+        ),
+        fieldset(
+          label('Share to:'),
+          div({ style: 'display: inline-block; margin: 15px 0px;' },
+            share_icon({ onclick: share_message_on_facebook, image_src: 'images/apps/facebook.png' }),
+            share_icon({ onclick: share_message_on_twitter, image_src: 'images/apps/twitter.png' })
+          )
         )
-      ),
-      
-      target_div
-    );
-    
-    BadgerCache.getLinkedAccounts(function(response) {
-      var linked_accounts = (response.data||[]).filter(function(linked_account) {
-        return linked_account.status && linked_account.status == 'linked';
-      });
-      
-      render({ into: target_div }, linked_accounts_form(domain_name, linked_accounts));
-      
-      hide_form_submit_loader();
-    });
-  });
-  
-  define('linked_accounts_form', function(domain_name, linked_accounts) {
-    var linked_accounts_form = form_with_loader({ 'class': 'fancy', action: share_message, loading_message: 'Submitting message...' },
-      div({ id: 'response-messages' }),
-      
-      fieldset({ 'for': 'content' },
-        label({ 'for': 'content' }, 'Message:'),
-        textarea({ id: 'message-content', name: 'content', style: 'height: 75px; width: 350px' }, 'I now manage ', domain_name, ' with @Badger! https://www.badger.com')
-      ),
-      
-      fieldset({ style: 'line-height: 20px; margin-top: 10px' },
-        label('Share to:'),
-        
-        (linked_accounts || []).length > 0 ? [
-          my_linked_accounts_table(linked_accounts)
-        ] : [
-          p("You have not linked a Facebook or Twitter account. ", a({ href: '#linked_accounts' }, "Add one now!")),
-        ]
-      ),
-      
-      fieldset({ 'class': 'no-label' },
-        submit({ name: 'submit', value: 'Share' })
       )
     );
-    
-    return linked_accounts_form;
   });
-  
-  define('my_linked_accounts_table', function(linked_accounts) {
-    return table({ style: 'width: 250px' }, tbody(
-      tr(
-        th({ style: 'width: 5%' }),
-        th({ style: 'width: 20%' }),
-        th({ style: 'width: 75%' })
-      ),
 
-      (linked_accounts || []).map(function(linked_account) {
-        if (!linked_account.status || linked_account.status != 'linked') return;
-        if (linked_account.site.match(/facebook/i)) {
-          return linked_account_row(linked_account);
-        } else if (linked_account.site.match(/twitter/i)) {
-          return linked_account_row(linked_account);
+  define('share_icon', function(options) {
+    return a({ style: 'cursor: pointer;', onclick: options.onclick }, img({ src: options.image_src, style: 'width: 30px; margin-right: 10px;' }));
+  });
+
+  define('share_message_on_facebook', function() {
+    var message = document.getElementById('share-message').value;
+    if (message.length <= 0) {
+      $('#errors').html(
+        error_message('Cannot share an empty message')
+      );
+    } else {
+      show_spinner_modal('Posting message to Facebook...');
+      FacebookSDK.after_load(function(fb) {
+        fb.login(function(fb_response) {
+          if (fb_response.status == 'connected') {
+            Badger.api('/facebook/share_message', 'POST', { facebook_access_token: fb_response.authResponse.accessToken, message: message }, function(response) {
+              hide_modal();
+              if (response.meta.status != 'ok') $('#errors').html(error_message(response));
+            });
+          } else {
+            hide_modal();
+          }
+        });
+      });
+    }
+  });
+
+  define('share_message_on_twitter', function() {
+    var message = document.getElementById('share-message').value;
+    if (message.length <= 0) {
+      $('#errors').html(
+        error_message('Cannot share an empty message')
+      );
+    } else {
+      show_spinner_modal('Posting message to Twitter...');
+      var twitter_share_window = window.open('https://twitter.com/share?url=https://www.badger.com&text='+message,'','width=600,height=400');
+
+      var wait_for_close = setInterval(function() {
+        if (twitter_share_window.closed) {
+          clearInterval(wait_for_close);
+          hide_modal();
         }
-      })
-    ));
+      }, 100);
+    }
   });
-  
-  define('linked_account_row', function(linked_account) {
-    return tr(
-      td(input({ type: 'checkbox', value: linked_account.id })),
-      td({ 'class': 'clickable', onclick: curry(check_box_for_linked_account, linked_account) }, icon_for_account(linked_account)),
-      td(span({ 'class': 'clickable', onclick: curry(check_box_for_linked_account, linked_account) }, linked_account.login))
-    );
-  });
-  
-  define('check_box_for_linked_account', function(linked_account) {
-    var checkbox = $("input[value=" + linked_account.id + "]");
 
-    // toggle checkbox
-    checkbox.attr('checked', !checkbox.attr('checked'));
-  });
-  
-  define('icon_for_account', function(linked_account) {
-    if (linked_account.site == 'facebook')
-      var image_src = 'images/apps/facebook.png';
-    else if (linked_account.site == 'twitter')
-      var image_src = 'images/apps/twitter.png';
-    
-    return span({ style: 'text-align: center; margin: 5px' },
-      img({ 'class': 'app_store_icon', src: image_src, style: 'width: 30px; height: 30px; margin: 5px auto auto auto; border-radius: 10%' })
-    );
-  });
-  
-  define('share_message', function(form_data) {
-    var linked_account_ids = [];
-    $(':checked').map(function() { linked_account_ids.push(this.value) });
-    linked_account_ids = linked_account_ids.join(',');
-    
-    Badger.shareMessage(linked_account_ids, form_data.content, function(response) {
-      if (response.meta.status == 'ok') {
-        render({ into: 'response-messages' },
-          success_message('Your message has been submitted, and should be published shortly.')
-        )
-      } else {
-        render({ into: 'response-messages' },
-          error_message(response)
-        )
-      }
-      
-      hide_form_submit_loader();
-    });
-  });
-  
+
 };
+
+
+
+
+
+
+
+
+
+//  route('#linked_accounts/share/:domain_name', function(domain_name) {
+//    var target_div = div({ 'class': 'fancy has-sidebar' }, spinner('Loading...'));
+//
+//    render(
+//      h1(a({ href: '#domains' }, 'My Domains'), ' » ', a({ href: '#domains/' + domain_name }, domain_name.toLowerCase()), ' » Share'),
+//
+//      div({ 'class': 'sidebar' },
+//        info_message(
+//          h3('Spread the Word!'),
+//          p('Let your friends know about the great domain you now control at Badger.')
+//        )
+//      ),
+//
+//      target_div
+//    );
+//
+//    BadgerCache.getLinkedAccounts(function(response) {
+//      var linked_accounts = (response.data||[]).filter(function(linked_account) {
+//        return linked_account.status && linked_account.status == 'linked';
+//      });
+//
+//      render({ into: target_div }, linked_accounts_form(domain_name, linked_accounts));
+//
+//      hide_form_submit_loader();
+//    });
+//  });
+//
+//  define('linked_accounts_form', function(domain_name, linked_accounts) {
+//    var linked_accounts_form = form_with_loader({ 'class': 'fancy', action: share_message, loading_message: 'Submitting message...' },
+//      div({ id: 'response-messages' }),
+//
+//      fieldset({ 'for': 'content' },
+//        label({ 'for': 'content' }, 'Message:'),
+//        textarea({ id: 'message-content', name: 'content', style: 'height: 75px; width: 350px' }, 'I now manage ', domain_name, ' with @Badger! https://www.badger.com')
+//      ),
+//
+//      fieldset({ style: 'line-height: 20px; margin-top: 10px' },
+//        label('Share to:'),
+//
+//        (linked_accounts || []).length > 0 ? [
+//          my_linked_accounts_table(linked_accounts)
+//        ] : [
+//          p("You have not linked a Facebook or Twitter account. ", a({ href: '#linked_accounts' }, "Add one now!")),
+//        ]
+//      ),
+//
+//      fieldset({ 'class': 'no-label' },
+//        submit({ name: 'submit', value: 'Share' })
+//      )
+//    );
+//
+//    return linked_accounts_form;
+//  });
+//
+//  define('my_linked_accounts_table', function(linked_accounts) {
+//    return table({ style: 'width: 250px' }, tbody(
+//      tr(
+//        th({ style: 'width: 5%' }),
+//        th({ style: 'width: 20%' }),
+//        th({ style: 'width: 75%' })
+//      ),
+//
+//      (linked_accounts || []).map(function(linked_account) {
+//        if (!linked_account.status || linked_account.status != 'linked') return;
+//        if (linked_account.site.match(/facebook/i)) {
+//          return linked_account_row(linked_account);
+//        } else if (linked_account.site.match(/twitter/i)) {
+//          return linked_account_row(linked_account);
+//        }
+//      })
+//    ));
+//  });
+//
+//  define('linked_account_row', function(linked_account) {
+//    return tr(
+//      td(input({ type: 'checkbox', value: linked_account.id })),
+//      td({ 'class': 'clickable', onclick: curry(check_box_for_linked_account, linked_account) }, icon_for_account(linked_account)),
+//      td(span({ 'class': 'clickable', onclick: curry(check_box_for_linked_account, linked_account) }, linked_account.login))
+//    );
+//  });
+//
+//  define('check_box_for_linked_account', function(linked_account) {
+//    var checkbox = $("input[value=" + linked_account.id + "]");
+//
+//    // toggle checkbox
+//    checkbox.attr('checked', !checkbox.attr('checked'));
+//  });
+//
+//  define('icon_for_account', function(linked_account) {
+//    if (linked_account.site == 'facebook')
+//      var image_src = 'images/apps/facebook.png';
+//    else if (linked_account.site == 'twitter')
+//      var image_src = 'images/apps/twitter.png';
+//
+//    return span({ style: 'text-align: center; margin: 5px' },
+//      img({ 'class': 'app_store_icon', src: image_src, style: 'width: 30px; height: 30px; margin: 5px auto auto auto; border-radius: 10%' })
+//    );
+//  });
+//
+//  define('share_message', function(form_data) {
+//    var linked_account_ids = [];
+//    $(':checked').map(function() { linked_account_ids.push(this.value) });
+//    linked_account_ids = linked_account_ids.join(',');
+//
+//    Badger.shareMessage(linked_account_ids, form_data.content, function(response) {
+//      if (response.meta.status == 'ok') {
+//        render({ into: 'response-messages' },
+//          success_message('Your message has been submitted, and should be published shortly.')
+//        )
+//      } else {
+//        render({ into: 'response-messages' },
+//          error_message(response)
+//        )
+//      }
+//
+//      hide_form_submit_loader();
+//    });
+//  });
+//
+//};
 
 
 // with (Hasher('Share','Application')) {

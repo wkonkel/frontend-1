@@ -33,6 +33,7 @@ with (Hasher('Domains','Application')) {
             td({ style: 'width: 200px; vertical-align: top' },
               ul({ id: 'domains-left-nav' },
                 li(a({ href: base_url, 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}$/i) ? 'active' : '') }, 'Applications')),
+                show_whois && li(a({ href: (base_url + '/share'), 'class': (active_url.match(/^#domains\/.+?\/share$/) ? 'active' : '') }, 'Share')),
                 show_whois && li(a({ href: (base_url + '/whois'), 'class': (active_url.match(/^#domains\/.+?\/whois$/) ? 'active' : '') }, 'Registration')),
                 show_settings && li(a({ href: (base_url + '/settings'), 'class': (active_url.match(/^#domains\/.+?\/settings$/) ? 'active' : '') }, 'Settings')),
                 show_transfer_out && li(a({ href: (base_url + '/transfer-out'), 'class': (active_url.match(/^#domains\/.+?\/transfer-out$/) ? 'active' : '') }, 'Transfer Out'))
