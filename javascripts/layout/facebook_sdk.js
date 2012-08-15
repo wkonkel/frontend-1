@@ -5,7 +5,7 @@ with (Hasher('FacebookSDK','Application')) {
   define('get_facebook_app_id', function() {
     if (Badger.api_host.match(/api.badger.dev/i))
       return '175882215854335';
-    else if (Badger.api_host.match(/api-qa.badger.dev/i))
+    else if (Badger.api_host.match(/api-qa.badger.com/i))
       return '298128640251387';
     else
       return '252117218197771';
