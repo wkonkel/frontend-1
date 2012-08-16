@@ -27,15 +27,19 @@ with (Hasher('Domains','Application')) {
           show_whois = !domain_obj.available && !(domain_obj.current_registrar||'').match(/^unknown$/i),
           show_settings = permissions.includes('renew');
 
+      var cloudflare_app = Hasher.domain_apps['badger_cloudflare'] || {},
+          show_cloudflare = (/\/apps\/cloudflare\/install$/).test(get_route()) || (cloudflare_app.is_installed && cloudflare_app.is_installed(domain_obj));
+
       var nav_table = function() {
         return table({ style: 'width: 100%' }, tbody(
           tr(
             td({ style: 'width: 200px; vertical-align: top' },
               ul({ id: 'domains-left-nav' },
                 li(a({ href: base_url, 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}$/i) ? 'active' : '') }, 'Applications')),
-                show_whois && li(a({ href: (base_url + '/whois'), 'class': (active_url.match(/^#domains\/.+?\/whois$/) ? 'active' : '') }, 'Registration')),
-                show_settings && li(a({ href: (base_url + '/settings'), 'class': (active_url.match(/^#domains\/.+?\/settings$/) ? 'active' : '') }, 'Settings')),
-                show_transfer_out && li(a({ href: (base_url + '/transfer-out'), 'class': (active_url.match(/^#domains\/.+?\/transfer-out$/) ? 'active' : '') }, 'Transfer Out'))
+                show_whois && li(a({ href: (base_url + '/whois'), 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}\/whois$/) ? 'active' : '') }, 'Registration')),
+                show_settings && li(a({ href: (base_url + '/settings'), 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}\/settings$/) ? 'active' : '') }, 'Settings')),
+                show_cloudflare && li(a({ id: 'cloudflare-tab', href: (base_url + '/apps/cloudflare'), 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}\/apps\/cloudflare/) ? 'active' : '') }, 'Cloudflare')),
+                show_transfer_out && li(a({ href: (base_url + '/transfer-out'), 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}\/transfer-out$/) ? 'active' : '') }, 'Transfer Out'))
               ),
 
 
@@ -498,7 +502,5 @@ with (Hasher('Domains','Application')) {
     // need to explicitly reapply the filters
     apply_selected_filters();
   });
-  
-  
-  
+
 };

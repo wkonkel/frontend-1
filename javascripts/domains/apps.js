@@ -44,22 +44,20 @@ with (Hasher('DomainApps','Domains')) {
       } else {
         var nav_table = function() {
           return div(arguments);
-
-          // TODO: Finish domain app nav table --- CAB
-          // return table({ style: 'width: 100%' }, tbody(
-          //   tr(
-          //     td({ style: 'width: 200px; vertical-align: top' },
-          //       ul({ id: 'domains-left-nav' },
-          //         li(a({ href: (app.menu_item), 'class': (active_url.match(new RegExp(app.menu_item)) ? 'active' : '') }, app.name))
-          //         // li(a({ href: curry(show_settings_modal_for_app, app.id, domain), 'class': (active_url.match(new RegExp(app.menu_item)) ? 'active' : '') }, 'Settings'))
-          //       )
-          //     ),
-          //     
-          //     td({ style: 'vertical-align: top'},
-          //       arguments
-          //     )
-          //   )
-          // ));
+//          return table({ style: 'width: 100%' }, tbody(
+//             tr(
+//               td({ style: 'width: 200px; vertical-align: top' },
+//                 ul({ id: 'domains-left-nav' },
+//                   li(a({ href: (app.menu_item.href), 'class': (active_url.match(new RegExp(app.menu_item.href.replace(/:domain/,domain))) ? 'active' : '') }, app.name)),
+//                   app.settings_href && li(a({ href: (app.settings_href.replace(/:domain/,domain)), 'class': (active_url.match(new RegExp(app.settings_href.replace(/:domain/,domain))) ? 'active' : '') }, 'Settings'))
+//                 )
+//               ),
+//
+//               td({ style: 'vertical-align: top'},
+//                 arguments
+//               )
+//             )
+//          ));
         };
 
         callback(nav_table, domain_obj);

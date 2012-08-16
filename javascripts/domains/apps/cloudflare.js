@@ -6,29 +6,41 @@ with (Hasher('CloudFlare', 'DomainApps')) {
     icon: 'images/apps/cloudflare.png',
     menu_item: { text: 'CloudFlare', href: '#domains/:domain/apps/cloudflare' },
 
-    is_installed: function(domain_obj) {
-      return (
-        (domain_obj.name_servers.length == 2)
-        && domain_obj.name_servers[0].match(/\.ns\.cloudflare\.com$/)
-        && domain_obj.name_servers[1].match(/\.ns\.cloudflare\.com$/)
-      ); 
+    name_servers_valid: function() {
+      var arguments = flatten_to_array(arguments);
+      for (var i=0; i<arguments.length; i++) if (!arguments[i].match(/\.ns\.cloudflare\.com$/)) return false;
+      return true;
     },
-    
-    install_href: '#domains/:domain/apps/cloudflare/install'
+
+    is_installed: function(domain_obj) {
+      return (domain_obj.name_servers.length == 2) && Hasher.domain_apps['badger_cloudflare'].name_servers_valid(domain_obj.name_servers);
+    },
+
+    install_href: '#domains/:domain/apps/cloudflare/install',
+    settings_href: '#domains/:domain/apps/cloudflare/settings'
   });
 
   route('#domains/:domain/apps/cloudflare/install', function(domain) {
-    with_domain_nav_for_app(domain, Hasher.domain_apps['badger_cloudflare'], function(nav_table, domain_obj) {
+    var app = Hasher.domain_apps['badger_cloudflare'];
+
+    with_domain_nav(domain, function(nav_table, domain_obj) {
       render(
-        
+        chained_header_with_links(
+          { text: 'Domains', href: '#domains' },
+          { text: Domains.truncate_domain_name(domain) },
+          { text: 'Apps', href: '#domains/'+domain },
+          { text: 'CloudFlare' },
+          { text: 'Install' }
+        ),
+
         nav_table(
-          h1_for_domain(domain, 'Install CloudFlare'),
-          
-          form({ 'class': 'fancy', action: curry(install_app_button_clicked, Hasher.domain_apps['badger_cloudflare'], domain_obj) },
+          form_with_loader({ id: 'cloudflare-install', 'class': 'fancy', loading_message: 'Installing Cloudflare...', action: curry(update_domain_with_cloudflare_nameservers, domain_obj) },
+            div({ id: 'cloudflare-install-errors' }),
+
             fieldset(
               label({ 'for': 'years' }, 'Nameservers:'),
-              div(text({ placeholder: 'cody', style: 'width: 50px' }), span({ 'class': 'big-text' }, '.ns.cloudflare.com')),
-              div(text({ placeholder: 'dina', style: 'width: 50px' }), span({ 'class': 'big-text' }, '.ns.cloudflare.com'))
+              div(input({ 'class': 'ns', placeholder: 'cody', style: 'width: 50px' }), span({ 'class': 'big-text' }, '.ns.cloudflare.com')),
+              div(input({ 'class': 'ns', placeholder: 'dina', style: 'width: 50px' }), span({ 'class': 'big-text' }, '.ns.cloudflare.com'))
             ),
             
             fieldset(
@@ -41,12 +53,20 @@ with (Hasher('CloudFlare', 'DomainApps')) {
   });
 
   route('#domains/:domain/apps/cloudflare', function(domain) {
-    with_domain_nav_for_app(domain, Hasher.domain_apps['badger_flavorsme'], function(nav_table, domain_obj) {
+    var app = Hasher.domain_apps['badger_cloudflare'];
+
+    with_domain_nav(domain, function(nav_table, domain_obj) {
       render(
+        chained_header_with_links(
+          { text: 'Domains', href: '#domains' },
+          { text: domain, href: '#domains/'+domain },
+          { text: 'Apps' },
+          { text: 'CloudFlare' }
+        ),
+
         nav_table(
-          h1_for_domain(domain, 'CloudFlare'),
           div({ style: "float: right; margin-top: -47px"},
-            a({ 'class': 'myButton', href: '#domains/' + domain_obj.name + '/apps/cloudflare/install' }, 'Settings' )
+            a({ 'class': 'myButton', href: app.settings_href.replace(/:domain/,domain) }, 'Settings' )
           ),
 
           p("CloudFlare is currently installed."),
@@ -60,5 +80,53 @@ with (Hasher('CloudFlare', 'DomainApps')) {
     });
   });
 
+  route('#domains/:domain/apps/cloudflare/settings', function(domain) {
+    var app = Hasher.domain_apps['badger_cloudflare'];
+
+    with_domain_nav(domain, function(nav_table, domain_obj) {
+      render(
+        chained_header_with_links(
+          { text: 'Domains', href: '#domains' },
+          { text: Domains.truncate_domain_name(domain) },
+          { text: 'Apps', href: '#domains/'+domain },
+          { text: 'CloudFlare', href: app.menu_item.href.replace(/:domain/,domain) },
+          { text: 'Settings' }
+        ),
+
+        nav_table(
+          p("To uninstall the application, update your domain to no longer use Cloudflare's name servers."),
+
+          a({ 'class': 'myButton', href: curry(DnsApp.change_name_servers_modal, domain_obj) }, "Change Name Servers")
+        )
+      );
+    });
+  });
+
+  define('update_domain_with_cloudflare_nameservers', function(domain_obj) {
+    var app = Hasher.domain_apps['badger_cloudflare'],
+        name_servers = [];
+
+    $('form#cloudflare-install input.ns').each(function() {
+      if (this.value.length > 0) name_servers.push(this.value+'.ns.cloudflare.com');
+    });
+
+    if (name_servers.length <= 0) {
+      hide_form_submit_loader();
+      $('#cloudflare-install-errors').html(error_message('Missing name servers.'));
+    } else if (!app.name_servers_valid(name_servers)) {
+      hide_form_submit_loader();
+      $('#cloudflare-install-errors').html(error_message('Invalid Cloudflare name servers.'));
+    } else {
+      Badger.updateDomain(domain_obj.name, { name_servers: name_servers }, function(response) {
+        if (response.meta.status == 'ok') {
+          BadgerCache.flush('domains');
+          set_route(app.menu_item.href.replace(/:domain/,domain_obj.name));
+        } else {
+          hide_form_submit_loader();
+          $('#cloudflare-install-errors').html(error_message(response));
+        }
+      });
+    }
+  });
 
 };
