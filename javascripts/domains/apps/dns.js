@@ -552,6 +552,8 @@ define('get_dns_params', function(id) {
     $('#errors_modal').empty();
     Badger.updateDomain(domain_info.name, { name_servers: new_name_servers, import_dns: import_dns }, function(response) {
       if (response.meta.status == 'ok') {
+        BadgerCache.flush('domains');
+
         hide_modal();
         $('#domain-menu-item-' + domain_info.name.replace('.','-')).remove();
         set_route('#domains/' + domain_info.name);
