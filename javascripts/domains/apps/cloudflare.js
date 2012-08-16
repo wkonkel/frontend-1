@@ -65,16 +65,27 @@ with (Hasher('CloudFlare', 'DomainApps')) {
         ),
 
         nav_table(
-          div({ style: "float: right; margin-top: -47px"},
-            a({ 'class': 'myButton', href: app.settings_href.replace(/:domain/,domain) }, 'Settings' )
+          div({ 'class': 'sidebar' },
+            div({ style: "float: right; margin-top: -47px" },
+              a({ 'class': 'myButton', href: app.settings_href.replace(/:domain/,domain) }, 'Settings' )
+            ),
+
+            info_message(
+              h3('Current Nameservers'),
+              ul(
+                domain_obj.name_servers.map(function(ns) { return li(ns) })
+              )
+            )
           ),
 
-          p("CloudFlare is currently installed."),
-          ul(
-            li(a({ href: 'https://www.cloudflare.com/dns-settings?z=' + domain }, 'Change DNS Settings')),
-            li(a({ href: 'https://www.cloudflare.com/cloudflare-settings?z=' + domain }, 'Change CloudFlare Settings'))
-          ),
-          p("Fore more information, visit the ", a({ href: 'https://www.cloudflare.com/help' }, "CloudFlare Help Center"), '.')
+          div({ 'class': 'has-sidebar'},
+            p("CloudFlare is currently installed."),
+            ul(
+              li(a({ href: 'https://www.cloudflare.com/dns-settings?z=' + domain }, 'Change DNS Settings')),
+              li(a({ href: 'https://www.cloudflare.com/cloudflare-settings?z=' + domain }, 'Change CloudFlare Settings'))
+            ),
+            p("Fore more information, visit the ", a({ href: 'https://www.cloudflare.com/help' }, "CloudFlare Help Center"), '.')
+          )
         )
       );
     });
