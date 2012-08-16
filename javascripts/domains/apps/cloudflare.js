@@ -13,7 +13,7 @@ with (Hasher('CloudFlare', 'DomainApps')) {
     },
 
     is_installed: function(domain_obj) {
-      return (domain_obj.name_servers.length == 2) && Hasher.domain_apps['badger_cloudflare'].name_servers_valid(domain_obj.name_servers);
+      return ((domain_obj.name_servers||[]).length == 2) && Hasher.domain_apps['badger_cloudflare'].name_servers_valid(domain_obj.name_servers);
     },
 
     install_href: '#domains/:domain/apps/cloudflare/install',
