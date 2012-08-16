@@ -56,6 +56,8 @@ with (Hasher('CloudFlare', 'DomainApps')) {
     var app = Hasher.domain_apps['badger_cloudflare'];
 
     with_domain_nav(domain, function(nav_table, domain_obj) {
+      var name_servers = (domain_obj.name_servers||[]);
+
       render(
         chained_header_with_links(
           { text: 'Domains', href: '#domains' },
@@ -70,10 +72,10 @@ with (Hasher('CloudFlare', 'DomainApps')) {
               a({ 'class': 'myButton', href: app.settings_href.replace(/:domain/,domain) }, 'Settings' )
             ),
 
-            info_message(
+            (name_servers.length > 0) && info_message(
               h3('Current Nameservers'),
               ul(
-                domain_obj.name_servers.map(function(ns) { return li(ns) })
+                name_servers.map(function(ns) { return li(ns) })
               )
             )
           ),

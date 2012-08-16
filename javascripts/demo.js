@@ -145,7 +145,7 @@ function load_badger_demo() {
       var domain_obj = DemoData.find('domain', { name: domain })[0];
       
       // turn name servers into array
-      if (attrs.name_servers) attrs.name_servers = attrs.name_servers.split(',');
+      if (!attrs.name_servers.push && attrs.name_servers) attrs.name_servers = attrs.name_servers.split(',');
       
       // if not using badger nameservers, disallow modifcation of DNS
       var permissions = domain_obj.permissions_for_person;
