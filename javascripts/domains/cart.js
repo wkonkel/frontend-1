@@ -277,39 +277,43 @@ with (Hasher('Cart','Application')) {
   * Helper method for Cart.update_domains_in_cart. Fetches domain info from the server if needed.
   * Updates the domain rows on the table, if on #cart page.
   * */
-  define('update_row_for_domain_in_cart', function(domain_obj, callback) {
-    if (domain_obj.expires_at && domain_obj.current_registrar && !domain_obj.current_registrar.match(/^unknown$/i)) {
-      var item_id = '#' + row_id_for_domain(domain_obj.name);
+  define('update_row_for_domain_in_cart', function(cart_domain, callback) {
+    if (cart_domain.expires_at && cart_domain.current_registrar && !cart_domain.current_registrar.match(/^unknown$/i)) {
+      var item_id = '#' + row_id_for_domain(cart_domain.name);
       if ($(item_id + ' .registrar_domain').length > 0) {
-        set_background_color_if_valid(domain_obj.name, true);
-        add_hidden_field_for_domain(domain_obj.name, true);
-        $(item_id + ' .registrar_domain').html(domain_obj.current_registrar);
-        $(item_id + ' .expires_domain').html(domain_obj.expires_at.slice(0,10));
+        set_background_color_if_valid(cart_domain.name, true);
+        add_hidden_field_for_domain(cart_domain.name, true);
+        $(item_id + ' .registrar_domain').html(cart_domain.current_registrar);
+        $(item_id + ' .expires_domain').html(cart_domain.expires_at.slice(0,10));
       }
-      callback(domain_obj);
-    } else if (domain_obj.available) {
-      var item_id = '#' + row_id_for_domain(domain_obj.name);
+      callback(cart_domain);
+    } else if (cart_domain.available) {
+      var item_id = '#' + row_id_for_domain(cart_domain.name);
       if ($(item_id + ' .registrar_domain').length > 0) {
-        set_background_color_if_valid(domain_obj.name, true);
-        add_hidden_field_for_domain(domain_obj.name, false);
+        set_background_color_if_valid(cart_domain.name, true);
+        add_hidden_field_for_domain(cart_domain.name, false);
         $(item_id + ' .registrar_domain').html('<i>Register at Badger</i>');
         $(item_id + ' .expires_domain').html(date().add(1).years().toString('yyyy-MM-dd'));
       }
-      callback(domain_obj);
+      callback(cart_domain);
     } else {
-      Badger.getDomain(domain_obj.name, function(response) {
+      Badger.getDomain(cart_domain.name, function(response) {
         var server_domain_obj = response.data;
 
         if (response.meta.status == 'not_found') {
-          show_error_for_domain(domain_obj.name, 'Invalid domain format');
+          show_error_for_domain(cart_domain.name, 'Invalid domain format');
         } else if (response.meta.status != 'ok') {
-          show_error_for_domain(domain_obj.name, response.data.message || 'Error: Internal server error');
+          show_error_for_domain(cart_domain.name, response.data.message || 'Error: Internal server error');
         } else if (!server_domain_obj.supported_tld) {
           show_error_for_domain(server_domain_obj.name, "Extension ." + server_domain_obj.name.split('.').pop() + " is not currently supported.");
         } else {
           // not done loading, try again in a few seconds
           return setTimeout(curry(update_row_for_domain_in_cart, server_domain_obj, callback), 1500);
         }
+
+        // if this point is reached, the domain is invalid somehow, and should be removed from the cart
+        cart_domain.remove_from_cart();
+        update_shopping_cart_size();
       });
     }
   });
