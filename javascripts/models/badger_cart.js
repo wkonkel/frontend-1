@@ -121,6 +121,15 @@ var BadgerCart = {
     }
     return domains.sort();
   },
+
+  // compute the total cost. NOTE does not factor in account balance
+  compute_price: function() {
+    var price = 0,
+        price_per_year = 10,
+        domains = this.get_domains();
+    for (var i=0; i<domains.length; i++) price += ((domains[i].purchase_options.years||1) * price_per_year);
+    return price;
+  },
   
   // transfer domains are domains with a current_registrar
   get_transfer_domains: function() {

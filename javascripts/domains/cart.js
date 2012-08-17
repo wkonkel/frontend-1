@@ -16,14 +16,15 @@ with (Hasher('Cart','Application')) {
         table({ 'class': 'fancy-table', id: 'transfer-domains-table' },
           tbody(
             tr({ 'class': 'table-header' },
-              th('Name'),
-              th('Registrar'),
-              th('Expires'),
-              th()
+              th({ style: 'width: 35%' }, 'Name'),
+              th({ style: 'width: 30%' }, 'Registrar'),
+              th({ style: 'width: 15%' }, 'New Expires'),
+              th({ style: 'width: 15%' }, 'Years'),
+              th({ style: 'width: 5%' })
             ),
 
             // generate rows for domains
-            BadgerCart.get_domains().map(function(d) { return generate_row_for_domain(d.name) }),
+            BadgerCart.get_domains().map(function(d) { return generate_row_for_domain(d) }),
 
             tr({ id: 'add-domain-to-table-row' },
               td(
@@ -43,7 +44,7 @@ with (Hasher('Cart','Application')) {
                   }
                 })
               ),
-              td({ colSpan: '3' })
+              td({ colSpan: '4' })
             )
           )
         ),
@@ -113,7 +114,7 @@ with (Hasher('Cart','Application')) {
         ),
 
         fieldset({ 'class': 'no-label' },
-          submit({ name: 'submit', value: 'Purchase ' + cart_contents.domains.length + ' domain' + (cart_contents.domains.length != 1 ? 's' : '') + ' for $' + (cart_contents.domains.length * 10) })
+          submit({ name: 'submit', value: 'Purchase ' + cart_contents.domains.length + ' domain' + (cart_contents.domains.length != 1 ? 's' : '') + ' for $' + BadgerCart.compute_price() })
         )
       )
     );
@@ -251,6 +252,15 @@ with (Hasher('Cart','Application')) {
     cart_domains.forEach(function(cart_domain) {
       update_row_for_domain_in_cart(cart_domain, function(updated_domain_obj) {
         if (updated_domain_obj.available || (updated_domain_obj.current_registrar && !updated_domain_obj.current_registrar.match(/^unknown$/i))) {
+          // once the domain is updated, we have it's expiration date. show the years selector and update the date
+          // on change.
+          $('table#transfer-domains-table tr#' + row_id_for_domain(cart_domain.name)).find('select#years').val(cart_domain.purchase_options.years).change(function() {
+            cart_domain.purchase_options.years = parseInt(this.value) || 1;
+            $('table#transfer-domains-table tr#' + row_id_for_domain(updated_domain_obj.name) + ' .expires_domain').html(
+              date(updated_domain_obj.expires_at||'t').add(cart_domain.purchase_options.years).years().toString('yyyy-MM-dd')
+            );
+          }).show().change();
+
           // update the domain object in the cart with the updated attributes
           for (var k in updated_domain_obj) cart_domain[k] = updated_domain_obj[k];
 
@@ -276,14 +286,16 @@ with (Hasher('Cart','Application')) {
         $(item_id + ' .registrar_domain').html(domain_obj.current_registrar);
         $(item_id + ' .expires_domain').html(domain_obj.expires_at.slice(0,10));
       }
+      callback(domain_obj);
     } else if (domain_obj.available) {
       var item_id = '#' + row_id_for_domain(domain_obj.name);
       if ($(item_id + ' .registrar_domain').length > 0) {
         set_background_color_if_valid(domain_obj.name, true);
         add_hidden_field_for_domain(domain_obj.name, false);
         $(item_id + ' .registrar_domain').html('<i>Register at Badger</i>');
-        $(item_id + ' .expires_domain').html('<i>Available!</i>');
+        $(item_id + ' .expires_domain').html(date().add(1).years().toString('yyyy-MM-dd'));
       }
+      callback(domain_obj);
     } else {
       Badger.getDomain(domain_obj.name, function(response) {
         var server_domain_obj = response.data;
@@ -300,8 +312,6 @@ with (Hasher('Cart','Application')) {
         }
       });
     }
-
-    callback(domain_obj);
   });
 
   /*
@@ -382,17 +392,31 @@ with (Hasher('Cart','Application')) {
     update_domains_in_cart();
   });
 
-  define('generate_row_for_domain', function(domain) {
-    return tr({ id: row_id_for_domain(domain), 'class': 'domain-row' },
-      td(Domains.truncate_domain_name(domain)),
+  define('generate_row_for_domain', function(domain_obj) {
+    return tr({ id: row_id_for_domain(domain_obj.name), 'class': 'domain-row' },
+      td(Domains.truncate_domain_name(domain_obj.name)),
       td({ 'class': 'registrar_domain' }, img({ 'class': 'ajax_loader', style: "padding-left: 20px", src: 'images/ajax-loader.gif'})),
       td({ 'class': 'expires_domain' }),
-      td({ style: 'width: 16px' }, img({ 'class': 'domain_row_trash_icon', src: 'images/trash.gif', onClick: curry(remove_domain_from_table, domain) }))
+      td(
+        select({ id: 'years', name: 'years', style: 'width: 45px; display: none;' },
+          option({ value: 1 }, '1'),
+          option({ value: 2 }, '2'),
+          option({ value: 3 }, '3'),
+          option({ value: 4 }, '4'),
+          option({ value: 5 }, '5'),
+          option({ value: 6 }, '6'),
+          option({ value: 7 }, '7'),
+          option({ value: 8 }, '8'),
+          option({ value: 9 }, '9'),
+          domain_obj.available && option({ value: 10 }, '10')
+        )
+      ),
+      td({ style: 'width: 16px' }, img({ 'class': 'domain_row_trash_icon', src: 'images/trash.gif', onClick: curry(remove_domain_from_table, domain_obj.name) }))
     );
   });
 
   define('row_id_for_domain', function(domain) {
-    return domain.replace(/\./g,'-') + '-domain';
+    return (domain||"").replace(/\./g,'-') + '-domain';
   });
 
   // valid: true - green, false - red, null - white
@@ -412,7 +436,7 @@ with (Hasher('Cart','Application')) {
 
   define('add_domain_to_table', function(form_data) {
     if ($('#' +row_id_for_domain(form_data.name)).length == 0) {
-      $('#add-domain-to-table-row').before(generate_row_for_domain(form_data.name));
+      $('#add-domain-to-table-row').before(generate_row_for_domain({ name: form_data.name }));
     }
   });
 
