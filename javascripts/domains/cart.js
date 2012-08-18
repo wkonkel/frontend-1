@@ -74,28 +74,11 @@ with (Hasher('Cart','Application')) {
     render(
       chained_header_with_links(
         { text: 'Shopping Cart', href: '#cart' },
-        { text: 'Confirm Purchase of ' + cart_contents.domains.length + ' ' + (cart_contents.domains.length == 1 ? 'Domain' : 'Domains') }
+        { text: 'Confirmation' }
       ),
 
       div ({ 'class': 'sidebar' },
-        info_message(
-          cart_contents.new_domains.length > 0 && div({ style: 'margin-bottom: 10px' },
-            b('Domains to be Registered:'),
-            ul(
-              cart_contents.new_domains.map(function(domain_obj){
-                return li(domain_obj.name);
-              })
-            )
-          ),
-          cart_contents.transfer_domains.length > 0 && div(
-            b('Domains to be Transferred:'),
-            ul(
-              cart_contents.transfer_domains.map(function(domain_obj){
-                return li(domain_obj.name);
-              })
-            )
-          )
-        )
+        cart_domains_info_message()
       ),
 
       form_with_loader({ 'class': 'fancy has-sidebar', action: register_or_transfer_all_domains, loading_message: 'Processing...' },
@@ -118,6 +101,57 @@ with (Hasher('Cart','Application')) {
         )
       )
     );
+  });
+
+  route('#cart/billing', function() {
+    var target_div = div(spinner('Loading...'));
+
+    render(
+      chained_header_with_links(
+        { text: 'Shopping Cart', href: '#cart' },
+        { text: 'Confirmation', href: '#cart/confirm' },
+        { text: 'Billing' }
+      ),
+
+      target_div
+    );
+
+    Badger.accountInfo(function(response) {
+      var domain_credits = (response.data||{}).domain_credits,
+          total_price = (BadgerCart.compute_price() - domain_credits*10);
+
+      render({ into: target_div },
+        div({ 'class': 'sidebar' },
+          cart_domains_info_message()
+        ),
+
+        form_with_loader({ 'class': 'fancy has-sidebar', id: 'credits-form', action: Billing.purchase_credits, loading_message: "Processing purchase..." },
+          div({ id: 'modal-errors' }),
+
+          (domain_credits > 0) && fieldset(
+            label('Cost:'),
+            span({ style: 'font-size: 20px' }, '$', BadgerCart.compute_price())
+          ),
+
+          (domain_credits > 0) && fieldset(
+            label('Account Balance:'),
+            span({ style: 'font-size: 20px' }, '$', domain_credits*10)
+          ),
+
+          fieldset(
+            label('Total Cost:'),
+            span({ id: 'static-price', style: 'font-size: 30px' }, '$', total_price),
+            hidden({ name: 'credits', value: (BadgerCart.necessary_credits()-domain_credits) })
+          ),
+
+          Billing.saved_card_drop_down_and_fields(),
+
+          fieldset({ 'class': 'no-label' },
+            submit({ id: 'purchase-button', value: 'Charge My Credit Card' })
+          )
+        )
+      );
+    });
   });
 
   route('#cart/processing', function() {
@@ -207,6 +241,28 @@ with (Hasher('Cart','Application')) {
       });
     });
   });
+
+  define('cart_domains_info_message', function() {
+    var cart_contents = BadgerCart.contents();
+    return info_message(
+      cart_contents.new_domains.length > 0 && div({ style: 'margin-bottom: 10px' },
+        b('Domains to be Registered:'),
+        ul(
+          cart_contents.new_domains.map(function(cart_domain){
+            return li(cart_domain.name, b(' (', cart_domain.purchase_options.years, ' years)'));
+          })
+        )
+      ),
+      cart_contents.transfer_domains.length > 0 && div(
+        b('Domains to be Transferred:'),
+        ul(
+          cart_contents.transfer_domains.map(function(cart_domain){
+            return li(cart_domain.name, b(' (', cart_domain.purchase_options.years, ' years)'));
+          })
+        )
+      )
+    );
+  })
 
   /*
    * Wrapper for adding a domain to the cart. When a domain is added,
@@ -359,7 +415,7 @@ with (Hasher('Cart','Application')) {
               redirect_url: '#cart/processing'
             });
 
-            set_route('#account/billing/credits');
+            set_route('#cart/billing');
           } else {
             set_route('#cart/processing');
           }

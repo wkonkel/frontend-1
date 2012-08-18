@@ -116,19 +116,22 @@ var BadgerCart = {
   // get domain objects, append helper methods to them.
   get_domains: function() {
     var domains = Badger.Session.get(this._cart_domains_storage_key) || [];
-    for (var i=0; i<domains.length; i++) {
-      this.append_helper_methods_to_object(domains[i]);
-    }
+    for (var i=0; i<domains.length; i++) this.append_helper_methods_to_object(domains[i]);
     return domains.sort();
+  },
+
+  // compute the total number of credits needed to purchase domains in the cart.
+  necessary_credits: function() {
+    var credits = 0,
+        domains = this.get_domains();
+    for (var i=0; i<domains.length; i++) credits += domains[i].purchase_options.years;
+    return credits;
   },
 
   // compute the total cost. NOTE does not factor in account balance
   compute_price: function() {
-    var price = 0,
-        price_per_year = 10,
-        domains = this.get_domains();
-    for (var i=0; i<domains.length; i++) price += ((domains[i].purchase_options.years||1) * price_per_year);
-    return price;
+    var price_per_year = 10;
+    return this.necessary_credits() * price_per_year;
   },
   
   // transfer domains are domains with a current_registrar

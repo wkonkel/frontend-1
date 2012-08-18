@@ -135,7 +135,10 @@ with (Hasher('DomainShow','DomainApps')) {
     with_domain_nav(domain, function(nav_table, domain_obj) {
       var show_whois_privacy_message = (domain_obj.permissions_for_person||[]).includes('modify_contacts') && !(domain_obj.whois && domain_obj.whois.privacy),
           show_extend_registration = (domain_obj.permissions_for_person||[]).includes('modify_contacts');
-      
+
+      var one_year = 1000*60*60*24*365,
+          max_renewal_years = Math.floor((date().add(10).years().getTime() - date(domain_obj.expires_at).getTime()) / one_year); // determine the max amount of years that the domain can be renewed for.
+
       render({ into: target_div },
         nav_table(
           div({ 'class': 'has-sidebar' },
@@ -176,34 +179,31 @@ with (Hasher('DomainShow','DomainApps')) {
                 h1({ style: 'margin-top: 35px;' }, 'Extend Registration'),
                 div({ id: 'errors' }),
 
-                // Billing.show_num_credits_added({ delete_var: true }),
-                
-                input({ type: "hidden", value: domain, name: "domain" }),
+                max_renewal_years <= 0 ? [
+                  info_message("The registration cannot be extended any further. Max registration time is 10 years.")
+                ] : [
+                  input({ type: "hidden", value: domain, name: "domain" }),
+                  fieldset(
+                    label({ 'for': 'years' }, 'Years:'),
+                    select({ name: 'years' },
+                      (function() {
+                        var options = [];
+                        for (var i=1; i<=max_renewal_years; i++) options.push(option({ value: i }, ''+i));
+                        return options;
+                      })()
+                    )
+                  ),
+                  fieldset(
+                    label('New Expiration Date:'),
+                    span({ id: 'expiration-date', 'class': 'big-text' }, date(domain_obj.expires_at).toString("MMMM dd, yyyy"))
+                  ),
+                  fieldset(
 
-                fieldset(
-                  label({ 'for': 'years' }, 'Years:'),
-                  select({ name: 'years' },
-                    option({ value: 1 }, "1"),
-                       option({ value: 2 }, "2"),
-                       option({ value: 3 }, "3"),
-                       option({ value: 4 }, "4"),
-                       option({ value: 5 }, "5"),
-                    option({ value: 6 }, "6"),
-                    option({ value: 7 }, "7"),
-                    option({ value: 8 }, "8"),
-                    option({ value: 9 }, "9"),
-                       option({ value: 10 }, "10")
+                  ),
+                  fieldset({ 'class': 'no-label' },
+                    submit({ id: 'renew-registration-submit', name: 'Submit', value: 'Renew Domain' })
                   )
-                ),
-
-                fieldset(
-                  label('New Expiration Date:'),
-                  span({ id: 'expiration-date', 'class': 'big-text' }, date(domain_obj.expires_at).toString("MMMM dd, yyyy"))
-                ),
-
-                fieldset({ 'class': 'no-label' },
-                  submit({ name: 'Submit', value: 'Renew Domain' })
-                )
+                ]
               )
             ),
             
@@ -216,12 +216,12 @@ with (Hasher('DomainShow','DomainApps')) {
         )
       );
       
-      // update expiration date on extend registration form
-      $('select').change(function() {
+      // update expiration date and purchase button on extend registration form
+      $('select[name=years]').change(function() {
         var new_expiration_date = date(domain_obj.expires_at).add(parseInt(this.value)).years();
         $("#expiration-date").html(new_expiration_date.toString("MMMM dd, yyyy"));
-      });
-      $('select').trigger('change');
+        $('#renew-registration-submit').val('Renew Domain for $' + (parseInt(this.value)*10));
+      }).change();
     });
   });
 
@@ -233,10 +233,10 @@ with (Hasher('DomainShow','DomainApps')) {
   
   define('renew_domain', function(domain_obj, form_data) {
     show_spinner_modal('Renewing registration...');
-    
+
     Badger.renewDomain(form_data.domain, form_data.years, function(response) {
       hide_modal();
-      
+
       if (response.meta.status == "ok") {
         BadgerCache.flush('domains');
         set_route("#domains/" + form_data.domain + "/whois");
@@ -250,7 +250,7 @@ with (Hasher('DomainShow','DomainApps')) {
           });
           set_route("#account/billing/credits");
         }
-        
+
         $("#errors").html(error_message(response));
       }
     });

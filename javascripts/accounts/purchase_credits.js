@@ -1,9 +1,9 @@
 with (Hasher('Billing','Application')) {
   route('#account/billing/credits', function() {
-    var necessary_credits = Badger.Session.get('necessary_credits') || 0;
-    
+    var cart_price = BadgerCart.compute_price(), // takes the place of necessary credits
+        target_div = div(spinner('Loading...'));
+
     render(
-      // h1('Purchase Credits'),
       chained_header_with_links(
         { text: 'My Account' },
         { href: '#account/billing', text: 'Billing & Credits' },
@@ -25,23 +25,15 @@ with (Hasher('Billing','Application')) {
       form_with_loader({ 'class': 'fancy has-sidebar', id: 'credits-form', action: purchase_credits, loading_message: "Processing purchase..." },
         div({ id: 'modal-errors' }),
 
-        necessary_credits ? [
-          fieldset(
-            label({ 'for': 'first_name-input' }, 'Total cost:'),
-            span({ id: 'static-price', style: 'font-size: 30px' }, '$', necessary_credits * 10),
-            hidden({ name: 'credits', value: necessary_credits })
-          )
-        ] : [
-          fieldset({ style: 'padding-top: 18px' },
-            label({ 'for': 'credits-input' }, 'How many Credits:'),
-            credits_selector()
-          ),
+        fieldset({ style: 'padding-top: 18px' },
+          label({ 'for': 'credits-input' }, 'How many Credits:'),
+          credits_selector()
+        ),
 
-          fieldset(
-            label({ 'for': 'first_name-input' }, 'Total cost:'),
-            span({ id: 'static-price', style: 'font-size: 30px' }, '$10')
-          )
-        ],
+        fieldset(
+          label({ 'for': 'first_name-input' }, 'Total cost:'),
+          span({ id: 'static-price', style: 'font-size: 30px' }, '$10')
+        ),
 
         saved_card_drop_down_and_fields(),
 
@@ -50,52 +42,6 @@ with (Hasher('Billing','Application')) {
         )
       )
     );
-    
-    // update price with discount if available
-    Account.if_referral_signup_discount(function() {
-      // update from the credits input field if present,
-      // otherwise, from the necessary_credits session variable
-      if ($("input#credits-input").length > 0) {
-        $("input#credits-input").keyup(function(e) {
-          if (e.target.value <= 0) {
-            $('span#static-price').empty().html('$0');
-          } else {
-            $('span#static-price').empty().html(
-              span(
-                span({ style: 'text-decoration: line-through;' },'$' + (e.target.value * 10)),
-                span({ style: 'font-size: 30px; font-style: italic; margin-left: 10px' },'$' + ((e.target.value * 10) - 5))
-              )
-            );
-          }
-        });
-        $("input#credits-input").trigger('keyup');
-      } {
-        if (Badger.Session.get('necessary_credits')) {
-          // update discounted price from session storage
-          $('span#static-price').empty().html(
-            span(
-              span({ style: 'text-decoration: line-through;' },'$' + (Badger.Session.get('necessary_credits') * 10)),
-              span({ style: 'font-size: 30px; font-style: italic; margin-left: 10px' },'$' + ((Badger.Session.get('necessary_credits') * 10) - 5))
-            )
-          );
-        }
-      }
-    });
-    
-
-    // determine which tier to select first
-    // var credits = $("#credits-form").find("input[name=credits]").val()
-    // if (credits == 1) {
-    //   $("#credit-tier-1").css({ "background": "#CDEC96", "border-width": "3px" });
-    // } else if (credits >= 2 && credits <= 9) {
-    //   $("#credit-tier-2").css({ "background": "#CDEC96", "border-width": "3px" });
-    // } else {
-    //   $("#credit-tier-10").css({ "background": "#CDEC96", "border-width": "3px" });
-    // }
-    // 
-    // $("#credits-form").find("input[name=credits]").focus();
-    // $("#credits-form").find("input[name=credits]").select();
-    // $("input[name=credits]").trigger("keyup");
   });
   
 
