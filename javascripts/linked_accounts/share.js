@@ -65,20 +65,7 @@ with (Hasher('Share','Application')) {
     }
   });
 
-
-
-
-
-
   define('twitter_share_modal', function() {
-    show_spinner_modal('Opening Twitter window...');
-    var twitter_share_window = window.open('https://twitter.com/share?url=https://www.badger.com&text=I manage my domains with Badger, and love it!','','width=600,height=400');
-
-    var wait_for_close = setInterval(function() {
-      if (twitter_share_window.closed) {
-        clearInterval(wait_for_close);
-        hide_modal();
-      }
-    }, 100);
+    window.open('https://twitter.com/share?url=https://www.badger.com&text=I manage my domains with Badger, and love it!','','width=600,height=400');
   });
 };
