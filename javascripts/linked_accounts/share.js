@@ -1,30 +1,20 @@
 with (Hasher('Share','Application')) {
 
-//  define('message_form', function(default_message) {
-//    return div(
-//      div({ id: 'errors' }),
-//
-//      form({ 'class': 'fancy', style: 'margin-left: -130px;' },
-//        fieldset(
-//          label('Message:'),
-//          textarea({ id: 'share-message', style: 'width: 300px;' }, default_message||'')
-//        ),
-//        fieldset(
-//          label('Share to:'),
-//          div({ style: 'display: inline-block; margin: 15px 0px;' },
-//            share_icon({ onclick: share_message_on_facebook, image_src: 'images/apps/facebook.png' }),
-//            share_icon({ onclick: share_message_on_twitter, image_src: 'images/apps/twitter.png' })
-//          )
-//        )
-//      )
-//    );
-//  });
-
-  define('share_icon', function(options) {
-    return a({ style: 'cursor: pointer;', onclick: options.onclick }, img({ src: options.image_src, style: 'width: 30px; margin-right: 10px;' }));
+  define('icons', function(options) {
+    options = options||{};
+    var message = options.default_message || "I manage my domains with Badger, and love it!";
+    return div(options || { style: 'margin: 15px 5px; display: inline-block;' },
+      share_icon({ onclick: curry(facebook_share_modal, { default_message: message }), image_src: 'images/apps/facebook.png' }),
+      share_icon({ onclick: curry(twitter_share_modal, { default_message: message }), image_src: 'images/apps/twitter.png' })
+    );
   });
 
-  define('facebook_share_modal', function() {
+  define('share_icon', function(options) {
+    return a({ style: 'cursor: pointer;', onclick: options.onclick }, img({ src: options.image_src, style: 'width: 30px; margin-right: 10px; border-radius: 5px;' }));
+  });
+
+  define('facebook_share_modal', function(options) {
+    options = options||{};
     return show_modal(
       h2('Share to Facebook'),
       div({ id: 'errors' }),
@@ -32,7 +22,7 @@ with (Hasher('Share','Application')) {
       form({ 'class': 'fancy', style: 'margin-left: -100px;' },
         fieldset(
           label('Message:'),
-          textarea({ id: 'share-message' }, 'I manage my domains with Badger, and love it! https://www.badger.com')
+          textarea({ id: 'share-message' }, (options.message || 'I manage my domains with Badger, and love it! https://www.badger.com'))
         )
       ),
 
@@ -65,7 +55,10 @@ with (Hasher('Share','Application')) {
     }
   });
 
-  define('twitter_share_modal', function() {
-    window.open('https://twitter.com/share?url=https://www.badger.com&text=I manage my domains with Badger, and love it!','','width=600,height=400');
+  define('twitter_share_modal', function(options) {
+    options = options||{};
+    var message = options.message || "I manage my domains with Badger, and love it!",
+        url = options.url || 'https://www.badger.com';
+    window.open('https://twitter.com/share?url='+url+'&text='+message, '', 'width=600,height=400');
   });
 };

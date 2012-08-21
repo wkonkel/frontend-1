@@ -75,12 +75,6 @@ with (Hasher('Rewards','Application')) {
 
               div({ 'class': 'meter small green nostripes', style: 'height: 15px;' },
                 span({ style: 'height: 15px; width: ' + (points_to_display)+'' + '%' })
-              ),
-
-              div({ style: 'font-size: 20px; margin-top: 10px;' },
-                span({ style: 'width: 25%; font-weight: bold; margin-right: 10px' },'My Referral Link:'),
-                // clicking the input field selects the text inside, and resizes the box
-                input({ 'class': 'fancy', id: 'referral-link', style: 'width: 40%; margin: 0px; color: #707070; cursor: pointer', readonly: true, value: (url_base + referral_code), onclick: function() { this.select(); this.style.width = ((this.value.length + 5) * 8) + 'px'; } })
               )
             )
           )
@@ -96,6 +90,24 @@ with (Hasher('Rewards','Application')) {
           ),
           div({ 'class': 'description' },
             p({ 'class': 'main' }, 'Refer your friends to Badger'),
+
+            div({ style: 'margin-top: 10px;' },
+              span({ style: 'width: 25%; font-weight: bold; margin-right: 10px' },'My Referral Link:'),
+              // clicking the input field selects the text inside, and resizes the box
+              input({ 'class': 'fancy', id: 'referral-link', style: 'width: 40%; margin: 0px; color: #707070; cursor: pointer', readonly: true, value: (url_base + referral_code), onclick: function() { this.select(); this.style.width = ((this.value.length + 5) * 8) + 'px'; } }),
+
+              div({ style: 'display: inline-block; vertical-align: middle; margin-left: 10px;' },
+                Share.share_icon({
+                  onclick: curry(Share.facebook_share_modal, { message: (url_base + referral_code) }),
+                  image_src: 'images/apps/facebook.png'
+                }),
+                Share.share_icon({
+                  onclick: curry(Share.twitter_share_modal, { url: (url_base + referral_code), message: (url_base + referral_code) }),
+                  image_src: 'images/apps/twitter.png'
+                })
+              )
+            ),
+
             p({ 'class': 'sub' }, 'Spread the love of Badger, get rewarded handsomely. Every time someone you referred registers or transfers a domain, you are rewarded.')
           ),
           div({ 'class': 'points' },
@@ -110,7 +122,8 @@ with (Hasher('Rewards','Application')) {
           ),
           div({ 'class': 'description' },
             p({ 'class': 'main' }, 'Add domains via linked accounts'),
-            p({ 'class': 'sub' }, 'Painlessly manage all of your domains with Badger. You are rewarded for each domain that you link with your Badger account.')
+            p({ 'class': 'sub' }, 'Painlessly manage all of your domains with Badger. You are rewarded for each domain that you link with your Badger account.'),
+            Domains.link_domains_icons()
           ),
           div({ 'class': 'points' },
             p({ 'class': 'number' }, '10'),
@@ -124,7 +137,8 @@ with (Hasher('Rewards','Application')) {
           ),
           div({ 'class': 'description' },
             p({ 'class': 'main' }, "Badgers don't tweet, but you can"),
-            p({ 'class': 'sub' }, "Publicly announce your undying love for us. Link your Twitter account and follow @Badger for an easy 10 points!")
+            p({ 'class': 'sub' }, "Publicly announce your undying love for us. Link your Twitter account and follow @Badger for an easy 10 points!"),
+            LinkedAccounts.add_linked_account_icons('facebook','twitter')
           ),
           div({ 'class': 'points' },
             p({ 'class': 'number' }, '10'),
@@ -142,7 +156,7 @@ with (Hasher('Rewards','Application')) {
       $('input#referral-link').trigger('click');
     });
   });
-  
+
   define('create_referral_code', function(form_data) {
     show_spinner_modal('Creating referral code...');
     

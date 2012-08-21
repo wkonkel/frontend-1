@@ -41,11 +41,8 @@ with (Hasher('Domains','Application')) {
                 show_cloudflare && li(a({ id: 'cloudflare-tab', href: (base_url + '/apps/cloudflare'), 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}\/apps\/cloudflare/) ? 'active' : '') }, 'Cloudflare')),
                 show_transfer_out && li(a({ href: (base_url + '/transfer-out'), 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}\/transfer-out$/) ? 'active' : '') }, 'Transfer Out'))
               ),
-
-
-              div({ style: 'margin: 15px 5px; display: inline-block;'},
-                share_icon({ onclick: Share.facebook_share_modal, image_src: 'images/apps/facebook.png' }),
-                share_icon({ onclick: Share.twitter_share_modal, image_src: 'images/apps/twitter.png' })
+              div({ style: 'margin: 15px 5px;' },
+                Share.icons()
               )
             ),
 
@@ -61,12 +58,10 @@ with (Hasher('Domains','Application')) {
     });
   });
 
-  define('share_icon', function(options) {
-    return a({ style: 'cursor: pointer;', onclick: options.onclick }, img({ src: options.image_src, style: 'width: 30px; margin-right: 10px; border-radius: 5px;' }));
-  });
 
   define('domains_nav_table', function() {
-    var registrar_filters_div = div();
+    var registrar_filters_div = div(),
+        rewards_progress_div = div();
     
     var domains_nav_table = table({ style: 'width: 100%' }, tbody(
       tr(
@@ -82,8 +77,8 @@ with (Hasher('Domains','Application')) {
               li(a({ onClick: curry(save_domain_filter_states_and_set_route, '#domains/expiring-soon'), 'class': (get_route().match(/^#domains\/expiring-soon$/) ? 'active' : '') }, 'Expiring Soon'))
             )
           ),
-          
-          registrar_filters_div
+          registrar_filters_div,
+          rewards_progress_div
         ),
       
         td({ style: 'vertical-align: top'},
@@ -97,7 +92,21 @@ with (Hasher('Domains','Application')) {
     build_registrar_filters(function(filters) {
       render({ into: registrar_filters_div }, filters);
     });
-    
+
+    // render the progress bar with rewards points earned
+    BadgerCache.getAccountInfo(function(response) {
+      var referral_stats = (response.data||{}).referral_stats,
+          points_to_display = ((referral_stats.points_earned - referral_stats.points_redeemed) >= 100 ? 100 : referral_stats.points_earned % 100);
+      render({ into: rewards_progress_div },
+        subtle_info_message({ id: 'mini-progress-bar', style: 'margin-top: 15px; margin-right: 25px; padding: 5px; cursor: pointer; text-align: center;', onclick: curry(set_route, '#rewards') },
+          h4('Rewards Progress'),
+          div({ 'class': 'meter small green nostripes', style: 'height: 10px;' },
+            span({ style: 'height: 10px; width: ' + (points_to_display)+'' + '%' })
+          )
+        )
+      );
+    });
+
     return domains_nav_table;
   });
   
@@ -147,8 +156,40 @@ with (Hasher('Domains','Application')) {
         )
       ))
     );
-  })
-  
+  });
+
+  define('link_domains_icons', function() {
+    return div((arguments[0] || {}),
+      table(tbody(
+        tr(
+          td({ style: 'vertical-align: top' },
+            app_store_icon({
+              name: 'Link With: GoDaddy',
+              image_src: 'images/apps/godaddy.png',
+              href: '#linked_accounts/godaddy/link'
+            })
+          ),
+
+          td({ style: 'vertical-align: top' },
+            app_store_icon({
+              name: 'Link With: Network Solutions',
+              image_src: 'images/apps/ns.png',
+              href: '#linked_accounts/networksolutions/link'
+            })
+          ),
+
+          td({ style: 'vertical-align: top' },
+            app_store_icon({
+              name: 'Link With: eNom',
+              image_src: 'images/apps/enom.png',
+              href: '#linked_accounts/enom/link'
+            })
+          )
+        )
+      ))
+    );
+  });
+
   define('save_domain_filter_states_and_set_route', function(route) {
     save_domain_filter_states();
     set_route(route);
