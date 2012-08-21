@@ -85,9 +85,9 @@ with (Hasher('Rewards','Application')) {
         top_div,
         
         div({ 'class': 'reward-description' },
-          div({ 'class': 'icon' },
-            img({ src: 'images/v2/happybadger.png' })
-          ),
+//          div({ 'class': 'icon' },
+//            img({ src: 'images/v2/happybadger.png' })
+//          ),
           div({ 'class': 'description' },
             p({ 'class': 'main' }, 'Refer your friends to Badger'),
 
@@ -117,9 +117,9 @@ with (Hasher('Rewards','Application')) {
         ),
         div({ style: 'clear: left;' }),
         div({ 'class': 'reward-description' },
-          div({ 'class': 'icon' },
-            img({ src: 'images/v2/happybadger.png' })
-          ),
+//          div({ 'class': 'icon' },
+//            img({ src: 'images/v2/happybadger.png' })
+//          ),
           div({ 'class': 'description' },
             p({ 'class': 'main' }, 'Add domains via linked accounts'),
             p({ 'class': 'sub' }, 'Painlessly manage all of your domains with Badger. You are rewarded for each domain that you link with your Badger account.'),
@@ -132,9 +132,9 @@ with (Hasher('Rewards','Application')) {
         ),
         div({ style: 'clear: left;' }),
         div({ 'class': 'reward-description' },
-          div({ 'class': 'icon' },
-            img({ src: 'images/v2/happybadger.png' })
-          ),
+//          div({ 'class': 'icon' },
+//            img({ src: 'images/v2/happybadger.png' })
+//          ),
           div({ 'class': 'description' },
             p({ 'class': 'main' }, "Badgers don't tweet, but you can"),
             p({ 'class': 'sub' }, "Publicly announce your undying love for us. Link your Twitter account and follow @Badger for an easy 10 points!"),

@@ -252,7 +252,7 @@ with (Hasher('Application')) {
         div({ id: 'user_nav_flyout' },
           a({ href: '#linked_accounts' }, 'Linked Accounts'),
           a({ href: '#account/billing' }, 'Billing'),
-          a({ href: '#rewards' }, 'Rewards'),
+          a({ href: '#rewards/history' }, 'Rewards'),
           a({ href: '#invites', id: 'user_nav_invites_available' }, 'Invites'),
           a({ href: '#account' }, 'Settings'),
           a({ href: Badger.logout }, 'Logout')
