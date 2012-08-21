@@ -1,4 +1,5 @@
 with (Hasher('Account','Application')) {
+
   route('#account', function() {
     var account_settings = div(spinner('Loading...'));
 
@@ -88,6 +89,13 @@ with (Hasher('Account','Application')) {
         text({ name: 'email', placeholder: account_info.email || 'john@badger.com' })
         // text({ 'class': 'short', name: 'confirm_email', placeholder: 'john@badger.com' })
       ),
+
+      fieldset({ 'class': 'no-label' },
+        span(
+          (account_info.receive_emails ? checkbox({ name: 'receive_emails', checked: 'checked' }) : checkbox({ name: 'receive_emails' })),
+          span({ style: 'margin-left: 10px' }, "Receive email updates from Badger")
+        )
+      ),
       
       fieldset({ 'class': 'no-label' },
         submit({ id: 'submit-changes-button', value: 'Save' })
@@ -96,6 +104,8 @@ with (Hasher('Account','Application')) {
   });
   
   define('submit_account_change_form', function(form_data) {
+    form_data.receive_emails = ($(':checked[name=receive_emails]').length > 0).toString();
+
     Badger.updateAccount(form_data, function(response) {
       if (response.meta.status == 'ok') {
         $('#messages').html(success_message('Your account has been updated.'));
