@@ -47,7 +47,7 @@ with (Hasher('About', 'Application')) {
         'Education':        "Mathematics at De La Salle University",
         'Desk Decoration':  "Darth Vader, Blueberry Green Tea, myriad of post-it messages",
         'Favorite Animal':  "Baby badgers"
-      }),
+      })
     ];
     
     render(
