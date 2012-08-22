@@ -1,5 +1,20 @@
 with (Hasher('Share','Application')) {
 
+  initializer(function() {
+    // listen for twitter events to reward the user. not really spammable, since you can only receive 1 reward.
+    twttr.ready(function(twttr) {
+      twttr.events.bind('follow', function(event) {
+        if (event.data.screen_name.match(/badger/i)) {
+          Badger.api('/twitter/reward', 'POST', { twttr_action: 'follow' });
+        }
+      });
+
+      twttr.events.bind('tweet', function() {
+        Badger.api('/twitter/reward', 'POST', { twttr_action: 'tweet' });
+      });
+    });
+  });
+  
   define('icons', function(options) {
     options = options||{};
     var message = options.default_message || "I manage my domains with Badger, and love it!";
@@ -35,7 +50,9 @@ with (Hasher('Share','Application')) {
   define('share_message_to_facebook', function() {
     var message = $('#share-message').val();
 
+    $('#errors').empty();
     if (message.length <= 0) {
+      hide_modal();
       $('#errors').html(error_message('Message cannot be blank.'));
     } else {
       FacebookSDK.after_load(function(fb) {
@@ -59,6 +76,6 @@ with (Hasher('Share','Application')) {
     options = options||{};
     var message = options.message || "I manage my domains with Badger, and love it!",
         url = options.url || 'https://www.badger.com';
-    window.open('https://twitter.com/share?url='+url+'&text='+message, '', 'width=600,height=400');
+    window.open('https://twitter.com/intent/tweet?via=Badger&url='+url+'&text='+message, '', 'width=600,height=400');
   });
 };

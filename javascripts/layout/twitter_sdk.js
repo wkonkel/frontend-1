@@ -4,16 +4,19 @@ with (Hasher('TwitterSDK','Application')) {
   // add Twitter JS library
   // WARNING: magical obfuscated JavaScript
   initializer(function() {
-    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}
-      TwitterSDK.twitter_sdk_loaded = true;
-    }(document,"script","twitter-wjs");
+    window.twttr = (function (d,s,id) {
+      var t, js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return; js=d.createElement(s); js.id=id;
+      js.src="//platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs);
+      return window.twttr || (t = { _e: [], ready: function(f){ t._e.push(f); TwitterSDK.twitter_sdk_loaded = true; } });
+    }(document, "script", "twitter-wjs"));
   });
 
   // after render, reload any twitter elements
   after_filter('parse_twitter_elements', function() {
     if (TwitterSDK.twitter_sdk_loaded && twttr && twttr.widgets && twttr.widgets.load) twttr.widgets.load();
   });
-
+  
   /*
   * DOM Helpers
   * */
