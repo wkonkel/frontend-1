@@ -189,8 +189,8 @@ with (Hasher('Application')) {
   define('left_topnav', function() {
     return div({ 'id': 'left-topnav'},
       a({ 'class': 'navlink', href: '#domains', id: 'user-nav-domains' }, 'Domains'),
-      a({ 'class': 'navlink', href: '#rewards', id: 'user-nav-domains' }, 'Earn Free Domains'),
-      a({ 'class': 'navlink last', href: Chat.show_chat }, 'Chat')
+      a({ 'class': 'navlink', href: '#rewards', id: 'user-nav-domains' }, 'Rewards'),
+      a({ 'class': 'navlink last', href: Chat.show_chat }, 'Chatroom')
       //a({ 'class': 'navlink last', href: '#rewards'}, '20 Reward Points')
     );
   });
