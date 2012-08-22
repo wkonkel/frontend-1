@@ -40,10 +40,10 @@ with (Hasher('Rewards','Application')) {
           )
         );
       } else if (show_create_referral_code_form) {
-        render({ into: top_div },
+        return render(
           form_with_loader({ 'class': 'fancy', action: create_referral_code },
-            info_message(
-              h2('Start earning free domains'),
+            div(
+              h1('Start Earning Free Domains'),
               p("First, you need to create a ", b("referral code"), ". Creating a referral code will give you a unique ", b('referral link'), " that you can share with your friends to earn rewards."),
               p("For example, if you make your referral code ", b('badgerlicious'), ", you will be given the referral link ", b('www.badger.com/badgerlicious'), "."),
 
@@ -85,67 +85,72 @@ with (Hasher('Rewards','Application')) {
         top_div,
         
         div({ 'class': 'reward-description' },
-//          div({ 'class': 'icon' },
-//            img({ src: 'images/v2/happybadger.png' })
-//          ),
           div({ 'class': 'description' },
             p({ 'class': 'main' }, 'Refer your friends to Badger'),
+            div({ 'class': 'sub' },
+              p('You get points for every purchase they make.'),
 
-            div({ style: 'margin-top: 10px;' },
-              span({ style: 'width: 25%; font-weight: bold; margin-right: 10px' },'My Referral Link:'),
-              // clicking the input field selects the text inside, and resizes the box
-              input({ 'class': 'fancy', id: 'referral-link', style: 'width: 40%; margin: 0px; color: #707070; cursor: pointer', readonly: true, value: (url_base + referral_code), onclick: function() { this.select(); this.style.width = ((this.value.length + 5) * 8) + 'px'; } }),
-
-              div({ style: 'display: inline-block; vertical-align: middle; margin-left: 10px;' },
-                Share.share_icon({
-                  onclick: curry(Share.facebook_share_modal, { message: (url_base + referral_code) }),
-                  image_src: 'images/apps/facebook.png'
-                }),
-                Share.share_icon({
-                  onclick: curry(Share.twitter_share_modal, { url: (url_base + referral_code), message: (url_base + referral_code) }),
-                  image_src: 'images/apps/twitter.png'
-                })
+              div({ style: 'margin-top: 10px;' },
+                span({ style: 'width: 25%; font-weight: bold; margin-right: 10px' },'Your Referral Link:'),
+                // clicking the input field selects the text inside, and resizes the box
+                input({ 'class': 'fancy', id: 'referral-link', style: 'width: 40%; margin: 0px; color: #707070; cursor: pointer', readonly: true, value: (url_base + referral_code), onclick: function() { this.select(); this.style.width = ((this.value.length + 5) * 8) + 'px'; } })
               )
-            ),
-
-            p({ 'class': 'sub' }, 'Spread the love of Badger, get rewarded handsomely. Every time someone you referred registers or transfers a domain, you are rewarded.')
+            )
           ),
           div({ 'class': 'points' },
-            p({ 'class': 'number' }, '10'),
-            p({ 'class': 'sub' }, 'points per year of registration')
-          )
-        ),
-        div({ style: 'clear: left;' }),
-        div({ 'class': 'reward-description' },
-//          div({ 'class': 'icon' },
-//            img({ src: 'images/v2/happybadger.png' })
-//          ),
-          div({ 'class': 'description' },
-            p({ 'class': 'main' }, 'Add domains via linked accounts'),
-            p({ 'class': 'sub' }, 'Painlessly manage all of your domains with Badger. You are rewarded for each domain that you link with your Badger account.'),
-            Domains.link_domains_icons()
-          ),
-          div({ 'class': 'points' },
-            p({ 'class': 'number' }, '10'),
-            p({ 'class': 'sub' }, 'points per linked domain')
-          )
-        ),
-        div({ style: 'clear: left;' }),
-        div({ 'class': 'reward-description' },
-//          div({ 'class': 'icon' },
-//            img({ src: 'images/v2/happybadger.png' })
-//          ),
-          div({ 'class': 'description' },
-            p({ 'class': 'main' }, "Badgers don't tweet, but you can"),
-            p({ 'class': 'sub' }, "Publicly announce your undying love for us. Link your Twitter account and follow @Badger for an easy 10 points!"),
-            LinkedAccounts.add_linked_account_icons('facebook','twitter')
-          ),
-          div({ 'class': 'points' },
-            p({ 'class': 'number' }, '10'),
-            p({ 'class': 'sub' }, 'points for account link & follow')
+            p({ 'class': 'number' }, '+10'),
+            p({ 'class': 'sub' }, 'per year of registration')
           )
         ),
         
+        div({ style: 'clear: left;' }),
+        
+        div({ 'class': 'reward-description' },
+          div({ 'class': 'description' },
+            p({ 'class': 'main' }, "Link + Tweet / Share"),
+
+            div({ 'class': 'sub' },
+              p("Link an account and share your link for an easy 10 points."),
+
+              div({ id: 'errors' }),
+
+              form({ 'class': 'fancy', style: 'margin-left: -125px;' },
+                fieldset(
+                  label({ 'for': 'share-message' }, 'Message:'),
+                  textarea({ id: 'share-message', style: 'width: 310px; height: 75px;' }, "Come register a domain with Badger for only $5! " + (url_base+referral_code))
+                ),
+                fieldset(
+                  label('Share:'),
+                  div({ style: 'margin: 15px 0px;' },
+                    Share.share_icon({ onclick: curry(window.open, 'https://twitter.com/intent/tweet?original_referrer='+encodeURIComponent(window.location.origin)+'&via=Badger&url='+url_base+referral_code+'&text=Come register a domain with Badger for only $5! '+url_base+referral_code, '' , 'width=600,height=260'), image_src: 'images/apps/twitter.png' }),
+                    Share.share_icon({ onclick: function() { show_spinner_modal('Posting message...'); Share.share_message_to_facebook(); }, image_src: 'images/apps/facebook.png' })
+                  )
+                )
+              )
+            )
+          ),
+          div({ 'class': 'points' },
+            p({ 'class': 'number' }, '+10')
+          )
+        ),
+        
+        div({ style: 'clear: left;' }),
+
+        div({ 'class': 'reward-description' },
+          div({ 'class': 'description' },
+            p({ 'class': 'main' }, 'Add domains via linked accounts'),
+            div({ 'class': 'sub' },
+              p('You get points for every domain added through a linked account.'),
+              Domains.link_domains_icons()
+            )
+          ),
+          div({ 'class': 'points' },
+            p({ 'class': 'number' }, '+10'),
+            p({ 'class': 'sub' }, 'per linked domain')
+          )
+        ),
+
+
         // show the referral code create form
         !show_create_referral_code_form && div({ style: 'text-align: center; margin-top: 30px;' },
           a({ 'class': 'myButton', href: '#rewards/history' }, 'Show Rewards History')

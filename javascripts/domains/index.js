@@ -22,8 +22,6 @@ with (Hasher('DomainsIndex','Domains')) {
           add_more_domains_icons()
         );
         
-        
-        
         // render message for incomplete profile (legacy rhinonames contacts) --- CAB
         var update_contact_message_div = div();
         BadgerCache.getContacts(function(response) {
