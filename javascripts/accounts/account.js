@@ -16,6 +16,14 @@ with (Hasher('Account','Application')) {
       );
     });
   });
+
+  route('#account/unsubscribed_from_emails', function() {
+    render(
+      h2('Unsubscribed from email newsletters.'),
+      p("Got it, We won't send anymore email newsletters to you. To receive our newsletters again, login and enable the option in your account settings."),
+      p("You will still receive emails regarding important account changes.")
+    );
+  });
   
   // helper method to check and see if the user has the permission for the given domain
   define('has_permission', function(which, permissions) {
