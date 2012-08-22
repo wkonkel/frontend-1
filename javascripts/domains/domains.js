@@ -95,14 +95,18 @@ with (Hasher('Domains','Application')) {
 
     // render the progress bar with rewards points earned
     BadgerCache.getAccountInfo(function(response) {
+      // only render if person created a referral code
+      if (((response.data||{}).referral_codes||[]).length <= 0) return;
+      
       var referral_stats = (response.data||{}).referral_stats,
           points_to_display = ((referral_stats.points_earned - referral_stats.points_redeemed) >= 100 ? 100 : referral_stats.points_earned % 100);
       render({ into: rewards_progress_div },
-        subtle_info_message({ id: 'mini-progress-bar', style: 'margin-top: 15px; margin-right: 25px; padding: 5px; cursor: pointer; text-align: center;', onclick: curry(set_route, '#rewards') },
-          h4('Rewards Progress'),
+        info_message({ id: 'mini-progress-bar', style: 'margin-top: 15px; margin-right: 25px; padding: 10px; text-align: center;' },
+          span(b(points_to_display+'/100'), ' points earned'),
           div({ 'class': 'meter small green nostripes', style: 'height: 10px;' },
             span({ style: 'height: 10px; width: ' + (points_to_display)+'' + '%' })
-          )
+          ),
+          a({ href: '#rewards', style: 'margin-top: 3px;' }, 'Earn More Points!')
         )
       );
     });
