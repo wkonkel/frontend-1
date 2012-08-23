@@ -6,9 +6,19 @@ with (Hasher('Application')) {
 
   initializer(function() {
     if (Badger.getAccessToken()) BadgerCache.load();
-  
+    
     // an API call was made that requires auth
-    Badger.onRequireAuth(curry(set_route, '#account/create'));
+    Badger.onRequireAuth(function() {
+      var previous_route = get_route(),
+          white_listed_routes = ['#rewards'];
+      
+      set_route('#account/login');
+      
+      // redirect to previous route after login if allowed
+      if (white_listed_routes.indexOf(previous_route) >= 0) {
+        Badger.Session.set('redirect_to', previous_route);
+      }
+    });
 
     Badger.onLogin(function() {
       // remove Facebook account info, create linked facebook account server-side
@@ -61,8 +71,13 @@ with (Hasher('Application')) {
 
     // add domains to cart
     ((params.domains||"").split(',')).forEach(function(domain_name) { Cart.add_domain(domain_name) });
-
+    
     set_route(Hasher.request_data.path);
+  });
+  
+  // redirect if told to do so (tried to go to page that requires auth)
+  after_filter(function() {
+    if (Badger.Session.get('redirect_to')) set_route(Badger.Session.remove('redirect_to'));
   });
 
   route('#', function() {
