@@ -300,9 +300,7 @@ with (Hasher('Cart','Application')) {
   * NOTE: This method shows/hides the "Proceed to Checkout" button on the #cart page.
   * */
   define('update_domains_in_cart', function(callback) {
-    var cart_domains = BadgerCart.get_domains(),
-        num_domains_in_cart = cart_domains.length,
-        num_domains_updated = 0;
+    var cart_domains = BadgerCart.get_domains();
 
     $('#continue-transfer-btn').hide();
     cart_domains.forEach(function(cart_domain) {
@@ -320,7 +318,7 @@ with (Hasher('Cart','Application')) {
           // update the domain object in the cart with the updated attributes
           for (var k in updated_domain_obj) cart_domain[k] = updated_domain_obj[k];
 
-          if (++num_domains_updated == cart_domains.length) {
+          if ($('tr[class$=success-row]').length >= cart_domains.length) {
             $('#continue-transfer-btn').show();
             (callback || function(){}).call(cart_domains);
           }
@@ -364,12 +362,15 @@ with (Hasher('Cart','Application')) {
           show_error_for_domain(server_domain_obj.name, "Extension ." + server_domain_obj.name.split('.').pop() + " is not currently supported.");
         } else {
           // not done loading, try again in a few seconds
-          return setTimeout(curry(update_row_for_domain_in_cart, server_domain_obj, callback), 1500);
+          return setTimeout(curry(update_row_for_domain_in_cart, server_domain_obj, callback), 3000);
         }
-
+        
         // if this point is reached, the domain is invalid somehow, and should be removed from the cart
         cart_domain.remove_from_cart();
         update_shopping_cart_size();
+
+        // show the continue button if ready
+        if ($('tr[class$=success-row]').length >= BadgerCart.get_domains().length) $('#continue-transfer-btn').show();
       });
     }
   });
