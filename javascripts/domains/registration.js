@@ -82,7 +82,7 @@ with (Hasher('Registration','Domains')) {
       
       var days_registered;
       if (domain_obj.registered_at) {
-        days_registered = (date().getDate() - date(domain_obj.registered_at).getDate());
+        days_registered = (date().getTime() - date(domain_obj.registered_at).getTime()) / 1000*60*60*24;
       }
       
       if (domain_obj.locked) {
