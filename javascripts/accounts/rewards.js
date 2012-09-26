@@ -40,7 +40,7 @@ with (Hasher('Rewards','Application')) {
           )
         );
       } else if (show_create_referral_code_form) {
-        return render(
+        return render({ into: target_div },
           form_with_loader({ 'class': 'fancy', action: create_referral_code },
             div(
               h1('Start Earning Free Domains'),
@@ -84,69 +84,71 @@ with (Hasher('Rewards','Application')) {
       render({ into: target_div },
         top_div,
         
-        div({ 'class': 'reward-description' },
-          div({ 'class': 'description' },
-            p({ 'class': 'main' }, 'Refer your friends to Badger'),
-            div({ 'class': 'sub' },
-              p('You get points for every purchase they make.'),
+        rewards_enabled && !show_create_referral_code_form && div(
+          div({ 'class': 'reward-description' },
+            div({ 'class': 'description' },
+              p({ 'class': 'main' }, 'Refer your friends to Badger'),
+              div({ 'class': 'sub' },
+                p('You get points for every purchase they make.'),
 
-              div({ style: 'margin-top: 10px;' },
-                span({ style: 'width: 25%; font-weight: bold; margin-right: 10px' },'Your Referral Link:'),
-                // clicking the input field selects the text inside, and resizes the box
-                input({ 'class': 'fancy', id: 'referral-link', style: 'width: 40%; margin: 0px; color: #707070; cursor: pointer', readonly: true, value: (url_base + referral_code), onclick: function() { this.select(); this.style.width = ((this.value.length + 5) * 8) + 'px'; } })
+                div({ style: 'margin-top: 10px;' },
+                  span({ style: 'width: 25%; font-weight: bold; margin-right: 10px' },'Your Referral Link:'),
+                  // clicking the input field selects the text inside, and resizes the box
+                  input({ 'class': 'fancy', id: 'referral-link', style: 'width: 40%; margin: 0px; color: #707070; cursor: pointer', readonly: true, value: (url_base + referral_code), onclick: function() { this.select(); this.style.width = ((this.value.length + 5) * 8) + 'px'; } })
+                )
               )
+            ),
+            div({ 'class': 'points' },
+              p({ 'class': 'number' }, '+10'),
+              p({ 'class': 'sub' }, 'per year of registration')
             )
           ),
-          div({ 'class': 'points' },
-            p({ 'class': 'number' }, '+10'),
-            p({ 'class': 'sub' }, 'per year of registration')
-          )
-        ),
-        
-        div({ style: 'clear: left;' }),
-        
-        div({ 'class': 'reward-description' },
-          div({ 'class': 'description' },
-            p({ 'class': 'main' }, "Link + Tweet / Share"),
 
-            div({ 'class': 'sub' },
-              p("Link an account and share your link for an easy 10 points."),
+          div({ style: 'clear: left;' }),
 
-              div({ id: 'errors' }),
+          div({ 'class': 'reward-description' },
+            div({ 'class': 'description' },
+              p({ 'class': 'main' }, "Link + Tweet / Share"),
 
-              form({ 'class': 'fancy', style: 'margin-left: -125px;' },
-                fieldset(
-                  label({ 'for': 'share-message' }, 'Message:'),
-                  textarea({ id: 'share-message', style: 'width: 310px; height: 75px;' }, "Come register a domain with Badger for only $5! " + (url_base+referral_code))
-                ),
-                fieldset(
-                  label('Share:'),
-                  div({ style: 'margin: 15px 0px;' },
-                    Share.share_icon({ onclick: curry(window.open, 'https://twitter.com/intent/tweet?original_referrer='+encodeURIComponent(window.location.origin)+'&via=Badger&url='+url_base+referral_code+'&text=Come register a domain with Badger for only $5! '+url_base+referral_code, '' , 'width=600,height=260'), image_src: 'images/apps/twitter.png' }),
-                    Share.share_icon({ onclick: function() { show_spinner_modal('Posting message...'); Share.share_message_to_facebook(); }, image_src: 'images/apps/facebook.png' })
+              div({ 'class': 'sub' },
+                p("Link an account and share your link for an easy 10 points."),
+
+                div({ id: 'errors' }),
+
+                form({ 'class': 'fancy', style: 'margin-left: -125px;' },
+                  fieldset(
+                    label({ 'for': 'share-message' }, 'Message:'),
+                    textarea({ id: 'share-message', style: 'width: 310px; height: 75px;' }, "Come register a domain with Badger for only $5! " + (url_base+referral_code))
+                  ),
+                  fieldset(
+                    label('Share:'),
+                    div({ style: 'margin: 15px 0px;' },
+                      Share.share_icon({ onclick: curry(window.open, 'https://twitter.com/intent/tweet?original_referrer='+encodeURIComponent(window.location.origin)+'&via=Badger&url='+url_base+referral_code+'&text=Come register a domain with Badger for only $5! '+url_base+referral_code, '' , 'width=600,height=260'), image_src: 'images/apps/twitter.png' }),
+                      Share.share_icon({ onclick: function() { show_spinner_modal('Posting message...'); Share.share_message_to_facebook(); }, image_src: 'images/apps/facebook.png' })
+                    )
                   )
                 )
               )
+            ),
+            div({ 'class': 'points' },
+              p({ 'class': 'number' }, '+10')
             )
           ),
-          div({ 'class': 'points' },
-            p({ 'class': 'number' }, '+10')
-          )
-        ),
-        
-        div({ style: 'clear: left;' }),
 
-        div({ 'class': 'reward-description' },
-          div({ 'class': 'description' },
-            p({ 'class': 'main' }, 'Add domains via linked accounts'),
-            div({ 'class': 'sub' },
-              p('You get points for every domain added through a linked account.'),
-              Domains.link_domains_icons()
+          div({ style: 'clear: left;' }),
+
+          div({ 'class': 'reward-description' },
+            div({ 'class': 'description' },
+              p({ 'class': 'main' }, 'Add domains via linked accounts'),
+              div({ 'class': 'sub' },
+                p('You get points for every domain added through a linked account.'),
+                Domains.link_domains_icons()
+              )
+            ),
+            div({ 'class': 'points' },
+              p({ 'class': 'number' }, '+10'),
+              p({ 'class': 'sub' }, 'per linked domain')
             )
-          ),
-          div({ 'class': 'points' },
-            p({ 'class': 'number' }, '+10'),
-            p({ 'class': 'sub' }, 'per linked domain')
           )
         ),
 
