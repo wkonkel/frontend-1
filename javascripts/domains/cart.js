@@ -244,12 +244,15 @@ with (Hasher('Cart','Application')) {
 
   define('cart_domains_info_message', function() {
     var cart_contents = BadgerCart.contents();
+    function years_message(years) {
+      return ' (' + years + ' year' + (years == 1 ? '' : 's') + ')';
+    }
     return info_message(
       cart_contents.new_domains.length > 0 && div({ style: 'margin-bottom: 10px' },
         b('Domains to be Registered:'),
         ul(
           cart_contents.new_domains.map(function(cart_domain){
-            return li(cart_domain.name, b(' (', cart_domain.purchase_options.years, ' years)'));
+            return li(cart_domain.name, b(years_message(cart_domain.purchase_options.years)));
           })
         )
       ),
@@ -257,7 +260,7 @@ with (Hasher('Cart','Application')) {
         b('Domains to be Transferred:'),
         ul(
           cart_contents.transfer_domains.map(function(cart_domain){
-            return li(cart_domain.name, b(' (', cart_domain.purchase_options.years, ' years)'));
+            return li(cart_domain.name, b(years_message(cart_domain.purchase_options.years)));
           })
         )
       )
