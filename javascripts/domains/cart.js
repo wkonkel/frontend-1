@@ -304,12 +304,11 @@ with (Hasher('Cart','Application')) {
   * */
   define('update_domains_in_cart', function(callback) {
     var cart_domains = BadgerCart.get_domains();
-
     $('#continue-transfer-btn').hide();
     cart_domains.forEach(function(cart_domain) {
       update_row_for_domain_in_cart(cart_domain, function(updated_domain_obj) {
         if (updated_domain_obj.available || (updated_domain_obj.current_registrar && !updated_domain_obj.current_registrar.match(/^unknown$/i))) {
-          // once the domain is updated, we have it's expiration date. show the years selector and update the date
+          // once the domain is updated, we have its expiration date. show the years selector and update the date
           // on change.
           $('table#transfer-domains-table tr#' + row_id_for_domain(cart_domain.name)).find('select#years').val(cart_domain.purchase_options.years).change(function() {
             cart_domain.purchase_options.years = parseInt(this.value) || 1;
@@ -364,7 +363,8 @@ with (Hasher('Cart','Application')) {
         } else if (!server_domain_obj.supported_tld) {
           show_error_for_domain(server_domain_obj.name, "Extension ." + server_domain_obj.name.split('.').pop() + " is not currently supported.");
         } else {
-          // not done loading, try again in a few seconds
+          // getDomain can return 'ok' if the domain if the domain isn't in the database & sync'ed yet, so
+          // come back in a few seconds and see if it's sync'ed yet
           return setTimeout(curry(update_row_for_domain_in_cart, server_domain_obj, callback), 3000);
         }
         
@@ -428,12 +428,6 @@ with (Hasher('Cart','Application')) {
     });
   });
 
-
-
-
-
-
-
   define('process_new_domains', function() {
     var raw_domains = document.getElementById('add_domain_to_table_text').value;
 
@@ -452,8 +446,6 @@ with (Hasher('Cart','Application')) {
       add_domain(domain);
     });
     $('#add_domain_to_table_text').val('');
-
-    update_domains_in_cart();
   });
 
   define('generate_row_for_domain', function(domain_obj) {
