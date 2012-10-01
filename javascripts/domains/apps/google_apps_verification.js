@@ -14,7 +14,8 @@ with (Hasher('GoogleAppsVerification', 'DomainApps')) {
     install_screen: function(app, domain_obj) {
       var google_apps_verification_link = 'https://www.google.com/webmasters/verification/verification?hl=en&siteUrl=http://' + domain_obj.name + '&priorities=vdns&tid=alternate';
       return div(
-        p('Use this shortcut to verify your domain for Google Apps.'),
+        p('Use this shortcut to verify your domain for Google Apps. ',
+          a({ href: 'http://community.badger.com/badger/topics/using_the_google_apps_verification_widget_on_badger_com', target: '_blank' }, 'Learn more'), '.'),
         p('Visit the ', a({ href: google_apps_verification_link }, 'Google Apps verification page'), ' and select "Other" for domain name provider.'),
         p('Copy and paste the TXT record (beginning with google-site-verification) here:'),
         
