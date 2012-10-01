@@ -12,14 +12,16 @@ with (Hasher('GoogleAppsVerification', 'DomainApps')) {
     },
   
     install_screen: function(app, domain_obj) {
+      var google_apps_verification_link = 'https://www.google.com/webmasters/verification/verification?hl=en&siteUrl=http://' + domain_obj.name + '&priorities=vdns&tid=alternate';
       return div(
-        p('Use this shortcut to verify your domain for Google Apps. Be sure to select ', span({ style: "font-weight: bold" }, 'Add a DNS record to your domain\'s configuration'), ' under ', span({ style: "font-weight: bold" }, 'Alternate methods'), ' as your verification method.'),
-        p('Copy and paste the unique Google Apps security token for your app (beginning with google-site-verification) here:'),
+        p('Use this shortcut to verify your domain for Google Apps.'),
+        p('Visit the ', a({ href: google_apps_verification_link }, 'Google Apps verification page'), ' and select "Other" for domain name provider.'),
+        p('Copy and paste the TXT record (beginning with google-site-verification) here:'),
         
         form({ action: curry(check_valid_input, app, domain_obj) },
           show_required_dns(app, domain_obj),
           div({ id: 'app-error-message', 'class': 'error-message hidden' }),
-          text({ name: 'google_app_verification_code', placeholder: 'google-site-verification:aa37fe774dfdb416...', style: 'width: 250px' }),
+          text({ name: 'google_app_verification_code', placeholder: 'google-site-verification=aa37fe774dfdb416...', style: 'width: 250px' }),
           input({ 'class': 'myButton', type: 'submit', value: 'Install Google Apps Verification' })
         )
       );
