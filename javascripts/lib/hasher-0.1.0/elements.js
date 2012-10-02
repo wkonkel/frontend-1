@@ -62,7 +62,7 @@ with (Hasher()) {
   for_each(
     'script', 'meta', 'title', 'link', 'script', 'iframe', 
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-    'div', 'p', 'span', 'pre', 'img', 'br', 'hr', 'i', 'b', 'strong', 'u',
+    'div', 'p', 'span', 'pre', 'img', 'br', 'hr', 'i', 'b', 'em', 'strong', 'u',
     'ul', 'ol', 'li', 'dl', 'dt', 'dd',
     'table', 'tr', 'td', 'th', 'thead', 'tbody', 'tfoot',
     'select', 'option', 'optgroup', 'textarea', 'button', 'label', 'fieldset',
