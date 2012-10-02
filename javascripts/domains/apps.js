@@ -295,13 +295,16 @@ with (Hasher('DomainApps','Domains')) {
       tr({ 'class': 'table-header' },
           th({ style: 'text-align: right; padding-right: 20px' }, 'Subdomain'),
           th({ style: 'padding: 0 20px' }, 'Type'),
-          th({ style: 'width: 100%' }, 'Target')
+          th('Target')
       ),
       for_each(require_dns, function(dns) {
+        var content = dns.type == 'srv' ? (dns.weight + ' ' + dns.port + ' ' + dns.target) : dns.content;
+        var subdomain = is_domain ? (dns.subdomain || '') : 'yoursubdomain';
+        if (dns.type == 'srv') subdomain = ('_' + dns.service + '._' + dns.proto + '.' + (dns.name || '')) + subdomain;
         return tr(
-          td({ style: 'text-align: right; padding-right: 20px' }, (is_domain ? dns.subdomain : 'yoursubdomain'), span({ style: 'color: #aaa' }, dns.subdomain ? '.' : '', Domains.truncate_domain_name(domain))),
+          td({ style: 'text-align: right; padding-right: 20px' }, subdomain, span({ style: 'color: #aaa' }, dns.subdomain ? '.' : '', Domains.truncate_domain_name(domain))),
           td({ style: 'padding: 0 20px' }, dns.type.toUpperCase()),
-          td(dns.priority, ' ', dns.content)
+          td(dns.priority, ' ', content)
           //td(domain_has_record(domain_obj, dns) ? 'yes' : 'no')
         );
       })
@@ -398,34 +401,64 @@ with (Hasher('DomainApps','Domains')) {
     return true;
   });
   
-
+  // Desperately needs refactoring
   define('domain_has_record', function(domain_obj, record) {
     for (var i=0; i < (domain_obj.dns || []).length; i++) {
       var tmp_record = domain_obj.dns[i];
-
+      var tmp_record_type = tmp_record.record_type;
+      var record_type = record.type;
       var sanitize_domain = function(host) {
         var regex = new RegExp("\\.?" + domain_obj.name.replace('.','\\.') + '$');
         return (host || '').replace(regex,'').toLowerCase();
       };
 
-      var content_matches;
-      if (record.content && record.content.test) {//regexp
-        content_matches = record.content.test((tmp_record.content||'').toLowerCase());
-      } else {
-        content_matches = !!((tmp_record.content||'').toLowerCase() == (record.content||'').toLowerCase());
+      var content_matches = true;
+      if ('content' in record) {
+        if (record.content && record.content.test) {//regexp
+          content_matches = record.content.test((tmp_record.content||'').toLowerCase());
+        } else {
+          content_matches = !!((tmp_record.content||'').toLowerCase() == (record.content||'').toLowerCase());
+        }
       }
-      
       var type_matches = !!((tmp_record.type||tmp_record.record_type||'').toLowerCase() == (record.type||record.record_type||'').toLowerCase());
-      var subdomain_matches;
-      if (record.subdomain && record.subdomain.test) {//regexp
-        var subdomain = (tmp_record.subdomain||'').split('.')[0];
-        subdomain_matches = record.subdomain.test(subdomain.toLowerCase()) && !record.subdomain.test(/mail/i); // special case for conflicting Gmail CNAME record
-      } else {
-        subdomain_matches = !!(sanitize_domain(tmp_record.subdomain) == sanitize_domain(record.subdomain));
+      var subdomain_matches = true;
+      if ('subdomain' in record) {
+        if (record.subdomain && record.subdomain.test) {//regexp
+          var subdomain = (tmp_record.subdomain||'').split('.')[0];
+          subdomain_matches = record.subdomain.test(subdomain.toLowerCase()) && !record.subdomain.test(/mail/i); // special case for conflicting Gmail CNAME record
+        } else {
+          subdomain_matches = !!(sanitize_domain(tmp_record.subdomain) == sanitize_domain(record.subdomain));
+        }
+      }
+      var target_matches = true;
+      if ('target' in record) {
+        if (record.target && record.target.test) {//regexp
+          target_matches = record.target.test((tmp_record.target||'').toLowerCase());
+        } else {
+          target_matches = !!((tmp_record.target||'').toLowerCase() == (record.target||'').toLowerCase());
+        }
+      }
+      var name_matches = true;
+      if ('name' in record) {
+        if (record.name && record.name.test) {//regexp
+          name_matches = record.name.test((tmp_record.name||'').toLowerCase());
+        } else {
+          name_matches = !!((tmp_record.name||'').toLowerCase() == (record.name||'').toLowerCase());
+        }
+      }
+      var service_matches = true;
+      if ('service' in record) {
+        if (record.service && record.service.test) {//regexp
+          service_matches = record.service.test((tmp_record.service||'').toLowerCase());
+        } else {
+          service_matches = !!((tmp_record.service||'').toLowerCase() == (record.service||'').toLowerCase());
+        }
       }
       var priority_matches = !!(parseInt(tmp_record.priority||'0') == parseInt(record.priority||'0'));
-      
-      if (content_matches && type_matches && subdomain_matches && priority_matches) return tmp_record;
+      var weight_matches = !!(parseInt(tmp_record.weight||'0') == parseInt(record.weight||'0'));
+      var port_matches = !!(parseInt(tmp_record.port||'0') == parseInt(record.port||'0'));
+
+      if (content_matches && type_matches && subdomain_matches && priority_matches && port_matches && weight_matches && target_matches && name_matches && service_matches) return tmp_record;
     }
     
     return false;
@@ -458,9 +491,15 @@ with (Hasher('DomainApps','Domains')) {
           if (!domain_has_record(domain_obj, record)) {
             var dns_fields = {
               record_type: record.type,
-              priority: record.priority,
-              subdomain: record.subdomain,
+              service: record.service,
+              proto: record.proto,
+              name: record.name,
               ttl: 1800,
+              priority: record.priority,
+              weight: record.weight,
+              port: record.port,
+              target: record.target,
+              subdomain: record.subdomain,
               content: record.content
             };
 
