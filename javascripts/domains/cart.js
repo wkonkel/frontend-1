@@ -308,6 +308,16 @@ with (Hasher('Cart','Application')) {
     cart_domains.forEach(function(cart_domain) {
       update_row_for_domain_in_cart(cart_domain, function(updated_domain_obj) {
         if (updated_domain_obj.available || (updated_domain_obj.current_registrar && !updated_domain_obj.current_registrar.match(/^unknown$/i))) {
+          // render the correct number of years options into the select
+          var years_options = [];
+          if (updated_domain_obj.available) {
+            for (var i=1; i<=10; i++) years_options.push(option({ value: i }, i+''));
+          } else {
+            var years_until_expiration = Math.ceil((date(updated_domain_obj.expires_at).getTime() - date().getTime()) / (1000*60*60*24*365));
+            for (var i=1; i<=(10-years_until_expiration); i++) years_options.push(option({ value: i }, i+''));
+          }
+          $('table#transfer-domains-table tr#' + row_id_for_domain(cart_domain.name)).find('select#years').html(years_options);
+
           // once the domain is updated, we have its expiration date. show the years selector and update the date
           // on change.
           $('table#transfer-domains-table tr#' + row_id_for_domain(cart_domain.name)).find('select#years').val(cart_domain.purchase_options.years).change(function() {
@@ -454,20 +464,7 @@ with (Hasher('Cart','Application')) {
       td({ 'class': 'registrar_domain' }, img({ 'class': 'ajax_loader', style: "padding-left: 20px", src: 'images/ajax-loader.gif'})),
       td({ 'class': 'expires_domain' }),
 
-      td(
-        select({ id: 'years', name: 'years', style: 'width: 45px; display: none;' },
-          (function() {
-            var years_options = [];
-            if (domain_obj.available) {
-              for (var i=1; i<=10; i++) years_options.push(option({ value: i }, i+''));
-            } else {
-              var years_until_expiration = Math.ceil((date(domain_obj.expires_at).getTime() - date().getTime()) / (1000*60*60*24*365));
-              for (var i=1; i<=(10-years_until_expiration); i++) years_options.push(option({ value: i }, i+''));
-            }
-            return years_options;
-          })()
-        )
-      ),
+      td(select({ id: 'years', name: 'years', style: 'width: 45px; display: none;' }, option({ value: 1 }, '1'))),
       td({ style: 'width: 16px' }, img({ 'class': 'domain_row_trash_icon', src: 'images/trash.gif', onClick: curry(remove_domain_from_table, domain_obj.name) }))
     );
   });
