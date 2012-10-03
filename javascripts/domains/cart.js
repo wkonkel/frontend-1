@@ -453,18 +453,19 @@ with (Hasher('Cart','Application')) {
       td(Domains.truncate_domain_name(domain_obj.name)),
       td({ 'class': 'registrar_domain' }, img({ 'class': 'ajax_loader', style: "padding-left: 20px", src: 'images/ajax-loader.gif'})),
       td({ 'class': 'expires_domain' }),
+
       td(
         select({ id: 'years', name: 'years', style: 'width: 45px; display: none;' },
-          option({ value: 1 }, '1'),
-          option({ value: 2 }, '2'),
-          option({ value: 3 }, '3'),
-          option({ value: 4 }, '4'),
-          option({ value: 5 }, '5'),
-          option({ value: 6 }, '6'),
-          option({ value: 7 }, '7'),
-          option({ value: 8 }, '8'),
-          option({ value: 9 }, '9'),
-          domain_obj.available && option({ value: 10 }, '10')
+          (function() {
+            var years_options = [];
+            if (domain_obj.available) {
+              for (var i=1; i<=10; i++) years_options.push(option({ value: i }, i+''));
+            } else {
+              var years_until_expiration = Math.ceil((date(domain_obj.expires_at).getTime() - date().getTime()) / (1000*60*60*24*365));
+              for (var i=1; i<=(10-years_until_expiration); i++) years_options.push(option({ value: i }, i+''));
+            }
+            return years_options;
+          })()
         )
       ),
       td({ style: 'width: 16px' }, img({ 'class': 'domain_row_trash_icon', src: 'images/trash.gif', onClick: curry(remove_domain_from_table, domain_obj.name) }))
