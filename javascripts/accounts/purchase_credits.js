@@ -61,7 +61,7 @@ with (Hasher('Billing','Application')) {
           }
         });
         $("input#credits-input").trigger('keyup');
-      } {
+      } else {
         if (Badger.Session.get('necessary_credits')) {
           // update discounted price from session storage
           $('span#static-price').empty().html(
