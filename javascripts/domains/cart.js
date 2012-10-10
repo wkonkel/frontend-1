@@ -151,6 +151,19 @@ with (Hasher('Cart','Application')) {
           )
         )
       );
+      
+      Account.if_referral_signup_discount(function() {
+        if (Badger.Session.get('necessary_credits')) {
+          // update discounted price from session storage
+          $('span#static-price').empty().html(
+            span(
+              span({ style: 'text-decoration: line-through;' },'$' + (Badger.Session.get('necessary_credits') * 10)),
+              span({ style: 'font-size: 30px; font-style: italic; margin-left: 10px' },'$' + ((Badger.Session.get('necessary_credits') * 10) - 5))
+            )
+          );
+        }
+      });
+      
     });
   });
 
