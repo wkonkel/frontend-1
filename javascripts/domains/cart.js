@@ -97,10 +97,17 @@ with (Hasher('Cart','Application')) {
         ),
 
         fieldset({ 'class': 'no-label' },
-          submit({ name: 'submit', value: 'Purchase ' + cart_contents.domains.length + ' domain' + (cart_contents.domains.length != 1 ? 's' : '') + ' for $' + BadgerCart.compute_price() })
+          submit({ id: 'purchase-button', name: 'submit', value: 'Purchase ' + cart_contents.domains.length + ' domain' + (cart_contents.domains.length != 1 ? 's' : '') + ' for $' + BadgerCart.compute_price() })
         )
       )
     );
+    
+
+    Account.if_referral_signup_discount(function() {
+      $('#purchase-button').val('Purchase ' + cart_contents.domains.length + ' domain' + (cart_contents.domains.length != 1 ? 's' : '') + ' for $' + (BadgerCart.compute_price() - 5))
+    });
+    
+    
   });
 
   route('#cart/billing', function() {
