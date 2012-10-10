@@ -91,9 +91,11 @@ with (Hasher('DnsApp','DomainApps')) {
               select({ id: 'dns-add-type', onchange: function() { show_correct_form_fields(); } },
                 option('A'),
                 option('AAAA'),
+                option('ALIAS'),
                 option('CNAME'),
                 option('MX'),
                 option('TXT'),
+//                option('SRV'),
                 option('NS')
               )
             ),
@@ -300,8 +302,9 @@ with (Hasher('DnsApp','DomainApps')) {
     var record_type = $('#dns' + type + 'type').val();
     $('#dns' + type + 'content-ipv4')[['A'].indexOf(record_type) >= 0 ? 'show' : 'hide']();
     $('#dns' + type + 'content-ipv6')[['AAAA'].indexOf(record_type) >= 0  ? 'show' : 'hide']();
-    $('#dns' + type + 'content-host')[['CNAME','MX'].indexOf(record_type) >= 0  ? 'show' : 'hide']();
+    $('#dns' + type + 'content-host')[['ALIAS','CNAME','MX'].indexOf(record_type) >= 0  ? 'show' : 'hide']();
     $('#dns' + type + 'content-priority')[['MX'].indexOf(record_type) >= 0  ? 'show' : 'hide']();
+//    $('#dns' + type + 'content-text')[['SRV'].indexOf(record_type) >= 0  ? 'show' : 'hide']();
     $('#dns' + type + 'content-text')[['TXT'].indexOf(record_type) >= 0  ? 'show' : 'hide']();
     $('#dns' + type + 'content-ns')[['NS'].indexOf(record_type) >= 0  ? 'show' : 'hide']();
   });
@@ -323,11 +326,19 @@ define('get_dns_params', function(id) {
       dns_fields.content = $('#dns' + type + 'content-ipv4').val();
     } else if (dns_fields.record_type == 'AAAA') {
       dns_fields.content = $('#dns' + type + 'content-ipv6').val();
-    } else if (dns_fields.record_type == 'CNAME') {
+    } else if (dns_fields.record_type == 'ALIAS' || dns_fields.record_type == 'CNAME') {
       dns_fields.content = $('#dns' + type + 'content-host').val();
     } else if (dns_fields.record_type == 'MX') {
       dns_fields.content = $('#dns' + type + 'content-host').val();
       dns_fields.priority = $('#dns' + type + 'content-priority').val();
+//    } else if (dns_fields.record_type == 'SRV') {
+//      dns_fields.content = $('#dns' + type + 'content-host').val();
+//      dns_fields.service = $('#dns' + type + 'content-service').val();
+//      dns_fields.proto = $('#dns' + type + 'content-proto').val();
+//      dns_fields.name = $('#dns' + type + 'content-name').val();
+//      dns_fields.weight = $('#dns' + type + 'content-weight').val();
+//      dns_fields.priority = $('#dns' + type + 'content-priority').val();
+//      dns_fields.target = $('#dns' + type + 'content-target').val();
     } else if (dns_fields.record_type == 'TXT') {
       dns_fields.content = $('#dns' + type + 'content-text').val();
     } else if (dns_fields.record_type == 'NS') {
@@ -385,9 +396,12 @@ define('get_dns_params', function(id) {
       td(
         select({ id: 'dns-' + record.id + '-edit-type', onchange: function() { show_correct_form_fields(record.id); } },
           option( record.record_type.toUpperCase() == 'A' ? { selected: 'selected' } : {}, 'A'),
+          option( record.record_type.toUpperCase() == 'AAAA' ? { selected: 'selected' } : {}, 'AAAA'),
+          option( record.record_type.toUpperCase() == 'ALIAS' ? { selected: 'selected' } : {}, 'ALIAS'),
           option( record.record_type.toUpperCase() == 'CNAME' ? { selected: 'selected' } : {}, 'CNAME'),
           option( record.record_type.toUpperCase() == 'MX' ? { selected: 'selected' } : {}, 'MX'),
           option( record.record_type.toUpperCase() == 'TXT' ? { selected: 'selected' } : {}, 'TXT'),
+//          option( record.record_type.toUpperCase() == 'SRV' ? { selected: 'selected' } : {}, 'SRV'),
           option( record.record_type.toUpperCase() == 'NS' ? { selected: 'selected' } : {}, 'NS')
         )
       ),
