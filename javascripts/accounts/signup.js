@@ -69,7 +69,7 @@ with (Hasher('Signup','Application')) {
       if (fb_info) {
         render({ into: facebook_account_link_div },
           success_message({ style: 'display: block; height: 50px; padding: 10px;' },
-            div({ style: 'float: left; margin-right: 15px;' }, img({ src: fb_info.profile_image_src })),
+            div({ style: 'float: left; margin-right: 15px;' }, img({ src: fb_info.profile_image_src.data ? fb_info.profile_image_src.data.url : fb_info.profile_image_src })),
             p({ style: 'margin: 0px;' }, 'This form was filled using your Facebook account.'),
             p(b("That's not me! "), a({ onclick: FB.logout, style: 'cursor: pointer;' }, "Log out."))
           )
