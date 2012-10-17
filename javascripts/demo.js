@@ -156,8 +156,8 @@ function load_badger_demo() {
           permissions.push('modify_dns');
         }
       } else {
-        var permissions = domain_obj.permissions_for_person;
-        var index_of_modify_dns = permissions.indexOf('modify_dns');
+        permissions = domain_obj.permissions_for_person;
+        index_of_modify_dns = permissions.indexOf('modify_dns');
         if (index_of_modify_dns >= 0) {
           permissions.splice(index_of_modify_dns,1);
         }
@@ -167,7 +167,7 @@ function load_badger_demo() {
       // perform updates
       DemoData.update_attributes(domain_obj, attrs)
       if (attrs.privacy) {
-        if (typeof(attrs.privacy) == 'string') attrs.privacy = attrs.privacy == 'true' ? true : false;
+        if (typeof(attrs.privacy) == 'string') attrs.privacy = !!(attrs.privacy == 'true');
         domain_obj.whois.privacy = attrs.privacy;
         
         // rebuild whois
@@ -491,7 +491,7 @@ function load_badger_demo() {
   };
   
   /*
-    Destroy an object, removing it from it's table array.
+    Destroy an object, removing it from its table array.
   */
   DemoData.destroy = function(obj) {
     var index_of_obj = -1;
@@ -574,7 +574,7 @@ function load_badger_demo() {
     }
     defaults.dns = attrs['dns'] || default_dns_for_domain(defaults);
     
-    // if not using badger nameservers, disallow modifcation of DNS
+    // if not using badger nameservers, disallow modification of DNS
     if (!(defaults.name_servers || []).equal_to(['ns1.badger.com', 'ns2.badger.com'])) {
       var permissions = defaults.permissions_for_person;
       var index_of_modify_dns = permissions.indexOf('modify_dns');
@@ -687,13 +687,13 @@ function load_badger_demo() {
       create_dns_record(domain_obj, {
         record_type: 'a',
         content: '42.42.42.42',
-        ttl: 1800,
+        ttl: 1800
       }),
       create_dns_record(domain_obj, {
         record_type: 'cname',
         subdomain: 'www.',
         content: 'realultimatepower.net',
-        ttl: 1800,
+        ttl: 1800
       })
     ];
     return domain_obj;
@@ -771,18 +771,18 @@ function load_badger_demo() {
       create_dns_record(domain_obj, {
         record_type: 'soa',
         content: 'ns1.badger.com support@badger.com 1341359095',
-        ttl: 1800,
+        ttl: 1800
       }),
       create_dns_record(domain_obj, {
         record_type: 'ns',
         content: 'ns1.badger.com',
-        ttl: 1800,
+        ttl: 1800
       }),
       create_dns_record(domain_obj, {
         record_type: 'ns',
         content: 'ns2.badger.com',
-        ttl: 1800,
-      }),
+        ttl: 1800
+      })
     ];
   };
   
@@ -791,7 +791,7 @@ function load_badger_demo() {
       create_dns_record(domain_obj, {
         record_type: 'a',
         content: '50.57.26.208',
-        ttl: 1800,
+        ttl: 1800
       })
     );
     domain_obj.dns.push(
@@ -812,7 +812,7 @@ function load_badger_demo() {
   var d = create_domain({
     name: 'example.com',
     expires_at: new Date(Date.parse('01-01-2014')).toString('MMMM dd yyyy'),
-    registrant_contact: DemoData.find('contact', { id: 1 })[0],
+    registrant_contact: DemoData.find('contact', { id: 1 })[0]
   });
   add_default_web_forwarding_dns(d);
   
