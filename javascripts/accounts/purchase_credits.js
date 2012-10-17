@@ -1,7 +1,6 @@
 with (Hasher('Billing','Application')) {
   route('#account/billing/credits', function() {
-    var cart_price = BadgerCart.compute_price(), // takes the place of necessary credits
-        target_div = div(spinner('Loading...'));
+    var target_div = div(spinner('Loading...'));
 
     render(
       chained_header_with_links(
