@@ -91,7 +91,7 @@ with (Hasher('DnsApp','DomainApps')) {
               select({ id: 'dns-add-type', onchange: function() { show_correct_form_fields(); } },
                 option('A'),
                 option('AAAA'),
-                option('ALIAS'),
+//                option('ALIAS'),
                 option('CNAME'),
                 option('MX'),
                 option('TXT'),
