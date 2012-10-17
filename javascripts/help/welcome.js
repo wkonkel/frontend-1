@@ -5,7 +5,8 @@ with (Hasher('Welcome','Application')) {
     if (!Badger.getAccessToken() && referral_info.referred_by) {
       render({ into: 'before-content' }, 
         div({ style: 'margin-top: 30px' }, 
-          success_message('You have been referred to Badger by ', b(referral_info.referred_by), '! Your first registration or transfer is only $5.')
+          success_message('You have been referred to Badger by ', b(referral_info.referred_by), '!',
+                          (!referral_info.referrer_is_affiliate && ' Your first registration or transfer is only $5.'))
         )
       );
     }

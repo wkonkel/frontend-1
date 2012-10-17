@@ -118,11 +118,6 @@ with (Hasher('Register','Application')) {
     return similar_domain_div;
   });
 
-
-
-
-
-
   define('show', function(domain, available_extensions) {
     if (!available_extensions) available_extensions = [];
     if (!Badger.getAccessToken()) {
@@ -169,7 +164,7 @@ with (Hasher('Register','Application')) {
           // Share.show_share_registration_modal(form_data.name);
         } else {
           // TODO: wire in credit screen if not enough
-          $('#errors').html(error_message(response))
+          $('#errors').html(error_message(response));
           
           if (response.data && response.data.extra) {
             

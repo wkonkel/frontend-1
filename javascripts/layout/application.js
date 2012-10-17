@@ -50,12 +50,13 @@ with (Hasher('Application')) {
     var referral_info = {
       referral_code: params.referral_code || existing_referral_info.referral_code,
       referred_by: (params.referred_by || existing_referral_info.referred_by || "").replace(/\+/,' '),
+      referrer_is_affiliate: params.is_affiliate || existing_referral_info.referrer_is_affiliate,
       domains: params.domains || existing_referral_info.domains,
 
       // the person being referred to badger
       first_name: params.first_name || existing_referral_info.first_name,
       last_name: params.last_name || existing_referral_info.last_name,
-      email: params.email || existing_referral_info.email,
+      email: params.email || existing_referral_info.email
     };
 
     Badger.Session.write({ referral_info: referral_info });

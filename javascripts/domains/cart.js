@@ -124,7 +124,9 @@ with (Hasher('Cart','Application')) {
     );
 
     Badger.accountInfo(function(response) {
-      var domain_credits = (response.data||{}).domain_credits,
+      var account = response.data || {};
+      BadgerCart.set_eligible_for_referral_bonus(account.eligible_for_referral_bonus);
+      var domain_credits = account.domain_credits,
           total_price = (BadgerCart.compute_price() - domain_credits*10);
 
       render({ into: target_div },

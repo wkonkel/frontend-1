@@ -1,7 +1,7 @@
 // storage interface for the shopping cart.
 // uses Badger.Session
 var BadgerCart = {
-  _cart_domains_storage_key: '_cart_storage',
+  _cart_storage_key: '_cart_storage',
 
 // callbacks, override these in the application
   after_add: function() {},
@@ -27,25 +27,24 @@ var BadgerCart = {
     var info_hash = {
       domains: this.get_domains(),
       new_domains: this.get_new_domains(),
-      transfer_domains: this.get_transfer_domains(),
+      transfer_domains: this.get_transfer_domains()
     };
-    
+
     // add calculated attrs
     info_hash.domain_count = info_hash.domains.length;
-    
+
     return info_hash
   },
-  
+
   // Add a domain name to the cart.
-  // If a domain is added with the domain name alone, 
+  // If a domain is added with the domain name alone,
   // it explicitly needs to be updated later.
   push_domain: function(domain_obj) {
     if (arguments.length <= 0) return this.get_domains();
-    
+
     var arguments = this._flatten_arguments_to_array(arguments);
     var cart_domains = this.get_domains();
-    
-    var domain_obj;
+
     for (var i=0; i<arguments.length; i++) {
       if (typeof(arguments[i]) == 'string' && arguments[i].length > 0 && !this.find_domain({ name: arguments[i] })) {
         cart_domains.push({ name: arguments[i] });
@@ -57,10 +56,10 @@ var BadgerCart = {
     }
 
     // save domains session storage
-    Badger.Session.set(this._cart_domains_storage_key, cart_domains);
+    this.set_domains(cart_domains);
     return this.get_domains();
   },
-  
+
   // Find first domain in cart that match given the given parameters.
   find_domain: function(params) {
     var domains = this.get_domains();
@@ -93,7 +92,7 @@ var BadgerCart = {
           BadgerCart._execute_after_remove();
 
           // write to session storage
-          Badger.Session.set(BadgerCart._cart_domains_storage_key, domains);
+          this.set_domains(domains);
           return destroyed_obj;
         }
       }
@@ -108,14 +107,19 @@ var BadgerCart = {
       import_dns: true
     };
   },
-  
+
   clear: function() {
-    Badger.Session.remove(this._cart_domains_storage_key);
+    Badger.Session.remove(this._cart_storage_key);
   },
-  
+
+  // store domain objects
+  set_domains: function(domains) {
+    Badger.Session.set(this._cart_storage_key, domains);
+  },
+
   // get domain objects, append helper methods to them.
   get_domains: function() {
-    var domains = Badger.Session.get(this._cart_domains_storage_key) || [];
+    var domains = Badger.Session.get(this._cart_storage_key) || [];
     for (var i=0; i<domains.length; i++) this.append_helper_methods_to_object(domains[i]);
     return domains.sort();
   },
@@ -128,21 +132,30 @@ var BadgerCart = {
     return credits;
   },
 
+  eligible_for_referral_bonus: function() {
+    return Badger.Session.get(this._cart_eligible_for_referral_bonus_key) || false;
+  },
+
+  set_eligible_for_referral_bonus: function(eligible) {
+    return Badger.Session.set(this._cart_eligible_for_referral_bonus_key, eligible);
+  },
+
   // compute the total cost. NOTE does not factor in account balance
+  // TODO: this should be an API call
   compute_price: function() {
     var price_per_year = 10;
-    return this.necessary_credits() * price_per_year;
+    return this.necessary_credits() * price_per_year - (this.eligible_for_referral_bonus() ? 5 : 0);
   },
-  
+
   // transfer domains are domains with a current_registrar
   get_transfer_domains: function() {
     return this.get_domains().filter(function(d) { return d.current_registrar });
   },
-  
+
   get_new_domains: function() {
     return this.get_domains().filter(function(d) { return d.available });
   },
-  
+
   _flatten_arguments_to_array: function() {
     var stack = Array.prototype.slice.call(arguments);
     var arguments = [];
