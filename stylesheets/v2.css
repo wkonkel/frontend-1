@@ -78,7 +78,7 @@ html.demo { background: transparent url(../images/v2/white_plaster_demo.png) rep
   padding-top: 5px;
   margin: 5px 0;
 }
-
+#user-nav #user_nav_flyout a { display: block; }
 
 #left-topnav { 
   position: absolute;
@@ -126,8 +126,6 @@ html.demo { background: transparent url(../images/v2/white_plaster_demo.png) rep
   -webkit-border-radius: 3px;
 }
 
-
-#user-nav #user_nav_flyout a { display: block; }
 
 #form-search { 
   width: 355px;
