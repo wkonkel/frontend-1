@@ -248,7 +248,7 @@ with (Hasher('Application')) {
   define('with_user_nav_content', function(callback) {
     BadgerCache.getAccountInfo(function(response) {
       callback([
-        a({ href: '#account', id: 'user_nav_a' }, span({ id: 'use_nav_name' }, response.data.name), span({ 'class': 'downarrow' }, '▼')),
+        a({ href: '#account', id: 'user_nav_a' }, span({ id: 'user_nav_name' }, response.data.name), span({ 'class': 'downarrow' }, '▼')),
         div({ id: 'user_nav_flyout' },
           a({ href: '#linked_accounts' }, 'Linked Accounts'),
           a({ href: '#account/billing' }, 'Billing'),
@@ -280,7 +280,7 @@ with (Hasher('Application')) {
   define('update_account_name', function() {
     BadgerCache.flush('account_info');
     BadgerCache.getAccountInfo(function(response) {
-      $('#use_nav_name').html(response.data.name);
+      $('#user_nav_name').html(response.data.name);
     });
   });
 

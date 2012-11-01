@@ -136,7 +136,7 @@ with (Hasher('Account','Application')) {
         $('input[name=last_name]').each(function() { this.placeholder = last });
         
         // update the nav
-        $('span#use_nav_name a').html(response.data.name);
+        $('span#user_nav_name a').html(response.data.name);
       }
     })
   });
