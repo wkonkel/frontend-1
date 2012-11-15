@@ -790,14 +790,14 @@ function load_badger_demo() {
     domain_obj.dns.push(
       create_dns_record(domain_obj, {
         record_type: 'a',
-        content: '50.57.26.208',
+        content: '165.225.134.233',
         ttl: 1800
       })
     );
     domain_obj.dns.push(
       create_dns_record(domain_obj, {
         record_type: 'a',
-        content: '50.57.26.208',
+        content: '165.225.134.233',
         ttl: 1800,
         subdomain: '*.' + domain_obj.name
       })
