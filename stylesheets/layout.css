@@ -284,6 +284,8 @@ input.fancy[type=text], input.fancy[type=password] { margin-top: 4px; padding: 5
   -webkit-border-radius: 15px;
 }
 
+#testimonials-div #intro p { font-size: 16px; line-height: 30px; }
+
 #testimonials-div #intro img {
   float: left;
 }

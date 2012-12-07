@@ -94,6 +94,9 @@ with (Hasher('Testimonials', 'Application')) {
 
       div({ id: 'testimonials-div' },
         testimonials_intro(),
+        div({ style: 'margin: 35px auto auto auto' },
+          h1('Testimonials')
+        ),
         div({ id: 'testimonials-container'},
           testimonials
         )
@@ -104,8 +107,8 @@ with (Hasher('Testimonials', 'Application')) {
   define('testimonials_intro', function() {
     return div({ 'class': 'testimonials', id: 'intro' },
       span({ id: 'logo' }, img({ src: 'images/v2/happybadger.png' })),
-      p("We're very proud of the service we provide at Badger and even more so when we receive notes like these we have ",
-        "listed below. We welcome ", em("all"), " feedback too! ", a({ href: "#contact_us" }, "Drop us a line."), br({ 'clear': 'all' }))
+      p("We're very proud of the service we provide at Badger and even more so when we receive notes like these. ",
+        "We welcome ", em("all"), " feedback — ", a({ href: "#contact_us" }, "drop us a line."), br({ 'clear': 'all' }))
     );
   });
 
