@@ -417,7 +417,7 @@ with (Hasher('Application')) {
       // scroll the page to the top to show any errors that might show up
       scroll_to_top();
       
-      // execute the original form aciton
+      // execute the original form action
       original_form_action(form_data);
     });
     
@@ -432,7 +432,7 @@ with (Hasher('Application')) {
       var options = arguments[i];
       var href = options.href; delete options.href; // delete off the href
       var text = options.text; delete options.text; // delete off the text
-      
+
       if (!href) {
         header_arguments.push(span(options, text));
       } else {
@@ -442,7 +442,7 @@ with (Hasher('Application')) {
       if ((i + 1) != arguments.length) header_arguments.push(" » ");
     }
     return h1(header_arguments);
-  })
+  });
       
   define('hide_form_submit_loader', function() {
     make_visible('#_form-loader', false);

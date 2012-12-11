@@ -57,4 +57,4 @@ with (Hasher('Posterous', 'DomainApps')) {
   });
 
 
-};
+}

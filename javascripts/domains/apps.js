@@ -18,7 +18,7 @@ with (Hasher('DomainApps','Domains')) {
   define('h1_for_domain', function(domain, current_header) {
     return chained_header_with_links(
       { text: 'Domains', href: '#domains' },
-      { text: domain },
+      { text: domain, href: '#domains/' + domain },
       { text: 'Apps', href: '#domains/' + domain },
       { text: current_header }
     );
@@ -34,7 +34,7 @@ with (Hasher('DomainApps','Domains')) {
         render(
           chained_header_with_links(
             { text: 'Domains', href: '#domains' },
-            { text: domain_obj.name },
+            { text: domain_obj.name, href: '#domains/' + domain_obj.name },
             { text: 'Apps', href: '#domains/' + domain_obj.name },
             { text: app.name }
           ),
