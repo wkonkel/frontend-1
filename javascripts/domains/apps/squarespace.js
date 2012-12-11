@@ -36,7 +36,9 @@ with (Hasher('Squarespace', 'DomainApps')) {
           div(
             span("Last steps before you're all set:"), br(), br(),
             span("1. Log in to ", a({ href: "http://www.squarespace.com/", target: '_blank' }, "Squarespace"), "."), br(),
-            span("2. Click ", strong("Settings"), " (gear icon)."), br(),
+            span("2. Click ", strong("Settings"), " (see '",
+                 a({ href: "http://help.squarespace.com/customer/portal/articles/413088-mapping-a-domain-general-instructions-?", target: '_blank' },
+                   "Step 3 - Set Up Domain Mapping")), "')", br(),
             span("3. Click ", strong ("Domains"), "."), br(),
             span("4. Click ", strong("Link Existing Domain"), "."), br(),
             span("5. Enter this domain name and then click ", strong("Add"), ".")
