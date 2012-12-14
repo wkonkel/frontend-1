@@ -306,15 +306,15 @@ with (Hasher('Domains','Application')) {
           var filter_name = 'filter-registrar-' + normalized_registrar_name(registrar),
               filter_checkbox = null;
           
-          // if explicity set to true, or not yet set, render the box checked.
+          // if explicitly set to true, or not yet set, render the box checked.
           if (!!previous_filter_states[filter_name] || previous_filter_states[filter_name] == undefined) {
-            filter_checkbox = checkbox({ name: filter_name, checked: 'checked' });
+            filter_checkbox = checkbox({ name: filter_name, id: filter_name, checked: 'checked' });
           } else {
-            filter_checkbox = checkbox({ name: filter_name });
+            filter_checkbox = checkbox({ name: filter_name, id: filter_name });
           }
           
           return div(
-            span(filter_checkbox, registrar)
+            span(filter_checkbox, label({ 'for': filter_name }, registrar))
           );
         });
         
