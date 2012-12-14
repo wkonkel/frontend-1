@@ -377,6 +377,25 @@ with (Hasher('DomainShow','DomainApps')) {
     });
   });
 
+  define('transfer_description_row_accept_foa', function(domain_obj) {
+    return transfer_description_row({
+      name: 'Approve transfer',
+
+      details:{
+        'ok':       div({ style: "text-decoration: line-through" }, 'Transfer has been approved.'),
+        'needed':   div(
+          'You need to check your email "Approve transfer of ' + domain_obj.name + '".',
+          render_help_link('needs_approve_transfer')
+        )
+      }[domain_obj.transfer_in.accept_foa],
+
+      icon:{
+        'ok':       'check',
+        'needed':   'error'
+      }[domain_obj.transfer_in.accept_foa]
+    });
+  });
+
   define('transfer_description_row_auth_code', function(domain_obj) {
     return transfer_description_row({
       name: 'Validate auth code',
@@ -621,6 +640,7 @@ with (Hasher('DomainShow','DomainApps')) {
     if (domain_obj.transfer_in.enter_auth_code == 'needed' && domain_obj.transfer_in.unlock_domain == 'ok' && domain_obj.transfer_in.disable_privacy == 'ok') auto_reload = false; // if we're showing a form, dont reload
     else if (domain_obj.transfer_in.unlock_domain != 'ok') auto_reload = true;
     else if (domain_obj.transfer_in.disable_privacy != 'ok') auto_reload = true;
+    else if (domain_obj.transfer_in.accept_foa != 'ok') auto_reload = true;
     else if (domain_obj.transfer_in.enter_auth_code != 'ok') auto_reload = true;
     else if (domain_obj.transfer_in.approve_transfer != 'unknown') auto_reload = true;
     else auto_reload = false;
@@ -631,6 +651,7 @@ with (Hasher('DomainShow','DomainApps')) {
       transfer_description_row_initiated(domain_obj),
       transfer_description_row_unlock(domain_obj),
       transfer_description_row_disable_privacy(domain_obj),
+      transfer_description_row_accept_foa(domain_obj),
       transfer_description_row_auth_code(domain_obj),
       transfer_description_row_approve_transfer(domain_obj)
     ));

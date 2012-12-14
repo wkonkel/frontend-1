@@ -479,16 +479,15 @@ with (Hasher('Domains','Application')) {
         ),
         (domains||[]).map(function(domain) {
           var step_percentage = compute_transfer_progress_percentage(domain);
-          
-          return tr({ 'class': 'domains-row' }, 
+
+          setTimeout(animate_progress_bars, 0);
+          return tr({ 'class': 'domains-row' },
             td(a({ href: '#domains/' + domain.name }, truncate_domain_name(domain.name))),
             td({ 'class': 'registrar' }, domain.current_registrar),
             td(
               div({ 'class': "meter small green nostripes", style: 'height: 10px;' }, span({ style: "height: 10px; width: " + step_percentage + "%" }))
             )
           );
-          
-          animate_progress_bars();
         })
       ))
     );
@@ -502,9 +501,10 @@ with (Hasher('Domains','Application')) {
     // default is just 1/total_steps
     var percent = 0;
     if (domain.transfer_in) percent += 20;
-    if (domain.transfer_in && domain.transfer_in.unlock_domain == 'ok') percent += 20;
-    if (domain.transfer_in && domain.transfer_in.enter_auth_code == 'ok') percent += 20;
-    if (domain.transfer_in && domain.transfer_in.disable_privacy == 'ok') percent += 20;
+    if (domain.transfer_in && domain.transfer_in.unlock_domain == 'ok') percent += 15;
+    if (domain.transfer_in && domain.transfer_in.enter_auth_code == 'ok') percent += 15;
+    if (domain.transfer_in && domain.transfer_in.disable_privacy == 'ok') percent += 15;
+    if (domain.transfer_in && domain.transfer_in.accept_foa == 'ok') percent += 15;
     if (domain.transfer_in && domain.transfer_in.approve_transfer == 'ok') percent += 15;
     return percent;
   });
@@ -548,4 +548,8 @@ with (Hasher('Domains','Application')) {
     apply_selected_filters();
   });
 
-};
+  route('#foa_accepted', function() {
+    render('Thank you!');
+  });
+
+}
