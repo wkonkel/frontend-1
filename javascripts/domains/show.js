@@ -384,8 +384,8 @@ with (Hasher('DomainShow','DomainApps')) {
       details:{
         'ok':       div({ style: "text-decoration: line-through" }, 'Transfer has been approved.'),
         'needed':   div(
-          'You need to check your email "Approve transfer of ' + domain_obj.name + '".',
-          render_help_link('needs_approve_transfer')
+          'Current registrant needs to approve transfer.', render_help_link('needs_transfer_authorization'), br(),
+          '(In an email to them "Transfer authorization required - ' + domain_obj.name + '")'
         )
       }[domain_obj.transfer_in.accept_foa],
 
@@ -407,15 +407,13 @@ with (Hasher('DomainShow','DomainApps')) {
 
         'needed':   div(
           div({ id: 'auth-code-row-form-wrapper' },
-            div({ style: "padding: 5px 0px 5px 0px" }, "In order to proceed, you need the domain auth code from " + domain_obj.current_registrar + ".",
+            div({ style: "padding: 5px 0px 5px 0px" }, "Enter the domain auth code from " + domain_obj.current_registrar + ":",
               render_help_link('needs_auth_code', domain_obj.current_registrar)
             ),
             div({ style: "margin-bottom: 5px" },
               form({ action: curry(retry_transfer, domain_obj.name)}, 
                 input({ 'class': "fancy", name: 'auth_code', placeholder: 'auth code', value: '' }),
-                div({ id: "auth-code-row", style: "float: right; padding-top: 3px; margin-right: 355px" },
-                  submit({ 'class': "myButton" }, 'Submit')
-                )
+                submit({ 'class': "myButton" }, 'Submit')
               )
             )
           ),
@@ -480,7 +478,7 @@ with (Hasher('DomainShow','DomainApps')) {
     
     // details = div(
     //   'You attempted to transfer this domain, however, the currently owning registrar, ' + domain_obj.current_registrar + ', rejected it.',
-    //   render_help_link('transfer_rejected', domain_obj.current_registrar)  
+    //   render_help_link('transfer_rejected', domain_obj.current_registrar)
     // );
   });
 
@@ -529,9 +527,9 @@ with (Hasher('DomainShow','DomainApps')) {
     });
   });
   
-  define('update_progress_bar', function(new_percentage) {
-    var current_meter_width = parseInt($(".meter > span").css('width'));
-    $(".meter > span").css('width', new_percentage.toString() + "%");
+  define('update_progress_bar', function(new_percentage, id) {
+    var current_meter_width = parseInt($(id).css('width'));
+    $(id).css('width', new_percentage.toString() + "%");
     animate_progress_bars(current_meter_width);
     $("#progress-bar-percentage").html(parseInt(new_percentage).toString() + "%");
   });
@@ -554,7 +552,7 @@ with (Hasher('DomainShow','DomainApps')) {
       
       if (new_percentage != old_percentage) {
         BadgerCache.flush('domains');
-        update_progress_bar(new_percentage);
+        update_progress_bar(new_percentage, ".meter > span");
       }
       
       // remove and replace with updated rows
@@ -575,62 +573,66 @@ with (Hasher('DomainShow','DomainApps')) {
   define('render_help_link', function(topic, registrar) {
     topic = (topic == null ? '' : topic);
     registrar = (registrar == null ? '' : registrar);
+    var slug = '';
     switch (topic) {
       case 'needs_unlock':
         switch (registrar) {
           case 'GoDaddy Inc.':
-            return a({ href: 'http://community.badger.com/badger/topics/godaddy_domain_transfer_unlocking_your_domain', target: '_blank' }, '(?)');
+            slug = 'topics/godaddy_domain_transfer_unlocking_your_domain'; break;
           case 'Network Solutions, LLC':
-            return a({ href: 'http://community.badger.com/badger/topics/network_solutions_domain_transfer_unlocking_your_domain_getting_an_auth_code', target: '_blank' }, '(?)');
+            slug = 'topics/network_solutions_domain_transfer_unlocking_your_domain_getting_an_auth_code'; break;
           case '1 & 1 INTERNET AG':
-            return a({ href: 'http://community.badger.com/badger/topics/1_1_domain_transfer_unlocking_your_domain', target: '_blank' }, '(?)');
+            slug = 'topics/1_1_domain_transfer_unlocking_your_domain'; break;
           case 'Enom, Inc.':
-            return a({ href: 'http://community.badger.com/badger/topics/enom_domain_transfer_unlocking_your_domain', target: '_blank' }, '(?)');
+            slug = 'topics/enom_domain_transfer_unlocking_your_domain'; break;
           case 'Gandi SAS':
-            return a({ href: 'http://community.badger.com/badger/topics/gandi_domain_transfer_unlocking_your_domain', target: '_blank' }, '(?)');
+            slug = 'topics/gandi_domain_transfer_unlocking_your_domain'; break;
           default:
-            return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center', target: '_blank' }, '(?)');
+            slug = 'products/badger_knowledge_center'; break;
         }
       case 'needs_privacy_disabled':
         switch (registrar) {
           case 'GoDaddy Inc.':
-            return a({ href: 'http://community.badger.com/badger/topics/godaddy_domain_transfer_disabling_privacy', target: '_blank' }, '(?)');
+            slug = 'topics/godaddy_domain_transfer_disabling_privacy'; break;
           case 'Network Solutions, LLC':
-            return a({ href: 'http://community.badger.com/badger/topics/network_solutions_domain_transfer_disabling_privacy', target: '_blank' }, '(?)');
+            slug = 'topics/network_solutions_domain_transfer_disabling_privacy'; break;
           case '1 & 1 INTERNET AG':
-            return a({ href: 'http://community.badger.com/badger/topics/1_1_domain_transfer_disabling_privacy', target: '_blank' }, '(?)');
+            slug = 'topics/1_1_domain_transfer_disabling_privacy'; break;
           case 'Enom, Inc.':
-            return a({ href: 'http://community.badger.com/badger/topics/enom_domain_transfer_disabling_privacy', target: '_blank' }, '(?)');
+            slug = 'topics/enom_domain_transfer_disabling_privacy'; break;
           default:
-            return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center', target: '_blank' }, '(?)');
+            slug = 'products/badger_knowledge_center'; break;
         }
       case 'needs_auth_code':
         switch (registrar) {
           case 'GoDaddy Inc.':
-            return a({ href: 'http://community.badger.com/badger/topics/godaddy_domain_transfer_getting_an_auth_code', target: '_blank' }, '(?)');
+            slug = 'topics/godaddy_domain_transfer_getting_an_auth_code'; break;
           case 'Network Solutions, LLC':
-            return a({ href: 'http://community.badger.com/badger/topics/network_solutions_domain_transfer_unlocking_your_domain_getting_an_auth_code', target: '_blank' }, '(?)');
+            slug = 'topics/network_solutions_domain_transfer_unlocking_your_domain_getting_an_auth_code'; break;
           case '1 & 1 INTERNET AG':
-            return a({ href: 'http://community.badger.com/badger/topics/1_1_domain_transfer_getting_an_auth_code', target: '_blank' }, '(?)');
+            slug = 'topics/1_1_domain_transfer_getting_an_auth_code'; break;
           case 'Enom, Inc.':
-            return a({ href: 'http://community.badger.com/badger/topics/enom_domain_transfer_getting_an_auth_code', target: '_blank' }, '(?)');
+            slug = 'topics/enom_domain_transfer_getting_an_auth_code'; break;
           case 'Gandi SAS':
-            return a({ href: 'http://community.badger.com/badger/topics/gandi_domain_transfer_getting_an_auth_code', target: '_blank' }, '(?)');
+            slug = 'topics/gandi_domain_transfer_getting_an_auth_code'; break;
           default:
-            return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center', target: '_blank' }, '(?)');
+            slug = 'products/badger_knowledge_center'; break;
         }
       case 'transfer_requested':
         switch (registrar) {
           case 'GoDaddy Inc.':
-            return a({ href: 'http://community.badger.com/badger/topics/godaddy_domain_transfer_manually_approving_a_transfer', target: '_blank' }, '(?)');
+            slug = 'topics/godaddy_domain_transfer_manually_approving_a_transfer'; break;
           case 'Gandi SAS':
-            return a({ href: 'http://community.badger.com/badger/topics/gandi_domain_transfer_manually_approving_a_transfer', target: '_blank' }, '(?)');
+            slug = 'topics/gandi_domain_transfer_manually_approving_a_transfer'; break;
           default:
-            return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center', target: '_blank' }, '(?)');
+            slug = 'products/badger_knowledge_center'; break;
         }
+      case 'needs_transfer_authorization':
+        slug = 'topics/needs_transfer_authorization'; break;
       default:
-        return a({ href: 'http://community.badger.com/badger/products/badger_knowledge_center', target: '_blank' }, '(?)');
+        slug = 'products/badger_knowledge_center'; break;
     }
+    return [' ', a({ href: 'http://community.badger.com/badger/' + slug, target: '_blank' }, '(?)')];
   });
   
   define('detail_information_rows', function(domain_obj) {

@@ -479,13 +479,14 @@ with (Hasher('Domains','Application')) {
         ),
         (domains||[]).map(function(domain) {
           var step_percentage = compute_transfer_progress_percentage(domain);
-
-          setTimeout(animate_progress_bars, 0);
+          // TODO get this to work
+//          setTimeout('DomainShow.update_progress_bar(' + step_percentage + ', "progress-' + domain.name + '")', 50);
           return tr({ 'class': 'domains-row' },
             td(a({ href: '#domains/' + domain.name }, truncate_domain_name(domain.name))),
             td({ 'class': 'registrar' }, domain.current_registrar),
             td(
-              div({ 'class': "meter small green nostripes", style: 'height: 10px;' }, span({ style: "height: 10px; width: " + step_percentage + "%" }))
+              div({ 'class': "meter small green nostripes", style: 'height: 10px;' },
+                  span({ style: "height: 10px; width: " + step_percentage + "%", id: "progress-" + domain.name }))
             )
           );
         })
@@ -548,7 +549,7 @@ with (Hasher('Domains','Application')) {
     apply_selected_filters();
   });
 
-  route('#foa_accepted', function() {
+  route('#foa_accepted/:domain', function(domain) {
     render('Thank you!');
   });
 
