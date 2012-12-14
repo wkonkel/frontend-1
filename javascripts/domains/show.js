@@ -628,7 +628,7 @@ with (Hasher('DomainShow','DomainApps')) {
             slug = 'products/badger_knowledge_center'; break;
         }
       case 'needs_transfer_authorization':
-        slug = 'topics/needs_transfer_authorization'; break;
+        slug = 'topics/authorize_transfer_into_badger'; break;
       default:
         slug = 'products/badger_knowledge_center'; break;
     }

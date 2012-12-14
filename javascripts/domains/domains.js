@@ -550,7 +550,10 @@ with (Hasher('Domains','Application')) {
   });
 
   route('#foa_accepted/:domain', function(domain) {
-    render('Thank you!');
+    render(
+      h1('Transfer Authorized'),
+      div('Thank you! You have authorized the domain ' + domain + ' for transfer.')
+    );
   });
 
 }
