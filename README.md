@@ -1,6 +1,8 @@
 Badger Frontend
 ============
 
+test
+
 The publicly available frontend for Badger. Feel free to submit pull requests, we always welcome input from the community.
 
 ### Run locally:
