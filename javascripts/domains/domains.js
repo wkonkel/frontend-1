@@ -30,6 +30,7 @@ with (Hasher('Domains','Application')) {
       var cloudflare_app = Hasher.domain_apps['badger_cloudflare'] || {},
           show_cloudflare = (/\/apps\/cloudflare\/install$/).test(get_route()) || (cloudflare_app.is_installed && cloudflare_app.is_installed(domain_obj));
 
+      // TODO set the default menu if the domain TLD is not supported
       var nav_table = function() {
         return table({ style: 'width: 100%' }, tbody(
           tr(
@@ -52,7 +53,7 @@ with (Hasher('Domains','Application')) {
             )
           )
         ));
-      }
+      };
 
       callback(nav_table, response.meta.status != 'ok' ? null : domain_obj);
     });
