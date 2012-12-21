@@ -82,15 +82,17 @@ with (Hasher('DomainShow','DomainApps')) {
       var add_to_cart_message = div(),
           permissions = (domain_obj.permissions_for_person||[]);
 
-      // If we support this TLD and it's not already being transferred to us
-      if (domain_obj.supported_tld && !permissions.includes('pending_transfer')) {
-        var message;
+      // If it's not already being transferred to us
+      var message;
+      if (!permissions.includes('pending_transfer')) {
         if (permissions.includes('linked_account')) {
           message = ['Ready to make the switch? Add your domain to the cart to transfer it from ', domain_obj.current_registrar, '!'];
-        } else {
+        } else if (domain_obj.supported_tld && !permissions.includes('modify_dns') && !permissions.includes('change_nameservers')) {
           message = ['Do you own this domain, and want to transfer it to us? If so, add it to your cart!'];
         }
+      }
 
+      if (message)
         render({ into: add_to_cart_message },
           info_message({ style: 'text-align: center' },
             p({ style: 'margin: 0px;' }, message),
@@ -98,7 +100,6 @@ with (Hasher('DomainShow','DomainApps')) {
               'Add ' + Domains.truncate_domain_name(domain) + ' to Cart')
           )
         );
-      }
 
       render({ into: target_div },
         nav_table(
