@@ -1,6 +1,7 @@
 with (Hasher('Billing','Application')) {
   route('#account/billing/credits', function() {
     var target_div = div(spinner('Loading...'));
+    var necessary_credits = Badger.Session.get('necessary_credits') || 1;
 
     render(
       chained_header_with_links(
@@ -11,13 +12,13 @@ with (Hasher('Billing','Application')) {
 
       div({ 'class': 'sidebar' },
         info_message(
-          h3("What is included?"),
+          h3("What is included with a Credit?"),
           ul(
-            li('1 year of registration'),
+            li('One year of registration'),
             li('WHOIS privacy (free)'),
             li('DNS hosting (free)')
           ),
-          p("New registrations, transfers, and renewals cost the same.")
+          p("New registrations, transfers, and renewals all cost the same.")
         )
       ),
 
@@ -26,12 +27,12 @@ with (Hasher('Billing','Application')) {
 
         fieldset({ style: 'padding-top: 18px' },
           label({ 'for': 'credits-input' }, 'How many Credits:'),
-          credits_selector()
+          credits_selector(necessary_credits)
         ),
 
         fieldset(
           label({ 'for': 'first_name-input' }, 'Total cost:'),
-          span({ id: 'static-price', style: 'font-size: 30px' }, '$10')
+          span({ id: 'static-price', style: 'font-size: 30px' }, '$' + necessary_credits * 10)
         ),
 
         saved_card_drop_down_and_fields(),
@@ -245,7 +246,7 @@ with (Hasher('Billing','Application')) {
   define('credits_selector', function(necessary_credits) {
     // var necessary_credits = typeof(necessary_credits) == "undefined" ? 0 : parseInt(necessary_credits);
     
-    var credit_selector = div({ id: "credits-selector" },
+    var credits_selector_div = div({ id: "credits-selector" },
       input({ style: "font-size: 30px; text-align: center; width: 50px", name: "credits", id: 'credits-input', maxlength: 3, value: necessary_credits > 0 ? necessary_credits : 1, size: "2" })
     );
     
@@ -267,7 +268,7 @@ with (Hasher('Billing','Application')) {
       });
     };
     
-    $(credit_selector).find('input').ForceNumericOnly();
+    $(credits_selector_div).find('input').ForceNumericOnly();
 
     var tier; //track the credit tier    
     var previous_tier = 1;
@@ -330,7 +331,7 @@ with (Hasher('Billing','Application')) {
       previous_tier = tier;
     };
     
-    $(credit_selector).find('input[name=credits]').keyup(function(e) {
+    $(credits_selector_div).find('input[name=credits]').keyup(function(e) {
       if( $(this).is(":focus") ) {
         updateCreditsFieldsAndTierSelected(this);
       }
@@ -338,10 +339,10 @@ with (Hasher('Billing','Application')) {
     
     // update fields on page load
     $(function() {
-      updateCreditsFieldsAndTierSelected($(credit_selector).find('input[name=credits]'), true);
+      updateCreditsFieldsAndTierSelected($(credits_selector_div).find('input[name=credits]'), true);
     });
     
-    return credit_selector;
+    return credits_selector_div;
   });
   
   define('update_credits_input_with', function(num_credits) {

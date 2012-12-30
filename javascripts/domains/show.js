@@ -199,9 +199,6 @@ with (Hasher('DomainShow','DomainApps')) {
                     label('New Expiration Date:'),
                     span({ id: 'expiration-date', 'class': 'big-text' }, date(domain_obj.expires_at).toString("MMMM dd yyyy"))
                   ),
-                  fieldset(
-
-                  ),
                   fieldset({ 'class': 'no-label' },
                     submit({ id: 'renew-registration-submit', name: 'Submit', value: 'Renew Domain' })
                   )
@@ -220,33 +217,31 @@ with (Hasher('DomainShow','DomainApps')) {
       
       // update expiration date and purchase button on extend registration form
       $('select[name=years]').change(function() {
-        var new_expiration_date = date(domain_obj.expires_at).add(parseInt(this.value)).years();
+        var years = parseInt(this.value);
+        var new_expiration_date = date(domain_obj.expires_at).add(years).years();
         $("#expiration-date").html(new_expiration_date.toString("MMMM dd yyyy"));
-        $('#renew-registration-submit').val('Renew Domain for $' + (parseInt(this.value)*10));
+        $('#renew-registration-submit').val('Renew Domain for $' + (years * 10));
       }).change();
     });
   });
 
 
-
-
-
-
-  
   define('renew_domain', function(domain_obj, form_data) {
-    show_spinner_modal('Renewing registration...');
+    var years = form_data.years,
+        domain = form_data.domain;
+    show_spinner_modal('Renewing ' + domain + ' for ' + years + ' year' + (years == 1 ? '' : 's') + '...');
 
-    Badger.renewDomain(form_data.domain, form_data.years, function(response) {
+    Badger.renewDomain(domain, years, function(response) {
       hide_modal();
 
       if (response.meta.status == "ok") {
         BadgerCache.flush('domains');
-        set_route("#domains/" + form_data.domain + "/whois");
+        set_route("#domains/" + domain + "/whois");
         update_credits(true);
       } else {
         if (response.data && response.data.extra) {
           Badger.Session.write({
-            years: form_data.years,
+            years: years,
             necessary_credits: response.data.extra.necessary_credits,
             redirect_url: get_route()
           });
