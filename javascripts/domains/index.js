@@ -72,7 +72,7 @@ with (Hasher('DomainsIndex','Domains')) {
     
     render(
       chained_header_with_links(
-        { text: 'Domains' },
+        { text: 'Domains', href: '#domains' },
         { text: 'Pending Transfer' }
       ),
       target_div
@@ -120,7 +120,7 @@ with (Hasher('DomainsIndex','Domains')) {
     
     render(
       chained_header_with_links(
-        { text: 'Domains' },
+        { text: 'Domains', href: '#domains' },
         { text: 'Expiring Soon' }
       ),
       target_div

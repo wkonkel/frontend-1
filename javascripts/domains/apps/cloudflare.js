@@ -62,7 +62,7 @@ with (Hasher('CloudFlare', 'DomainApps')) {
         chained_header_with_links(
           { text: 'Domains', href: '#domains' },
           { text: domain, href: '#domains/'+domain },
-          { text: 'Apps' },
+          { text: 'Apps', href: '#domains/'+domain },
           { text: 'CloudFlare' }
         ),
 

@@ -14,9 +14,8 @@ with (Hasher('LinkedAccounts','Application')) {
 
     render(
       div(
-        // h1('Linked Accounts'),
         chained_header_with_links(
-          { text: 'My Account' },
+          { text: 'My Account', href: '#account' },
           { text: 'Linked Accounts' }
         ),
         

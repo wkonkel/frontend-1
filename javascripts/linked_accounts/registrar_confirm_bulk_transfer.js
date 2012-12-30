@@ -1,11 +1,11 @@
 with (Hasher('ConfirmRegistrarBulkTransfer', 'Application')) {
   route('#linked_accounts/:registrar/:linked_account_id/confirm_bulk_transfer', function(registrar, linked_account_id) {
     if (registrar == "godaddy") {
-      var REGISTRAR_NAME = "GoDaddy";
+      var registrar_name = "GoDaddy";
     } else if (registrar == "networksolutions") {
-      var REGISTRAR_NAME = "Network Solutions";
+      var registrar_name = "Network Solutions";
     } else if (registrar == "enom") {
-      var REGISTRAR_NAME = "Enom";
+      var registrar_name = "Enom";
     } else {
       render(
         div("Oh noes!")
@@ -17,11 +17,10 @@ with (Hasher('ConfirmRegistrarBulkTransfer', 'Application')) {
     );
     
     render(
-      // h1("Confirm Domain Transfer"),
       chained_header_with_links(
-        { href: '#account', text: 'My Account' },
-        { href: '#linked_accounts', text: 'Linked Accounts' },
-        { text: REGISTRAR_NAME || 'Registrar' }
+        { text: 'My Account', href: '#account' },
+        { text: 'Linked Accounts', href: '#linked_accounts' },
+        { text: registrar_name || 'Registrar' }
       ),
       
       

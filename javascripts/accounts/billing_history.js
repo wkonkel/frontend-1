@@ -6,13 +6,17 @@ with (Hasher('Billing','Application')) {
     );
 
     render(
-      h1('My Account » Billing & Credits'),
-      div({ style: 'float: right; margin-top: -44px' },
-        a({ 'class': 'myButton small', href: '#account/billing/credits' }, 'Purchase Credits')
-      ),
-      
-      Account.account_nav_table(target_div)
-    );
+      div(
+        chained_header_with_links(
+          { text: 'My Account', href: '#account' },
+          { text: 'Billing & Credits' }
+        ),
+        div({ style: 'float: right; margin-top: -44px' },
+          a({ 'class': 'myButton small', href: '#account/billing/credits' }, 'Purchase Credits')
+        ),
+        Account.account_nav_table(target_div)
+      )
+    )
     
     Badger.getCreditHistory(function(results) {
       render({ target: target_div }, 

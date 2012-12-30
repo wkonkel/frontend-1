@@ -4,8 +4,8 @@ with (Hasher('Billing','Application')) {
 
     render(
       chained_header_with_links(
-        { text: 'My Account' },
-        { href: '#account/billing', text: 'Billing & Credits' },
+        { text: 'My Account', href: '#account' },
+        { text: 'Billing & Credits', href: '#account/billing'  },
         { text: 'Purchase Credits' }
       ),
 

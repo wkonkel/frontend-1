@@ -21,8 +21,8 @@ with (Hasher('LinkRegistrarAccount','Application')) {
   define('render_registrar_link_form', function(registrar_id, registrar_name, registrar_logo) {
     render(
       chained_header_with_links(
-        { href: '#account', text: 'My Account' },
-        { href: '#linked_accounts', text: 'Linked Accounts' },
+        { text: 'My Account', href: '#account' },
+        { text: 'Linked Accounts', href: '#linked_accounts' },
         { text: registrar_name || 'Registrar' }
       ),
       
@@ -34,7 +34,6 @@ with (Hasher('LinkRegistrarAccount','Application')) {
       ),
       
       form_with_loader({ 'class': 'fancy has-sidebar', action: curry(create_linked_account_and_verify_login, registrar_id), loading_message: 'Verifying your login credentials...' },
-        // h1("Link " + registrar_name + " Account"),
         div({ style: "margin-left: 110px" },
           div({ style: "float: left; margin: auto 20px 20px auto" },
             img({ 'class': "app_store_icon", src: registrar_logo })
@@ -83,8 +82,8 @@ with (Hasher('LinkRegistrarAccount','Application')) {
     if (!registrar_name) registrar_name = registrar_id;
     render(
       chained_header_with_links(
-        { href: '#account', text: 'My Account' },
-        { href: '#linked_accounts', text: 'Linked Accounts' },
+        { text: 'My Account', href: '#account' },
+        { text: 'Linked Accounts', href: '#linked_accounts' },
         { text: registrar_name || 'Registrar' }
       ),
       

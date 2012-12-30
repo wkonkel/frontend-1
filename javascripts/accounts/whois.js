@@ -4,11 +4,16 @@ with (Hasher('Whois','Application')) {
     var target_div = div(spinner('Loading...'));
     
     render(
-      h1('My Account » Profiles'),
-      div({ style: 'float: right; margin-top: -44px' }, 
-        a({ 'class': 'myButton small', href: '#account/profiles/new' }, 'Create New Profile')
-      ),
-      Account.account_nav_table(target_div)
+      div(
+        chained_header_with_links(
+          { text: 'My Account', href: '#account' },
+          { text: 'Profiles' }
+        ),
+        div({ style: 'float: right; margin-top: -44px' },
+          a({ 'class': 'myButton small', href: '#account/profiles/new' }, 'Create New Profile')
+        ),
+        Account.account_nav_table(target_div)
+      )
     );
 
     BadgerCache.getContacts(function(results) {
@@ -47,10 +52,9 @@ with (Hasher('Whois','Application')) {
   route('#account/profiles/new', function() {
     render(
       div(
-        // h1('Create Contact'),
         chained_header_with_links(
-          { text: 'My Account' },
-          { href: '#account/profiles', text: 'Profiles' },
+          { text: 'My Account', href: '#account' },
+          { text: 'Profiles',   href: '#account/profiles' },
           { text: 'Create' }
         ),
 
@@ -71,8 +75,8 @@ with (Hasher('Whois','Application')) {
     render(
       div(
         chained_header_with_links(
-          { text: 'My Account' },
-          { text: 'Profiles', href: '#account/profiles' },
+          { text: 'My Account', href: '#account' },
+          { text: 'Profiles',   href: '#account/profiles' },
           { text: 'Edit' }
         ),
 

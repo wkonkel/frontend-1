@@ -2,11 +2,11 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
   
   route("#linked_accounts/:registrar/:linked_account_id/bulk_transfer", function(registrar, linked_account_id) {
     if (registrar == "godaddy") {
-      var REGISTRAR_NAME = "GoDaddy";
+      var registrar_name = "GoDaddy";
     } else if (registrar == "networksolutions") {
-      var REGISTRAR_NAME = "Network Solutions";
+      var registrar_name = "Network Solutions";
     } else if (registrar == "enom") {
-      var REGISTRAR_NAME = "Enom";
+      var registrar_name = "Enom";
     } else {
       render(
         div("Oh noes!")
@@ -14,15 +14,14 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
     }
       
     var domains_div = div(
-      spinner("Loading your " + REGISTRAR_NAME + " domains...")
+      spinner("Loading your " + registrar_name + " domains...")
     );
     
     render(
-      // h1("Transfer Domains from " + REGISTRAR_NAME + " to Badger"),
       chained_header_with_links(
-        { href: '#account', text: 'My Account' },
-        { href: '#linked_accounts', text: 'Linked Accounts' },
-        { text: REGISTRAR_NAME || 'Registrar' }
+        { text: 'My Account', href: '#account' },
+        { text: 'Linked Accounts', href: '#linked_accounts' },
+        { text: registrar_name || 'Registrar' }
       ),
       
       div({ 'class': "sidebar" },
@@ -40,8 +39,8 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
       div({ 'class': "fancy has-sidebar" },
         div({ id: "bulk-transfer-error", style: "display: none" },
           error_message("There was a problem syncing your account, please try again."),
-          p("We were unable to read any domains from your account at " + REGISTRAR_NAME + ". Do you have any domains registered there?")
-          // p("If you have domains registered at " + REGISTRAR_NAME + " that did not show up, you should ", a({ href: null }, "sync"), " your account and try again later.")
+          p("We were unable to read any domains from your account at " + registrar_name + ". Do you have any domains registered there?")
+          // p("If you have domains registered at " + registrar_name + " that did not show up, you should ", a({ href: null }, "sync"), " your account and try again later.")
         ),
         
         domains_div
@@ -49,7 +48,7 @@ with (Hasher('RegistrarBulkTransfer','Application')) {
     );
     
     // check the linked account status. if it is synced, show all of the domains. if it is not, continue waiting.
-    check_linked_account_status_and_set_timeout_if_needed(domains_div, REGISTRAR_NAME, linked_account_id);
+    check_linked_account_status_and_set_timeout_if_needed(domains_div, registrar_name, linked_account_id);
   });
   
   define('check_linked_account_status_and_set_timeout_if_needed', function(target_div, registrar_name, linked_account_id) {

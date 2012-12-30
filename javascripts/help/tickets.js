@@ -4,9 +4,8 @@
 // 
 //   route('#tickets', function() {
 //     render(
-//       // h1('My Account » Support Tickets'),
 //       chained_header_with_links(
-//         { text: 'My Account' },
+//         { text: 'My Account', href: '#account' },
 //         { text: 'Support Tickets' }
 //       ),
 // 
@@ -32,7 +31,6 @@
 //   
 //   route('#tickets/create', function() {
 //     render(
-//       // h1('My Account » Support Tickets » Create Ticket'),
 //       chained_header_with_links(
 //         { href: '#account', text: 'My Account' },
 //         { href: '#tickets', text: 'Support Tickets' },
