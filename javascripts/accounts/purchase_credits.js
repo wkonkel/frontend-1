@@ -160,7 +160,6 @@ with (Hasher('Billing','Application')) {
           ),
           '/',
           select({ name: 'cc_expiration_date_year' },
-            option('2012'),
             option('2013'),
             option('2014'),
             option('2015'),
@@ -168,7 +167,8 @@ with (Hasher('Billing','Application')) {
             option('2017'),
             option('2018'),
             option('2019'),
-            option('2020')
+            option('2020'),
+            option('2021')
           )
         )
       )
