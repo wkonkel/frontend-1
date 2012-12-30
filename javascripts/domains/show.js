@@ -197,7 +197,7 @@ with (Hasher('DomainShow','DomainApps')) {
                   ),
                   fieldset(
                     label('New Expiration Date:'),
-                    span({ id: 'expiration-date', 'class': 'big-text' }, date(domain_obj.expires_at).toString("MMMM dd, yyyy"))
+                    span({ id: 'expiration-date', 'class': 'big-text' }, date(domain_obj.expires_at).toString("MMMM dd yyyy"))
                   ),
                   fieldset(
 
@@ -221,7 +221,7 @@ with (Hasher('DomainShow','DomainApps')) {
       // update expiration date and purchase button on extend registration form
       $('select[name=years]').change(function() {
         var new_expiration_date = date(domain_obj.expires_at).add(parseInt(this.value)).years();
-        $("#expiration-date").html(new_expiration_date.toString("MMMM dd, yyyy"));
+        $("#expiration-date").html(new_expiration_date.toString("MMMM dd yyyy"));
         $('#renew-registration-submit').val('Renew Domain for $' + (parseInt(this.value)*10));
       }).change();
     });
