@@ -235,15 +235,15 @@ with (Hasher('Application')) {
   });
   
   define('user_nav', function() {
-    var user_nav = div({ id: 'user-nav', onMouseOver: user_nav_flyout_mouseover, onMouseOut: user_nav_flyout_mouseout },
+    var user_nav_div = div({ id: 'user-nav', onMouseOver: user_nav_flyout_mouseover, onMouseOut: user_nav_flyout_mouseout },
       a({ href: function() {} }, 'Loading...', span({ 'class': 'downarrow' }, '▼'))
     );
     
     with_user_nav_content(function(content) {
-      render({ into: 'user-nav' }, content);
+      render({ into: user_nav_div }, content);
     });
 
-    return user_nav;
+    return user_nav_div;
   });
 
   // pulled this out so that it can be rendered in later as an update
