@@ -38,6 +38,7 @@ with (Hasher('Domains','Application')) {
               ul({ id: 'domains-left-nav' },
                 li(a({ href: base_url, 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}$/i) ? 'active' : '') }, 'Applications')),
                 show_whois && li(a({ href: (base_url + '/whois'), 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}\/whois$/) ? 'active' : '') }, 'Registration')),
+                show_settings && li(a({ href: (base_url + '/renew'), 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}\/renew$/) ? 'active' : '') }, 'Renew')),
                 show_settings && li(a({ href: (base_url + '/settings'), 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}\/settings$/) ? 'active' : '') }, 'Settings')),
                 show_cloudflare && li(a({ id: 'cloudflare-tab', href: (base_url + '/apps/cloudflare'), 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}\/apps\/cloudflare/) ? 'active' : '') }, 'Cloudflare')),
                 show_transfer_out && li(a({ href: (base_url + '/transfer-out'), 'class': (active_url.match(/^#domains\/([-a-z0-9]+\.)+[a-z]{2,}\/transfer-out$/) ? 'active' : '') }, 'Transfer Out'))
