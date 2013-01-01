@@ -3,6 +3,13 @@ with (Hasher('Testimonials', 'Application')) {
   route('#testimonials', function() {
     testimonials = [
       testimonial({
+        'name':  "Paul S.",
+        'quote': "Switching from godaddy to badger was incredibly easy.  Your interface blows everything else out of the water.  Badger drew me in with a free domain during the CISPA fiasco and won me over with intuitive design & ux.  Happy to see the support is fast & responsive too.",
+//        'link':  '',
+        'date':  'Dec 31, 2012'
+      }),
+
+      testimonial({
         'name':  "Michael KN.",
         'quote': "badger.com is the only non-sucky registrar i've ever used.",
         'link':  'http://news.ycombinator.com/item?id=4887778',
