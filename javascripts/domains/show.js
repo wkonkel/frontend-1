@@ -189,7 +189,6 @@ with (Hasher('DomainShow','DomainApps')) {
   route('#domains/:domain/renew', function(domain) {
     var target_div = div(spinner('Loading...'));
     var years = Badger.Session.remove('years') || 1;
-    console.log(years);
     render(
       chained_header_with_links(
         { text: 'Domains', href: '#domains' },
