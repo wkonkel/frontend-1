@@ -12,10 +12,11 @@ with (Hasher('ContactUs','Application')) {
         
         info_message(
           h3("Want to send us a letter?"),
-          p(span({ style: 'font-size: smaller' }, "Postcards are great too!"), br(),
             "Badger", br(),
             "548 Market St. #80135", br(),
-            "San Francisco, CA 94104-5401"
+            "San Francisco, CA 94104-5401",
+            br(),
+            p(span({ style: 'font-weight: bold' }, "Postcards are great too!")
           )
         )
       ),
